@@ -74,10 +74,11 @@
 
     h1 {
       margin: 0;
-      font-size: clamp(2.8rem, 6vw, 4.2rem);
-      line-height: 1.02;
-      letter-spacing: -0.04em;
-      max-width: 11ch;
+      font-size: clamp(1.55rem, 3.5vw, 2.3rem);
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      max-width: 16ch;
+      color: #d9ecfb;
     }
 
     h2 {
@@ -92,12 +93,15 @@
     }
 
     .eyebrow {
-      font-size: 0.7rem;
-      letter-spacing: 0.15em;
+      font-size: clamp(2.4rem, 5.6vw, 4rem);
+      line-height: 1;
+      letter-spacing: -0.05em;
       text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 10px;
-      font-weight: 700;
+      color: var(--over-orange);
+      margin-bottom: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+      text-shadow: 0 10px 28px rgba(255, 177, 74, 0.2);
     }
 
     .domain {
@@ -525,8 +529,8 @@
 		<h1>Strikeout projections built for betting edges.</h1>
 
 		<p>
-			Powered by PitchIQ, The Pitch Predictor is a numbers-first tool built to surface real betting edge.
-			No AI picks — just statistically grounded strikeout projections, sportsbook lines, and clear decision-making in one clean view.
+		  Powered by our PitchIQ software, The Pitch Predictor gives you projected strikeouts, sportsbook lines,
+		  and true edge — all in one clean view for fast, confident decisions.
 		</p>
 	  </div>
 
@@ -711,7 +715,16 @@
   </div>
 
   <script>
-    document.getElementById("year").textContent = new Date().getFullYear();
+    const yearElement = document.getElementById("year");
+    if (yearElement) {
+      yearElement.textContent = new Date().getFullYear();
+    }
+
+    const heroDescription = document.querySelector(".hero-copy p");
+    if (heroDescription) {
+      heroDescription.innerHTML =
+        "Powered by PitchIQ, The Pitch Predictor is a numbers-first tool built to surface real betting edge.<br>No AI picks &mdash; just statistically grounded strikeout projections, sportsbook lines, and clear decision-making in one clean view.";
+    }
 
     const lightbox = document.getElementById("image-lightbox");
     const lightboxImage = document.getElementById("lightbox-image");
