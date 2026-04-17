@@ -465,34 +465,6 @@
         inset 0 1px 0 rgba(255, 255, 255, 0.55);
     }
 
-    .signup-honeypot {
-      position: absolute;
-      left: -5000px;
-    }
-
-    .signup-foot {
-      display: flex;
-      justify-content: center;
-      margin-top: 4px;
-    }
-
-    .signup-badge {
-      display: inline-flex;
-      opacity: 0.82;
-      transition: opacity 140ms ease, transform 140ms ease;
-    }
-
-    .signup-badge:hover {
-      opacity: 1;
-      transform: translateY(-1px);
-    }
-
-    .signup-badge img {
-      width: 220px;
-      height: 40px;
-      display: block;
-    }
-
     .footer {
       margin-top: 20px;
       padding: 20px;
@@ -638,62 +610,41 @@
       <div class="panel">
         <h2>Want to know more?</h2>
         <p class="signup-copy">
-          Join the mailing list and we will send you a note as soon as The Pitch Predictor goes live.
+          Join the mailing list and we will send you a notification as soon as The Pitch Predictor goes live.
         </p>
-			<div class="signup-wrap" id="mc_embed_shell">
-			  <div id="mc_embed_signup">
-			    <form
-              action="https://thepitchpredictor.us5.list-manage.com/subscribe/post?u=214b67cf2339bce94ebb73e84&amp;id=bf115b862b&amp;f_id=00be43edf0"
-              method="post"
-              id="mc-embedded-subscribe-form"
-              name="mc-embedded-subscribe-form"
-              class="signup-form validate"
-              target="_blank"
-            >
-              <label class="signup-label" for="mce-EMAIL">
-                Email Address
-              </label>
-              <div class="signup-controls">
-                <input
-                  type="email"
-                  name="EMAIL"
-                  class="signup-input required email"
-                  id="mce-EMAIL"
-                  placeholder="Enter your email"
-                  autocomplete="email"
-                  required
-                  value=""
-                >
-                <button
-                  type="submit"
-                  name="subscribe"
-                  id="mc-embedded-subscribe"
-                  class="signup-button"
-                >
-                  Get Notified
-                </button>
-              </div>
-              <div class="signup-honeypot" aria-hidden="true">
-                <input type="text" name="b_214b67cf2339bce94ebb73e84_bf115b862b" tabindex="-1" value="">
-              </div>
-              <div class="signup-foot">
-                <a
-                  href="http://eepurl.com/jDU2cg"
-                  title="Mailchimp - email marketing made easy and fun"
-                  class="signup-badge"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <img
-                    class="refferal_badge"
-                    src="https://digitalasset.intuit.com/render/content/dam/intuit/mc-fe/en_us/images/intuit-mc-rewards-text-dark.svg"
-                    alt="Intuit Mailchimp"
-                  >
-                </a>
-              </div>
-			    </form>
+        <div class="signup-wrap">
+			<form
+			  action="https://formsubmit.co/tstowe0@gmail.com"
+			  method="POST"
+			  class="signup-form"
+			>
+			  <label class="signup-label" for="signup-email">
+				Email Address
+			  </label>
+
+			  <div class="signup-controls">
+				<input
+				  type="email"
+				  name="email"
+				  class="signup-input"
+				  id="signup-email"
+				  placeholder="Enter your email"
+				  autocomplete="email"
+				  required
+				/>
+
+				<button type="submit" class="signup-button">
+				  I'm Interested
+				</button>
 			  </div>
-			</div>
+
+			  <!-- Hidden config -->
+			  <input type="hidden" name="_subject" value="New Interest Signup">
+			  <input type="hidden" name="_next" value="https://thepitchpredictor.com">
+			  <input type="text" name="_honey" style="display:none">
+
+			</form>
+        </div>
       </div>
     </div>
 
