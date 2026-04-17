@@ -248,6 +248,30 @@
       gap: 14px;
     }
 
+    .showcase-card-primary {
+      position: relative;
+      overflow: hidden;
+      align-items: center;
+      text-align: center;
+      border-color: rgba(255, 177, 74, 0.2);
+      background:
+        radial-gradient(circle at top right, rgba(255, 177, 74, 0.12), transparent 30%),
+        linear-gradient(180deg, rgba(16, 26, 38, 0.96), rgba(8, 17, 27, 0.96));
+    }
+
+    .showcase-card-primary::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(135deg, rgba(255, 177, 74, 0.08), transparent 42%);
+    }
+
+    .showcase-card-primary > * {
+      position: relative;
+      z-index: 1;
+    }
+
     .showcase-kicker {
       font-size: 0.72rem;
       letter-spacing: 0.14em;
@@ -266,6 +290,71 @@
       margin: 0;
       color: var(--muted);
       line-height: 1.65;
+    }
+
+    .showcase-card-primary h3 {
+      max-width: 30ch;
+      font-size: clamp(1rem, 1.5vw, 1.15rem);
+      line-height: 1.35;
+      color: var(--text);
+      opacity: 0.92;
+    }
+
+    .showcase-card-primary p {
+      max-width: 70ch;
+    }
+
+    .showcase-card-primary .showcase-kicker {
+      font-size: clamp(1.25rem, 2.5vw, 1.8rem);
+      letter-spacing: 0.03em;
+      text-transform: none;
+      color: var(--accent);
+      text-align: center;
+    }
+
+    .showcase-card-smart {
+      align-items: center;
+      text-align: center;
+    }
+
+    .showcase-card-smart .showcase-kicker {
+      font-size: clamp(1.25rem, 2.5vw, 1.8rem);
+      letter-spacing: 0.03em;
+      text-transform: none;
+      color: var(--accent);
+      text-align: center;
+    }
+
+    .showcase-card-smart p {
+      width: 100%;
+      max-width: none;
+      font-size: clamp(1rem, 1.5vw, 1.15rem);
+      line-height: 1.35;
+      color: var(--text);
+      opacity: 0.92;
+      text-align: center;
+    }
+
+    .showcase-card-upcoming {
+      text-align: center;
+    }
+
+    .showcase-card-upcoming .showcase-kicker {
+      text-align: center;
+    }
+
+    .showcase-card-upcoming p {
+      width: 100%;
+      max-width: none;
+      margin: 0;
+      color: var(--text);
+      opacity: 0.92;
+      text-align: center;
+    }
+
+    .showcase-card-primary strong {
+      color: #ffe5bf;
+      font-weight: 700;
     }
 
     .showcase-frame {
@@ -630,20 +719,31 @@
 	  </div>
 
 	  <div class="chips">
-		<div class="chip">Pitcher/Game/Team lookups</div>
-		<div class="chip">Model-calibrated projections</div>
-		<div class="chip">Built on years of data</div>
-		<div class="chip">Tens of thousands of data points</div>
-		<div class="chip">DK / FD line tracking</div>
-		<div class="chip">Game notes and insights</div>
+		<div class="chip"><b>Pitcher/Game/Team lookups</b></div>
+		<div class="chip"><b>Model-calibrated projections</b></div>
+		<div class="chip"><b>Built on years of data</b></div>
+		<div class="chip"><b>Tens of thousands of data points</b></div>
+		<div class="chip"><b>DK / FD line tracking</b></div>
+		<div class="chip"><b>Game notes and insights</b></div>
 	  </div>
 </div>
 
     <div class="showcase">
       <div class="showcase-grid">
-        <div class="panel showcase-card">
-          <div class="showcase-kicker">Upcoming Games List</div>
-          <h3>Scan the slate, compare the lines, and spot edge fast. Get the best odds. Search for a team, player, umpire, anything.</h3>
+        <div class="panel showcase-card showcase-card-primary">
+          <h2 class="showcase-kicker">How The Projection Works</h2>
+          <p style="color: white;">Projected Ks are a matchup-aware estimate, <b>not</b> a blind guess.</p>
+          <p style="color: white;">
+            We study how a pitcher has performed in similar spots before, then layer in the context around tonight's game: the expected lineup, how often those hitters swing and miss, the umpire behind the plate, the weather, the park, and the pitcher's recent form and workload. It’s a lot, and it matters.
+          </p>
+          <p style="color: white;">
+            We don't stop there. We also run multiple statistical models so one outlier or strange outing doesn’t distort the projection. That helps us balance different signals, account for variation, and turn a messy pile of baseball context into one clear projected Ks number. The goal is to be informed.
+          </p>
+        </div>
+
+        <div class="panel showcase-card showcase-card-upcoming">
+          <div class="showcase-kicker"><h2><strong>Upcoming Games List</strong></h2></div>
+          <p style="color: white;">Scan the slate, compare the lines, and spot edge fast. Get the best odds. Search for a team, player, umpire, anything.</p>
           <div class="showcase-frame">
             <button
               type="button"
@@ -661,9 +761,9 @@
           </div>
         </div>
 
-        <div class="panel showcase-card">
-          <div class="showcase-kicker">Smart Lookup</div>
-          <h3>Drill into a single pitcher matchup without losing the bigger picture. Be informed.</h3>
+        <div class="panel showcase-card showcase-card-smart">
+          <div class="showcase-kicker"><h2><strong>Smart Lookup</strong></h2></div>
+          <p style="color: white;">Drill into a single pitcher matchup without losing the bigger picture. Be informed.</p>
           <div class="showcase-frame">
             <button
               type="button"
@@ -687,7 +787,7 @@
       <div class="panel">
 		<h2>Pitching only, by design</h2>
 		<p>
-		  We focus on one thing: pitching. Strikeout props are where the edge is clearest, and everything here is built to surface it.
+		  We focus on one thing: pitching. Strikeout props are where the edge is clearest, and everything here is built to find it.
 		</p>
       </div>
 
@@ -701,11 +801,11 @@
       <div class="panel">
 		<h2>Get early access</h2>
 		<p>
-		  Be first in when The Pitch Predictor goes live. No spam, just one email. Early users get first access to launch pricing.
+		  Be first in when The Pitch Predictor launches. No spam, no nonsense, just one email. Early users get first access to launch pricing.
 		</p>
         <div class="signup-wrap">
 			<form
-			  action="https://formsubmit.co/sales@minmaxtechnology.com"
+			  action="https://formsubmit.co/ajax/sales@minmaxtechnology.com"
 			  method="POST"
 			  class="signup-form"
 			>
@@ -729,7 +829,7 @@
 
 			  <!-- Hidden config -->
 			  <input type="hidden" name="_subject" value="New Interest Signup">
-			  <input type="hidden" name="_next" value="https://thepitchpredictor.com">
+			  <input type="hidden" name="_url" value="https://thepitchpredictor.com">
 			  <input type="text" name="_honey" style="display:none">
 			  <p class="signup-status" id="signup-status" aria-live="polite"></p>
 
@@ -836,31 +936,44 @@
         signupStatus.classList.remove("is-error");
         signupButton.disabled = true;
 
-        const endpoint = signupForm.action.includes("/ajax/")
-          ? signupForm.action
-          : signupForm.action.replace("https://formsubmit.co/", "https://formsubmit.co/ajax/");
-
         try {
-          const response = await fetch(endpoint, {
+          const payload = Object.fromEntries(new FormData(signupForm).entries());
+
+          const response = await fetch(signupForm.action, {
             method: "POST",
             headers: {
+              "Content-Type": "application/json",
               Accept: "application/json"
             },
-            body: new FormData(signupForm)
+            body: JSON.stringify(payload)
           });
 
-          const payload = await response.json().catch(() => null);
+          const responsePayload = await response.json().catch(() => null);
           const wasSuccessful = response.ok
-            && (!payload || payload.success === undefined || String(payload.success).toLowerCase() === "true");
+            && (
+              !responsePayload
+              || responsePayload.success === undefined
+              || String(responsePayload.success).toLowerCase() === "true"
+            );
 
           if (!wasSuccessful) {
-            throw new Error("Signup failed");
+            throw new Error(responsePayload?.message || "Signup failed");
           }
 
           signupForm.reset();
           openSignupModal();
         } catch (error) {
-          signupStatus.textContent = "Something went wrong. Please try again.";
+          const errorMessage = error instanceof Error && error.message
+            ? error.message
+            : "Something went wrong. Please try again.";
+
+          if (errorMessage.includes("needs Activation")) {
+            signupStatus.textContent = "FormSubmit needs activation. Check sales@minmaxtechnology.com for the 'Activate Form' email.";
+          } else if (errorMessage.includes("open this page through a web server")) {
+            signupStatus.textContent = "Open this page through your live site URL or a local web server, not as a raw HTML file.";
+          } else {
+            signupStatus.textContent = errorMessage;
+          }
           signupStatus.classList.add("is-error");
         } finally {
           signupButton.disabled = false;
