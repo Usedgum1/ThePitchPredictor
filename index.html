@@ -9,24 +9,24 @@
     name="description"
     content="ThePitchPredictor.com is a pitching-first MLB strikeout prop site focused on projections, lines, leans, and edge."
   />
-  <meta name="theme-color" content="#08111b" />
+  <meta name="theme-color" content="#050505" />
 
   <style>
     :root {
-      --bg: #08111b;
-      --bg-2: #10283a;
-      --panel: rgba(10, 20, 33, 0.85);
+      --bg: #050505;
+      --bg-2: #090a10;
+      --panel: rgba(12, 14, 20, 0.64);
       --panel-soft: rgba(255, 255, 255, 0.03);
       --line: rgba(255, 255, 255, 0.08);
-      --line-strong: rgba(121, 198, 255, 0.22);
-      --text: #eef5fb;
-      --muted: #aab9c9;
-      --accent: #79c6ff;
-      --accent-soft: rgba(121, 198, 255, 0.12);
-      --dk-green: #72f24d;
-      --dk-green-soft: rgba(114, 242, 77, 0.12);
-      --fd-blue: #1da1ff;
-      --fd-blue-soft: rgba(29, 161, 255, 0.12);
+      --line-strong: rgba(141, 138, 255, 0.28);
+      --text: #f4f0e8;
+      --muted: #a7afbc;
+      --accent: #8d8aff;
+      --accent-soft: rgba(141, 138, 255, 0.1);
+      --dk-green: #8ddf9f;
+      --dk-green-soft: rgba(141, 223, 159, 0.12);
+      --fd-blue: #5698ff;
+      --fd-blue-soft: rgba(86, 152, 255, 0.12);
       --over-orange: #ffb14a;
       --over-orange-soft: rgba(255, 177, 74, 0.14);
       --radius: 18px;
@@ -41,34 +41,33 @@
       font-family: "Segoe UI", sans-serif;
       color: var(--text);
       background:
-        radial-gradient(circle at 15% 18%, rgba(121, 198, 255, 0.14), transparent 24%),
-        radial-gradient(circle at 82% 12%, rgba(121, 198, 255, 0.08), transparent 18%),
-        linear-gradient(160deg, #07111a, #0b1826, var(--bg-2));
+        radial-gradient(circle at 12% 14%, rgba(141, 138, 255, 0.2), transparent 22%),
+        radial-gradient(circle at 86% 10%, rgba(255, 177, 74, 0.18), transparent 20%),
+        radial-gradient(circle at 62% 28%, rgba(86, 152, 255, 0.14), transparent 18%),
+        radial-gradient(circle at 28% 52%, rgba(141, 138, 255, 0.12), transparent 20%),
+        radial-gradient(circle at 76% 56%, rgba(255, 177, 74, 0.12), transparent 18%),
+        radial-gradient(circle at 20% 82%, rgba(255, 177, 74, 0.14), transparent 20%),
+        linear-gradient(180deg, #050505 0%, #090a10 100%);
     }
 
     .container {
       max-width: 1100px;
       margin: auto;
-      padding: 40px 20px;
+      padding: 18px 20px 40px;
     }
 
     .site-header {
-      padding: 12px 20px 0;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 16px 20px 0;
+      display: flex;
+      justify-content: flex-end;
     }
 
     .site-header-inner {
-      max-width: 1060px;
-      margin: 0 auto;
-      min-height: 38px;
-      padding: 4px 10px;
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      background: rgba(0, 0, 0, 0.2);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
-      backdrop-filter: blur(10px);
     }
 
     .login-button {
@@ -77,10 +76,10 @@
       justify-content: center;
       min-height: 28px;
       padding: 5px 13px;
-      border: 1px solid rgba(114, 242, 77, 0.42);
+      border: 1px solid rgba(141, 223, 159, 0.34);
       border-radius: 999px;
       background: var(--dk-green-soft);
-      color: #dcffd1;
+      color: #d9ffe2;
       font-size: 0.76rem;
       font-weight: 800;
       letter-spacing: 0.08em;
@@ -92,15 +91,15 @@
 
     .login-button:hover {
       transform: translateY(-1px);
-      border-color: rgba(114, 242, 77, 0.68);
+      border-color: rgba(141, 223, 159, 0.5);
       background: var(--dk-green);
-      color: #08111b;
+      color: #050505;
     }
 
     .login-button:focus-visible {
       outline: none;
       box-shadow:
-        0 0 0 4px rgba(114, 242, 77, 0.16),
+        0 0 0 4px rgba(141, 223, 159, 0.16),
         inset 0 1px 0 rgba(255, 255, 255, 0.18);
     }
 
@@ -244,28 +243,28 @@
     }
 
     .stat.highlight {
-      background: rgba(121, 198, 255, 0.08);
-      border-color: rgba(121, 198, 255, 0.2);
+      background: rgba(141, 138, 255, 0.08);
+      border-color: rgba(141, 138, 255, 0.2);
     }
 
     .stat.edge {
-      background: rgba(121, 198, 255, 0.1);
-      border-color: rgba(121, 198, 255, 0.24);
+      background: rgba(141, 138, 255, 0.1);
+      border-color: rgba(141, 138, 255, 0.24);
     }
 
     .stat.dk-line {
       background: var(--dk-green-soft);
-      border-color: rgba(114, 242, 77, 0.24);
+      border-color: rgba(141, 223, 159, 0.24);
     }
 
     .stat.dk-line span,
     .stat.dk-line strong {
-      color: #dcffd1;
+      color: #d9ffe2;
     }
 
 	.stat.fd-line {
 	  background: var(--fd-blue-soft);
-	  border-color: rgba(29, 161, 255, 0.4);
+	  border-color: rgba(86, 152, 255, 0.4);
 	}
 
 	.stat.fd-line span,
@@ -305,18 +304,8 @@
       overflow: hidden;
       align-items: center;
       text-align: center;
-      border-color: rgba(255, 177, 74, 0.2);
-      background:
-        radial-gradient(circle at top right, rgba(255, 177, 74, 0.12), transparent 30%),
-        linear-gradient(180deg, rgba(16, 26, 38, 0.96), rgba(8, 17, 27, 0.96));
-    }
-
-    .showcase-card-primary::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background: linear-gradient(135deg, rgba(255, 177, 74, 0.08), transparent 42%);
+      border-color: var(--line);
+      background: var(--panel);
     }
 
     .showcase-card-primary > * {
@@ -558,7 +547,7 @@
       outline: none;
       border-color: var(--line-strong);
       box-shadow:
-        0 0 0 4px rgba(121, 198, 255, 0.14),
+        0 0 0 4px rgba(141, 138, 255, 0.16),
         inset 0 1px 0 rgba(255, 255, 255, 0.06);
     }
 
@@ -567,7 +556,7 @@
       border: 1px solid rgba(255, 177, 74, 0.42);
       border-radius: 10px;
       background: var(--over-orange);
-      color: #08111b;
+      color: #050505;
       font: inherit;
       font-weight: 800;
       letter-spacing: 0.04em;
@@ -669,7 +658,7 @@
       border: 1px solid rgba(255, 177, 74, 0.42);
       border-radius: 999px;
       background: var(--over-orange);
-      color: #08111b;
+      color: #050505;
       font: inherit;
       font-weight: 800;
       letter-spacing: 0.04em;
