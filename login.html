@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Log In | ThePitchPredictor.com</title>
+  <meta
+    name="description"
+    content="Log in to The Pitch Predictor."
+  />
+  <meta name="theme-color" content="#050505" />
+
+  <style>
+    :root {
+      --bg: #050505;
+      --panel: rgba(12, 14, 20, 0.64);
+      --panel-soft: rgba(255, 255, 255, 0.03);
+      --line: rgba(255, 255, 255, 0.08);
+      --line-strong: rgba(141, 138, 255, 0.28);
+      --text: #f4f0e8;
+      --muted: #a7afbc;
+      --violet: #8d8aff;
+      --violet-soft: rgba(141, 138, 255, 0.1);
+      --amber: #ffb14a;
+      --success: #8ddf9f;
+      --success-soft: rgba(141, 223, 159, 0.12);
+      --danger: #ff8c7a;
+      --radius: 18px;
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 12% 14%, rgba(141, 138, 255, 0.2), transparent 22%),
+        radial-gradient(circle at 86% 10%, rgba(255, 177, 74, 0.18), transparent 20%),
+        radial-gradient(circle at 62% 28%, rgba(86, 152, 255, 0.14), transparent 18%),
+        radial-gradient(circle at 28% 52%, rgba(141, 138, 255, 0.12), transparent 20%),
+        radial-gradient(circle at 76% 56%, rgba(255, 177, 74, 0.12), transparent 18%),
+        radial-gradient(circle at 20% 82%, rgba(255, 177, 74, 0.14), transparent 20%),
+        linear-gradient(180deg, #050505 0%, #090a10 100%);
+    }
+
+    .site-header {
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+    }
+
+    .site-header-inner {
+      width: 100%;
+      margin: 0;
+      min-height: 38px;
+      padding: 4px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.2);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(10px);
+    }
+
+    .brand-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 28px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      color: var(--text);
+      font-size: 0.76rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+
+    .brand-link {
+      color: var(--text);
+    }
+
+    .brand-link:focus-visible,
+    .login-button:focus-visible,
+    .form-input:focus,
+    .coming-soon-pill:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 4px rgba(141, 138, 255, 0.16);
+    }
+
+    .container {
+      max-width: 1100px;
+      min-height: 100vh;
+      margin: auto;
+      padding: 40px 20px;
+      display: grid;
+      place-items: center;
+    }
+
+    .panel {
+      width: min(430px, 100%);
+      background: linear-gradient(180deg, rgba(15, 17, 24, 0.72), rgba(10, 11, 17, 0.62));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 32px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .eyebrow {
+      margin-bottom: 10px;
+      color: var(--amber);
+      font-size: clamp(1.25rem, 3vw, 1.65rem);
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      line-height: 1.1;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 0;
+      color: var(--text);
+      font-size: clamp(1.15rem, 2.4vw, 1.35rem);
+      line-height: 1.08;
+      text-align: center;
+    }
+
+    p {
+      margin: 12px 0 0;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .login-form {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: 22px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .field label {
+      color: var(--text);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .form-input {
+      width: 100%;
+      min-height: 44px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text);
+      font: inherit;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+
+    .form-input::placeholder {
+      color: var(--muted);
+    }
+
+    .form-input:focus {
+      border-color: var(--line-strong);
+      box-shadow:
+        0 0 0 4px rgba(141, 138, 255, 0.16),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+
+    .login-button {
+      width: 100%;
+      min-height: 44px;
+      margin-top: 4px;
+      border: 1px solid rgba(141, 223, 159, 0.34);
+      border-radius: 10px;
+      background: linear-gradient(180deg, rgba(20, 74, 37, 0.98), rgba(15, 53, 28, 0.98));
+      color: #d9ffe2;
+      font: inherit;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      transition: transform 140ms ease, box-shadow 140ms ease, filter 140ms ease;
+    }
+
+    .login-button:hover {
+      transform: translateY(-1px);
+      background: linear-gradient(180deg, rgba(24, 92, 45, 0.98), rgba(18, 66, 34, 0.98));
+      color: #d9ffe2;
+      filter: brightness(1.03);
+      box-shadow:
+        0 16px 28px rgba(20, 78, 39, 0.24),
+        inset 0 1px 0 rgba(255, 255, 255, 0.55);
+    }
+
+    .create-account {
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .coming-soon-pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      margin-left: 6px;
+      padding: 4px 10px;
+      border: 1px solid rgba(141, 138, 255, 0.28);
+      border-radius: 999px;
+      background: var(--violet-soft);
+      color: #c7c4ff;
+      font: inherit;
+      font-weight: 800;
+      cursor: default;
+    }
+
+    .coming-soon-pill:disabled {
+      opacity: 1;
+    }
+
+    .login-status {
+      min-height: 1.2rem;
+      margin: 0;
+      color: var(--danger);
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
+    @media (max-width: 520px) {
+      .site-header-inner {
+        border-radius: 18px;
+      }
+
+      .brand-link {
+        letter-spacing: 0.04em;
+        font-size: 0.68rem;
+      }
+
+      .panel {
+        padding: 26px 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container">
+    <section class="panel" aria-labelledby="login-title">
+      <div class="eyebrow">PitchIQ Access</div>
+      <h1 id="login-title">Log in</h1>
+
+      <form class="login-form" action="#" method="post" id="login-form">
+        <div class="field">
+          <label for="username">Username</label>
+          <input
+            class="form-input"
+            type="text"
+            id="username"
+            name="username"
+            autocomplete="username"
+            placeholder="Enter your username"
+            required
+          />
+        </div>
+
+        <div class="field">
+          <label for="password">Password</label>
+          <input
+            class="form-input"
+            type="password"
+            id="password"
+            name="password"
+            autocomplete="current-password"
+            placeholder="Enter your password"
+            required
+          />
+        </div>
+
+        <button class="login-button" type="submit">Log In</button>
+        <p class="login-status" id="login-status" aria-live="polite"></p>
+      </form>
+
+      <div class="create-account">
+        Need an account?
+        <button class="coming-soon-pill" type="button" disabled>Coming Soon</button>
+      </div>
+
+      <nav class="site-header" aria-label="Site navigation">
+        <div class="site-header-inner">
+          <a class="brand-link" href="./index.html">ThePitchPredictor.com</a>
+        </div>
+      </nav>
+    </section>
+  </main>
+
+  <script>
+    const loginForm = document.getElementById("login-form");
+    const loginStatus = document.getElementById("login-status");
+
+    async function getTemporaryAccounts() {
+      try {
+        const response = await fetch("./temporary-accounts.json", { cache: "no-store" });
+        if (!response.ok) {
+          throw new Error("Temporary account file unavailable.");
+        }
+        return response.json();
+      } catch (error) {
+        return {
+          accounts: [
+            { username: "terry", password: "password" }
+          ]
+        };
+      }
+    }
+
+    loginForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      loginStatus.textContent = "";
+
+      const formData = new FormData(loginForm);
+      const username = String(formData.get("username") || "").trim();
+      const password = String(formData.get("password") || "");
+      const accountData = await getTemporaryAccounts();
+      const accounts = Array.isArray(accountData.accounts) ? accountData.accounts : [];
+      const match = accounts.some((account) =>
+        account.username === username && account.password === password
+      );
+
+      if (!match) {
+        loginStatus.textContent = "Username or password did not match.";
+        return;
+      }
+
+      sessionStorage.setItem("pitchiqLoggedIn", "true");
+      window.location.href = "./app.html";
+    });
+  </script>
+</body>
+</html>

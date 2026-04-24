@@ -1,0 +1,1930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>pitchIQ | Upcoming Games</title>
+  <meta name="description" content="pitchIQ upcoming games board for MLB strikeout props." />
+  <meta name="theme-color" content="#050505" />
+
+  <style>
+    :root {
+      --bg: #050505;
+      --panel: rgba(12, 14, 20, 0.64);
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #f4f0e8;
+      --muted: #a7afbc;
+      --violet: #8d8aff;
+      --amber: #ffb14a;
+      --success: #8ddf9f;
+      --danger: #ff8c7a;
+    }
+
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 12% 14%, rgba(141, 138, 255, 0.2), transparent 22%),
+        radial-gradient(circle at 86% 10%, rgba(255, 177, 74, 0.18), transparent 20%),
+        radial-gradient(circle at 62% 28%, rgba(86, 152, 255, 0.14), transparent 18%),
+        radial-gradient(circle at 28% 52%, rgba(141, 138, 255, 0.12), transparent 20%),
+        radial-gradient(circle at 76% 56%, rgba(255, 177, 74, 0.12), transparent 18%),
+        radial-gradient(circle at 20% 82%, rgba(255, 177, 74, 0.14), transparent 20%),
+        radial-gradient(circle at 88% 76%, rgba(141, 138, 255, 0.12), transparent 18%),
+        radial-gradient(circle at 52% 88%, rgba(210, 180, 140, 0.1), transparent 16%),
+        linear-gradient(180deg, #050505 0%, #090a10 100%);
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    .app {
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 22px 18px 28px;
+      position: relative;
+      isolation: isolate;
+    }
+
+    .app::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 28px;
+      background:
+        radial-gradient(circle at 18% 22%, rgba(141, 138, 255, 0.16), transparent 24%),
+        radial-gradient(circle at 80% 18%, rgba(255, 177, 74, 0.14), transparent 22%),
+        radial-gradient(circle at 66% 46%, rgba(86, 152, 255, 0.11), transparent 20%),
+        radial-gradient(circle at 28% 72%, rgba(255, 177, 74, 0.1), transparent 22%);
+      filter: blur(18px);
+      opacity: 0.95;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .tile {
+      background: linear-gradient(180deg, rgba(15, 17, 24, 0.42), rgba(10, 11, 17, 0.36));
+      backdrop-filter: blur(18px);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.24);
+      position: relative;
+      overflow: visible;
+    }
+
+    .tile::before {
+      content: "";
+      position: absolute;
+      inset: 0 18px auto 18px;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(141,138,255,0.2), rgba(255,177,74,0.08), transparent);
+      border-radius: 999px;
+      pointer-events: none;
+    }
+
+    .page-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+
+    .page-head-meta {
+      display: flex;
+      justify-content: flex-end;
+      align-items: flex-start;
+      min-width: 260px;
+      padding-top: 2px;
+    }
+
+    .brand {
+      font-size: 2rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin: 0;
+    }
+
+    .sub {
+      margin: 8px 0 0;
+      color: var(--muted);
+      max-width: 760px;
+      line-height: 1.6;
+    }
+
+    .startup-status-pill,
+    .logout-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(141,223,159,0.36);
+      background: linear-gradient(180deg, rgba(21, 79, 39, 0.95), rgba(15, 55, 29, 0.95));
+      color: #d8ffe1;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      box-shadow: 0 12px 30px rgba(18, 79, 40, 0.28);
+    }
+
+    .logout-button {
+      cursor: pointer;
+    }
+
+    .workspace-nav {
+      display: flex;
+      gap: 10px;
+      margin: 18px 0 16px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .workspace-tab {
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.02);
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-size: 0.82rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .workspace-tab.active {
+      color: var(--text);
+      border-color: rgba(141,138,255,0.28);
+      background: rgba(141,138,255,0.1);
+    }
+
+    .coming-soon-tab {
+      opacity: 0.64;
+    }
+
+    .workspace-panel { display: none; animation: panelFade 0.18s ease; }
+    .workspace-panel.active { display: block; }
+
+    @keyframes panelFade {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .field label {
+      display: block;
+      color: var(--muted);
+      font-size: 0.74rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .subtile {
+      background: rgba(255,255,255,0.028);
+      border: 1px solid rgba(255,255,255,0.06);
+      backdrop-filter: blur(12px);
+      border-radius: 16px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+
+    .glass-subtile {
+      background: rgba(255,255,255,0.018);
+      border: 1px solid rgba(255,255,255,0.05);
+      backdrop-filter: blur(14px);
+    }
+
+    .lookup-controls {
+      position: relative;
+      z-index: 40;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 2.5fr 1fr 1fr;
+      gap: 14px;
+      align-items: end;
+    }
+
+    .search-shell {
+      position: relative;
+    }
+
+    input:not([type="checkbox"]):not([type="radio"]) {
+      width: 100%;
+      height: 48px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(42, 44, 56, 0.96);
+      color: var(--text);
+      padding: 0 14px;
+      font-size: 1rem;
+      outline: none;
+    }
+
+    .search-row {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-row input {
+      padding-right: 52px;
+    }
+
+    .search-row.has-caret input {
+      padding-right: 86px;
+    }
+
+    .clear-btn {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 24px;
+      height: 24px;
+      border: 0;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .clear-btn.hidden,
+    .hidden {
+      display: none !important;
+    }
+
+    .search-row.has-caret .clear-btn {
+      right: 46px;
+    }
+
+    .search-caret {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 0.8rem;
+      pointer-events: none;
+    }
+
+    .search-dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      right: 0;
+      max-height: 280px;
+      overflow-y: auto;
+      background: linear-gradient(180deg, rgba(20, 23, 31, 0.99), rgba(12, 14, 20, 0.99));
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      box-shadow: 0 18px 38px rgba(0, 0, 0, 0.34);
+      padding: 8px;
+      z-index: 120;
+    }
+
+    .search-option {
+      border: 1px solid transparent;
+      border-radius: 10px;
+      padding: 10px 12px;
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .search-option:hover,
+    .search-option.active {
+      background: rgba(141,138,255,0.08);
+      border-color: rgba(141,138,255,0.18);
+    }
+
+    .search-empty {
+      padding: 10px 12px;
+      color: var(--muted);
+    }
+
+    .clear-btn:hover,
+    .clear-btn:focus-visible {
+      background: rgba(255,255,255,0.12);
+      color: var(--text);
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.06);
+      outline: none;
+    }
+
+    .button {
+      height: 48px;
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid rgba(141,138,255,0.24);
+      background: linear-gradient(180deg, rgba(24, 26, 38, 0.96), rgba(18, 19, 28, 0.96));
+      color: var(--text);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: block;
+    }
+
+    .button:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    .section-title {
+      color: var(--muted);
+      font-size: 0.82rem;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin: 0 0 12px;
+    }
+
+    .center-title {
+      text-align: center;
+      width: 100%;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .info-grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .info-grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .info-grid.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .info-grid.nine { grid-template-columns: repeat(9, minmax(0, 1fr)); }
+
+    .cell {
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.045);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      min-width: 0;
+    }
+
+    #upcoming-game-grid .cell,
+    #general-top-grid .cell,
+    #general-bottom-grid .cell,
+    #upcoming-dk-grid .cell,
+    #upcoming-fd-grid .cell {
+      background: transparent;
+      border-color: transparent;
+    }
+
+    #upcoming-dk-grid,
+    #upcoming-fd-grid {
+      gap: 4px;
+    }
+
+    #upcoming-dk-grid .cell,
+    #upcoming-fd-grid .cell {
+      padding: 8px 6px;
+    }
+
+    .label {
+      color: var(--muted);
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      text-align: center;
+      width: 100%;
+      text-decoration: underline;
+      text-decoration-color: rgba(244, 231, 211, 0.18);
+      text-underline-offset: 5px;
+      text-decoration-thickness: 1px;
+    }
+
+    .value {
+      font-size: 1rem;
+      line-height: 1.4;
+      color: var(--text);
+      text-align: center;
+      width: 100%;
+      word-break: break-word;
+    }
+
+    .projection-block {
+      padding: 6px 2px 0;
+    }
+
+    .breakdown-line {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .breakdown-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.025);
+      color: var(--muted);
+      padding: 6px 10px;
+      font-size: 0.76rem;
+    }
+
+    .breakdown-chip strong {
+      color: var(--text);
+    }
+
+    .confidence-high { color: var(--success); }
+    .confidence-medium { color: var(--amber); }
+    .confidence-low { color: var(--danger); }
+
+    .notes-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .note-card {
+      background: linear-gradient(180deg, rgba(23, 25, 35, 0.88), rgba(14, 15, 22, 0.88));
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 14px;
+      padding: 13px 14px;
+    }
+
+    .note-card.up {
+      border-color: rgba(255,177,74,0.55);
+      background: linear-gradient(180deg, rgba(46, 30, 12, 0.92), rgba(22, 17, 12, 0.92));
+      box-shadow: inset 0 1px 0 rgba(255,177,74,0.18);
+    }
+
+    .note-card.down {
+      border-color: rgba(86, 152, 255, 0.5);
+      background: linear-gradient(180deg, rgba(15, 24, 44, 0.92), rgba(12, 16, 30, 0.92));
+      box-shadow: inset 0 1px 0 rgba(86,152,255,0.16);
+    }
+
+    .note-card.neutral {
+      border-color: rgba(210, 180, 140, 0.46);
+      background: linear-gradient(180deg, rgba(42, 33, 24, 0.92), rgba(24, 19, 15, 0.92));
+      box-shadow: inset 0 1px 0 rgba(210,180,140,0.14);
+    }
+
+    .note-tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      padding: 4px 8px;
+      font-size: 0.66rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+    }
+
+    .note-card.up .note-tag {
+      background: rgba(255,177,74,0.22);
+      color: #ffd7a3;
+    }
+
+    .note-card.down .note-tag {
+      background: rgba(86,152,255,0.2);
+      color: #bdd8ff;
+    }
+
+    .note-card.neutral .note-tag {
+      background: rgba(210,180,140,0.18);
+      color: #f0dcc1;
+    }
+
+    .note-title {
+      font-size: 0.98rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .note-body {
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .neutral-button {
+      border: 1px solid rgba(192, 200, 214, 0.34);
+      background: linear-gradient(180deg, rgba(88, 94, 108, 0.98), rgba(63, 68, 81, 0.98));
+      color: #f2f5fa;
+    }
+
+    .danger-button {
+      border: 1px solid rgba(255, 140, 122, 0.35);
+      background: linear-gradient(180deg, rgba(76, 24, 22, 0.98), rgba(56, 18, 17, 0.98));
+      color: #ffd4cb;
+    }
+
+    .warning-button {
+      border: 1px solid rgba(255, 187, 102, 0.36);
+      background: linear-gradient(180deg, rgba(108, 62, 16, 0.98), rgba(78, 45, 12, 0.98));
+      color: #ffe2b8;
+    }
+
+    .success-button {
+      border: 1px solid rgba(141, 223, 159, 0.34);
+      background: linear-gradient(180deg, rgba(20, 74, 37, 0.98), rgba(15, 53, 28, 0.98));
+      color: #d9ffe2;
+    }
+
+    .table-shell {
+      border: 1px solid rgba(255,255,255,0.04);
+      border-radius: 14px;
+      overflow: hidden;
+      background: rgba(9, 9, 13, 0.92);
+    }
+
+    .table-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .table-search {
+      flex: 1 1 340px;
+      max-width: 460px;
+    }
+
+    .table-search input {
+      background: rgba(28, 31, 42, 0.84);
+    }
+
+    .table-scroll {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      min-width: 1180px;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+
+    th {
+      color: var(--muted);
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 600;
+      background: rgba(255,255,255,0.02);
+    }
+
+    th.sortable {
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .th-inner {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .sort-indicator {
+      color: rgba(255,255,255,0.45);
+      font-size: 0.7rem;
+      min-width: 10px;
+    }
+
+    td {
+      color: var(--text);
+      font-size: 0.86rem;
+      vertical-align: top;
+      white-space: nowrap;
+    }
+
+    .pitcher-cell {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .pitcher-name,
+    .date-main {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .pitcher-team-sub,
+    .date-time-sub {
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.25;
+    }
+
+    tbody tr:hover {
+      background: rgba(255,255,255,0.025);
+    }
+
+    tbody.render-fade tr {
+      opacity: 0;
+      transform: translateY(7px);
+      animation: tableRowFade 0.26s ease forwards;
+    }
+
+    @keyframes tableRowFade {
+      0% { opacity: 0; transform: translateY(7px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .lookup-icon-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      border: 1px solid rgba(141,138,255,0.2);
+      background: rgba(141,138,255,0.08);
+      color: var(--text);
+      cursor: default;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      line-height: 1;
+      padding: 0;
+    }
+
+    .lookup-icon-btn:hover {
+      border-color: rgba(255,177,74,0.26);
+      background: rgba(255,177,74,0.1);
+    }
+
+    .ump-cell {
+      text-align: center;
+    }
+
+    .ump-indicator {
+      width: 22px;
+      height: 22px;
+      border-radius: 4px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.025);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: transparent;
+      font-size: 0.9rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .ump-indicator.assigned {
+      border-color: rgba(255, 200, 86, 0.52);
+      background: rgba(255, 177, 74, 0.1);
+      color: #ffc856;
+      box-shadow: 0 0 0 1px rgba(255, 200, 86, 0.08);
+    }
+
+    .table-hover-detail {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .table-hover-detail.has-tooltip {
+      cursor: help;
+      text-decoration: underline dotted rgba(255,255,255,0.22);
+      text-underline-offset: 3px;
+    }
+
+    .volatility-value {
+      font-weight: 600;
+    }
+
+    .volatility-value.volatility-low,
+    .up-text {
+      color: var(--amber);
+      font-weight: 600;
+    }
+
+    .volatility-value.volatility-medium {
+      color: var(--amber);
+    }
+
+    .volatility-value.volatility-high,
+    .down-text {
+      color: var(--violet);
+      font-weight: 600;
+    }
+
+    .pager {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .pager-meta {
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .pager-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pager-button {
+      min-width: 90px;
+      height: 36px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03);
+      color: var(--text);
+      cursor: pointer;
+      padding: 0 12px;
+    }
+
+    .pager-button:disabled {
+      opacity: 0.45;
+      cursor: default;
+    }
+
+    .pager-page {
+      color: var(--text);
+      font-size: 0.88rem;
+      min-width: 72px;
+      text-align: center;
+    }
+
+    @media (max-width: 900px) {
+      .page-head,
+      .table-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .page-head-meta,
+      .table-search {
+        min-width: 0;
+        max-width: none;
+      }
+
+    }
+
+    @media (max-width: 620px) {
+      .app {
+        padding: 14px 10px 24px;
+      }
+
+      .tile {
+        padding: 14px;
+      }
+
+      .brand {
+        font-size: 1.45rem;
+      }
+
+      .workspace-nav {
+        overflow-x: auto;
+      }
+
+      .controls,
+      .info-grid,
+      .info-grid.two,
+      .info-grid.three,
+      .info-grid.four,
+      .info-grid.nine,
+      .notes-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .pager {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <section class="tile">
+      <div class="page-head">
+        <div>
+          <h1 class="brand">pitchIQ</h1>
+          <p class="sub">A decision platform for MLB strikeout props, built to compare model forecasts against live bookmaker markets and highlight betting value faster.</p>
+        </div>
+        <div class="page-head-meta">
+          <button id="logout-button" class="logout-button" type="button">Log Out</button>
+        </div>
+      </div>
+
+      <div class="workspace-nav">
+    <button class="workspace-tab" data-view="pitcher-lookup">Pitcher Lookup</button>
+    <button class="workspace-tab active" data-view="upcoming-games">Upcoming Games</button>
+    <button class="workspace-tab" data-view="live-games">Live Games</button>
+      </div>
+
+      <div id="pitcher-lookup-panel" class="workspace-panel">
+        <div class="subtile lookup-controls">
+          <div class="controls">
+            <div class="field">
+              <label for="pitcher-input">Single Pitcher Lookup</label>
+              <div class="search-shell">
+                <div class="search-row has-caret">
+                  <input id="pitcher-input" class="search-input" type="text" autocomplete="off" />
+                  <button id="clear-pitcher" class="clear-btn hidden" type="button" aria-label="Clear pitcher">x</button>
+                  <div class="search-caret">v</div>
+                </div>
+                <div id="pitcher-dropdown" class="search-dropdown hidden"></div>
+              </div>
+            </div>
+            <div class="field">
+              <label for="line-input">Line / Fallback</label>
+              <input id="line-input" type="number" min="0" max="15" step="0.5" value="5.5" />
+            </div>
+            <div class="field">
+              <label>&nbsp;</label>
+              <button class="button" id="project-button" type="button">Project</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="subtile glass-subtile">
+          <div class="section-title center-title">Upcoming Game</div>
+          <div class="info-grid four" id="upcoming-game-grid"></div>
+        </div>
+
+        <div class="subtile glass-subtile projection-block">
+          <div class="section-title center-title">General Projection</div>
+          <div class="info-grid three" id="general-top-grid"></div>
+          <div style="height:12px;"></div>
+          <div class="info-grid three" id="general-bottom-grid"></div>
+          <div style="height:12px;"></div>
+          <div id="general-breakdown-row" class="breakdown-line"></div>
+        </div>
+
+        <div class="subtile glass-subtile projection-block">
+          <div class="section-title center-title">Upcoming Game Projection</div>
+          <div class="info-grid nine" id="upcoming-dk-grid"></div>
+          <div style="height:12px;"></div>
+          <div class="info-grid nine" id="upcoming-fd-grid"></div>
+          <div style="height:12px;"></div>
+          <div id="upcoming-breakdown-row" class="breakdown-line"></div>
+        </div>
+
+        <div class="subtile">
+          <div class="section-title center-title">Upcoming Game Notes</div>
+          <div class="notes-grid" id="notes-grid"></div>
+        </div>
+      </div>
+
+      <div id="upcoming-games-panel" class="workspace-panel active">
+        <div class="table-toolbar">
+          <div class="field table-search">
+            <label for="upcoming-search-input">Search Upcoming Games</label>
+            <div class="search-row">
+              <input id="upcoming-search-input" type="text" placeholder="Search pitcher, team, opponent, line, bet, edge..." />
+              <button id="clear-upcoming-search" class="clear-btn hidden" type="button" aria-label="Clear upcoming games search">x</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-shell" id="upcoming-table-shell">
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th class="sortable" data-sort-key="pitcher"><span class="th-inner">Pitcher <span class="sort-indicator"></span></span></th>
+                  <th class="sortable" data-sort-key="opponent"><span class="th-inner">Opponent <span class="sort-indicator"></span></span></th>
+                  <th class="sortable" data-sort-key="date"><span class="th-inner">Date <span class="sort-indicator"></span></span></th>
+                  <th class="sortable" data-sort-key="plate_umpire"><span class="th-inner">Ump <span class="sort-indicator"></span></span></th>
+                  <th class="sortable" data-sort-key="dk_line"><span class="th-inner">DK Line <span class="sort-indicator"></span></span></th>
+                  <th class="sortable" data-sort-key="fd_line"><span class="th-inner">FD Line <span class="sort-indicator"></span></span></th>
+                  <th class="sortable" data-sort-key="projected_strikeouts"><span class="th-inner">Projected Ks <span class="sort-indicator"></span></span></th>
+                  <th class="sortable" data-sort-key="volatility_score"><span class="th-inner">Volatility <span class="sort-indicator"></span></span></th>
+                  <th class="sortable" data-sort-key="dk_bet"><span class="th-inner">DK Bet <span class="sort-indicator"></span></span></th>
+                  <th class="sortable" data-sort-key="dk_edge"><span class="th-inner">DK Edge <span class="sort-indicator"></span></span></th>
+                  <th class="sortable" data-sort-key="fd_bet"><span class="th-inner">FD Bet <span class="sort-indicator"></span></span></th>
+                  <th class="sortable" data-sort-key="fd_edge"><span class="th-inner">FD Edge <span class="sort-indicator"></span></span></th>
+                  <th class="sortable" data-sort-key="notes"><span class="th-inner">Notes <span class="sort-indicator"></span></span></th>
+                </tr>
+              </thead>
+              <tbody id="upcoming-games-grid"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="pager">
+          <div class="pager-meta" id="upcoming-games-meta"></div>
+          <div class="pager-controls">
+            <button class="pager-button" id="upcoming-prev-button" type="button">Previous</button>
+            <div class="pager-page" id="upcoming-page-indicator"></div>
+            <button class="pager-button" id="upcoming-next-button" type="button">Next</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="live-games-panel" class="workspace-panel">
+        <div class="table-toolbar">
+          <div class="field table-search">
+            <label for="live-search-input">Search Live Games</label>
+            <div class="search-row">
+              <input id="live-search-input" type="text" placeholder="Search pitcher, team, opponent, line, bet, edge..." />
+              <button id="clear-live-search" class="clear-btn hidden" type="button" aria-label="Clear live games search">x</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-shell" id="live-table-shell">
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th class="sortable live-sortable" data-sort-key="pitcher"><span class="th-inner">Pitcher <span class="sort-indicator"></span></span></th>
+                  <th class="sortable live-sortable" data-sort-key="opponent"><span class="th-inner">Opponent <span class="sort-indicator"></span></span></th>
+                  <th class="sortable live-sortable" data-sort-key="game_status"><span class="th-inner">Status <span class="sort-indicator"></span></span></th>
+                  <th class="sortable live-sortable" data-sort-key="plate_umpire"><span class="th-inner">Ump <span class="sort-indicator"></span></span></th>
+                  <th class="sortable live-sortable" data-sort-key="dk_line"><span class="th-inner">DK Line <span class="sort-indicator"></span></span></th>
+                  <th class="sortable live-sortable" data-sort-key="fd_line"><span class="th-inner">FD Line <span class="sort-indicator"></span></span></th>
+                  <th class="sortable live-sortable" data-sort-key="projected_strikeouts"><span class="th-inner">Projected Ks <span class="sort-indicator"></span></span></th>
+                  <th class="sortable live-sortable" data-sort-key="volatility_score"><span class="th-inner">Volatility <span class="sort-indicator"></span></span></th>
+                  <th class="sortable live-sortable" data-sort-key="dk_bet"><span class="th-inner">DK Bet <span class="sort-indicator"></span></span></th>
+                  <th class="sortable live-sortable" data-sort-key="dk_edge"><span class="th-inner">DK Edge <span class="sort-indicator"></span></span></th>
+                  <th class="sortable live-sortable" data-sort-key="fd_bet"><span class="th-inner">FD Bet <span class="sort-indicator"></span></span></th>
+                  <th class="sortable live-sortable" data-sort-key="fd_edge"><span class="th-inner">FD Edge <span class="sort-indicator"></span></span></th>
+                  <th class="sortable live-sortable" data-sort-key="notes"><span class="th-inner">Notes <span class="sort-indicator"></span></span></th>
+                </tr>
+              </thead>
+              <tbody id="live-games-grid"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="pager">
+          <div class="pager-meta" id="live-games-meta"></div>
+          <div class="pager-controls">
+            <button class="pager-button" id="live-prev-button" type="button">Previous</button>
+            <div class="pager-page" id="live-page-indicator"></div>
+            <button class="pager-button" id="live-next-button" type="button">Next</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="./table-data.js"></script>
+  <script>
+    if (sessionStorage.getItem("pitchiqLoggedIn") !== "true") {
+      window.location.href = "./login.html";
+    }
+
+    const upcomingSearchInput = document.getElementById("upcoming-search-input");
+    const clearUpcomingSearchButton = document.getElementById("clear-upcoming-search");
+    const upcomingGamesMeta = document.getElementById("upcoming-games-meta");
+    const upcomingPrevButton = document.getElementById("upcoming-prev-button");
+    const upcomingNextButton = document.getElementById("upcoming-next-button");
+    const upcomingPageIndicator = document.getElementById("upcoming-page-indicator");
+    const upcomingTableShell = document.getElementById("upcoming-table-shell");
+    const upcomingSortHeaders = Array.from(document.querySelectorAll("#upcoming-games-panel th.sortable"));
+    const liveSearchInput = document.getElementById("live-search-input");
+    const clearLiveSearchButton = document.getElementById("clear-live-search");
+    const liveGamesMeta = document.getElementById("live-games-meta");
+    const livePrevButton = document.getElementById("live-prev-button");
+    const liveNextButton = document.getElementById("live-next-button");
+    const livePageIndicator = document.getElementById("live-page-indicator");
+    const liveTableShell = document.getElementById("live-table-shell");
+    const liveSortHeaders = Array.from(document.querySelectorAll("#live-games-panel th.sortable"));
+    const workspaceTabs = Array.from(document.querySelectorAll(".workspace-tab"));
+    const workspacePanels = {
+      "pitcher-lookup": document.getElementById("pitcher-lookup-panel"),
+      "upcoming-games": document.getElementById("upcoming-games-panel"),
+      "live-games": document.getElementById("live-games-panel")
+    };
+    const pitcherInput = document.getElementById("pitcher-input");
+    const pitcherDropdown = document.getElementById("pitcher-dropdown");
+    const clearPitcherButton = document.getElementById("clear-pitcher");
+    const lineInput = document.getElementById("line-input");
+    const projectButton = document.getElementById("project-button");
+
+    let upcomingGames = (window.PITCHIQ_TABLE_DATA && Array.isArray(window.PITCHIQ_TABLE_DATA.rows))
+      ? window.PITCHIQ_TABLE_DATA.rows
+      : [];
+    let allPitchers = Array.from(new Set(upcomingGames.map(game => game.pitcher).filter(Boolean))).sort((a, b) => a.localeCompare(b));
+    let filteredPitchers = [];
+    let activePitcherIndex = -1;
+    let upcomingGamesPage = 1;
+    const upcomingGamesPageSize = 20;
+    let upcomingSearchQuery = "";
+    let upcomingSort = { key: "date", direction: "asc" };
+    let liveGames = (window.PITCHIQ_TABLE_DATA && Array.isArray(window.PITCHIQ_TABLE_DATA.live_rows))
+      ? window.PITCHIQ_TABLE_DATA.live_rows
+      : [];
+    let liveGamesPage = 1;
+    const liveGamesPageSize = 20;
+    let liveSearchQuery = "";
+    let liveSort = { key: "date", direction: "asc" };
+
+    function formatNumber(value, digits = 2) {
+      if (typeof value === "string" && !value.trim()) return "";
+      if (value === null || value === undefined || Number.isNaN(Number(value))) return "Pending";
+      return Number(value).toFixed(digits);
+    }
+
+    function formatPercent(value) {
+      if (typeof value === "string" && !value.trim()) return "";
+      if (value === null || value === undefined || Number.isNaN(Number(value))) return "Pending";
+      return `${(Number(value) * 100).toFixed(1)}%`;
+    }
+
+    function displayProjectionValue(game) {
+      const projectionKeys = ["projected_strikeouts", "adjusted_EK_full", "adjusted_EK_hand", "ensemble_prediction"];
+      for (const key of projectionKeys) {
+        if (!(key in game)) continue;
+        const value = game[key];
+        if (typeof value === "string" && !value.trim()) continue;
+        if (value === null || value === undefined || Number.isNaN(Number(value))) continue;
+        return Number(value);
+      }
+      return null;
+    }
+
+    function formatVolatility(game) {
+      if (!game) return "";
+      const label = String(game.volatility_label || "").trim();
+      const score = game.volatility_score;
+      if (!label || score === null || score === undefined || score === "" || Number.isNaN(Number(score))) return "";
+      return `${label} (${formatNumber(score, 2)})`;
+    }
+
+    function formatVolatilityLabel(game) {
+      if (!game) return "";
+      return String(game.volatility_label || "").trim();
+    }
+
+    function volatilityTone(label) {
+      if (label === "Low") return "volatility-low";
+      if (label === "Medium") return "volatility-medium";
+      if (label === "High") return "volatility-high";
+      return "";
+    }
+
+    function formatEdge(value) {
+      if (typeof value === "string" && !value.trim()) return "";
+      if (value === null || value === undefined || Number.isNaN(Number(value))) return "";
+      const numericValue = Number(value);
+      return `${numericValue >= 0 ? "+" : ""}${numericValue.toFixed(2)}`;
+    }
+
+    function formatDisplayTime(value) {
+      if (!value) return "Pending";
+      const parsed = new Date(value);
+      if (Number.isNaN(parsed.getTime())) return String(value);
+      return parsed.toLocaleTimeString([], {
+        hour: "numeric",
+        minute: "2-digit"
+      }).toLowerCase();
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function renderHoverDetail(displayValue, tooltipValue, className = "") {
+      const displayText = String(displayValue ?? "");
+      if (!displayText.trim()) return "";
+      const tooltipText = String(tooltipValue ?? "").trim();
+      const classes = ["table-hover-detail"];
+      if (className) classes.push(className);
+      if (tooltipText) classes.push("has-tooltip");
+      const titleAttribute = tooltipText ? ` title="${escapeHtml(tooltipText)}"` : "";
+      return `<span class="${classes.join(" ")}"${titleAttribute}>${escapeHtml(displayText)}</span>`;
+    }
+
+    function formatGameTimeTooltip(game) {
+      if (!game) return "";
+      const timeText = String(game.time || formatDisplayTime(game.start_time) || "").trim();
+      if (!timeText || timeText === "Pending") return "";
+      return `Game time: ${timeText}`;
+    }
+
+    function renderDateCell(game) {
+      const displayValue = String(game?.date || "").trim();
+      const timeText = String(game?.time || formatDisplayTime(game?.start_time) || "").trim();
+      return `
+        <td>
+          <div class="pitcher-cell">
+            <span class="date-main">${escapeHtml(displayValue)}</span>
+            <span class="date-time-sub">${escapeHtml(timeText === "Pending" ? "" : timeText)}</span>
+          </div>
+        </td>
+      `;
+    }
+
+    function isAssignedUmp(value) {
+      const normalized = String(value || "").trim().toLowerCase();
+      return Boolean(normalized && !["pending", "unknown", "n/a", "na"].includes(normalized));
+    }
+
+    function renderUmpCell(game) {
+      const umpName = String(game?.plate_umpire || "").trim();
+      const assigned = isAssignedUmp(umpName);
+      const label = assigned ? `Home plate umpire: ${umpName}` : "Home plate umpire pending";
+      return `
+        <td class="ump-cell">
+          <span
+            class="ump-indicator ${assigned ? "assigned" : ""}"
+            title="${escapeHtml(label)}"
+            aria-label="${escapeHtml(label)}"
+          >${assigned ? "&#10003;" : ""}</span>
+        </td>
+      `;
+    }
+
+    function formatVolatilityTooltip(game) {
+      if (!game) return "";
+      const score = game.volatility_score;
+      if (score === null || score === undefined || score === "" || Number.isNaN(Number(score))) return "";
+      return `Vix: ${formatNumber(score, 2)}`;
+    }
+
+    function renderVolatilityCell(game) {
+      const label = formatVolatilityLabel(game);
+      if (!label) return "<td></td>";
+      const tone = volatilityTone(label);
+      return `<td>${renderHoverDetail(label, formatVolatilityTooltip(game), `volatility-value ${tone}`)}</td>`;
+    }
+
+    function leanClass(value) {
+      if (value === "OVER") return "up-text";
+      if (value === "UNDER") return "down-text";
+      return "";
+    }
+
+    function formatBetLabel(value) {
+      if (value === "PASS") return "Avoid";
+      return value || "";
+    }
+
+    function edgeTone(value) {
+      if (value === null || value === undefined || value === "" || Number.isNaN(Number(value))) return "";
+      return Number(value) >= 0 ? "up-text" : "down-text";
+    }
+
+    function confidenceTone(value) {
+      if (value === "High") return "confidence-high";
+      if (value === "Medium") return "confidence-medium";
+      if (value === "Low") return "confidence-low";
+      return "";
+    }
+
+    function noteTagLabel(impact) {
+      if (impact === "up") return "Raises Ks";
+      if (impact === "down") return "Lowers Ks";
+      return "Informative";
+    }
+
+    function normalizeText(value) {
+      return String(value || "").trim().toLowerCase();
+    }
+
+    function renderCells(containerId, items) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = items.map(item => `
+        <div class="cell">
+          <div class="label">${escapeHtml(item.label)}</div>
+          <div class="value ${item.big ? "big" : ""} ${item.className || ""}">${escapeHtml(item.value)}</div>
+        </div>
+      `).join("");
+    }
+
+    function renderSportsbookProjectionRow(containerId, sportsbookLabel, companyName, lineValue, overPayout, underPayout, result) {
+      renderCells(containerId, [
+        { label: "Platform", value: companyName || sportsbookLabel },
+        { label: "Line", value: lineValue || "" },
+        { label: "Over", value: overPayout || "", className: "up-text" },
+        { label: "Under", value: underPayout || "", className: "down-text" },
+        { label: "Bet", value: formatBetLabel(result.lean), className: leanClass(result.lean) },
+        { label: "Confidence", value: result.confidence_tier || "", className: confidenceTone(result.confidence_tier) },
+        { label: "Edge", value: result.edge === null || result.edge === undefined ? "" : `${result.edge >= 0 ? "+" : ""}${formatNumber(result.edge, 2)}` },
+        { label: "Over", value: result.over_probability === null || result.over_probability === undefined ? "" : formatPercent(result.over_probability) },
+        { label: "Under", value: result.under_probability === null || result.under_probability === undefined ? "" : formatPercent(result.under_probability) }
+      ]);
+    }
+
+    function renderProjection(result) {
+      renderCells("general-top-grid", [
+        { label: "Projected Ks", value: formatNumber(displayProjectionValue(result), 2) },
+        { label: "Bet DK", value: formatBetLabel(result.lean), className: leanClass(result.lean) },
+        { label: "Confidence", value: result.confidence || "", className: confidenceTone(result.confidence) }
+      ]);
+      renderCells("general-bottom-grid", [
+        { label: "Edge", value: result.edge === null || result.edge === undefined ? "Pending" : `${result.edge >= 0 ? "+" : ""}${formatNumber(result.edge, 2)}` },
+        { label: "Over", value: result.over_probability === null || result.over_probability === undefined ? "" : formatPercent(result.over_probability) },
+        { label: "Under", value: result.under_probability === null || result.under_probability === undefined ? "" : formatPercent(result.under_probability) }
+      ]);
+    }
+
+    function renderNotes(notes) {
+      const container = document.getElementById("notes-grid");
+      if (!notes || !notes.length) {
+        container.innerHTML = `
+          <div class="note-card neutral">
+            <div class="note-tag">Informative</div>
+            <div class="note-title">No Major Flags</div>
+            <div class="note-body">No strong context edges are standing out for the upcoming projection yet.</div>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = notes.map(note => `
+        <div class="note-card ${escapeHtml(note.impact || "neutral")}">
+          <div class="note-tag">${escapeHtml(noteTagLabel(note.impact))}</div>
+          <div class="note-title">${escapeHtml(note.title || "")}</div>
+          <div class="note-body">${escapeHtml(note.body || "")}</div>
+        </div>
+      `).join("");
+    }
+
+    function renderBreakdown(game) {
+      const rows = [
+        ["ENSEMBLE K", game.ensemble_prediction],
+        ["POISSON", game.poisson_prediction],
+        ["LINEAR", game.linear_prediction],
+        ["NONLINEAR", game.nonlinear_prediction]
+      ];
+      const chips = rows.map(([label, value], index) => `
+        <div class="breakdown-chip">
+          ${index === 0 ? `<strong>${label}</strong>` : `<span>${label}</span>`}
+          <span>${formatNumber(value, 2)}</span>
+        </div>
+      `).join("");
+      document.getElementById("general-breakdown-row").innerHTML = chips;
+      document.getElementById("upcoming-breakdown-row").innerHTML = chips;
+    }
+
+    function renderEmptyPitcherLookup() {
+      renderCells("upcoming-game-grid", [
+        { label: "Pitcher", value: " " },
+        { label: "Opponent", value: " " },
+        { label: "Game Date/Time", value: " " },
+        { label: "Projected K", value: " " },
+        { label: "Venue", value: " " },
+        { label: "Home Or Away", value: " " },
+        { label: "Plate Ump", value: " " },
+        { label: "Last Game K", value: " " }
+      ]);
+
+      renderProjection({
+        projected_strikeouts: " ",
+        lean: " ",
+        confidence: " ",
+        edge: null,
+        over_probability: null,
+        under_probability: null
+      });
+
+      renderSportsbookProjectionRow("upcoming-dk-grid", "DraftKings", " ", " ", " ", " ", {
+        lean: " ",
+        confidence_tier: " ",
+        edge: null,
+        over_probability: null,
+        under_probability: null
+      });
+      renderSportsbookProjectionRow("upcoming-fd-grid", "FanDuel", " ", " ", " ", " ", {
+        lean: " ",
+        confidence_tier: " ",
+        edge: null,
+        over_probability: null,
+        under_probability: null
+      });
+      renderNotes([]);
+      renderBreakdown({});
+    }
+
+    function fallbackLean(projectedKs, lineValue) {
+      const projection = Number(projectedKs);
+      const line = Number(lineValue);
+      if (!Number.isFinite(projection) || !Number.isFinite(line)) return "PASS";
+      if (Math.abs(projection - line) < 0.35) return "PASS";
+      return projection > line ? "OVER" : "UNDER";
+    }
+
+    function notesFromGame(game) {
+      const notes = [];
+      const projected = displayProjectionValue(game);
+      const bestEdge = Math.max(Number(game.dk_edge) || 0, Number(game.fd_edge) || 0);
+      if (bestEdge >= 1) {
+        notes.push({
+          impact: "up",
+          title: "Edge Showing",
+          body: `The board is showing at least a +${formatNumber(bestEdge, 2)} edge against one available sportsbook line.`
+        });
+      }
+      if (isAssignedUmp(game.plate_umpire)) {
+        notes.push({
+          impact: "neutral",
+          title: "Umpire Assigned",
+          body: `${game.plate_umpire} is listed behind the plate for this matchup.`
+        });
+      }
+      if (game.weather || game.wind) {
+        notes.push({
+          impact: "neutral",
+          title: "Game Context",
+          body: [game.weather, game.temperature ? `${game.temperature}F` : "", game.wind].filter(Boolean).join(", ")
+        });
+      }
+      if (!notes.length && game.notes) {
+        notes.push({ impact: "neutral", title: "Notes", body: game.notes });
+      }
+      if (!notes.length && Number.isFinite(Number(projected))) {
+        notes.push({
+          impact: "neutral",
+          title: "Projection Ready",
+          body: `${game.pitcher} is projected for ${formatNumber(projected, 2)} strikeouts.`
+        });
+      }
+      return notes;
+    }
+
+    function renderPitcherLookupGame(game) {
+      const projected = displayProjectionValue(game);
+      const manualLine = Number(lineInput.value);
+      const manualLean = fallbackLean(projected, manualLine);
+      const manualEdge = Number.isFinite(Number(projected)) && Number.isFinite(manualLine)
+        ? Number(projected) - manualLine
+        : null;
+
+      renderCells("upcoming-game-grid", [
+        { label: "Pitcher", value: game.pitcher || "" },
+        { label: "Opponent", value: game.opponent || "" },
+        { label: "Game Date/Time", value: `${game.date || ""}${game.time ? ` ${game.time}` : ""}` },
+        { label: "Projected K", value: formatNumber(projected, 2) },
+        { label: "Venue", value: game.venue || "" },
+        { label: "Home Or Away", value: game.home_or_away || "" },
+        { label: "Plate Ump", value: game.plate_umpire || "Pending" },
+        { label: "Last Game K", value: game.last_game_k || "" }
+      ]);
+
+      renderProjection({
+        projected_strikeouts: projected,
+        lean: manualLean,
+        confidence: "",
+        edge: manualEdge,
+        over_probability: null,
+        under_probability: null
+      });
+
+      renderSportsbookProjectionRow("upcoming-dk-grid", "DraftKings", "DraftKings", game.dk_line || "", "", "", {
+        lean: game.dk_bet || "PASS",
+        confidence_tier: game.dk_confidence || "",
+        edge: game.dk_edge,
+        over_probability: game.dk_over_probability,
+        under_probability: game.dk_under_probability
+      });
+      renderSportsbookProjectionRow("upcoming-fd-grid", "FanDuel", "FanDuel", game.fd_line || "", "", "", {
+        lean: game.fd_bet || "PASS",
+        confidence_tier: game.fd_confidence || "",
+        edge: game.fd_edge,
+        over_probability: game.fd_over_probability,
+        under_probability: game.fd_under_probability
+      });
+      renderNotes(notesFromGame(game));
+      renderBreakdown(game);
+    }
+
+    function parseSortableValue(game, key) {
+      if (key === "dk_edge" || key === "fd_edge" || key === "dk_line" || key === "fd_line" || key === "volatility_score") {
+        return game[key] === null || game[key] === undefined || game[key] === ""
+          ? Number.NEGATIVE_INFINITY
+          : Number(game[key]);
+      }
+      if (key === "projected_strikeouts") {
+        const projectionValue = displayProjectionValue(game);
+        return projectionValue === null ? Number.NEGATIVE_INFINITY : projectionValue;
+      }
+      if (key === "plate_umpire") {
+        return isAssignedUmp(game.plate_umpire) ? 1 : 0;
+      }
+      if (key === "date" || key === "time") {
+        const parsed = Date.parse(game.sort_datetime || game.date || "");
+        return Number.isNaN(parsed) ? Number.POSITIVE_INFINITY : parsed;
+      }
+      return normalizeText(game[key]);
+    }
+
+    function getFilteredUpcomingGames() {
+      const query = normalizeText(upcomingSearchQuery);
+      const filtered = !query ? upcomingGames.slice() : upcomingGames.filter(game => {
+        const haystack = [
+          game.pitcher,
+          game.pitcher_team,
+          game.opponent,
+          game.date,
+          game.time || formatDisplayTime(game.start_time),
+          game.plate_umpire,
+          game.dk_line,
+          game.fd_line,
+          game.notes,
+          formatNumber(displayProjectionValue(game), 2),
+          formatVolatility(game),
+          game.dk_bet,
+          formatEdge(game.dk_edge),
+          game.fd_bet,
+          formatEdge(game.fd_edge)
+        ].map(normalizeText).join(" ");
+        return haystack.includes(query);
+      });
+      const direction = upcomingSort.direction === "desc" ? -1 : 1;
+      return filtered.sort((left, right) => {
+        const a = parseSortableValue(left, upcomingSort.key);
+        const b = parseSortableValue(right, upcomingSort.key);
+        if (a < b) return -1 * direction;
+        if (a > b) return 1 * direction;
+        return normalizeText(left.pitcher).localeCompare(normalizeText(right.pitcher));
+      });
+    }
+
+    function getFilteredLiveGames() {
+      const query = normalizeText(liveSearchQuery);
+      const filtered = !query ? liveGames.slice() : liveGames.filter(game => {
+        const haystack = [
+          game.pitcher,
+          game.pitcher_team,
+          game.opponent,
+          game.game_status,
+          game.date,
+          game.time || formatDisplayTime(game.start_time),
+          game.plate_umpire,
+          game.dk_line,
+          game.fd_line,
+          game.notes,
+          formatNumber(displayProjectionValue(game), 2),
+          formatVolatility(game),
+          game.dk_bet,
+          formatEdge(game.dk_edge),
+          game.fd_bet,
+          formatEdge(game.fd_edge)
+        ].map(normalizeText).join(" ");
+        return haystack.includes(query);
+      });
+      const direction = liveSort.direction === "desc" ? -1 : 1;
+      return filtered.sort((left, right) => {
+        const a = parseSortableValue(left, liveSort.key);
+        const b = parseSortableValue(right, liveSort.key);
+        if (a < b) return -1 * direction;
+        if (a > b) return 1 * direction;
+        return normalizeText(left.pitcher).localeCompare(normalizeText(right.pitcher));
+      });
+    }
+
+    function updateUpcomingSortIndicators() {
+      upcomingSortHeaders.forEach(header => {
+        const indicator = header.querySelector(".sort-indicator");
+        if (!indicator) return;
+        indicator.textContent = header.dataset.sortKey === upcomingSort.key
+          ? (upcomingSort.direction === "asc" ? "▲" : "▼")
+          : "";
+      });
+    }
+
+    function updateLiveSortIndicators() {
+      liveSortHeaders.forEach(header => {
+        const indicator = header.querySelector(".sort-indicator");
+        if (!indicator) return;
+        indicator.textContent = header.dataset.sortKey === liveSort.key
+          ? (liveSort.direction === "asc" ? "▲" : "▼")
+          : "";
+      });
+    }
+
+    function animateTableRows(container) {
+      container.classList.remove("render-fade");
+      const rows = Array.from(container.querySelectorAll("tr"));
+      rows.forEach((row, index) => {
+        row.style.animationDelay = `${Math.min(index, 11) * 24}ms`;
+      });
+      void container.offsetWidth;
+      container.classList.add("render-fade");
+    }
+
+    function renderUpcomingGames(games) {
+      const container = document.getElementById("upcoming-games-grid");
+      const totalRows = games ? games.length : 0;
+      const totalPages = Math.max(1, Math.ceil(totalRows / upcomingGamesPageSize));
+      upcomingGamesPage = Math.min(Math.max(1, upcomingGamesPage), totalPages);
+      updateUpcomingSortIndicators();
+      upcomingTableShell.classList.remove("loading");
+
+      if (!games || !games.length) {
+        container.innerHTML = `
+          <tr>
+            <td colspan="14">No upcoming probable starters available.</td>
+          </tr>
+        `;
+        upcomingGamesMeta.textContent = "0 results";
+        upcomingPageIndicator.textContent = "Page 1 / 1";
+        upcomingPrevButton.disabled = true;
+        upcomingNextButton.disabled = true;
+        return;
+      }
+
+      const startIndex = (upcomingGamesPage - 1) * upcomingGamesPageSize;
+      const pageRows = games.slice(startIndex, startIndex + upcomingGamesPageSize);
+
+      container.innerHTML = pageRows.map(game => `
+        <tr>
+          <td><button class="lookup-icon-btn" type="button" data-pitcher="${escapeHtml(game.pitcher)}" title="Open pitcher lookup">⌕</button></td>
+          <td>
+            <div class="pitcher-cell">
+              <span class="pitcher-name">${escapeHtml(game.pitcher)}</span>
+              <span class="pitcher-team-sub">${escapeHtml(game.pitcher_team || "")}</span>
+            </div>
+          </td>
+          <td>${escapeHtml(game.opponent)}</td>
+          ${renderDateCell(game)}
+          ${renderUmpCell(game)}
+          <td>${escapeHtml(game.dk_line || "")}</td>
+          <td>${escapeHtml(game.fd_line || "")}</td>
+          <td>${formatNumber(displayProjectionValue(game), 2)}</td>
+          ${renderVolatilityCell(game)}
+          <td class="${leanClass(game.dk_bet)}">${escapeHtml(formatBetLabel(game.dk_bet))}</td>
+          <td class="${edgeTone(game.dk_edge)}">${escapeHtml(formatEdge(game.dk_edge))}</td>
+          <td class="${leanClass(game.fd_bet)}">${escapeHtml(formatBetLabel(game.fd_bet))}</td>
+          <td class="${edgeTone(game.fd_edge)}">${escapeHtml(formatEdge(game.fd_edge))}</td>
+          <td>${escapeHtml(game.notes || "")}</td>
+        </tr>
+      `).join("");
+
+      const startDisplay = startIndex + 1;
+      const endDisplay = startIndex + pageRows.length;
+      upcomingGamesMeta.textContent = `${startDisplay}-${endDisplay} of ${totalRows} games`;
+      upcomingPageIndicator.textContent = `Page ${upcomingGamesPage} / ${totalPages}`;
+      upcomingPrevButton.disabled = upcomingGamesPage <= 1;
+      upcomingNextButton.disabled = upcomingGamesPage >= totalPages;
+      animateTableRows(container);
+    }
+
+    function renderLiveGames(games) {
+      const container = document.getElementById("live-games-grid");
+      const totalRows = games ? games.length : 0;
+      const totalPages = Math.max(1, Math.ceil(totalRows / liveGamesPageSize));
+      liveGamesPage = Math.min(Math.max(1, liveGamesPage), totalPages);
+      updateLiveSortIndicators();
+      liveTableShell.classList.remove("loading");
+
+      if (!games || !games.length) {
+        container.innerHTML = `
+          <tr>
+            <td colspan="14">No live probable-starter games right now.</td>
+          </tr>
+        `;
+        liveGamesMeta.textContent = "0 results";
+        livePageIndicator.textContent = "Page 1 / 1";
+        livePrevButton.disabled = true;
+        liveNextButton.disabled = true;
+        return;
+      }
+
+      const startIndex = (liveGamesPage - 1) * liveGamesPageSize;
+      const pageRows = games.slice(startIndex, startIndex + liveGamesPageSize);
+
+      container.innerHTML = pageRows.map(game => `
+        <tr>
+          <td><button class="lookup-icon-btn" type="button" data-pitcher="${escapeHtml(game.pitcher)}" title="Open pitcher lookup">⌕</button></td>
+          <td>
+            <div class="pitcher-cell">
+              <span class="pitcher-name">${escapeHtml(game.pitcher)}</span>
+              <span class="pitcher-team-sub">${escapeHtml(game.pitcher_team || "")}</span>
+            </div>
+          </td>
+          <td>${escapeHtml(game.opponent)}</td>
+          <td>${escapeHtml(game.game_status || "In Progress")}</td>
+          ${renderUmpCell(game)}
+          <td>${escapeHtml(game.dk_line || "")}</td>
+          <td>${escapeHtml(game.fd_line || "")}</td>
+          <td>${formatNumber(displayProjectionValue(game), 2)}</td>
+          ${renderVolatilityCell(game)}
+          <td class="${leanClass(game.dk_bet)}">${escapeHtml(formatBetLabel(game.dk_bet))}</td>
+          <td class="${edgeTone(game.dk_edge)}">${escapeHtml(formatEdge(game.dk_edge))}</td>
+          <td class="${leanClass(game.fd_bet)}">${escapeHtml(formatBetLabel(game.fd_bet))}</td>
+          <td class="${edgeTone(game.fd_edge)}">${escapeHtml(formatEdge(game.fd_edge))}</td>
+          <td>${escapeHtml(game.notes || "")}</td>
+        </tr>
+      `).join("");
+
+      const startDisplay = startIndex + 1;
+      const endDisplay = startIndex + pageRows.length;
+      liveGamesMeta.textContent = `${startDisplay}-${endDisplay} of ${totalRows} games`;
+      livePageIndicator.textContent = `Page ${liveGamesPage} / ${totalPages}`;
+      livePrevButton.disabled = liveGamesPage <= 1;
+      liveNextButton.disabled = liveGamesPage >= totalPages;
+      animateTableRows(container);
+    }
+
+    function refreshUpcomingGamesView() {
+      renderUpcomingGames(getFilteredUpcomingGames());
+    }
+
+    function refreshLiveGamesView() {
+      renderLiveGames(getFilteredLiveGames());
+    }
+
+    function setActiveWorkspace(view) {
+      workspaceTabs.forEach(tab => {
+        tab.classList.toggle("active", tab.dataset.view === view);
+      });
+      Object.entries(workspacePanels).forEach(([key, panel]) => {
+        panel.classList.toggle("active", key === view);
+      });
+    }
+
+    function filterPitchers(query) {
+      const trimmed = (query || "").trim().toLowerCase();
+      if (!trimmed) return allPitchers.slice(0, 100);
+      const startsWith = allPitchers.filter(name => name.toLowerCase().startsWith(trimmed));
+      const contains = allPitchers.filter(name => !startsWith.includes(name) && name.toLowerCase().includes(trimmed));
+      return [...startsWith, ...contains].slice(0, 100);
+    }
+
+    function renderPitcherDropdown() {
+      filteredPitchers = filterPitchers(pitcherInput.value);
+      if (!filteredPitchers.length) {
+        pitcherDropdown.innerHTML = '<div class="search-empty">No matching pitchers</div>';
+        activePitcherIndex = -1;
+      } else {
+        pitcherDropdown.innerHTML = filteredPitchers.map((name, index) => `
+          <div class="search-option ${index === activePitcherIndex ? "active" : ""}" data-name="${escapeHtml(name)}">${escapeHtml(name)}</div>
+        `).join("");
+      }
+    }
+
+    function openPitcherDropdown() {
+      renderPitcherDropdown();
+      pitcherDropdown.classList.remove("hidden");
+    }
+
+    function closePitcherDropdown() {
+      pitcherDropdown.classList.add("hidden");
+      activePitcherIndex = -1;
+    }
+
+    function selectPitcher(name) {
+      pitcherInput.value = name;
+      updatePitcherClearButton();
+      closePitcherDropdown();
+    }
+
+    function updatePitcherClearButton() {
+      toggleClearButton(pitcherInput, clearPitcherButton);
+    }
+
+    function resolvePitcherName() {
+      const raw = (pitcherInput.value || "").trim();
+      if (!raw) return "";
+      const exact = allPitchers.find(name => name.toLowerCase() === raw.toLowerCase());
+      if (exact) return exact;
+      const startsWith = allPitchers.find(name => name.toLowerCase().startsWith(raw.toLowerCase()));
+      if (startsWith) {
+        pitcherInput.value = startsWith;
+        return startsWith;
+      }
+      const contains = allPitchers.find(name => name.toLowerCase().includes(raw.toLowerCase()));
+      if (contains) {
+        pitcherInput.value = contains;
+        return contains;
+      }
+      return raw;
+    }
+
+    function projectPitcher() {
+      const pitcherName = resolvePitcherName();
+      if (!pitcherName) {
+        renderEmptyPitcherLookup();
+        return;
+      }
+      const match = upcomingGames.find(game => normalizeText(game.pitcher) === normalizeText(pitcherName));
+      if (!match) {
+        renderEmptyPitcherLookup();
+        return;
+      }
+      renderPitcherLookupGame(match);
+    }
+
+    function openPitcherFromUpcoming(pitcherName) {
+      if (!pitcherName) return;
+      setActiveWorkspace("pitcher-lookup");
+      pitcherInput.value = pitcherName;
+      updatePitcherClearButton();
+      closePitcherDropdown();
+      projectPitcher();
+    }
+
+    function toggleClearButton(input, button) {
+      button.classList.toggle("hidden", !input.value);
+    }
+
+    function updateUpcomingSearch() {
+      toggleClearButton(upcomingSearchInput, clearUpcomingSearchButton);
+      upcomingSearchQuery = upcomingSearchInput.value || "";
+      upcomingGamesPage = 1;
+      refreshUpcomingGamesView();
+    }
+
+    function updateLiveSearch() {
+      toggleClearButton(liveSearchInput, clearLiveSearchButton);
+      liveSearchQuery = liveSearchInput.value || "";
+      liveGamesPage = 1;
+      refreshLiveGamesView();
+    }
+
+    upcomingSortHeaders.forEach(header => {
+      header.addEventListener("click", () => {
+        const key = header.dataset.sortKey;
+        if (!key) return;
+        if (upcomingSort.key === key) {
+          upcomingSort.direction = upcomingSort.direction === "asc" ? "desc" : "asc";
+        } else {
+          upcomingSort = { key, direction: "asc" };
+        }
+        upcomingGamesPage = 1;
+        refreshUpcomingGamesView();
+      });
+    });
+
+    liveSortHeaders.forEach(header => {
+      header.addEventListener("click", () => {
+        const key = header.dataset.sortKey;
+        if (!key) return;
+        if (liveSort.key === key) {
+          liveSort.direction = liveSort.direction === "asc" ? "desc" : "asc";
+        } else {
+          liveSort = { key, direction: "asc" };
+        }
+        liveGamesPage = 1;
+        refreshLiveGamesView();
+      });
+    });
+
+    upcomingPrevButton.addEventListener("click", () => {
+      if (upcomingGamesPage <= 1) return;
+      upcomingGamesPage -= 1;
+      refreshUpcomingGamesView();
+    });
+
+    upcomingNextButton.addEventListener("click", () => {
+      const totalPages = Math.max(1, Math.ceil(getFilteredUpcomingGames().length / upcomingGamesPageSize));
+      if (upcomingGamesPage >= totalPages) return;
+      upcomingGamesPage += 1;
+      refreshUpcomingGamesView();
+    });
+
+    livePrevButton.addEventListener("click", () => {
+      if (liveGamesPage <= 1) return;
+      liveGamesPage -= 1;
+      refreshLiveGamesView();
+    });
+
+    liveNextButton.addEventListener("click", () => {
+      const totalPages = Math.max(1, Math.ceil(getFilteredLiveGames().length / liveGamesPageSize));
+      if (liveGamesPage >= totalPages) return;
+      liveGamesPage += 1;
+      refreshLiveGamesView();
+    });
+
+    upcomingSearchInput.addEventListener("input", updateUpcomingSearch);
+    liveSearchInput.addEventListener("input", updateLiveSearch);
+
+    clearUpcomingSearchButton.addEventListener("click", () => {
+      upcomingSearchInput.value = "";
+      updateUpcomingSearch();
+      upcomingSearchInput.focus();
+    });
+
+    clearLiveSearchButton.addEventListener("click", () => {
+      liveSearchInput.value = "";
+      updateLiveSearch();
+      liveSearchInput.focus();
+    });
+
+    workspaceTabs.forEach(tab => {
+      tab.addEventListener("click", () => {
+        setActiveWorkspace(tab.dataset.view || "upcoming-games");
+      });
+    });
+
+    pitcherInput.addEventListener("input", () => {
+      updatePitcherClearButton();
+      openPitcherDropdown();
+    });
+
+    pitcherInput.addEventListener("focus", openPitcherDropdown);
+
+    pitcherInput.addEventListener("keydown", event => {
+      if (pitcherDropdown.classList.contains("hidden")) return;
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
+        activePitcherIndex = Math.min(filteredPitchers.length - 1, activePitcherIndex + 1);
+        renderPitcherDropdown();
+      } else if (event.key === "ArrowUp") {
+        event.preventDefault();
+        activePitcherIndex = Math.max(0, activePitcherIndex - 1);
+        renderPitcherDropdown();
+      } else if (event.key === "Enter") {
+        if (activePitcherIndex >= 0 && filteredPitchers[activePitcherIndex]) {
+          event.preventDefault();
+          selectPitcher(filteredPitchers[activePitcherIndex]);
+          projectPitcher();
+        }
+      } else if (event.key === "Escape") {
+        closePitcherDropdown();
+      }
+    });
+
+    pitcherDropdown.addEventListener("mousedown", event => {
+      const option = event.target.closest(".search-option");
+      if (!option) return;
+      selectPitcher(option.dataset.name || option.textContent || "");
+      projectPitcher();
+    });
+
+    document.addEventListener("click", event => {
+      if (!event.target.closest(".search-shell")) {
+        closePitcherDropdown();
+      }
+    });
+
+    clearPitcherButton.addEventListener("click", () => {
+      pitcherInput.value = "";
+      updatePitcherClearButton();
+      renderEmptyPitcherLookup();
+      pitcherInput.focus();
+      openPitcherDropdown();
+    });
+
+    projectButton.addEventListener("click", projectPitcher);
+    lineInput.addEventListener("change", projectPitcher);
+
+    document.getElementById("upcoming-games-grid").addEventListener("click", event => {
+      const button = event.target.closest(".lookup-icon-btn");
+      if (!button) return;
+      openPitcherFromUpcoming(button.dataset.pitcher || "");
+    });
+
+    document.getElementById("live-games-grid").addEventListener("click", event => {
+      const button = event.target.closest(".lookup-icon-btn");
+      if (!button) return;
+      openPitcherFromUpcoming(button.dataset.pitcher || "");
+    });
+
+    document.getElementById("logout-button").addEventListener("click", () => {
+      sessionStorage.removeItem("pitchiqLoggedIn");
+      window.location.href = "./login.html";
+    });
+
+    renderEmptyPitcherLookup();
+    refreshUpcomingGamesView();
+    refreshLiveGamesView();
+  </script>
+</body>
+</html>
