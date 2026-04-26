@@ -1443,6 +1443,12 @@
         .replace(/'/g, "&#39;");
     }
 
+    function sanitizeNoteHtml(value) {
+      return escapeHtml(value)
+        .replace(/&lt;strong&gt;/gi, "<strong>")
+        .replace(/&lt;\/strong&gt;/gi, "</strong>");
+    }
+
     function renderHoverDetail(displayValue, tooltipValue, className = "") {
       const displayText = String(displayValue ?? "");
       if (!displayText.trim()) return "";
@@ -1622,7 +1628,7 @@
         <div class="note-card ${escapeHtml(note.impact || "neutral")}">
           <div class="note-tag">${escapeHtml(noteTagLabel(note.impact))}</div>
           <div class="note-title">${escapeHtml(note.title || "")}</div>
-          <div class="note-body">${escapeHtml(note.body || "")}</div>
+          <div class="note-body">${sanitizeNoteHtml(note.body || "")}</div>
         </div>
       `).join("");
     }
@@ -1704,6 +1710,10 @@
     }
 
     function notesFromGame(game) {
+      if (Array.isArray(game.upcoming_notes) && game.upcoming_notes.length) {
+        return game.upcoming_notes;
+      }
+
       const notes = [];
       const projected = displayProjectionValue(game);
       const bestEdge = Math.max(Number(game.dk_edge) || 0, Number(game.fd_edge) || 0);
