@@ -342,6 +342,15 @@
       margin-right: 5px;
     }
 
+    .ump-line {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
     .date-block {
       text-align: right;
       white-space: nowrap;
@@ -452,7 +461,7 @@
     .over { color: var(--amber); }
     .under { color: var(--violet); }
     .avoid { color: var(--red); }
-    .positive { color: var(--green); }
+    .positive { color: var(--amber); }
     .negative { color: var(--blue); }
     .vol-low { color: var(--green); }
     .vol-medium { color: var(--amber); }
@@ -794,6 +803,14 @@
       return "";
     }
 
+    function formatUmpire(value) {
+      const umpire = String(value || "").trim();
+      if (!umpire || ["pending", "unknown", "n/a", "na"].includes(normalizeText(umpire))) {
+        return "Pending";
+      }
+      return umpire;
+    }
+
     function renderBookMetric(label, lineValue, overPayout, underPayout, betValue) {
       const book = formatLineOdds(lineValue, overPayout, underPayout);
       return `
@@ -914,7 +931,10 @@
                 <div class="team-name">${escapeHtml(game.pitcher_team || "Team pending")}</div>
               </div>
               <div class="game-row">
-                <div class="opponent"><span>vs</span>${escapeHtml(game.opponent || "Opponent pending")}</div>
+                <div class="opponent">
+                  <div><span>vs</span>${escapeHtml(game.opponent || "Opponent pending")}</div>
+                  <div class="ump-line">Ump: ${escapeHtml(formatUmpire(game.plate_umpire))}</div>
+                </div>
                 <div class="date-block">
                   <span class="date-main">${escapeHtml(date || "Date pending")}</span>
                   <span class="date-time">${escapeHtml(time || "Time pending")}</span>
