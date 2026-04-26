@@ -1467,6 +1467,25 @@
       serverActivityFooter.textContent = `last server activity: ${formatted || "pending"}`;
     }
 
+    function latestTimestamp(values) {
+      return values
+        .filter(Boolean)
+        .map(value => new Date(value))
+        .filter(value => !Number.isNaN(value.getTime()))
+        .sort((left, right) => right.getTime() - left.getTime())[0] || null;
+    }
+
+    async function loadLatestTableUpdate(tableName) {
+      const { data, error } = await supabaseClient
+        .from(tableName)
+        .select("updated_at")
+        .order("updated_at", { ascending: false })
+        .limit(1);
+
+      if (error) return null;
+      return data?.[0]?.updated_at || null;
+    }
+
     async function loadServerActivity() {
       const { data, error } = await supabaseClient
         .from("pitchiq_server_activity")
@@ -1474,20 +1493,19 @@
         .eq("id", "worker")
         .maybeSingle();
 
-      if (!error && data?.last_activity_at) {
-        setServerActivity(data.last_activity_at);
-        return;
-      }
+      const [latestGameRowsUpdate, latestHistoryRowsUpdate, latestLookupUpdate] = await Promise.all([
+        loadLatestTableUpdate("pitchiq_game_rows"),
+        loadLatestTableUpdate("pitchiq_historical_rows"),
+        loadLatestTableUpdate("pitchiq_pitcher_lookup"),
+      ]);
+      const latestActivity = latestTimestamp([
+        !error ? data?.last_activity_at : null,
+        latestGameRowsUpdate,
+        latestHistoryRowsUpdate,
+        latestLookupUpdate,
+      ]);
 
-      const { data: fallbackRows, error: fallbackError } = await supabaseClient
-        .from("pitchiq_pitcher_lookup")
-        .select("updated_at")
-        .order("updated_at", { ascending: false })
-        .limit(1);
-
-      if (!fallbackError && fallbackRows?.[0]?.updated_at) {
-        setServerActivity(fallbackRows[0].updated_at);
-      }
+      setServerActivity(latestActivity);
     }
 
     function escapeHtml(value) {
