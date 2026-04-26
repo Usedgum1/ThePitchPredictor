@@ -1124,8 +1124,8 @@
     let authAccepted = false;
     let authRedirected = false;
     let authCheckId = 0;
-    const DATA_REFRESH_INTERVAL_MS = 30000;
-    const DATA_REFRESH_DEBOUNCE_MS = 800;
+    const DATA_REFRESH_INTERVAL_MS = 300000;
+    const DATA_REFRESH_DEBOUNCE_MS = 5000;
     let dataRefreshIntervalId = null;
     let dataRefreshTimeoutId = null;
     let dataRefreshInFlight = false;
@@ -1396,6 +1396,10 @@
     function queueSupabaseRefresh() {
       window.clearTimeout(dataRefreshTimeoutId);
       dataRefreshTimeoutId = window.setTimeout(() => {
+        if (document.hidden) {
+          dataRefreshQueued = true;
+          return;
+        }
         refreshSupabaseData({ resetPages: false });
       }, DATA_REFRESH_DEBOUNCE_MS);
     }
@@ -1422,6 +1426,10 @@
     function startSupabaseAutoRefresh() {
       if (!dataRefreshIntervalId) {
         dataRefreshIntervalId = window.setInterval(() => {
+          if (document.hidden) {
+            dataRefreshQueued = true;
+            return;
+          }
           refreshSupabaseData({ resetPages: false });
         }, DATA_REFRESH_INTERVAL_MS);
       }
@@ -1435,6 +1443,12 @@
         .on("postgres_changes", { event: "*", schema: "public", table: "pitchiq_server_activity" }, queueSupabaseRefresh)
         .subscribe();
     }
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden || !authAccepted || !dataRefreshQueued) return;
+      dataRefreshQueued = false;
+      refreshSupabaseData({ resetPages: false });
+    });
 
     function formatNumber(value, digits = 2) {
       if (typeof value === "string" && !value.trim()) return "";
