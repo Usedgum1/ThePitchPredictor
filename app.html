@@ -1703,6 +1703,41 @@
       return Number(value) >= 0 ? "up-text" : "down-text";
     }
 
+    function recommendedSide(game) {
+      const candidates = [
+        game?.dk_bet,
+        game?.fd_bet,
+        game?.lean,
+        game?.recommended_bet,
+        game?.bet,
+      ].map(value => String(value || "").trim().toUpperCase());
+      return candidates.find(value => value === "OVER" || value === "UNDER") || "";
+    }
+
+    function lineDiscrepancyNote(game) {
+      const dkLine = Number(game?.dk_line);
+      const fdLine = Number(game?.fd_line);
+      if (!Number.isFinite(dkLine) || !Number.isFinite(fdLine) || dkLine === fdLine) return "";
+
+      const side = recommendedSide(game);
+      if (side === "UNDER") {
+        return dkLine > fdLine ? "+DK Line" : "+FD Line";
+      }
+      if (side === "OVER") {
+        return dkLine < fdLine ? "+DK Line" : "+FD Line";
+      }
+      return "";
+    }
+
+    function displayNotesText(game) {
+      const rawNotes = String(game?.notes || "").trim();
+      const discrepancyNote = lineDiscrepancyNote(game);
+      if (!discrepancyNote || normalizeText(rawNotes).includes(normalizeText(discrepancyNote))) {
+        return rawNotes;
+      }
+      return [discrepancyNote, rawNotes].filter(Boolean).join(" | ");
+    }
+
     function confidenceTone(value) {
       if (value === "High") return "confidence-high";
       if (value === "Medium") return "confidence-medium";
@@ -1885,8 +1920,9 @@
           body: [game.weather, game.temperature ? `${game.temperature}F` : "", game.wind].filter(Boolean).join(", ")
         });
       }
-      if (!notes.length && game.notes) {
-        notes.push({ impact: "neutral", title: "Notes", body: game.notes });
+      const displayNotes = displayNotesText(game);
+      if (!notes.length && displayNotes) {
+        notes.push({ impact: "neutral", title: "Notes", body: displayNotes });
       }
       if (!notes.length && Number.isFinite(Number(projected))) {
         notes.push({
@@ -1992,7 +2028,7 @@
           game.plate_umpire,
           game.dk_line,
           game.fd_line,
-          game.notes,
+          displayNotesText(game),
           formatNumber(displayProjectionValue(game), 2),
           formatVolatility(game),
           game.dk_bet,
@@ -2025,7 +2061,7 @@
           game.plate_umpire,
           game.dk_line,
           game.fd_line,
-          game.notes,
+          displayNotesText(game),
           formatNumber(displayProjectionValue(game), 2),
           formatVolatility(game),
           game.dk_bet,
@@ -2117,7 +2153,7 @@
           ${renderVolatilityCell(game)}
           <td class="${edgeTone(game.dk_edge, game.dk_bet)}">${escapeHtml(formatEdge(game.dk_edge))}</td>
           <td class="${edgeTone(game.fd_edge, game.fd_bet)}">${escapeHtml(formatEdge(game.fd_edge))}</td>
-          <td>${escapeHtml(game.notes || "")}</td>
+          <td>${escapeHtml(displayNotesText(game))}</td>
         </tr>
       `).join("");
 
@@ -2172,7 +2208,7 @@
           ${renderVolatilityCell(game)}
           <td class="${edgeTone(game.dk_edge, game.dk_bet)}">${escapeHtml(formatEdge(game.dk_edge))}</td>
           <td class="${edgeTone(game.fd_edge, game.fd_bet)}">${escapeHtml(formatEdge(game.fd_edge))}</td>
-          <td>${escapeHtml(game.notes || "")}</td>
+          <td>${escapeHtml(displayNotesText(game))}</td>
         </tr>
       `).join("");
 

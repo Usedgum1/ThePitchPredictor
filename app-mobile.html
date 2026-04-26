@@ -711,8 +711,43 @@
       return `${number >= 0 ? "+" : ""}${number.toFixed(2)}`;
     }
 
+    function recommendedSide(game) {
+      const candidates = [
+        game?.dk_bet,
+        game?.fd_bet,
+        game?.lean,
+        game?.recommended_bet,
+        game?.bet,
+      ].map(value => String(value || "").trim().toUpperCase());
+      return candidates.find(value => value === "OVER" || value === "UNDER") || "";
+    }
+
+    function lineDiscrepancyNote(game) {
+      const dkLine = Number(game?.dk_line);
+      const fdLine = Number(game?.fd_line);
+      if (!Number.isFinite(dkLine) || !Number.isFinite(fdLine) || dkLine === fdLine) return "";
+
+      const side = recommendedSide(game);
+      if (side === "UNDER") {
+        return dkLine > fdLine ? "+DK Line" : "+FD Line";
+      }
+      if (side === "OVER") {
+        return dkLine < fdLine ? "+DK Line" : "+FD Line";
+      }
+      return "";
+    }
+
+    function displayNotes(game) {
+      const rawNotes = String(game?.notes || "").trim();
+      const discrepancyNote = lineDiscrepancyNote(game);
+      if (!discrepancyNote || normalizeText(rawNotes).includes(normalizeText(discrepancyNote))) {
+        return rawNotes;
+      }
+      return [discrepancyNote, rawNotes].filter(Boolean).join(" | ");
+    }
+
     function lineDiscrepancyShimmerClass(game) {
-      const notes = normalizeText(game?.notes);
+      const notes = normalizeText(displayNotes(game));
       if (notes.includes("+dk line")) return "dk-shimmer";
       if (notes.includes("+fd line")) return "fd-shimmer";
       return "";
@@ -800,7 +835,7 @@
         game.fd_line,
         game.dk_bet,
         game.fd_bet,
-        game.notes,
+        displayNotes(game),
       ].map(normalizeText).join(" ");
     }
 
@@ -847,6 +882,7 @@
         const date = formatGameDate(game);
         const volatilityLabel = String(game.volatility_label || "").trim() || "-";
         const volatilityScore = formatNumber(game.volatility_score, 2);
+        const notes = displayNotes(game);
         const shimmerClass = lineDiscrepancyShimmerClass(game);
         return `
           <article class="card ${activeView === "live" ? "live" : ""} ${shimmerClass}">
@@ -869,7 +905,7 @@
                 ${renderSimpleMetric("Projection", volatilityLabel, volatilityClass(volatilityLabel), volatilityScore ? `Vix ${volatilityScore}` : "")}
                 ${renderEdgeMetric(game)}
               </div>
-              ${game.notes ? `<div class="notes">${escapeHtml(game.notes)}</div>` : ""}
+              ${notes ? `<div class="notes">${escapeHtml(notes)}</div>` : ""}
             </div>
           </article>
         `;
