@@ -43,17 +43,17 @@
     }
 
     .shell {
-      width: min(100%, 560px);
+      width: min(100%, 460px);
       margin: 0 auto;
-      padding: 14px 12px 26px;
+      padding: 10px 10px 24px;
     }
 
     .topbar {
       position: sticky;
       top: 0;
       z-index: 20;
-      margin: 0 -12px 14px;
-      padding: 12px;
+      margin: 0 -10px 10px;
+      padding: 10px;
       background: rgba(6, 6, 7, 0.86);
       border-bottom: 1px solid rgba(255, 255, 255, 0.07);
       backdrop-filter: blur(16px);
@@ -64,21 +64,28 @@
       justify-content: space-between;
       align-items: center;
       gap: 10px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .brand {
       margin: 0;
-      font-size: 1.15rem;
+      font-size: 1.03rem;
       letter-spacing: 0.16em;
       text-transform: uppercase;
     }
 
-    .desktop-link {
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .desktop-link,
+    .filter-toggle {
       color: #dcd9ff;
       border: 1px solid rgba(156, 146, 255, 0.24);
       border-radius: 999px;
-      padding: 7px 10px;
+      padding: 7px 9px;
       background: rgba(156, 146, 255, 0.09);
       font-size: 0.72rem;
       font-weight: 800;
@@ -88,8 +95,26 @@
       white-space: nowrap;
     }
 
+    .filter-toggle {
+      cursor: pointer;
+    }
+
+    .topbar.controls-collapsed {
+      padding-bottom: 8px;
+    }
+
+    .topbar.controls-collapsed .brand-row {
+      margin-bottom: 0;
+    }
+
+    .topbar.controls-collapsed .account,
+    .topbar.controls-collapsed .controls,
+    .topbar.controls-collapsed .meta {
+      display: none;
+    }
+
     .account {
-      margin: 0 0 10px;
+      margin: 0 0 8px;
       color: var(--muted);
       font-size: 0.74rem;
       letter-spacing: 0.06em;
@@ -170,18 +195,18 @@
 
     .cards {
       display: grid;
-      gap: 14px;
+      gap: 10px;
     }
 
     .card {
       position: relative;
       overflow: hidden;
       border: 1px solid rgba(255, 255, 255, 0.11);
-      border-radius: 18px;
+      border-radius: 16px;
       background:
         linear-gradient(135deg, rgba(255,255,255,0.12), transparent 18%),
         linear-gradient(160deg, rgba(30, 33, 46, 0.98), rgba(11, 12, 18, 0.98));
-      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.34);
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.32);
     }
 
     .card::before {
@@ -201,23 +226,23 @@
 
     .card-inner {
       position: relative;
-      padding: 18px;
+      padding: 13px;
     }
 
     .player-panel {
-      min-height: 178px;
+      min-height: 112px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 22px 14px;
+      padding: 14px 10px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .eyebrow {
       color: var(--amber);
-      font-size: 0.67rem;
+      font-size: 0.62rem;
       font-weight: 900;
       letter-spacing: 0.12em;
       text-transform: uppercase;
@@ -225,9 +250,9 @@
 
     .pitcher {
       width: 100%;
-      margin: 10px 0 7px;
-      font-size: clamp(2rem, 12vw, 3.35rem);
-      line-height: 0.92;
+      margin: 7px 0 4px;
+      font-size: clamp(1.55rem, 9.5vw, 2.45rem);
+      line-height: 0.96;
       letter-spacing: 0;
       text-wrap: balance;
       overflow-wrap: anywhere;
@@ -236,7 +261,7 @@
     .team-name,
     .matchup {
       color: var(--muted);
-      font-size: 1rem;
+      font-size: 0.88rem;
       font-weight: 700;
       line-height: 1.35;
     }
@@ -244,15 +269,15 @@
     .game-row {
       display: grid;
       grid-template-columns: 1fr auto;
-      gap: 14px;
+      gap: 10px;
       align-items: center;
-      padding: 18px 0;
+      padding: 12px 0;
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .opponent {
       color: var(--text);
-      font-size: 1.05rem;
+      font-size: 0.94rem;
       font-weight: 900;
       line-height: 1.2;
     }
@@ -270,7 +295,7 @@
     .date-main {
       display: block;
       color: var(--text);
-      font-size: 1rem;
+      font-size: 0.9rem;
       font-weight: 800;
     }
 
@@ -278,7 +303,7 @@
       display: block;
       margin-top: 4px;
       color: var(--muted);
-      font-size: 0.9rem;
+      font-size: 0.8rem;
       font-weight: 700;
     }
 
@@ -288,12 +313,12 @@
     }
 
     .metric-row {
-      min-height: 82px;
+      min-height: 60px;
       display: grid;
-      grid-template-columns: 50px 1fr auto;
-      gap: 13px;
+      grid-template-columns: 42px 1fr auto;
+      gap: 10px;
       align-items: center;
-      padding: 13px 0;
+      padding: 9px 0;
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
 
@@ -302,8 +327,8 @@
     }
 
     .metric-icon {
-      width: 44px;
-      height: 44px;
+      width: 36px;
+      height: 36px;
       border: 1px solid rgba(156, 146, 255, 0.34);
       border-radius: 999px;
       display: inline-flex;
@@ -311,7 +336,7 @@
       justify-content: center;
       background: rgba(156, 146, 255, 0.06);
       color: var(--text);
-      font-size: 0.9rem;
+      font-size: 0.76rem;
       font-weight: 900;
       letter-spacing: 0.02em;
     }
@@ -323,7 +348,7 @@
     .metric-label {
       min-width: 0;
       color: var(--muted);
-      font-size: 0.86rem;
+      font-size: 0.75rem;
       font-weight: 900;
       letter-spacing: 0.08em;
       line-height: 1.2;
@@ -334,46 +359,46 @@
       display: block;
       margin-top: 4px;
       color: rgba(170, 178, 192, 0.72);
-      font-size: 0.68rem;
+      font-size: 0.6rem;
       letter-spacing: 0.04em;
     }
 
     .metric-value {
-      min-width: 76px;
+      min-width: 66px;
       text-align: right;
       color: var(--text);
-      font-size: 1.35rem;
+      font-size: 1.08rem;
       font-weight: 900;
       line-height: 1.1;
     }
 
     .metric-subvalue {
-      margin-top: 7px;
+      margin-top: 5px;
       display: flex;
       justify-content: flex-end;
       gap: 6px;
       color: rgba(170, 178, 192, 0.8);
-      font-size: 0.8rem;
+      font-size: 0.68rem;
       font-weight: 900;
       white-space: nowrap;
     }
 
     .edge-stack {
       display: grid;
-      gap: 8px;
+      gap: 5px;
       text-align: right;
     }
 
     .edge-stack span {
       display: flex;
       justify-content: flex-end;
-      gap: 8px;
+      gap: 6px;
       white-space: nowrap;
     }
 
     .edge-book {
       color: var(--muted);
-      font-size: 0.72rem;
+      font-size: 0.62rem;
       letter-spacing: 0.08em;
     }
 
@@ -388,9 +413,9 @@
 
     .notes {
       border-top: 1px solid rgba(255, 255, 255, 0.08);
-      padding-top: 13px;
+      padding-top: 10px;
       color: var(--muted);
-      font-size: 0.82rem;
+      font-size: 0.76rem;
       line-height: 1.45;
     }
 
@@ -418,7 +443,10 @@
     <div class="topbar">
       <div class="brand-row">
         <h1 class="brand">pitchIQ</h1>
-        <a class="desktop-link" href="./app.html?desktop=1">Desktop</a>
+        <div class="top-actions">
+          <button class="filter-toggle" id="filter-toggle" type="button" aria-expanded="true">Hide</button>
+          <a class="desktop-link" href="./app.html?desktop=1">Desktop</a>
+        </div>
       </div>
       <p class="account" id="account-pill">Checking session</p>
       <div class="controls">
@@ -467,6 +495,8 @@
     const resultsMeta = document.getElementById("results-meta");
     const refreshMeta = document.getElementById("refresh-meta");
     const serverActivityFooter = document.getElementById("server-activity-footer");
+    const topbar = document.querySelector(".topbar");
+    const filterToggle = document.getElementById("filter-toggle");
     const tabs = Array.from(document.querySelectorAll(".tab"));
 
     const DATA_REFRESH_INTERVAL_MS = 300000;
@@ -476,6 +506,7 @@
     let authCheckId = 0;
     let activeView = "upcoming";
     let searchQuery = "";
+    let controlsCollapsed = false;
     let upcomingGames = [];
     let liveGames = [];
     let dataRefreshIntervalId = null;
@@ -495,6 +526,13 @@
 
     function normalizeText(value) {
       return String(value || "").trim().toLowerCase();
+    }
+
+    function setControlsCollapsed(value) {
+      controlsCollapsed = Boolean(value);
+      topbar.classList.toggle("controls-collapsed", controlsCollapsed);
+      filterToggle.textContent = controlsCollapsed ? "Filters" : "Hide";
+      filterToggle.setAttribute("aria-expanded", String(!controlsCollapsed));
     }
 
     function formatNumber(value, digits = 2) {
@@ -982,6 +1020,10 @@
     });
 
     sortSelect.addEventListener("change", renderCards);
+
+    filterToggle.addEventListener("click", () => {
+      setControlsCollapsed(!controlsCollapsed);
+    });
 
     document.addEventListener("visibilitychange", () => {
       if (document.hidden || !authAccepted || !dataRefreshQueued) return;
