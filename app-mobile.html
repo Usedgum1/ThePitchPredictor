@@ -383,7 +383,7 @@
 
     .metric-label {
       min-width: 0;
-      color: var(--muted);
+      color: var(--text);
       font-size: 0.75rem;
       font-weight: 900;
       letter-spacing: 0.08em;
@@ -402,6 +402,11 @@
     .ek-label {
       color: #ffd700;
       text-shadow: 0 0 10px rgba(255, 215, 0, 0.35);
+    }
+
+    .ek-value {
+      color: #ffd700;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.42);
     }
 
     .metric-value {
@@ -424,26 +429,29 @@
       white-space: nowrap;
     }
 
-    .edge-stack {
-      display: grid;
-      grid-template-columns: auto;
-      gap: 5px;
-      text-align: right;
+    .edge-row {
+      grid-template-columns: 0.85fr 1fr 1fr;
+      gap: 8px;
     }
 
-    .edge-stack span {
-      display: grid;
-      grid-template-columns: 24px minmax(46px, 1fr);
-      gap: 8px;
-      align-items: baseline;
+    .edge-row .metric-label {
+      text-align: left;
+    }
+
+    .edge-value {
+      min-width: 0;
+      font-size: 1.02rem;
+      font-weight: 900;
+      line-height: 1.1;
       white-space: nowrap;
     }
 
-    .edge-book {
-      color: var(--muted);
-      font-size: 0.62rem;
-      letter-spacing: 0.08em;
-      text-align: left;
+    .edge-dk {
+      text-align: center;
+    }
+
+    .edge-fd {
+      text-align: right;
     }
 
     .over { color: var(--amber); }
@@ -455,12 +463,18 @@
     .vol-medium { color: var(--amber); }
     .vol-high { color: var(--red); }
 
-    .notes {
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      padding-top: 10px;
-      color: var(--muted);
+    .note-row {
+      grid-template-columns: 1fr;
+    }
+
+    .note-value {
+      min-width: 0;
+      color: var(--text);
       font-size: 0.76rem;
+      font-weight: 800;
       line-height: 1.45;
+      text-align: center;
+      overflow-wrap: anywhere;
     }
 
     .empty {
@@ -819,12 +833,18 @@
 
     function renderEdgeMetric(game) {
       return `
-        <div class="metric-row">
+        <div class="metric-row edge-row">
           <div class="metric-label">Edge</div>
-          <div class="metric-value edge-stack">
-            <span class="${edgeClass(game.dk_edge, game.dk_bet)}"><b class="edge-book">DK</b>${escapeHtml(formatEdge(game.dk_edge) || "-")}</span>
-            <span class="${edgeClass(game.fd_edge, game.fd_bet)}"><b class="edge-book">FD</b>${escapeHtml(formatEdge(game.fd_edge) || "-")}</span>
-          </div>
+          <div class="edge-value edge-dk ${edgeClass(game.dk_edge, game.dk_bet)}">DK ${escapeHtml(formatEdge(game.dk_edge) || "-")}</div>
+          <div class="edge-value edge-fd ${edgeClass(game.fd_edge, game.fd_bet)}">FD ${escapeHtml(formatEdge(game.fd_edge) || "-")}</div>
+        </div>
+      `;
+    }
+
+    function renderNotesMetric(notes) {
+      return `
+        <div class="metric-row note-row">
+          <div class="note-value">${escapeHtml(notes || " ")}</div>
         </div>
       `;
     }
@@ -908,11 +928,11 @@
               <div class="metric-list">
                 ${renderBookMetric("DraftKings", game.dk_line, game.dk_over_payout, game.dk_under_payout, game.dk_bet)}
                 ${renderBookMetric("FanDuel", game.fd_line, game.fd_over_payout, game.fd_under_payout, game.fd_bet)}
-                ${renderSimpleMetric("Ensemble K", projected, "positive", "", "ek-label")}
-                ${renderSimpleMetric("Projection", volatilityLabel, volatilityClass(volatilityLabel), volatilityScore ? `Vix ${volatilityScore}` : "")}
+                ${renderSimpleMetric("Ensemble K", projected, "ek-value", "", "ek-label")}
+                ${renderSimpleMetric("Volatility", volatilityLabel, volatilityClass(volatilityLabel), volatilityScore ? `Vix ${volatilityScore}` : "")}
                 ${renderEdgeMetric(game)}
+                ${renderNotesMetric(notes)}
               </div>
-              ${notes ? `<div class="notes">${escapeHtml(notes)}</div>` : ""}
             </div>
           </article>
         `;
