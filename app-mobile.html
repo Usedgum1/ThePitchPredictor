@@ -212,7 +212,8 @@
     }
 
     .card::before,
-    .card::after {
+    .card::after,
+    .card-inner::before {
       content: "";
       position: absolute;
       inset: 0;
@@ -283,6 +284,12 @@
     .card-inner {
       position: relative;
       padding: 13px;
+    }
+
+    .card-inner::before {
+      background: url("images/pitchIQ%20Logo.png") center 16px / min(58%, 190px) auto no-repeat;
+      opacity: 0.13;
+      mix-blend-mode: screen;
     }
 
     .player-panel {
