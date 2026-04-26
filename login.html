@@ -89,7 +89,8 @@
     .brand-link:focus-visible,
     .login-button:focus-visible,
     .form-input:focus,
-    .coming-soon-pill:focus-visible {
+    .create-account-button:focus-visible,
+    .modal-button:focus-visible {
       outline: none;
       box-shadow: 0 0 0 4px rgba(141, 138, 255, 0.16);
     }
@@ -217,7 +218,7 @@
       font-size: 0.94rem;
     }
 
-    .coming-soon-pill {
+    .create-account-button {
       display: inline-flex;
       align-items: center;
       min-height: 26px;
@@ -229,17 +230,180 @@
       color: #c7c4ff;
       font: inherit;
       font-weight: 800;
-      cursor: default;
+      cursor: pointer;
+      transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
     }
 
-    .coming-soon-pill:disabled {
-      opacity: 1;
+    .create-account-button:hover {
+      transform: translateY(-1px);
+      border-color: rgba(141, 138, 255, 0.44);
+      background: rgba(141, 138, 255, 0.16);
+    }
+
+    .helper-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: -4px;
+    }
+
+    .text-link-button {
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: #c7c4ff;
+      font: inherit;
+      font-size: 0.84rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .text-link-button:hover {
+      color: #dddafe;
     }
 
     .login-status {
       min-height: 1.2rem;
       margin: 0;
       color: var(--danger);
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(3, 4, 8, 0.72);
+      backdrop-filter: blur(12px);
+      z-index: 100;
+    }
+
+    .modal-backdrop.visible {
+      display: flex;
+    }
+
+    .modal-card {
+      width: min(520px, 100%);
+      max-height: calc(100vh - 40px);
+      overflow-y: auto;
+      background: linear-gradient(180deg, rgba(18, 20, 28, 0.98), rgba(11, 12, 18, 0.98));
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: 0 24px 56px rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-kicker {
+      margin-bottom: 8px;
+      color: var(--amber);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .modal-title {
+      margin: 0;
+      color: var(--text);
+      font-size: 1.35rem;
+      line-height: 1.12;
+    }
+
+    .modal-copy {
+      margin-top: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .terms-list {
+      margin: 14px 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 10px;
+    }
+
+    .terms-list li {
+      padding: 11px 12px;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.025);
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .terms-check {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-top: 16px;
+      color: var(--text);
+      line-height: 1.45;
+      cursor: pointer;
+    }
+
+    .terms-check input {
+      width: 16px;
+      height: 16px;
+      margin-top: 3px;
+      accent-color: var(--amber);
+      flex: 0 0 auto;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .modal-button {
+      min-width: 110px;
+      min-height: 42px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      font: inherit;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      cursor: pointer;
+      padding: 0 14px;
+    }
+
+    .modal-button.primary {
+      border-color: rgba(141, 223, 159, 0.34);
+      background: linear-gradient(180deg, rgba(20, 74, 37, 0.98), rgba(15, 53, 28, 0.98));
+      color: #d9ffe2;
+    }
+
+    .modal-button.primary:disabled {
+      cursor: default;
+      opacity: 0.48;
+    }
+
+    .modal-button.secondary {
+      border-color: rgba(255, 140, 122, 0.35);
+      background: linear-gradient(180deg, rgba(76, 24, 22, 0.98), rgba(56, 18, 17, 0.98));
+      color: #ffd4cb;
+    }
+
+    .create-form {
+      display: grid;
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .create-status {
+      min-height: 1.2rem;
+      margin: 0;
+      color: var(--muted);
       font-size: 0.9rem;
       text-align: center;
     }
@@ -257,6 +421,14 @@
       .panel {
         padding: 26px 20px;
       }
+
+      .modal-actions {
+        flex-direction: column-reverse;
+      }
+
+      .modal-button {
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -269,14 +441,14 @@
 
       <form class="login-form" action="#" method="post" id="login-form">
         <div class="field">
-          <label for="username">Username</label>
+          <label for="email">Email</label>
           <input
             class="form-input"
-            type="text"
-            id="username"
-            name="username"
-            autocomplete="username"
-            placeholder="Enter your username"
+            type="email"
+            id="email"
+            name="email"
+            autocomplete="email"
+            placeholder="Enter your email"
             required
           />
         </div>
@@ -294,13 +466,17 @@
           />
         </div>
 
+        <div class="helper-row">
+          <button class="text-link-button" type="button" id="forgot-password-open">Forgot password?</button>
+        </div>
+
         <button class="login-button" type="submit">Log In</button>
         <p class="login-status" id="login-status" aria-live="polite"></p>
       </form>
 
       <div class="create-account">
         Need an account?
-        <button class="coming-soon-pill" type="button" disabled>Coming Soon</button>
+        <button class="create-account-button" type="button" disabled aria-disabled="true">Coming Soon</button>
       </div>
 
       <nav class="site-header" aria-label="Site navigation">
@@ -311,46 +487,313 @@
     </section>
   </main>
 
+  <div
+    class="modal-backdrop"
+    id="responsibility-modal"
+    aria-hidden="true"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="responsibility-title"
+  >
+    <div class="modal-card">
+      <div class="modal-kicker">Responsible Use</div>
+      <h2 class="modal-title" id="responsibility-title">Before creating an account</h2>
+      <p class="modal-copy">
+        PitchIQ is an informational tool. It is designed to organize projections, lines, and context, not to tell you what to do.
+      </p>
+      <ul class="terms-list">
+        <li>You are responsible for your own decisions, actions, bankroll, and betting activity.</li>
+        <li>PitchIQ does not guarantee outcomes, profit, accuracy, or availability of any projection, line, or edge.</li>
+        <li>MinMaxTechnology LLC and The Pitch Predictor are not responsible for losses or actions taken from using this tool.</li>
+        <li>Use this product only where legal and only if you meet the applicable age requirements in your location.</li>
+      </ul>
+      <label class="terms-check" for="terms-agree">
+        <input id="terms-agree" type="checkbox" />
+        <span>I understand and agree that I am solely responsible for my actions and use PitchIQ for informational purposes only.</span>
+      </label>
+      <div class="modal-actions">
+        <button class="modal-button secondary" type="button" id="responsibility-cancel">Cancel</button>
+        <button class="modal-button primary" type="button" id="responsibility-agree" disabled>I Agree</button>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="modal-backdrop"
+    id="create-account-modal"
+    aria-hidden="true"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="create-account-title"
+  >
+    <div class="modal-card">
+      <div class="modal-kicker">Create Account</div>
+      <h2 class="modal-title" id="create-account-title">Set up your PitchIQ access</h2>
+      <form class="create-form" id="create-account-form" action="#" method="post">
+        <div class="field">
+          <label for="create-email">Email</label>
+          <input
+            class="form-input"
+            type="email"
+            id="create-email"
+            name="email"
+            autocomplete="email"
+            placeholder="Enter your email"
+            required
+          />
+        </div>
+        <div class="field">
+          <label for="create-username">Username</label>
+          <input
+            class="form-input"
+            type="text"
+            id="create-username"
+            name="username"
+            autocomplete="username"
+            placeholder="Choose a username"
+            required
+          />
+        </div>
+        <div class="field">
+          <label for="create-password">Password</label>
+          <input
+            class="form-input"
+            type="password"
+            id="create-password"
+            name="password"
+            autocomplete="new-password"
+            placeholder="Create a password"
+            required
+          />
+        </div>
+        <div class="field">
+          <label for="create-password-confirm">Confirm Password</label>
+          <input
+            class="form-input"
+            type="password"
+            id="create-password-confirm"
+            name="password_confirm"
+            autocomplete="new-password"
+            placeholder="Confirm your password"
+            required
+          />
+        </div>
+        <p class="create-status" id="create-status" aria-live="polite"></p>
+        <div class="modal-actions">
+          <button class="modal-button secondary" type="button" id="create-account-cancel">Cancel</button>
+          <button class="modal-button primary" type="submit">Create Account</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div
+    class="modal-backdrop"
+    id="forgot-password-modal"
+    aria-hidden="true"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="forgot-password-title"
+  >
+    <div class="modal-card">
+      <div class="modal-kicker">Password Reset</div>
+      <h2 class="modal-title" id="forgot-password-title">Reset your password</h2>
+      <p class="modal-copy">
+        Enter your email and we will send you a secure link to create a new password.
+      </p>
+      <form class="create-form" id="forgot-password-form" action="#" method="post">
+        <div class="field">
+          <label for="forgot-email">Email</label>
+          <input
+            class="form-input"
+            type="email"
+            id="forgot-email"
+            name="email"
+            autocomplete="email"
+            placeholder="Enter your email"
+            required
+          />
+        </div>
+        <p class="create-status" id="forgot-password-status" aria-live="polite"></p>
+        <div class="modal-actions">
+          <button class="modal-button secondary" type="button" id="forgot-password-cancel">Cancel</button>
+          <button class="modal-button primary" type="submit">Send Reset Link</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
+    const SUPABASE_URL = "https://odvopvoqssamjquinhft.supabase.co";
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_7g1yX__kNzT-6tj8Tr4SIg_T4BX9BlV";
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+      auth: {
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
+        persistSession: true,
+        storage: window.localStorage,
+      },
+    });
+
     const loginForm = document.getElementById("login-form");
     const loginStatus = document.getElementById("login-status");
+    const responsibilityModal = document.getElementById("responsibility-modal");
+    const termsAgree = document.getElementById("terms-agree");
+    const responsibilityAgree = document.getElementById("responsibility-agree");
+    const responsibilityCancel = document.getElementById("responsibility-cancel");
+    const createAccountModal = document.getElementById("create-account-modal");
+    const createAccountForm = document.getElementById("create-account-form");
+    const createAccountCancel = document.getElementById("create-account-cancel");
+    const createStatus = document.getElementById("create-status");
+    const forgotPasswordOpen = document.getElementById("forgot-password-open");
+    const forgotPasswordModal = document.getElementById("forgot-password-modal");
+    const forgotPasswordForm = document.getElementById("forgot-password-form");
+    const forgotPasswordCancel = document.getElementById("forgot-password-cancel");
+    const forgotPasswordStatus = document.getElementById("forgot-password-status");
+    let lastModalFocus = null;
+    let responsibilityAcceptedAt = null;
 
-    async function getTemporaryAccounts() {
-      try {
-        const response = await fetch("./temporary-accounts.json", { cache: "no-store" });
-        if (!response.ok) {
-          throw new Error("Temporary account file unavailable.");
-        }
-        return response.json();
-      } catch (error) {
-        return {
-          accounts: [
-            { username: "terry", password: "password" }
-          ]
-        };
+    async function getUserRole(userId) {
+      const { data, error } = await supabaseClient
+        .from("profiles")
+        .select("role")
+        .eq("user_id", userId)
+        .single();
+
+      if (error) {
+        return { role: null, error };
       }
+
+      return { role: data?.role || null, error: null };
+    }
+
+    function openModal(modal, focusTarget) {
+      lastModalFocus = document.activeElement;
+      modal.classList.add("visible");
+      modal.setAttribute("aria-hidden", "false");
+      focusTarget?.focus();
+    }
+
+    function closeModal(modal) {
+      modal.classList.remove("visible");
+      modal.setAttribute("aria-hidden", "true");
+      if (lastModalFocus instanceof HTMLElement) {
+        lastModalFocus.focus();
+      }
+    }
+
+    function openResponsibilityModal() {
+      termsAgree.checked = false;
+      responsibilityAgree.disabled = true;
+      responsibilityAcceptedAt = null;
+      openModal(responsibilityModal, termsAgree);
+    }
+
+    function openCreateAccountModal() {
+      createAccountForm.reset();
+      createStatus.textContent = "";
+      responsibilityModal.classList.remove("visible");
+      responsibilityModal.setAttribute("aria-hidden", "true");
+      openModal(createAccountModal, document.getElementById("create-email"));
+    }
+
+    function openForgotPasswordModal() {
+      forgotPasswordForm.reset();
+      forgotPasswordStatus.textContent = "";
+      forgotPasswordStatus.style.color = "var(--muted)";
+      document.getElementById("forgot-email").value = document.getElementById("email").value.trim();
+      openModal(forgotPasswordModal, document.getElementById("forgot-email"));
     }
 
     loginForm.addEventListener("submit", async (event) => {
       event.preventDefault();
       loginStatus.textContent = "";
+      loginStatus.style.color = "var(--muted)";
 
       const formData = new FormData(loginForm);
-      const username = String(formData.get("username") || "").trim();
+      const email = String(formData.get("email") || "").trim();
       const password = String(formData.get("password") || "");
-      const accountData = await getTemporaryAccounts();
-      const accounts = Array.isArray(accountData.accounts) ? accountData.accounts : [];
-      const match = accounts.some((account) =>
-        account.username === username && account.password === password
-      );
+      const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
 
-      if (!match) {
-        loginStatus.textContent = "Username or password did not match.";
+      if (error) {
+        loginStatus.textContent = error.message;
         return;
       }
 
-      sessionStorage.setItem("pitchiqLoggedIn", "true");
+      if (!data.session) {
+        loginStatus.textContent = "Sign-in succeeded, but no session was returned. Try refreshing and logging in again.";
+        loginStatus.style.color = "var(--danger)";
+        return;
+      }
+
+      const { role, error: roleError } = await getUserRole(data.session.user.id);
+      if (roleError || !["admin", "owner"].includes(role)) {
+        await supabaseClient.auth.signOut();
+        loginStatus.textContent = "This site is currently limited to approved accounts.";
+        loginStatus.style.color = "var(--danger)";
+        return;
+      }
+
       window.location.href = "./app.html";
+    });
+
+    forgotPasswordOpen.addEventListener("click", openForgotPasswordModal);
+
+    termsAgree.addEventListener("change", () => {
+      responsibilityAgree.disabled = !termsAgree.checked;
+    });
+
+    responsibilityAgree.addEventListener("click", () => {
+      responsibilityAcceptedAt = new Date().toISOString();
+      openCreateAccountModal();
+    });
+    responsibilityCancel.addEventListener("click", () => closeModal(responsibilityModal));
+    createAccountCancel.addEventListener("click", () => closeModal(createAccountModal));
+    forgotPasswordCancel.addEventListener("click", () => closeModal(forgotPasswordModal));
+
+    forgotPasswordModal.addEventListener("click", (event) => {
+      if (event.target === forgotPasswordModal) {
+        closeModal(forgotPasswordModal);
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key !== "Escape") {
+        return;
+      }
+      if (createAccountModal.classList.contains("visible")) {
+        closeModal(createAccountModal);
+      } else if (forgotPasswordModal.classList.contains("visible")) {
+        closeModal(forgotPasswordModal);
+      } else if (responsibilityModal.classList.contains("visible")) {
+        closeModal(responsibilityModal);
+      }
+    });
+
+    createAccountForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      createStatus.textContent = "Account creation is disabled while the site is private. Contact an admin for access.";
+      createStatus.style.color = "var(--danger)";
+    });
+
+    forgotPasswordForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      forgotPasswordStatus.textContent = "";
+
+      const formData = new FormData(forgotPasswordForm);
+      const email = String(formData.get("email") || "").trim();
+      const redirectTo = `${window.location.origin}/reset-password.html`;
+      const { error } = await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo });
+
+      if (error) {
+        forgotPasswordStatus.textContent = error.message;
+        forgotPasswordStatus.style.color = "var(--danger)";
+        return;
+      }
+
+      forgotPasswordStatus.textContent = "Reset email sent. Open the link in that email to set a new password.";
+      forgotPasswordStatus.style.color = "var(--success)";
     });
   </script>
 </body>

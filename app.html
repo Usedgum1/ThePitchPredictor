@@ -106,10 +106,29 @@
 
     .page-head-meta {
       display: flex;
+      flex-direction: column;
       justify-content: flex-end;
-      align-items: flex-start;
+      align-items: flex-end;
+      gap: 10px;
       min-width: 260px;
       padding-top: 2px;
+    }
+
+    .account-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 36px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(141, 138, 255, 0.26);
+      background: rgba(141, 138, 255, 0.1);
+      color: #d9d8ff;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      box-shadow: 0 10px 24px rgba(46, 32, 104, 0.18);
     }
 
     .brand {
@@ -391,8 +410,6 @@
     }
 
     #upcoming-game-grid .cell,
-    #general-top-grid .cell,
-    #general-bottom-grid .cell,
     #upcoming-dk-grid .cell,
     #upcoming-fd-grid .cell {
       background: transparent;
@@ -457,6 +474,21 @@
 
     .breakdown-chip strong {
       color: var(--text);
+    }
+
+    .breakdown-chip.volatility-low {
+      border-color: rgba(141,223,159,0.38);
+      color: var(--success);
+    }
+
+    .breakdown-chip.volatility-medium {
+      border-color: rgba(255,177,74,0.38);
+      color: var(--amber);
+    }
+
+    .breakdown-chip.volatility-high {
+      border-color: rgba(255,140,122,0.42);
+      color: var(--danger);
     }
 
     .confidence-high { color: var(--success); }
@@ -594,7 +626,7 @@
 
     th,
     td {
-      text-align: left;
+      text-align: center;
       padding: 10px 12px;
       border-bottom: 1px solid rgba(255,255,255,0.04);
     }
@@ -614,15 +646,23 @@
     }
 
     .th-inner {
-      display: inline-flex;
+      display: inline-grid;
+      grid-template-columns: 10px auto 10px;
       align-items: center;
-      gap: 6px;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .th-inner::before {
+      content: "";
+      width: 10px;
     }
 
     .sort-indicator {
       color: rgba(255,255,255,0.45);
       font-size: 0.7rem;
       min-width: 10px;
+      text-align: center;
     }
 
     td {
@@ -649,6 +689,46 @@
       color: var(--muted);
       font-size: 0.78rem;
       line-height: 1.25;
+    }
+
+    .book-line-cell {
+      display: inline-grid;
+      flex-direction: column;
+      justify-items: center;
+      gap: 4px;
+      line-height: 1.2;
+      min-width: 4.7rem;
+    }
+
+    .book-line-main {
+      color: var(--text);
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .book-line-odds {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.76rem;
+      white-space: nowrap;
+      text-align: center;
+    }
+
+    .book-line-over-odds {
+      color: var(--amber);
+      font-weight: 700;
+    }
+
+    .book-line-under-odds {
+      color: var(--violet);
+      font-weight: 700;
+    }
+
+    .book-line-odds-divider {
+      color: var(--text);
+      opacity: 0.92;
+      padding: 0 2px;
     }
 
     tbody tr:hover {
@@ -729,7 +809,11 @@
       font-weight: 600;
     }
 
-    .volatility-value.volatility-low,
+    .volatility-value.volatility-low {
+      color: var(--success);
+      font-weight: 600;
+    }
+
     .up-text {
       color: var(--amber);
       font-weight: 600;
@@ -739,10 +823,24 @@
       color: var(--amber);
     }
 
-    .volatility-value.volatility-high,
+    .volatility-value.volatility-high {
+      color: var(--danger);
+      font-weight: 600;
+    }
+
     .down-text {
       color: var(--violet);
       font-weight: 600;
+    }
+
+    .avoid-text {
+      color: var(--danger);
+      font-weight: 700;
+    }
+
+    .projected-ks-value {
+      color: #ffd700;
+      font-weight: 800;
     }
 
     .pager {
@@ -846,6 +944,7 @@
           <p class="sub">A decision platform for MLB strikeout props, built to compare model forecasts against live bookmaker markets and highlight betting value faster.</p>
         </div>
         <div class="page-head-meta">
+          <div id="account-pill" class="account-pill">Logged in as ...</div>
           <button id="logout-button" class="logout-button" type="button">Log Out</button>
         </div>
       </div>
@@ -884,15 +983,6 @@
         <div class="subtile glass-subtile">
           <div class="section-title center-title">Upcoming Game</div>
           <div class="info-grid four" id="upcoming-game-grid"></div>
-        </div>
-
-        <div class="subtile glass-subtile projection-block">
-          <div class="section-title center-title">General Projection</div>
-          <div class="info-grid three" id="general-top-grid"></div>
-          <div style="height:12px;"></div>
-          <div class="info-grid three" id="general-bottom-grid"></div>
-          <div style="height:12px;"></div>
-          <div id="general-breakdown-row" class="breakdown-line"></div>
         </div>
 
         <div class="subtile glass-subtile projection-block">
@@ -935,9 +1025,7 @@
                   <th class="sortable" data-sort-key="fd_line"><span class="th-inner">FD Line <span class="sort-indicator"></span></span></th>
                   <th class="sortable" data-sort-key="projected_strikeouts"><span class="th-inner">Projected Ks <span class="sort-indicator"></span></span></th>
                   <th class="sortable" data-sort-key="volatility_score"><span class="th-inner">Volatility <span class="sort-indicator"></span></span></th>
-                  <th class="sortable" data-sort-key="dk_bet"><span class="th-inner">DK Bet <span class="sort-indicator"></span></span></th>
                   <th class="sortable" data-sort-key="dk_edge"><span class="th-inner">DK Edge <span class="sort-indicator"></span></span></th>
-                  <th class="sortable" data-sort-key="fd_bet"><span class="th-inner">FD Bet <span class="sort-indicator"></span></span></th>
                   <th class="sortable" data-sort-key="fd_edge"><span class="th-inner">FD Edge <span class="sort-indicator"></span></span></th>
                   <th class="sortable" data-sort-key="notes"><span class="th-inner">Notes <span class="sort-indicator"></span></span></th>
                 </tr>
@@ -982,9 +1070,7 @@
                   <th class="sortable live-sortable" data-sort-key="fd_line"><span class="th-inner">FD Line <span class="sort-indicator"></span></span></th>
                   <th class="sortable live-sortable" data-sort-key="projected_strikeouts"><span class="th-inner">Projected Ks <span class="sort-indicator"></span></span></th>
                   <th class="sortable live-sortable" data-sort-key="volatility_score"><span class="th-inner">Volatility <span class="sort-indicator"></span></span></th>
-                  <th class="sortable live-sortable" data-sort-key="dk_bet"><span class="th-inner">DK Bet <span class="sort-indicator"></span></span></th>
                   <th class="sortable live-sortable" data-sort-key="dk_edge"><span class="th-inner">DK Edge <span class="sort-indicator"></span></span></th>
-                  <th class="sortable live-sortable" data-sort-key="fd_bet"><span class="th-inner">FD Bet <span class="sort-indicator"></span></span></th>
                   <th class="sortable live-sortable" data-sort-key="fd_edge"><span class="th-inner">FD Edge <span class="sort-indicator"></span></span></th>
                   <th class="sortable live-sortable" data-sort-key="notes"><span class="th-inner">Notes <span class="sort-indicator"></span></span></th>
                 </tr>
@@ -1006,11 +1092,103 @@
     </section>
   </div>
 
-  <script src="./table-data.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    if (sessionStorage.getItem("pitchiqLoggedIn") !== "true") {
-      window.location.href = "./login.html";
+    const SUPABASE_URL = "https://odvopvoqssamjquinhft.supabase.co";
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_7g1yX__kNzT-6tj8Tr4SIg_T4BX9BlV";
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+      auth: {
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
+        persistSession: true,
+        storage: window.localStorage,
+      },
+    });
+    const accountPill = document.getElementById("account-pill");
+
+    let authAccepted = false;
+    let authRedirected = false;
+    let authCheckId = 0;
+
+    async function getUserRole(userId) {
+      const { data, error } = await supabaseClient
+        .from("profiles")
+        .select("role")
+        .eq("user_id", userId)
+        .single();
+
+      if (error) {
+        return { role: null, error };
+      }
+
+      return { role: data?.role || null, error: null };
     }
+
+    function setAccountIdentity(session) {
+      const user = session?.user;
+      const username = user?.user_metadata?.username;
+      const identityLabel = String(username || user?.email || "Unknown user").trim();
+      accountPill.textContent = `Logged in as ${identityLabel}`;
+    }
+
+    function redirectToLogin() {
+      if (authAccepted || authRedirected) return;
+      authRedirected = true;
+      window.location.replace("./login.html");
+    }
+
+    async function acceptSession(session) {
+      if (!session || authAccepted || authRedirected) return;
+
+      const checkId = ++authCheckId;
+      const { role, error } = await getUserRole(session.user.id);
+      if (checkId !== authCheckId || authAccepted || authRedirected) return;
+
+      if (error) {
+        window.clearTimeout(authTimeout);
+        return;
+      }
+
+      if (!["admin", "owner"].includes(role)) {
+        await supabaseClient.auth.signOut();
+        redirectToLogin();
+        return;
+      }
+
+      authAccepted = true;
+      setAccountIdentity(session);
+      loadSupabaseTables();
+    }
+
+    const authTimeout = window.setTimeout(() => {
+      redirectToLogin();
+    }, 8000);
+
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+      if (session) {
+        window.clearTimeout(authTimeout);
+        acceptSession(session);
+        return;
+      }
+
+      if (event === "SIGNED_OUT" && !authAccepted) {
+        window.clearTimeout(authTimeout);
+        redirectToLogin();
+      }
+    });
+
+    supabaseClient.auth.getSession().then(({ data, error }) => {
+      if (error) {
+        window.clearTimeout(authTimeout);
+        redirectToLogin();
+        return;
+      }
+
+      if (data.session) {
+        window.clearTimeout(authTimeout);
+        acceptSession(data.session);
+      }
+    });
 
     const upcomingSearchInput = document.getElementById("upcoming-search-input");
     const clearUpcomingSearchButton = document.getElementById("clear-upcoming-search");
@@ -1040,23 +1218,155 @@
     const lineInput = document.getElementById("line-input");
     const projectButton = document.getElementById("project-button");
 
-    let upcomingGames = (window.PITCHIQ_TABLE_DATA && Array.isArray(window.PITCHIQ_TABLE_DATA.rows))
-      ? window.PITCHIQ_TABLE_DATA.rows
-      : [];
-    let allPitchers = Array.from(new Set(upcomingGames.map(game => game.pitcher).filter(Boolean))).sort((a, b) => a.localeCompare(b));
+    let upcomingGames = [];
+    let liveGames = [];
+    let gameHistory = [];
+    let allPitchers = [];
     let filteredPitchers = [];
     let activePitcherIndex = -1;
     let upcomingGamesPage = 1;
     const upcomingGamesPageSize = 20;
     let upcomingSearchQuery = "";
     let upcomingSort = { key: "date", direction: "asc" };
-    let liveGames = (window.PITCHIQ_TABLE_DATA && Array.isArray(window.PITCHIQ_TABLE_DATA.live_rows))
-      ? window.PITCHIQ_TABLE_DATA.live_rows
-      : [];
     let liveGamesPage = 1;
     const liveGamesPageSize = 20;
     let liveSearchQuery = "";
     let liveSort = { key: "date", direction: "asc" };
+    let lineInputTouched = false;
+
+    function refreshPitcherList() {
+      allPitchers = Array.from(new Set(
+        [...upcomingGames, ...liveGames, ...gameHistory]
+          .map(game => game.pitcher)
+          .filter(Boolean)
+      )).sort((a, b) => a.localeCompare(b));
+    }
+
+    function parseGameStartDate(game) {
+      const candidates = [
+        game?.sort_datetime,
+        game?.start_time,
+        game?.game_date_raw,
+        [game?.date, game?.time].filter(Boolean).join(" "),
+        game?.date,
+      ].filter(value => String(value || "").trim());
+      for (const value of candidates) {
+        const parsed = new Date(value);
+        if (!Number.isNaN(parsed.getTime())) return parsed;
+      }
+      return null;
+    }
+
+    function isClearlyCompletedGame(game) {
+      const status = normalizeText(game?.game_status || game?.status || game?.abstract_game_state);
+      return status.includes("final") || status.includes("completed") || status.includes("game over");
+    }
+
+    function isClearlyLiveGame(game) {
+      const status = normalizeText(game?.game_status || game?.status || game?.abstract_game_state);
+      return (
+        status.includes("live") ||
+        status.includes("in progress") ||
+        status.includes("middle") ||
+        status.includes("top ") ||
+        status.includes("bottom ")
+      );
+    }
+
+    function isClearlyUpcomingGame(game) {
+      const status = normalizeText(game?.game_status || game?.status || game?.abstract_game_state);
+      return status.includes("pre-game") || status.includes("scheduled") || status.includes("preview");
+    }
+
+    function shouldShowAsLiveGame(game, tableType) {
+      if (isClearlyCompletedGame(game)) return false;
+      if (isClearlyLiveGame(game) || tableType === "live") return true;
+
+      const startDate = parseGameStartDate(game);
+      if (!startDate) return false;
+
+      const now = new Date();
+      const minutesSinceStart = (now.getTime() - startDate.getTime()) / 60000;
+      return minutesSinceStart >= 0 && minutesSinceStart <= 480;
+    }
+
+    function splitSupabaseGameRows(rows) {
+      const upcomingByKey = new Map();
+      const liveByKey = new Map();
+      rows.forEach(row => {
+        if (!row?.payload) return;
+        const tableType = String(row.table_type || "").toLowerCase();
+        const game = { ...row.payload };
+        const rowKey = [
+          game.event_key,
+          game.pitcher,
+          game.opponent,
+          game.date || game.game_date,
+          game.start_time,
+        ].map(value => normalizeText(value)).join("|");
+        if (shouldShowAsLiveGame(game, tableType)) {
+          if (!game.game_status || isClearlyUpcomingGame(game)) {
+            game.game_status = "In Progress";
+          }
+          liveByKey.set(rowKey, game);
+          upcomingByKey.delete(rowKey);
+          return;
+        }
+        if ((tableType === "upcoming" || !isClearlyCompletedGame(game)) && !liveByKey.has(rowKey)) {
+          upcomingByKey.set(rowKey, game);
+        }
+      });
+      const sortByStartTime = (left, right) => sortableGameDate(left) - sortableGameDate(right);
+      return {
+        upcoming: Array.from(upcomingByKey.values()).sort(sortByStartTime),
+        live: Array.from(liveByKey.values()).sort(sortByStartTime),
+      };
+    }
+
+    async function loadSupabaseTables() {
+      const { data: gameRows, error: gameRowsError } = await supabaseClient
+        .from("pitchiq_game_rows")
+        .select("table_type,payload,updated_at")
+        .order("updated_at", { ascending: false });
+
+      if (gameRowsError) {
+        refreshPitcherList();
+        refreshUpcomingGamesView();
+        refreshLiveGamesView();
+        return;
+      }
+
+      const { data: historyRows, error: historyRowsError } = await supabaseClient
+        .from("pitchiq_historical_rows")
+        .select("payload,updated_at")
+        .order("updated_at", { ascending: false })
+        .limit(2000);
+
+      const splitGames = splitSupabaseGameRows(gameRows || []);
+      upcomingGames = splitGames.upcoming;
+      liveGames = splitGames.live;
+      if (!historyRowsError) {
+        gameHistory = (historyRows || [])
+          .filter(row => row.payload)
+          .map(row => row.payload);
+        gameHistory.sort((left, right) => {
+          const leftDate = sortableGameDate(left);
+          const rightDate = sortableGameDate(right);
+          if (leftDate < rightDate) return 1;
+          if (leftDate > rightDate) return -1;
+          return normalizeText(left.pitcher).localeCompare(normalizeText(right.pitcher));
+        });
+      }
+
+      refreshPitcherList();
+      upcomingGamesPage = 1;
+      liveGamesPage = 1;
+      refreshUpcomingGamesView();
+      refreshLiveGamesView();
+      if (pitcherInput.value.trim()) {
+        projectPitcher();
+      }
+    }
 
     function formatNumber(value, digits = 2) {
       if (typeof value === "string" && !value.trim()) return "";
@@ -1080,6 +1390,11 @@
         return Number(value);
       }
       return null;
+    }
+
+    function sortableGameDate(game) {
+      const parsed = Date.parse(game?.sort_datetime || game?.game_date_raw || game?.date || "");
+      return Number.isNaN(parsed) ? 0 : parsed;
     }
 
     function formatVolatility(game) {
@@ -1159,6 +1474,24 @@
       `;
     }
 
+    function renderBookLineCell(lineValue, overPayout, underPayout) {
+      const line = String(lineValue || "").trim();
+      const overOdds = String(overPayout || "").trim();
+      const underOdds = String(underPayout || "").trim();
+      if (!line && !overOdds && !underOdds) return "<td></td>";
+      const oddsMarkup = (overOdds || underOdds)
+        ? `<span class="book-line-odds"><span class="book-line-over-odds">${escapeHtml(overOdds || "-")}</span><span class="book-line-odds-divider">/</span><span class="book-line-under-odds">${escapeHtml(underOdds || "-")}</span></span>`
+        : "";
+      return `
+        <td>
+          <div class="book-line-cell">
+            <span class="book-line-main">${escapeHtml(line)}</span>
+            ${oddsMarkup}
+          </div>
+        </td>
+      `;
+    }
+
     function isAssignedUmp(value) {
       const normalized = String(value || "").trim().toLowerCase();
       return Boolean(normalized && !["pending", "unknown", "n/a", "na"].includes(normalized));
@@ -1194,17 +1527,25 @@
     }
 
     function leanClass(value) {
-      if (value === "OVER") return "up-text";
-      if (value === "UNDER") return "down-text";
+      const normalized = String(value || "").trim().toUpperCase();
+      if (normalized === "OVER") return "up-text";
+      if (normalized === "UNDER") return "down-text";
+      if (normalized === "PASS" || normalized === "AVOID") return "avoid-text";
       return "";
     }
 
     function formatBetLabel(value) {
-      if (value === "PASS") return "Avoid";
+      if (String(value || "").trim().toUpperCase() === "PASS") return "Avoid";
       return value || "";
     }
 
-    function edgeTone(value) {
+    function isAvoidBet(value) {
+      const normalized = String(value || "").trim().toUpperCase();
+      return normalized === "PASS" || normalized === "AVOID";
+    }
+
+    function edgeTone(value, betValue) {
+      if (isAvoidBet(betValue)) return "avoid-text";
       if (value === null || value === undefined || value === "" || Number.isNaN(Number(value))) return "";
       return Number(value) >= 0 ? "up-text" : "down-text";
     }
@@ -1228,6 +1569,7 @@
 
     function renderCells(containerId, items) {
       const container = document.getElementById(containerId);
+      if (!container) return;
       container.innerHTML = items.map(item => `
         <div class="cell">
           <div class="label">${escapeHtml(item.label)}</div>
@@ -1252,7 +1594,7 @@
 
     function renderProjection(result) {
       renderCells("general-top-grid", [
-        { label: "Projected Ks", value: formatNumber(displayProjectionValue(result), 2) },
+        { label: "Projected Ks", value: formatNumber(displayProjectionValue(result), 2), className: "projected-ks-value" },
         { label: "Bet DK", value: formatBetLabel(result.lean), className: leanClass(result.lean) },
         { label: "Confidence", value: result.confidence || "", className: confidenceTone(result.confidence) }
       ]);
@@ -1298,8 +1640,20 @@
           <span>${formatNumber(value, 2)}</span>
         </div>
       `).join("");
-      document.getElementById("general-breakdown-row").innerHTML = chips;
-      document.getElementById("upcoming-breakdown-row").innerHTML = chips;
+      const volatilityLabel = String(game.volatility_label || "").trim();
+      const volatilityScore = game.volatility_score;
+      const vixChip = volatilityLabel && volatilityScore !== null && volatilityScore !== undefined && volatilityScore !== "" && !Number.isNaN(Number(volatilityScore))
+        ? `
+          <div class="breakdown-chip ${volatilityTone(volatilityLabel)}">
+            <strong>Vix:</strong>
+            <span>${formatNumber(volatilityScore, 2)}</span>
+          </div>
+        `
+        : "";
+      const upcomingContainer = document.getElementById("upcoming-breakdown-row");
+      if (upcomingContainer) {
+        upcomingContainer.innerHTML = chips + vixChip;
+      }
     }
 
     function renderEmptyPitcherLookup() {
@@ -1394,6 +1748,8 @@
       const manualEdge = Number.isFinite(Number(projected)) && Number.isFinite(manualLine)
         ? Number(projected) - manualLine
         : null;
+      const latestHistory = latestHistoricalGameForPitcher(game.pitcher);
+      const lastGameK = game.last_game_k || latestHistory?.actual_k || latestHistory?.strikeouts || "";
 
       renderCells("upcoming-game-grid", [
         { label: "Pitcher", value: game.pitcher || "" },
@@ -1403,7 +1759,7 @@
         { label: "Venue", value: game.venue || "" },
         { label: "Home Or Away", value: game.home_or_away || "" },
         { label: "Plate Ump", value: game.plate_umpire || "Pending" },
-        { label: "Last Game K", value: game.last_game_k || "" }
+        { label: "Last Game K", value: lastGameK }
       ]);
 
       renderProjection({
@@ -1415,14 +1771,28 @@
         under_probability: null
       });
 
-      renderSportsbookProjectionRow("upcoming-dk-grid", "DraftKings", "DraftKings", game.dk_line || "", "", "", {
+      renderSportsbookProjectionRow(
+        "upcoming-dk-grid",
+        "DraftKings",
+        "DraftKings",
+        game.dk_line || "",
+        game.dk_over_payout || "",
+        game.dk_under_payout || "",
+        {
         lean: game.dk_bet || "PASS",
         confidence_tier: game.dk_confidence || "",
         edge: game.dk_edge,
         over_probability: game.dk_over_probability,
         under_probability: game.dk_under_probability
       });
-      renderSportsbookProjectionRow("upcoming-fd-grid", "FanDuel", "FanDuel", game.fd_line || "", "", "", {
+      renderSportsbookProjectionRow(
+        "upcoming-fd-grid",
+        "FanDuel",
+        "FanDuel",
+        game.fd_line || "",
+        game.fd_over_payout || "",
+        game.fd_under_payout || "",
+        {
         lean: game.fd_bet || "PASS",
         confidence_tier: game.fd_confidence || "",
         edge: game.fd_edge,
@@ -1559,7 +1929,7 @@
       if (!games || !games.length) {
         container.innerHTML = `
           <tr>
-            <td colspan="14">No upcoming probable starters available.</td>
+            <td colspan="12">No upcoming probable starters available.</td>
           </tr>
         `;
         upcomingGamesMeta.textContent = "0 results";
@@ -1584,14 +1954,12 @@
           <td>${escapeHtml(game.opponent)}</td>
           ${renderDateCell(game)}
           ${renderUmpCell(game)}
-          <td>${escapeHtml(game.dk_line || "")}</td>
-          <td>${escapeHtml(game.fd_line || "")}</td>
-          <td>${formatNumber(displayProjectionValue(game), 2)}</td>
+          ${renderBookLineCell(game.dk_line, game.dk_over_payout, game.dk_under_payout)}
+          ${renderBookLineCell(game.fd_line, game.fd_over_payout, game.fd_under_payout)}
+          <td class="projected-ks-value">${formatNumber(displayProjectionValue(game), 2)}</td>
           ${renderVolatilityCell(game)}
-          <td class="${leanClass(game.dk_bet)}">${escapeHtml(formatBetLabel(game.dk_bet))}</td>
-          <td class="${edgeTone(game.dk_edge)}">${escapeHtml(formatEdge(game.dk_edge))}</td>
-          <td class="${leanClass(game.fd_bet)}">${escapeHtml(formatBetLabel(game.fd_bet))}</td>
-          <td class="${edgeTone(game.fd_edge)}">${escapeHtml(formatEdge(game.fd_edge))}</td>
+          <td class="${edgeTone(game.dk_edge, game.dk_bet)}">${escapeHtml(formatEdge(game.dk_edge))}</td>
+          <td class="${edgeTone(game.fd_edge, game.fd_bet)}">${escapeHtml(formatEdge(game.fd_edge))}</td>
           <td>${escapeHtml(game.notes || "")}</td>
         </tr>
       `).join("");
@@ -1616,7 +1984,7 @@
       if (!games || !games.length) {
         container.innerHTML = `
           <tr>
-            <td colspan="14">No live probable-starter games right now.</td>
+            <td colspan="12">No live probable-starter games right now.</td>
           </tr>
         `;
         liveGamesMeta.textContent = "0 results";
@@ -1641,14 +2009,12 @@
           <td>${escapeHtml(game.opponent)}</td>
           <td>${escapeHtml(game.game_status || "In Progress")}</td>
           ${renderUmpCell(game)}
-          <td>${escapeHtml(game.dk_line || "")}</td>
-          <td>${escapeHtml(game.fd_line || "")}</td>
-          <td>${formatNumber(displayProjectionValue(game), 2)}</td>
+          ${renderBookLineCell(game.dk_line, game.dk_over_payout, game.dk_under_payout)}
+          ${renderBookLineCell(game.fd_line, game.fd_over_payout, game.fd_under_payout)}
+          <td class="projected-ks-value">${formatNumber(displayProjectionValue(game), 2)}</td>
           ${renderVolatilityCell(game)}
-          <td class="${leanClass(game.dk_bet)}">${escapeHtml(formatBetLabel(game.dk_bet))}</td>
-          <td class="${edgeTone(game.dk_edge)}">${escapeHtml(formatEdge(game.dk_edge))}</td>
-          <td class="${leanClass(game.fd_bet)}">${escapeHtml(formatBetLabel(game.fd_bet))}</td>
-          <td class="${edgeTone(game.fd_edge)}">${escapeHtml(formatEdge(game.fd_edge))}</td>
+          <td class="${edgeTone(game.dk_edge, game.dk_bet)}">${escapeHtml(formatEdge(game.dk_edge))}</td>
+          <td class="${edgeTone(game.fd_edge, game.fd_bet)}">${escapeHtml(formatEdge(game.fd_edge))}</td>
           <td>${escapeHtml(game.notes || "")}</td>
         </tr>
       `).join("");
@@ -1715,6 +2081,32 @@
       closePitcherDropdown();
     }
 
+    function currentPitcherGame(pitcherName) {
+      const normalizedPitcher = normalizeText(pitcherName);
+      return [...upcomingGames, ...liveGames, ...gameHistory]
+        .find(game => normalizeText(game.pitcher) === normalizedPitcher) || null;
+    }
+
+    function bestAvailableLine(game) {
+      if (!game) return "";
+      return String(game.dk_line || game.fd_line || "").trim();
+    }
+
+    function latestHistoricalGameForPitcher(pitcherName) {
+      const normalizedPitcher = normalizeText(pitcherName);
+      return gameHistory
+        .filter(game => normalizeText(game.pitcher) === normalizedPitcher)
+        .sort((left, right) => sortableGameDate(right) - sortableGameDate(left))[0] || null;
+    }
+
+    function applyDefaultLineForPitcher(pitcherName, options = {}) {
+      if (lineInputTouched && !options.force) return;
+      const game = currentPitcherGame(pitcherName);
+      const line = bestAvailableLine(game);
+      if (!line) return;
+      lineInput.value = line;
+    }
+
     function updatePitcherClearButton() {
       toggleClearButton(pitcherInput, clearPitcherButton);
     }
@@ -1723,15 +2115,20 @@
       const raw = (pitcherInput.value || "").trim();
       if (!raw) return "";
       const exact = allPitchers.find(name => name.toLowerCase() === raw.toLowerCase());
-      if (exact) return exact;
+      if (exact) {
+        applyDefaultLineForPitcher(exact);
+        return exact;
+      }
       const startsWith = allPitchers.find(name => name.toLowerCase().startsWith(raw.toLowerCase()));
       if (startsWith) {
         pitcherInput.value = startsWith;
+        applyDefaultLineForPitcher(startsWith);
         return startsWith;
       }
       const contains = allPitchers.find(name => name.toLowerCase().includes(raw.toLowerCase()));
       if (contains) {
         pitcherInput.value = contains;
+        applyDefaultLineForPitcher(contains);
         return contains;
       }
       return raw;
@@ -1743,7 +2140,9 @@
         renderEmptyPitcherLookup();
         return;
       }
-      const match = upcomingGames.find(game => normalizeText(game.pitcher) === normalizeText(pitcherName));
+      const normalizedPitcher = normalizeText(pitcherName);
+      const match = [...upcomingGames, ...liveGames, ...gameHistory]
+        .find(game => normalizeText(game.pitcher) === normalizedPitcher);
       if (!match) {
         renderEmptyPitcherLookup();
         return;
@@ -1755,6 +2154,8 @@
       if (!pitcherName) return;
       setActiveWorkspace("pitcher-lookup");
       pitcherInput.value = pitcherName;
+      applyDefaultLineForPitcher(pitcherName, { force: true });
+      lineInputTouched = false;
       updatePitcherClearButton();
       closePitcherDropdown();
       projectPitcher();
@@ -1903,6 +2304,9 @@
     });
 
     projectButton.addEventListener("click", projectPitcher);
+    lineInput.addEventListener("input", () => {
+      lineInputTouched = true;
+    });
     lineInput.addEventListener("change", projectPitcher);
 
     document.getElementById("upcoming-games-grid").addEventListener("click", event => {
@@ -1917,11 +2321,12 @@
       openPitcherFromUpcoming(button.dataset.pitcher || "");
     });
 
-    document.getElementById("logout-button").addEventListener("click", () => {
-      sessionStorage.removeItem("pitchiqLoggedIn");
+    document.getElementById("logout-button").addEventListener("click", async () => {
+      await supabaseClient.auth.signOut();
       window.location.href = "./login.html";
     });
 
+    refreshPitcherList();
     renderEmptyPitcherLookup();
     refreshUpcomingGamesView();
     refreshLiveGamesView();
