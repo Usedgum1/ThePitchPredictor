@@ -6,6 +6,14 @@
   <title>pitchIQ | Upcoming Games</title>
   <meta name="description" content="pitchIQ upcoming games board for MLB strikeout props." />
   <meta name="theme-color" content="#050505" />
+  <script>
+    if (
+      window.matchMedia("(max-width: 760px)").matches &&
+      !new URLSearchParams(window.location.search).has("desktop")
+    ) {
+      window.location.replace("./app-mobile.html");
+    }
+  </script>
 
   <style>
     :root {

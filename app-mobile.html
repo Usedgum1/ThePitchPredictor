@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>pitchIQ | Mobile Cards</title>
+  <meta name="description" content="pitchIQ mobile trading card view for MLB strikeout props." />
+  <meta name="theme-color" content="#060607" />
+
+  <style>
+    :root {
+      --bg: #060607;
+      --panel: rgba(18, 20, 28, 0.82);
+      --panel-strong: rgba(24, 26, 36, 0.96);
+      --line: rgba(255, 255, 255, 0.1);
+      --text: #f6f1e8;
+      --muted: #aab2c0;
+      --violet: #9c92ff;
+      --amber: #ffbc62;
+      --green: #85dfa2;
+      --blue: #75b7ff;
+      --red: #ff8978;
+    }
+
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      background:
+        radial-gradient(circle at 18% 0%, rgba(156, 146, 255, 0.22), transparent 28%),
+        radial-gradient(circle at 88% 8%, rgba(255, 188, 98, 0.18), transparent 26%),
+        linear-gradient(180deg, #060607 0%, #0c0d12 100%);
+      color: var(--text);
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    .shell {
+      width: min(100%, 560px);
+      margin: 0 auto;
+      padding: 14px 12px 26px;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      margin: 0 -12px 14px;
+      padding: 12px;
+      background: rgba(6, 6, 7, 0.86);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+      backdrop-filter: blur(16px);
+    }
+
+    .brand-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .brand {
+      margin: 0;
+      font-size: 1.15rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .desktop-link {
+      color: #dcd9ff;
+      border: 1px solid rgba(156, 146, 255, 0.24);
+      border-radius: 999px;
+      padding: 7px 10px;
+      background: rgba(156, 146, 255, 0.09);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-decoration: none;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .account {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-size: 0.74rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 9px;
+    }
+
+    .search {
+      width: 100%;
+      height: 44px;
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: 12px;
+      padding: 0 13px;
+      background: rgba(32, 35, 47, 0.95);
+      color: var(--text);
+      outline: none;
+    }
+
+    .control-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+    }
+
+    .segmented {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+      padding: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.035);
+    }
+
+    .tab {
+      height: 36px;
+      border: 0;
+      border-radius: 9px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .tab.active {
+      background: rgba(156, 146, 255, 0.16);
+      color: var(--text);
+      box-shadow: inset 0 0 0 1px rgba(156, 146, 255, 0.2);
+    }
+
+    .sort {
+      height: 46px;
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: 12px;
+      padding: 0 11px;
+      background: rgba(32, 35, 47, 0.95);
+      color: var(--text);
+      outline: none;
+    }
+
+    .meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 12px 2px;
+      color: var(--muted);
+      font-size: 0.73rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .cards {
+      display: grid;
+      gap: 14px;
+    }
+
+    .card {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.11);
+      border-radius: 18px;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.12), transparent 18%),
+        linear-gradient(160deg, rgba(30, 33, 46, 0.98), rgba(11, 12, 18, 0.98));
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.34);
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(118deg, transparent 0%, rgba(255,255,255,0.1) 42%, transparent 58%),
+        radial-gradient(circle at 12% 14%, rgba(255, 188, 98, 0.2), transparent 20%),
+        radial-gradient(circle at 92% 0%, rgba(117, 183, 255, 0.18), transparent 24%);
+      pointer-events: none;
+    }
+
+    .card.live {
+      border-color: rgba(133, 223, 162, 0.34);
+    }
+
+    .card-inner {
+      position: relative;
+      padding: 18px;
+    }
+
+    .player-panel {
+      min-height: 178px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 22px 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .eyebrow {
+      color: var(--amber);
+      font-size: 0.67rem;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .pitcher {
+      width: 100%;
+      margin: 10px 0 7px;
+      font-size: clamp(2rem, 12vw, 3.35rem);
+      line-height: 0.92;
+      letter-spacing: 0;
+      text-wrap: balance;
+      overflow-wrap: anywhere;
+    }
+
+    .team-name,
+    .matchup {
+      color: var(--muted);
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .game-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 14px;
+      align-items: center;
+      padding: 18px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .opponent {
+      color: var(--text);
+      font-size: 1.05rem;
+      font-weight: 900;
+      line-height: 1.2;
+    }
+
+    .opponent span {
+      color: var(--muted);
+      margin-right: 5px;
+    }
+
+    .date-block {
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .date-main {
+      display: block;
+      color: var(--text);
+      font-size: 1rem;
+      font-weight: 800;
+    }
+
+    .date-time {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .metric-list {
+      display: grid;
+      gap: 0;
+    }
+
+    .metric-row {
+      min-height: 82px;
+      display: grid;
+      grid-template-columns: 50px 1fr auto;
+      gap: 13px;
+      align-items: center;
+      padding: 13px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .metric-row:last-child {
+      border-bottom: 0;
+    }
+
+    .metric-icon {
+      width: 44px;
+      height: 44px;
+      border: 1px solid rgba(156, 146, 255, 0.34);
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(156, 146, 255, 0.06);
+      color: var(--text);
+      font-size: 0.9rem;
+      font-weight: 900;
+      letter-spacing: 0.02em;
+    }
+
+    .metric-icon.projection-icon {
+      color: var(--green);
+    }
+
+    .metric-label {
+      min-width: 0;
+      color: var(--muted);
+      font-size: 0.86rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      line-height: 1.2;
+      text-transform: uppercase;
+    }
+
+    .metric-context {
+      display: block;
+      margin-top: 4px;
+      color: rgba(170, 178, 192, 0.72);
+      font-size: 0.68rem;
+      letter-spacing: 0.04em;
+    }
+
+    .metric-value {
+      min-width: 76px;
+      text-align: right;
+      color: var(--text);
+      font-size: 1.35rem;
+      font-weight: 900;
+      line-height: 1.1;
+    }
+
+    .metric-subvalue {
+      margin-top: 7px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 6px;
+      color: rgba(170, 178, 192, 0.8);
+      font-size: 0.8rem;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .edge-stack {
+      display: grid;
+      gap: 8px;
+      text-align: right;
+    }
+
+    .edge-stack span {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      white-space: nowrap;
+    }
+
+    .edge-book {
+      color: var(--muted);
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+    }
+
+    .over { color: var(--amber); }
+    .under { color: var(--violet); }
+    .avoid { color: var(--red); }
+    .positive { color: var(--green); }
+    .negative { color: var(--blue); }
+    .vol-low { color: var(--green); }
+    .vol-medium { color: var(--amber); }
+    .vol-high { color: var(--red); }
+
+    .notes {
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 13px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.45;
+    }
+
+    .empty {
+      margin-top: 28px;
+      padding: 22px 14px;
+      border: 1px dashed rgba(255, 255, 255, 0.14);
+      border-radius: 16px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .footer {
+      margin-top: 18px;
+      color: rgba(246, 241, 232, 0.46);
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="topbar">
+      <div class="brand-row">
+        <h1 class="brand">pitchIQ</h1>
+        <a class="desktop-link" href="./app.html?desktop=1">Desktop</a>
+      </div>
+      <p class="account" id="account-pill">Checking session</p>
+      <div class="controls">
+        <input class="search" id="search-input" type="search" placeholder="Search pitcher, team, book, notes" autocomplete="off" />
+        <div class="control-row">
+          <div class="segmented" aria-label="Game view">
+            <button class="tab active" type="button" data-view="upcoming">Upcoming</button>
+            <button class="tab" type="button" data-view="live">Live</button>
+          </div>
+          <select class="sort" id="sort-select" aria-label="Sort cards">
+            <option value="date-asc">Soonest</option>
+            <option value="projected-desc">Proj K High</option>
+            <option value="dk_edge-desc">DK Edge</option>
+            <option value="fd_edge-desc">FD Edge</option>
+            <option value="pitcher-asc">Pitcher A-Z</option>
+          </select>
+        </div>
+      </div>
+      <div class="meta">
+        <span id="results-meta">Loading</span>
+        <span id="refresh-meta">Pending</span>
+      </div>
+    </div>
+
+    <section class="cards" id="cards"></section>
+    <footer class="footer" id="server-activity-footer">last server activity: pending</footer>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = "https://odvopvoqssamjquinhft.supabase.co";
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_7g1yX__kNzT-6tj8Tr4SIg_T4BX9BlV";
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+      auth: {
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
+        persistSession: true,
+        storage: window.localStorage,
+      },
+    });
+
+    const accountPill = document.getElementById("account-pill");
+    const searchInput = document.getElementById("search-input");
+    const sortSelect = document.getElementById("sort-select");
+    const cardsContainer = document.getElementById("cards");
+    const resultsMeta = document.getElementById("results-meta");
+    const refreshMeta = document.getElementById("refresh-meta");
+    const serverActivityFooter = document.getElementById("server-activity-footer");
+    const tabs = Array.from(document.querySelectorAll(".tab"));
+
+    const DATA_REFRESH_INTERVAL_MS = 300000;
+    const DATA_REFRESH_DEBOUNCE_MS = 5000;
+    let authAccepted = false;
+    let authRedirected = false;
+    let authCheckId = 0;
+    let activeView = "upcoming";
+    let searchQuery = "";
+    let upcomingGames = [];
+    let liveGames = [];
+    let dataRefreshIntervalId = null;
+    let dataRefreshTimeoutId = null;
+    let dataRefreshInFlight = false;
+    let dataRefreshQueued = false;
+    let dataRefreshChannel = null;
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function normalizeText(value) {
+      return String(value || "").trim().toLowerCase();
+    }
+
+    function formatNumber(value, digits = 2) {
+      if (typeof value === "string" && !value.trim()) return "";
+      if (value === null || value === undefined || Number.isNaN(Number(value))) return "";
+      return Number(value).toFixed(digits);
+    }
+
+    function formatDisplayTime(value) {
+      if (!value) return "";
+      const parsed = new Date(value);
+      if (Number.isNaN(parsed.getTime())) return String(value);
+      return parsed.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }).toLowerCase();
+    }
+
+    function formatServerActivity(value) {
+      const parsed = new Date(value);
+      if (Number.isNaN(parsed.getTime())) return "";
+      const part = number => String(number).padStart(2, "0");
+      return `${part(parsed.getHours())}:${part(parsed.getMinutes())} ${part(parsed.getMonth() + 1)}:${part(parsed.getDate())}:${parsed.getFullYear()}`;
+    }
+
+    function setServerActivity(value) {
+      const formatted = formatServerActivity(value);
+      serverActivityFooter.textContent = `last server activity: ${formatted || "pending"}`;
+      refreshMeta.textContent = formatted ? `Updated ${formatted}` : "Pending";
+    }
+
+    function displayProjectionValue(game) {
+      const projectionKeys = ["projected_strikeouts", "adjusted_EK_full", "adjusted_EK_hand", "ensemble_prediction"];
+      for (const key of projectionKeys) {
+        if (!(key in game)) continue;
+        const value = game[key];
+        if (typeof value === "string" && !value.trim()) continue;
+        if (value === null || value === undefined || Number.isNaN(Number(value))) continue;
+        return Number(value);
+      }
+      return null;
+    }
+
+    function sortableGameDate(game) {
+      const parsed = Date.parse(game?.sort_datetime || game?.game_date_raw || game?.start_time || game?.date || "");
+      return Number.isNaN(parsed) ? Number.POSITIVE_INFINITY : parsed;
+    }
+
+    function parseGameStartDate(game) {
+      const candidates = [
+        game?.sort_datetime,
+        game?.start_time,
+        game?.game_date_raw,
+        [game?.date, game?.time].filter(Boolean).join(" "),
+        game?.date,
+      ].filter(value => String(value || "").trim());
+      for (const value of candidates) {
+        const parsed = new Date(value);
+        if (!Number.isNaN(parsed.getTime())) return parsed;
+      }
+      return null;
+    }
+
+    function isClearlyCompletedGame(game) {
+      const status = normalizeText(game?.game_status || game?.status || game?.abstract_game_state);
+      return status.includes("final") || status.includes("completed") || status.includes("game over");
+    }
+
+    function isClearlyLiveGame(game) {
+      const status = normalizeText(game?.game_status || game?.status || game?.abstract_game_state);
+      return status.includes("live") || status.includes("in progress") || status.includes("middle") || status.includes("top ") || status.includes("bottom ");
+    }
+
+    function isClearlyUpcomingGame(game) {
+      const status = normalizeText(game?.game_status || game?.status || game?.abstract_game_state);
+      return status.includes("pre-game") || status.includes("scheduled") || status.includes("preview");
+    }
+
+    function shouldShowAsLiveGame(game, tableType) {
+      if (isClearlyCompletedGame(game)) return false;
+      if (isClearlyLiveGame(game) || tableType === "live") return true;
+      const startDate = parseGameStartDate(game);
+      if (!startDate) return false;
+      const minutesSinceStart = (Date.now() - startDate.getTime()) / 60000;
+      return minutesSinceStart >= 0 && minutesSinceStart <= 480;
+    }
+
+    function splitSupabaseGameRows(rows) {
+      const upcomingByKey = new Map();
+      const liveByKey = new Map();
+      rows.forEach(row => {
+        if (!row?.payload) return;
+        const tableType = String(row.table_type || "").toLowerCase();
+        const game = { ...row.payload };
+        const rowKey = [
+          game.event_key,
+          game.pitcher,
+          game.opponent,
+          game.date || game.game_date,
+          game.start_time,
+        ].map(value => normalizeText(value)).join("|");
+        if (shouldShowAsLiveGame(game, tableType)) {
+          if (!game.game_status || isClearlyUpcomingGame(game)) game.game_status = "In Progress";
+          liveByKey.set(rowKey, game);
+          upcomingByKey.delete(rowKey);
+          return;
+        }
+        if ((tableType === "upcoming" || !isClearlyCompletedGame(game)) && !liveByKey.has(rowKey)) {
+          upcomingByKey.set(rowKey, game);
+        }
+      });
+      const sortByStartTime = (left, right) => sortableGameDate(left) - sortableGameDate(right);
+      return {
+        upcoming: Array.from(upcomingByKey.values()).sort(sortByStartTime),
+        live: Array.from(liveByKey.values()).sort(sortByStartTime),
+      };
+    }
+
+    function leanClass(value) {
+      const normalized = String(value || "").trim().toUpperCase();
+      if (normalized === "OVER") return "over";
+      if (normalized === "UNDER") return "under";
+      if (normalized === "PASS" || normalized === "AVOID") return "avoid";
+      return "";
+    }
+
+    function formatBetLabel(value) {
+      if (String(value || "").trim().toUpperCase() === "PASS") return "Avoid";
+      return value || "";
+    }
+
+    function edgeClass(value, betValue) {
+      const normalizedBet = String(betValue || "").trim().toUpperCase();
+      if (normalizedBet === "PASS" || normalizedBet === "AVOID") return "avoid";
+      if (value === null || value === undefined || value === "" || Number.isNaN(Number(value))) return "";
+      return Number(value) >= 0 ? "positive" : "negative";
+    }
+
+    function formatEdge(value) {
+      if (value === null || value === undefined || value === "" || Number.isNaN(Number(value))) return "";
+      const number = Number(value);
+      return `${number >= 0 ? "+" : ""}${number.toFixed(2)}`;
+    }
+
+    function formatLineOdds(lineValue, overPayout, underPayout) {
+      const line = String(lineValue || "").trim();
+      const over = String(overPayout || "").trim();
+      const under = String(underPayout || "").trim();
+      return {
+        line: line || "-",
+        odds: over || under ? `${over || "-"} / ${under || "-"}` : "",
+      };
+    }
+
+    function formatGameDate(game) {
+      const rawDate = String(game?.date || "").trim();
+      const parsed = new Date(game?.sort_datetime || game?.game_date_raw || game?.start_time || rawDate);
+      if (Number.isNaN(parsed.getTime())) return rawDate;
+      return parsed.toLocaleDateString([], { month: "2-digit", day: "2-digit", year: "numeric" });
+    }
+
+    function volatilityClass(value) {
+      const normalized = normalizeText(value);
+      if (normalized === "low") return "vol-low";
+      if (normalized === "medium") return "vol-medium";
+      if (normalized === "high") return "vol-high";
+      return "";
+    }
+
+    function renderBookMetric(icon, label, lineValue, overPayout, underPayout, betValue) {
+      const book = formatLineOdds(lineValue, overPayout, underPayout);
+      return `
+        <div class="metric-row">
+          <div class="metric-icon">${escapeHtml(icon)}</div>
+          <div class="metric-label">
+            ${escapeHtml(label)}
+            <span class="metric-context ${leanClass(betValue)}">${escapeHtml(formatBetLabel(betValue) || "Lean pending")}</span>
+          </div>
+          <div class="metric-value">
+            ${escapeHtml(book.line)}
+            <div class="metric-subvalue">
+              <span class="over">${escapeHtml(String(overPayout || "-"))}</span>
+              <span>/</span>
+              <span class="under">${escapeHtml(String(underPayout || "-"))}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderSimpleMetric(icon, label, value, className = "", context = "") {
+      return `
+        <div class="metric-row">
+          <div class="metric-icon ${label === "Projection" ? "projection-icon" : ""}">${escapeHtml(icon)}</div>
+          <div class="metric-label">
+            ${escapeHtml(label)}
+            ${context ? `<span class="metric-context">${escapeHtml(context)}</span>` : ""}
+          </div>
+          <div class="metric-value ${className}">${escapeHtml(value || "-")}</div>
+        </div>
+      `;
+    }
+
+    function renderEdgeMetric(game) {
+      return `
+        <div class="metric-row">
+          <div class="metric-icon">+/-</div>
+          <div class="metric-label">Edge</div>
+          <div class="metric-value edge-stack">
+            <span class="${edgeClass(game.dk_edge, game.dk_bet)}"><b class="edge-book">DK</b>${escapeHtml(formatEdge(game.dk_edge) || "-")}</span>
+            <span class="${edgeClass(game.fd_edge, game.fd_bet)}"><b class="edge-book">FD</b>${escapeHtml(formatEdge(game.fd_edge) || "-")}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    function cardSearchText(game) {
+      return [
+        game.pitcher,
+        game.pitcher_team,
+        game.opponent,
+        game.date,
+        game.time,
+        game.game_status,
+        game.plate_umpire,
+        game.dk_line,
+        game.fd_line,
+        game.dk_bet,
+        game.fd_bet,
+        game.notes,
+      ].map(normalizeText).join(" ");
+    }
+
+    function filteredSortedGames() {
+      const query = normalizeText(searchQuery);
+      const source = activeView === "live" ? liveGames : upcomingGames;
+      const filtered = query ? source.filter(game => cardSearchText(game).includes(query)) : source.slice();
+      const [key, direction] = sortSelect.value.split("-");
+      const multiplier = direction === "desc" ? -1 : 1;
+      return filtered.sort((left, right) => {
+        let a;
+        let b;
+        if (key === "projected") {
+          a = displayProjectionValue(left) ?? Number.NEGATIVE_INFINITY;
+          b = displayProjectionValue(right) ?? Number.NEGATIVE_INFINITY;
+        } else if (key === "dk_edge" || key === "fd_edge") {
+          a = Number(left[key] ?? Number.NEGATIVE_INFINITY);
+          b = Number(right[key] ?? Number.NEGATIVE_INFINITY);
+        } else if (key === "pitcher") {
+          a = normalizeText(left.pitcher);
+          b = normalizeText(right.pitcher);
+        } else {
+          a = sortableGameDate(left);
+          b = sortableGameDate(right);
+        }
+        if (a < b) return -1 * multiplier;
+        if (a > b) return 1 * multiplier;
+        return normalizeText(left.pitcher).localeCompare(normalizeText(right.pitcher));
+      });
+    }
+
+    function renderCards() {
+      const games = filteredSortedGames();
+      const total = activeView === "live" ? liveGames.length : upcomingGames.length;
+      resultsMeta.textContent = `${games.length} of ${total} ${activeView}`;
+      if (!games.length) {
+        cardsContainer.innerHTML = '<div class="empty">No matching pitcher cards right now.</div>';
+        return;
+      }
+
+      cardsContainer.innerHTML = games.map(game => {
+        const projected = formatNumber(displayProjectionValue(game), 2) || "-";
+        const status = activeView === "live" ? (game.game_status || "In Progress") : "Upcoming";
+        const time = String(game.time || formatDisplayTime(game.start_time) || "").trim();
+        const date = formatGameDate(game);
+        const volatilityLabel = String(game.volatility_label || "").trim() || "-";
+        const volatilityScore = formatNumber(game.volatility_score, 2);
+        return `
+          <article class="card ${activeView === "live" ? "live" : ""}">
+            <div class="card-inner">
+              <div class="player-panel">
+                <div class="eyebrow">${escapeHtml(status)}</div>
+                <h2 class="pitcher">${escapeHtml(game.pitcher || "Unknown")}</h2>
+                <div class="team-name">${escapeHtml(game.pitcher_team || "Team pending")}</div>
+              </div>
+              <div class="game-row">
+                <div class="opponent"><span>vs</span>${escapeHtml(game.opponent || "Opponent pending")}</div>
+                <div class="date-block">
+                  <span class="date-main">${escapeHtml(date || "Date pending")}</span>
+                  <span class="date-time">${escapeHtml(time || "Time pending")}</span>
+                </div>
+              </div>
+              <div class="metric-list">
+                ${renderBookMetric("DK", "DraftKings", game.dk_line, game.dk_over_payout, game.dk_under_payout, game.dk_bet)}
+                ${renderBookMetric("FD", "FanDuel", game.fd_line, game.fd_over_payout, game.fd_under_payout, game.fd_bet)}
+                ${renderSimpleMetric("EK", "Ensemble K", projected, "positive")}
+                ${renderSimpleMetric("PR", "Projection", volatilityLabel, volatilityClass(volatilityLabel), volatilityScore ? `Vix ${volatilityScore}` : "")}
+                ${renderEdgeMetric(game)}
+              </div>
+              ${game.notes ? `<div class="notes">${escapeHtml(game.notes)}</div>` : ""}
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    async function getUserRole(userId) {
+      const { data, error } = await supabaseClient
+        .from("profiles")
+        .select("role")
+        .eq("user_id", userId)
+        .single();
+      if (error) return { role: null, error };
+      return { role: data?.role || null, error: null };
+    }
+
+    function setAccountIdentity(session) {
+      const user = session?.user;
+      const username = user?.user_metadata?.username;
+      const identityLabel = String(username || user?.email || "Unknown user").trim();
+      accountPill.textContent = `Logged in as ${identityLabel}`;
+    }
+
+    function redirectToLogin() {
+      if (authAccepted || authRedirected) return;
+      authRedirected = true;
+      window.location.replace("./login.html");
+    }
+
+    async function acceptSession(session) {
+      if (!session || authAccepted || authRedirected) return;
+      const checkId = ++authCheckId;
+      const { role, error } = await getUserRole(session.user.id);
+      if (checkId !== authCheckId || authAccepted || authRedirected) return;
+      if (error) {
+        window.clearTimeout(authTimeout);
+        return;
+      }
+      if (!["admin", "owner"].includes(role)) {
+        await supabaseClient.auth.signOut();
+        redirectToLogin();
+        return;
+      }
+      authAccepted = true;
+      setAccountIdentity(session);
+      refreshSupabaseData();
+      startSupabaseAutoRefresh();
+    }
+
+    async function loadSupabaseTables() {
+      const { data: gameRows, error } = await supabaseClient
+        .from("pitchiq_game_rows")
+        .select("table_type,payload,updated_at")
+        .order("updated_at", { ascending: false });
+      if (error) {
+        renderCards();
+        return;
+      }
+      const splitGames = splitSupabaseGameRows(gameRows || []);
+      upcomingGames = splitGames.upcoming;
+      liveGames = splitGames.live;
+      renderCards();
+    }
+
+    function latestTimestamp(values) {
+      return values
+        .filter(Boolean)
+        .map(value => new Date(value))
+        .filter(value => !Number.isNaN(value.getTime()))
+        .sort((left, right) => right.getTime() - left.getTime())[0] || null;
+    }
+
+    async function loadLatestTableUpdate(tableName) {
+      const { data, error } = await supabaseClient
+        .from(tableName)
+        .select("updated_at")
+        .order("updated_at", { ascending: false })
+        .limit(1);
+      if (error) return null;
+      return data?.[0]?.updated_at || null;
+    }
+
+    async function loadServerActivity() {
+      const { data, error } = await supabaseClient
+        .from("pitchiq_server_activity")
+        .select("last_activity_at")
+        .eq("id", "worker")
+        .maybeSingle();
+      const [latestGameRowsUpdate, latestHistoryRowsUpdate, latestLookupUpdate] = await Promise.all([
+        loadLatestTableUpdate("pitchiq_game_rows"),
+        loadLatestTableUpdate("pitchiq_historical_rows"),
+        loadLatestTableUpdate("pitchiq_pitcher_lookup"),
+      ]);
+      setServerActivity(latestTimestamp([
+        !error ? data?.last_activity_at : null,
+        latestGameRowsUpdate,
+        latestHistoryRowsUpdate,
+        latestLookupUpdate,
+      ]));
+    }
+
+    function queueSupabaseRefresh() {
+      window.clearTimeout(dataRefreshTimeoutId);
+      dataRefreshTimeoutId = window.setTimeout(() => {
+        if (document.hidden) {
+          dataRefreshQueued = true;
+          return;
+        }
+        refreshSupabaseData();
+      }, DATA_REFRESH_DEBOUNCE_MS);
+    }
+
+    async function refreshSupabaseData() {
+      if (dataRefreshInFlight) {
+        dataRefreshQueued = true;
+        return;
+      }
+      dataRefreshInFlight = true;
+      try {
+        await loadSupabaseTables();
+        await loadServerActivity();
+      } finally {
+        dataRefreshInFlight = false;
+        if (dataRefreshQueued) {
+          dataRefreshQueued = false;
+          queueSupabaseRefresh();
+        }
+      }
+    }
+
+    function startSupabaseAutoRefresh() {
+      if (!dataRefreshIntervalId) {
+        dataRefreshIntervalId = window.setInterval(() => {
+          if (document.hidden) {
+            dataRefreshQueued = true;
+            return;
+          }
+          refreshSupabaseData();
+        }, DATA_REFRESH_INTERVAL_MS);
+      }
+      if (dataRefreshChannel) return;
+      dataRefreshChannel = supabaseClient
+        .channel("pitchiq-mobile-card-refresh")
+        .on("postgres_changes", { event: "*", schema: "public", table: "pitchiq_game_rows" }, queueSupabaseRefresh)
+        .on("postgres_changes", { event: "*", schema: "public", table: "pitchiq_historical_rows" }, queueSupabaseRefresh)
+        .on("postgres_changes", { event: "*", schema: "public", table: "pitchiq_pitcher_lookup" }, queueSupabaseRefresh)
+        .on("postgres_changes", { event: "*", schema: "public", table: "pitchiq_server_activity" }, queueSupabaseRefresh)
+        .subscribe();
+    }
+
+    const authTimeout = window.setTimeout(redirectToLogin, 8000);
+
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+      if (session) {
+        window.clearTimeout(authTimeout);
+        acceptSession(session);
+        return;
+      }
+      if (event === "SIGNED_OUT" && !authAccepted) {
+        window.clearTimeout(authTimeout);
+        redirectToLogin();
+      }
+    });
+
+    supabaseClient.auth.getSession().then(({ data, error }) => {
+      if (error) {
+        window.clearTimeout(authTimeout);
+        redirectToLogin();
+        return;
+      }
+      if (data.session) {
+        window.clearTimeout(authTimeout);
+        acceptSession(data.session);
+      }
+    });
+
+    tabs.forEach(tab => {
+      tab.addEventListener("click", () => {
+        activeView = tab.dataset.view || "upcoming";
+        tabs.forEach(item => item.classList.toggle("active", item === tab));
+        renderCards();
+      });
+    });
+
+    searchInput.addEventListener("input", () => {
+      searchQuery = searchInput.value || "";
+      renderCards();
+    });
+
+    sortSelect.addEventListener("change", renderCards);
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden || !authAccepted || !dataRefreshQueued) return;
+      dataRefreshQueued = false;
+      refreshSupabaseData();
+    });
+
+    renderCards();
+  </script>
+</body>
+</html>
