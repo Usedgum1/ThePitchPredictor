@@ -236,9 +236,9 @@
       background: linear-gradient(
         115deg,
         transparent 38%,
-        rgba(176, 255, 203, 0.14) 46%,
-        rgba(133, 223, 162, 0.34) 50%,
-        rgba(176, 255, 203, 0.14) 54%,
+        rgba(136, 255, 190, 0.3) 46%,
+        rgba(0, 255, 128, 0.78) 50%,
+        rgba(136, 255, 190, 0.3) 54%,
         transparent 62%
       );
       animation: cardGlowSweep 10s ease-in-out infinite;
@@ -248,9 +248,9 @@
       background: linear-gradient(
         115deg,
         transparent 38%,
-        rgba(185, 220, 255, 0.14) 46%,
-        rgba(117, 183, 255, 0.34) 50%,
-        rgba(185, 220, 255, 0.14) 54%,
+        rgba(88, 214, 255, 0.3) 46%,
+        rgba(0, 157, 255, 0.82) 50%,
+        rgba(88, 214, 255, 0.3) 54%,
         transparent 62%
       );
       animation: cardGlowSweep 10s ease-in-out infinite;
@@ -711,9 +711,11 @@
       return `${number >= 0 ? "+" : ""}${number.toFixed(2)}`;
     }
 
-    function hasPositiveValue(value) {
-      if (value === null || value === undefined || value === "" || Number.isNaN(Number(value))) return false;
-      return Number(value) > 0;
+    function lineDiscrepancyShimmerClass(game) {
+      const notes = normalizeText(game?.notes);
+      if (notes.includes("+dk line")) return "dk-shimmer";
+      if (notes.includes("+fd line")) return "fd-shimmer";
+      return "";
     }
 
     function formatLineOdds(lineValue, overPayout, underPayout) {
@@ -845,11 +847,7 @@
         const date = formatGameDate(game);
         const volatilityLabel = String(game.volatility_label || "").trim() || "-";
         const volatilityScore = formatNumber(game.volatility_score, 2);
-        const shimmerClass = hasPositiveValue(game.dk_edge)
-          ? "dk-shimmer"
-          : hasPositiveValue(game.fd_edge)
-            ? "fd-shimmer"
-            : "";
+        const shimmerClass = lineDiscrepancyShimmerClass(game);
         return `
           <article class="card ${activeView === "live" ? "live" : ""} ${shimmerClass}">
             <div class="card-inner">
