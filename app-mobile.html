@@ -323,11 +323,20 @@
 
     .game-row {
       display: grid;
-      grid-template-columns: 1fr auto;
+      grid-template-columns: 0.85fr 1fr auto;
       gap: 10px;
       align-items: center;
       padding: 12px 0;
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .game-label {
+      color: var(--text);
+      font-size: 0.75rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      line-height: 1.2;
+      text-transform: uppercase;
     }
 
     .opponent {
@@ -919,6 +928,7 @@
                 <div class="team-name">${escapeHtml(game.pitcher_team || "Team pending")}</div>
               </div>
               <div class="game-row">
+                <div class="game-label">Game Info</div>
                 <div class="opponent"><span>vs</span>${escapeHtml(game.opponent || "Opponent pending")}</div>
                 <div class="date-block">
                   <span class="date-main">${escapeHtml(date || "Date pending")}</span>
@@ -926,10 +936,10 @@
                 </div>
               </div>
               <div class="metric-list">
+                ${renderSimpleMetric("Ensemble K", projected, "ek-value", "", "ek-label")}
                 ${renderBookMetric("DraftKings", game.dk_line, game.dk_over_payout, game.dk_under_payout, game.dk_bet)}
                 ${renderBookMetric("FanDuel", game.fd_line, game.fd_over_payout, game.fd_under_payout, game.fd_bet)}
-                ${renderSimpleMetric("Ensemble K", projected, "ek-value", "", "ek-label")}
-                ${renderSimpleMetric("Volatility", volatilityLabel, volatilityClass(volatilityLabel), volatilityScore ? `Vix ${volatilityScore}` : "")}
+                ${renderSimpleMetric("Vix", volatilityLabel, volatilityClass(volatilityLabel), volatilityScore ? `Vix ${volatilityScore}` : "")}
                 ${renderEdgeMetric(game)}
                 ${renderNotesMetric(notes)}
               </div>
