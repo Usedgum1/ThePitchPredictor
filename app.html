@@ -133,23 +133,6 @@
       padding-top: 2px;
     }
 
-    .account-pill {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 36px;
-      padding: 8px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(141, 138, 255, 0.26);
-      background: rgba(141, 138, 255, 0.1);
-      color: #d9d8ff;
-      font-size: 0.78rem;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      box-shadow: 0 10px 24px rgba(46, 32, 104, 0.18);
-    }
-
     .brand {
       font-size: 2rem;
       letter-spacing: 0.12em;
@@ -164,36 +147,32 @@
       line-height: 1.6;
     }
 
-    .startup-status-pill,
-    .logout-button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 40px;
-      padding: 10px 16px;
-      border-radius: 999px;
-      border: 1px solid rgba(141,223,159,0.36);
-      background: linear-gradient(180deg, rgba(21, 79, 39, 0.95), rgba(15, 55, 29, 0.95));
-      color: #d8ffe1;
-      font-size: 0.82rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      box-shadow: 0 12px 30px rgba(18, 79, 40, 0.28);
-    }
-
-    .logout-button {
-      cursor: pointer;
-    }
-
     .workspace-nav {
       display: flex;
+      justify-content: space-between;
+      align-items: center;
       gap: 10px;
       margin: 18px 0 16px;
       padding-bottom: 14px;
       border-bottom: 1px solid rgba(255,255,255,0.06);
     }
 
+    .workspace-tabs,
+    .workspace-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .workspace-actions {
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .account-pill,
+    .view-switch-button,
+    .logout-button,
     .workspace-tab {
       border: 1px solid rgba(255,255,255,0.08);
       background: rgba(255,255,255,0.02);
@@ -201,9 +180,19 @@
       border-radius: 999px;
       padding: 10px 16px;
       font-size: 0.82rem;
+      font-weight: 700;
       letter-spacing: 0.08em;
       text-transform: uppercase;
+      text-decoration: none;
       cursor: pointer;
+    }
+
+    .account-pill {
+      cursor: default;
+      max-width: min(42vw, 420px);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .workspace-tab.active {
@@ -906,9 +895,23 @@
 
     @media (max-width: 900px) {
       .page-head,
+      .workspace-nav,
       .table-toolbar {
         flex-direction: column;
         align-items: stretch;
+      }
+
+      .workspace-tabs,
+      .workspace-actions {
+        flex-wrap: wrap;
+      }
+
+      .workspace-actions {
+        justify-content: flex-start;
+      }
+
+      .account-pill {
+        max-width: none;
       }
 
       .page-head-meta,
@@ -962,16 +965,19 @@
           <h1 class="brand">pitchIQ</h1>
           <p class="sub">A decision platform for MLB strikeout props, built to compare model forecasts against live bookmaker markets and highlight betting value faster.</p>
         </div>
-        <div class="page-head-meta">
-          <div id="account-pill" class="account-pill">Logged in as ...</div>
-          <button id="logout-button" class="logout-button" type="button">Log Out</button>
-        </div>
       </div>
 
       <div class="workspace-nav">
-    <button class="workspace-tab" data-view="pitcher-lookup">Pitcher Lookup</button>
-    <button class="workspace-tab active" data-view="upcoming-games">Upcoming Games</button>
-    <button class="workspace-tab" data-view="live-games">Live Games</button>
+        <div class="workspace-tabs">
+          <button class="workspace-tab" data-view="pitcher-lookup">Pitcher Lookup</button>
+          <button class="workspace-tab active" data-view="upcoming-games">Upcoming Games</button>
+          <button class="workspace-tab" data-view="live-games">Live Games</button>
+        </div>
+        <div class="workspace-actions">
+          <div id="account-pill" class="account-pill">Logged in as ...</div>
+          <a class="view-switch-button" href="./app-mobile.html">Mobile</a>
+          <button id="logout-button" class="logout-button" type="button">Log Out</button>
+        </div>
       </div>
 
       <div id="pitcher-lookup-panel" class="workspace-panel">
