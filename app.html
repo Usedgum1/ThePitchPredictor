@@ -58,6 +58,17 @@
       isolation: isolate;
     }
 
+    .server-activity-footer {
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 0 18px 22px;
+      color: rgba(244, 240, 232, 0.48);
+      font-size: 0.76rem;
+      letter-spacing: 0.04em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
     .app::before {
       content: "";
       position: absolute;
@@ -1091,6 +1102,9 @@
       </div>
     </section>
   </div>
+  <footer class="server-activity-footer" id="server-activity-footer">
+    last server activity: pending
+  </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
@@ -1105,6 +1119,7 @@
       },
     });
     const accountPill = document.getElementById("account-pill");
+    const serverActivityFooter = document.getElementById("server-activity-footer");
 
     let authAccepted = false;
     let authRedirected = false;
@@ -1158,6 +1173,8 @@
       authAccepted = true;
       setAccountIdentity(session);
       loadSupabaseTables();
+      loadServerActivity();
+      window.setInterval(loadServerActivity, 60000);
     }
 
     const authTimeout = window.setTimeout(() => {
@@ -1432,6 +1449,45 @@
         hour: "numeric",
         minute: "2-digit"
       }).toLowerCase();
+    }
+
+    function formatServerActivity(value) {
+      const parsed = new Date(value);
+      if (Number.isNaN(parsed.getTime())) return "";
+      const part = number => String(number).padStart(2, "0");
+      return [
+        `${part(parsed.getHours())}:${part(parsed.getMinutes())}`,
+        `${part(parsed.getMonth() + 1)}:${part(parsed.getDate())}:${parsed.getFullYear()}`
+      ].join(" ");
+    }
+
+    function setServerActivity(value) {
+      if (!serverActivityFooter) return;
+      const formatted = formatServerActivity(value);
+      serverActivityFooter.textContent = `last server activity: ${formatted || "pending"}`;
+    }
+
+    async function loadServerActivity() {
+      const { data, error } = await supabaseClient
+        .from("pitchiq_server_activity")
+        .select("last_activity_at")
+        .eq("id", "worker")
+        .maybeSingle();
+
+      if (!error && data?.last_activity_at) {
+        setServerActivity(data.last_activity_at);
+        return;
+      }
+
+      const { data: fallbackRows, error: fallbackError } = await supabaseClient
+        .from("pitchiq_pitcher_lookup")
+        .select("updated_at")
+        .order("updated_at", { ascending: false })
+        .limit(1);
+
+      if (!fallbackError && fallbackRows?.[0]?.updated_at) {
+        setServerActivity(fallbackRows[0].updated_at);
+      }
     }
 
     function escapeHtml(value) {
