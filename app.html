@@ -1124,6 +1124,13 @@
     let authAccepted = false;
     let authRedirected = false;
     let authCheckId = 0;
+    const DATA_REFRESH_INTERVAL_MS = 30000;
+    const DATA_REFRESH_DEBOUNCE_MS = 800;
+    let dataRefreshIntervalId = null;
+    let dataRefreshTimeoutId = null;
+    let dataRefreshInFlight = false;
+    let dataRefreshQueued = false;
+    let dataRefreshChannel = null;
 
     async function getUserRole(userId) {
       const { data, error } = await supabaseClient
@@ -1172,9 +1179,8 @@
 
       authAccepted = true;
       setAccountIdentity(session);
-      loadSupabaseTables();
-      loadServerActivity();
-      window.setInterval(loadServerActivity, 60000);
+      refreshSupabaseData({ resetPages: true });
+      startSupabaseAutoRefresh();
     }
 
     const authTimeout = window.setTimeout(() => {
@@ -1340,7 +1346,7 @@
       };
     }
 
-    async function loadSupabaseTables() {
+    async function loadSupabaseTables(options = {}) {
       const { data: gameRows, error: gameRowsError } = await supabaseClient
         .from("pitchiq_game_rows")
         .select("table_type,payload,updated_at")
@@ -1376,13 +1382,58 @@
       }
 
       refreshPitcherList();
-      upcomingGamesPage = 1;
-      liveGamesPage = 1;
+      if (options.resetPages !== false) {
+        upcomingGamesPage = 1;
+        liveGamesPage = 1;
+      }
       refreshUpcomingGamesView();
       refreshLiveGamesView();
       if (pitcherInput.value.trim()) {
         projectPitcher();
       }
+    }
+
+    function queueSupabaseRefresh() {
+      window.clearTimeout(dataRefreshTimeoutId);
+      dataRefreshTimeoutId = window.setTimeout(() => {
+        refreshSupabaseData({ resetPages: false });
+      }, DATA_REFRESH_DEBOUNCE_MS);
+    }
+
+    async function refreshSupabaseData(options = {}) {
+      if (dataRefreshInFlight) {
+        dataRefreshQueued = true;
+        return;
+      }
+
+      dataRefreshInFlight = true;
+      try {
+        await loadSupabaseTables(options);
+        await loadServerActivity();
+      } finally {
+        dataRefreshInFlight = false;
+        if (dataRefreshQueued) {
+          dataRefreshQueued = false;
+          queueSupabaseRefresh();
+        }
+      }
+    }
+
+    function startSupabaseAutoRefresh() {
+      if (!dataRefreshIntervalId) {
+        dataRefreshIntervalId = window.setInterval(() => {
+          refreshSupabaseData({ resetPages: false });
+        }, DATA_REFRESH_INTERVAL_MS);
+      }
+
+      if (dataRefreshChannel) return;
+      dataRefreshChannel = supabaseClient
+        .channel("pitchiq-table-refresh")
+        .on("postgres_changes", { event: "*", schema: "public", table: "pitchiq_game_rows" }, queueSupabaseRefresh)
+        .on("postgres_changes", { event: "*", schema: "public", table: "pitchiq_historical_rows" }, queueSupabaseRefresh)
+        .on("postgres_changes", { event: "*", schema: "public", table: "pitchiq_pitcher_lookup" }, queueSupabaseRefresh)
+        .on("postgres_changes", { event: "*", schema: "public", table: "pitchiq_server_activity" }, queueSupabaseRefresh)
+        .subscribe();
     }
 
     function formatNumber(value, digits = 2) {
