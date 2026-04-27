@@ -681,6 +681,7 @@
   </style>
 </head>
 <body>
+  <audio id="card-flip-audio" src="sounds/cardflip.mp3" preload="auto"></audio>
   <main class="shell">
     <div class="topbar">
       <div class="brand-row">
@@ -734,6 +735,7 @@
     const searchInput = document.getElementById("search-input");
     const sortSelect = document.getElementById("sort-select");
     const cardsContainer = document.getElementById("cards");
+    const cardFlipAudioElement = document.getElementById("card-flip-audio");
     const ALLOWED_ACCOUNT_ROLES = ["basic", "pro", "life", "admin", "owner"];
     const resultsMeta = document.getElementById("results-meta");
     const refreshMeta = document.getElementById("refresh-meta");
@@ -761,60 +763,19 @@
     let dataRefreshQueued = false;
     let dataRefreshChannel = null;
     const CARD_FLIP_SOUND_URL = new URL("sounds/cardflip.mp3", window.location.href).href;
-    let cardFlipAudio = null;
-    let cardFlipAudioContext = null;
-
-    function getCardFlipAudio() {
-      if (!cardFlipAudio) {
-        cardFlipAudio = new Audio(CARD_FLIP_SOUND_URL);
-        cardFlipAudio.preload = "auto";
-        cardFlipAudio.volume = 0.8;
-      }
-      return cardFlipAudio;
-    }
-
-    function playSyntheticCardFlipSound() {
-      try {
-        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-        if (!AudioContextClass) return;
-        cardFlipAudioContext = cardFlipAudioContext || new AudioContextClass();
-        if (cardFlipAudioContext.state === "suspended") {
-          cardFlipAudioContext.resume().catch(() => {});
-        }
-        const now = cardFlipAudioContext.currentTime;
-        const oscillator = cardFlipAudioContext.createOscillator();
-        const gain = cardFlipAudioContext.createGain();
-        oscillator.type = "triangle";
-        oscillator.frequency.setValueAtTime(740, now);
-        oscillator.frequency.exponentialRampToValueAtTime(185, now + 0.12);
-        gain.gain.setValueAtTime(0.0001, now);
-        gain.gain.exponentialRampToValueAtTime(0.13, now + 0.012);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.14);
-        oscillator.connect(gain);
-        gain.connect(cardFlipAudioContext.destination);
-        oscillator.start(now);
-        oscillator.stop(now + 0.15);
-      } catch (error) {
-      }
-    }
 
     function playCardFlipSound() {
       try {
-        const audio = getCardFlipAudio();
+        const audio = cardFlipAudioElement || new Audio(CARD_FLIP_SOUND_URL);
+        audio.preload = "auto";
+        audio.volume = 0.85;
         audio.pause();
         audio.currentTime = 0;
         const playPromise = audio.play();
         if (playPromise && typeof playPromise.catch === "function") {
-          playPromise.catch(() => {
-            const retryAudio = new Audio(CARD_FLIP_SOUND_URL);
-            retryAudio.volume = 0.8;
-            retryAudio.play().catch(() => {
-              playSyntheticCardFlipSound();
-            });
-          });
+          playPromise.catch(() => {});
         }
       } catch (error) {
-        playSyntheticCardFlipSound();
       }
     }
 
