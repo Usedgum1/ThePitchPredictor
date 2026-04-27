@@ -263,6 +263,29 @@
       margin: 6px 0 0;
     }
 
+    .tier-cta {
+      align-items: center;
+      border: 1px solid rgba(255, 177, 74, 0.42);
+      background: linear-gradient(135deg, rgba(141, 223, 159, 0.16), rgba(255, 177, 74, 0.16));
+      color: var(--text);
+      border-radius: 999px;
+      cursor: not-allowed;
+      display: inline-flex;
+      font-size: 0.68rem;
+      font-weight: 900;
+      gap: 7px;
+      letter-spacing: 0.08em;
+      margin-top: 12px;
+      padding: 8px 12px;
+      text-transform: uppercase;
+    }
+
+    .tier-lock {
+      color: var(--success);
+      font-size: 0.8rem;
+      line-height: 1;
+    }
+
     .badge {
       color: var(--amber);
       font-size: 0.68rem;
@@ -398,6 +421,10 @@
     const tierDetails = {
       basic: "Starter access while the account system is being built.",
       pro: "Future upgraded access for expanded tools and premium views.",
+      life: "Access to everything, all the time, forever."
+    };
+    const tierActions = {
+      pro: "Upgrade",
       life: "Invite Only"
     };
 
@@ -442,19 +469,31 @@
 
       currentEmail.textContent = email || "unknown";
       currentUsername.textContent = username || "not set";
-      currentTier.textContent = activeRole || "unknown";
+      currentTier.textContent = formatRoleLabel(activeRole);
       usernameInput.value = username;
       emailInput.value = email;
 
       tierList.innerHTML = DISPLAY_TIERS.map(role => `
         <div class="tier ${role === activeRole ? "current" : ""}">
           <div class="tier-title">
-            <span>${role}</span>
+            <span>${formatRoleLabel(role)}</span>
             ${role === activeRole ? '<span class="badge">current</span>' : ""}
           </div>
           <p class="tier-copy">${tierDetails[role]}</p>
+          ${tierActions[role] ? `
+            <button class="tier-cta" type="button" disabled>
+              <span class="tier-lock" aria-hidden="true">&#128274;</span>
+              <span>${tierActions[role]}</span>
+            </button>
+          ` : ""}
         </div>
       `).join("");
+    }
+
+    function formatRoleLabel(role) {
+      const value = String(role || "").trim();
+      if (!value) return "Unknown";
+      return value.charAt(0).toUpperCase() + value.slice(1);
     }
 
     async function verifyCurrentPassword(password) {
