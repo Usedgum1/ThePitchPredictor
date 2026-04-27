@@ -615,6 +615,8 @@
       text-align: center;
       text-transform: uppercase;
       margin: 0 0 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .lookup-note-card {
@@ -639,25 +641,21 @@
       background: rgba(58, 45, 31, 0.34);
     }
 
-    .lookup-note-tag {
-      display: inline-flex;
-      border-radius: 999px;
-      padding: 5px 10px;
-      margin-bottom: 9px;
-      background: rgba(255, 255, 255, 0.08);
-      color: var(--muted);
-      font-size: 0.64rem;
-      font-weight: 900;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-    }
-
     .lookup-note-title {
       color: var(--text);
       font-size: 0.92rem;
       font-weight: 900;
       line-height: 1.25;
       margin-bottom: 8px;
+    }
+
+    .lookup-note-k {
+      color: var(--amber);
+      margin-left: 5px;
+    }
+
+    .lookup-note-k.down {
+      color: var(--blue);
     }
 
     .lookup-note-body {
@@ -1087,6 +1085,12 @@
       return "Informative";
     }
 
+    function noteImpactSuffix(impact) {
+      if (impact === "up") return { text: "+K", className: "" };
+      if (impact === "down") return { text: "-K", className: "down" };
+      return { text: "", className: "" };
+    }
+
     function sanitizeNoteBody(value) {
       return escapeHtml(value || "")
         .replace(/&lt;strong&gt;/g, "<strong>")
@@ -1139,13 +1143,18 @@
       return `
         <div class="lookup-note-heading">Upcoming Game Notes</div>
         <div class="lookup-note-list">
-          ${notes.map(note => `
+          ${notes.map(note => {
+            const suffix = noteImpactSuffix(note.impact);
+            return `
             <div class="lookup-note-card ${escapeHtml(note.impact)}">
-              <div class="lookup-note-tag">${escapeHtml(noteTagLabel(note.impact))}</div>
-              <div class="lookup-note-title">${escapeHtml(note.title)}</div>
+              <div class="lookup-note-title">
+                ${escapeHtml(note.title)}
+                ${suffix.text ? `<span class="lookup-note-k ${suffix.className}">${suffix.text}</span>` : ""}
+              </div>
               <div class="lookup-note-body">${sanitizeNoteBody(note.body)}</div>
             </div>
-          `).join("")}
+          `;
+          }).join("")}
         </div>
       `;
     }
