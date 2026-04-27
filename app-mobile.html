@@ -200,6 +200,24 @@
 
     .card {
       position: relative;
+      min-height: 575px;
+      perspective: 1200px;
+    }
+
+    .card-shell {
+      position: absolute;
+      inset: 0;
+      transform-style: preserve-3d;
+      transition: transform 0.44s ease;
+    }
+
+    .card.flipped .card-shell {
+      transform: rotateY(180deg);
+    }
+
+    .card-face {
+      position: absolute;
+      inset: 0;
       overflow: hidden;
       border: 4px solid #020203;
       border-radius: 16px;
@@ -209,10 +227,19 @@
       box-shadow:
         0 0 0 1px rgba(255, 255, 255, 0.08),
         0 14px 30px rgba(0, 0, 0, 0.32);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
     }
 
-    .card::before,
-    .card::after,
+    .card-back {
+      transform: rotateY(180deg);
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.1), transparent 18%),
+        linear-gradient(160deg, rgba(20, 27, 42, 0.98), rgba(9, 11, 19, 0.98));
+    }
+
+    .card-face::before,
+    .card-face::after,
     .card-inner::before {
       content: "";
       position: absolute;
@@ -220,20 +247,20 @@
       pointer-events: none;
     }
 
-    .card::before {
+    .card-face::before {
       background:
         linear-gradient(118deg, transparent 0%, rgba(255,255,255,0.1) 42%, transparent 58%),
         radial-gradient(circle at 12% 14%, rgba(255, 188, 98, 0.2), transparent 20%),
         radial-gradient(circle at 92% 0%, rgba(117, 183, 255, 0.18), transparent 24%);
     }
 
-    .card::after {
+    .card-face::after {
       inset: -70%;
       opacity: 0;
       transform: translateX(-48%);
     }
 
-    .card.dk-shimmer::after {
+    .card.dk-shimmer .card-face::after {
       background: linear-gradient(
         115deg,
         transparent 38%,
@@ -245,7 +272,7 @@
       animation: cardGlowSweep 10s ease-in-out infinite;
     }
 
-    .card.fd-shimmer::after {
+    .card.fd-shimmer .card-face::after {
       background: linear-gradient(
         115deg,
         transparent 38%,
@@ -275,7 +302,7 @@
       }
     }
 
-    .card.live {
+    .card.live .card-face {
       box-shadow:
         0 0 0 1px rgba(133, 223, 162, 0.28),
         0 14px 30px rgba(0, 0, 0, 0.32);
@@ -284,12 +311,40 @@
     .card-inner {
       position: relative;
       padding: 13px;
+      height: 100%;
+      overflow-y: auto;
     }
 
     .card-inner::before {
       background: url("images/pitchIQ%20Logo%20v3.png") center center / min(58%, 190px) auto no-repeat;
       opacity: 0.13;
       mix-blend-mode: screen;
+    }
+
+    .flip-edge {
+      position: absolute;
+      top: 12px;
+      right: 9px;
+      bottom: 12px;
+      z-index: 8;
+      width: 28px;
+      border: 1px solid rgba(255, 188, 98, 0.34);
+      border-radius: 999px;
+      background: rgba(255, 188, 98, 0.12);
+      color: #ffd7a3;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      line-height: 1;
+      padding: 0;
+      touch-action: manipulation;
+    }
+
+    .flip-edge:focus-visible {
+      outline: 2px solid rgba(255, 215, 0, 0.78);
+      outline-offset: 2px;
     }
 
     .player-panel {
@@ -572,11 +627,30 @@
     let controlsCollapsed = false;
     let upcomingGames = [];
     let liveGames = [];
+    let pitcherLookupByName = new Map();
+    const flippedCardKeys = new Set();
     let dataRefreshIntervalId = null;
     let dataRefreshTimeoutId = null;
     let dataRefreshInFlight = false;
     let dataRefreshQueued = false;
     let dataRefreshChannel = null;
+    let cardFlipAudio = null;
+
+    function playCardFlipSound() {
+      try {
+        if (!cardFlipAudio) {
+          cardFlipAudio = new Audio("sounds/cardflip.mp3");
+          cardFlipAudio.preload = "auto";
+          cardFlipAudio.volume = 0.7;
+        }
+        cardFlipAudio.currentTime = 0;
+        const playPromise = cardFlipAudio.play();
+        if (playPromise && typeof playPromise.catch === "function") {
+          playPromise.catch(() => {});
+        }
+      } catch (error) {
+      }
+    }
 
     function escapeHtml(value) {
       return String(value ?? "")
@@ -862,6 +936,56 @@
       `;
     }
 
+    function cardKey(game) {
+      return [
+        activeView,
+        game?.event_key || "",
+        game?.pitcher || "",
+        game?.date || "",
+        game?.opponent || ""
+      ].map(value => String(value || "").trim()).join("|");
+    }
+
+    function renderLookupBack(game, projected, date, time, volatilityLabel, volatilityScore, notes) {
+      const lookup = pitcherLookupByName.get(String(game.pitcher || "").trim().toLowerCase()) || {};
+      const payload = lookup.payload || {};
+      const history = Array.isArray(payload.recent_history) ? payload.recent_history.slice(0, 3) : [];
+      const lastHistory = history[0] || {};
+      const historySummary = history.length
+        ? history.map(row => {
+            const rowDate = formatGameDate(row);
+            const actual = String(row.actual_k || row.strikeouts || "").trim() || "-";
+            const opponent = String(row.opponent || "").trim() || "Opponent";
+            return `${rowDate || "Recent"} vs ${opponent}: ${actual} K`;
+          }).join(" | ")
+        : "";
+      return `
+        <div class="player-panel">
+          <h2 class="pitcher">${escapeHtml(game.pitcher || payload.pitcher || "Unknown")}</h2>
+          <div class="team-name">Pitcher Lookup</div>
+        </div>
+        <div class="game-row">
+          <div class="opponent">
+            <div><span>vs</span>${escapeHtml(game.opponent || "Opponent pending")}</div>
+            <div class="ump-line">Ump: ${escapeHtml(formatUmpire(game.plate_umpire))}</div>
+          </div>
+          <div class="date-block">
+            <span class="date-main">${escapeHtml(date || "Date pending")}</span>
+            <span class="date-time">${escapeHtml(time || "Time pending")}</span>
+          </div>
+        </div>
+        <div class="metric-list">
+          ${renderSimpleMetric("Ensemble K", projected, "ek-value")}
+          ${renderSimpleMetric("Team", game.pitcher_team || "Team pending")}
+          ${renderSimpleMetric("Opponent", game.opponent || "Opponent pending")}
+          ${renderSimpleMetric("Vix", volatilityLabel, volatilityClass(volatilityLabel), volatilityScore ? `Vix ${volatilityScore}` : "")}
+          ${renderEdgeMetric(game)}
+          ${renderSimpleMetric("Last Game K", String(lastHistory.actual_k || lastHistory.strikeouts || "-"))}
+          ${renderNotesMetric(historySummary || notes)}
+        </div>
+      `;
+    }
+
     function cardSearchText(game) {
       return [
         game.pitcher,
@@ -917,6 +1041,7 @@
       }
 
       cardsContainer.innerHTML = games.map(game => {
+        const key = cardKey(game);
         const projected = formatNumber(displayProjectionValue(game), 2) || "-";
         const time = String(game.time || formatDisplayTime(game.start_time) || "").trim();
         const date = formatGameDate(game);
@@ -925,29 +1050,39 @@
         const notes = displayNotes(game);
         const shimmerClass = lineDiscrepancyShimmerClass(game);
         return `
-          <article class="card ${activeView === "live" ? "live" : ""} ${shimmerClass}">
-            <div class="card-inner">
-              <div class="player-panel">
-                <h2 class="pitcher">${escapeHtml(game.pitcher || "Unknown")}</h2>
-                <div class="team-name">${escapeHtml(game.pitcher_team || "Team pending")}</div>
-              </div>
-              <div class="game-row">
-                <div class="opponent">
-                  <div><span>vs</span>${escapeHtml(game.opponent || "Opponent pending")}</div>
-                  <div class="ump-line">Ump: ${escapeHtml(formatUmpire(game.plate_umpire))}</div>
+          <article class="card ${activeView === "live" ? "live" : ""} ${shimmerClass} ${flippedCardKeys.has(key) ? "flipped" : ""}" data-card-key="${escapeHtml(key)}">
+            <button class="flip-edge" type="button" aria-label="${flippedCardKeys.has(key) ? "Flip card front" : "Flip card to pitcher lookup"}" title="${flippedCardKeys.has(key) ? "Flip back" : "Pitcher lookup"}">↻</button>
+            <div class="card-shell">
+              <div class="card-face card-front">
+                <div class="card-inner">
+                  <div class="player-panel">
+                    <h2 class="pitcher">${escapeHtml(game.pitcher || "Unknown")}</h2>
+                    <div class="team-name">${escapeHtml(game.pitcher_team || "Team pending")}</div>
+                  </div>
+                  <div class="game-row">
+                    <div class="opponent">
+                      <div><span>vs</span>${escapeHtml(game.opponent || "Opponent pending")}</div>
+                      <div class="ump-line">Ump: ${escapeHtml(formatUmpire(game.plate_umpire))}</div>
+                    </div>
+                    <div class="date-block">
+                      <span class="date-main">${escapeHtml(date || "Date pending")}</span>
+                      <span class="date-time">${escapeHtml(time || "Time pending")}</span>
+                    </div>
+                  </div>
+                  <div class="metric-list">
+                    ${renderSimpleMetric("Ensemble K", projected, "ek-value")}
+                    ${renderBookMetric("DraftKings", game.dk_line, game.dk_over_payout, game.dk_under_payout, game.dk_bet)}
+                    ${renderBookMetric("FanDuel", game.fd_line, game.fd_over_payout, game.fd_under_payout, game.fd_bet)}
+                    ${renderSimpleMetric("Vix", volatilityLabel, volatilityClass(volatilityLabel), volatilityScore ? `Vix ${volatilityScore}` : "")}
+                    ${renderEdgeMetric(game)}
+                    ${renderNotesMetric(notes)}
+                  </div>
                 </div>
-                <div class="date-block">
-                  <span class="date-main">${escapeHtml(date || "Date pending")}</span>
-                  <span class="date-time">${escapeHtml(time || "Time pending")}</span>
-                </div>
               </div>
-              <div class="metric-list">
-                ${renderSimpleMetric("Ensemble K", projected, "ek-value")}
-                ${renderBookMetric("DraftKings", game.dk_line, game.dk_over_payout, game.dk_under_payout, game.dk_bet)}
-                ${renderBookMetric("FanDuel", game.fd_line, game.fd_over_payout, game.fd_under_payout, game.fd_bet)}
-                ${renderSimpleMetric("Vix", volatilityLabel, volatilityClass(volatilityLabel), volatilityScore ? `Vix ${volatilityScore}` : "")}
-                ${renderEdgeMetric(game)}
-                ${renderNotesMetric(notes)}
+              <div class="card-face card-back">
+                <div class="card-inner">
+                  ${renderLookupBack(game, projected, date, time, volatilityLabel, volatilityScore, notes)}
+                </div>
               </div>
             </div>
           </article>
@@ -999,13 +1134,26 @@
     }
 
     async function loadSupabaseTables() {
-      const { data: gameRows, error } = await supabaseClient
-        .from("pitchiq_game_rows")
-        .select("table_type,payload,updated_at")
-        .order("updated_at", { ascending: false });
+      const [{ data: gameRows, error }, { data: lookupRows, error: lookupError }] = await Promise.all([
+        supabaseClient
+          .from("pitchiq_game_rows")
+          .select("table_type,payload,updated_at")
+          .order("updated_at", { ascending: false }),
+        supabaseClient
+          .from("pitchiq_pitcher_lookup")
+          .select("pitcher,payload,updated_at")
+          .order("updated_at", { ascending: false })
+      ]);
       if (error) {
         renderCards();
         return;
+      }
+      if (!lookupError) {
+        pitcherLookupByName = new Map(
+          (lookupRows || [])
+            .filter(row => String(row.pitcher || "").trim())
+            .map(row => [String(row.pitcher || "").trim().toLowerCase(), row])
+        );
       }
       const splitGames = splitSupabaseGameRows(gameRows || []);
       upcomingGames = splitGames.upcoming;
@@ -1131,6 +1279,26 @@
         tabs.forEach(item => item.classList.toggle("active", item === tab));
         renderCards();
       });
+    });
+
+    cardsContainer.addEventListener("click", event => {
+      const edge = event.target.closest(".flip-edge");
+      if (!edge) return;
+      const card = edge.closest(".card");
+      const key = card?.dataset.cardKey;
+      if (!key) return;
+      if (flippedCardKeys.has(key)) {
+        flippedCardKeys.delete(key);
+        card.classList.remove("flipped");
+        edge.setAttribute("aria-label", "Flip card to pitcher lookup");
+        edge.title = "Pitcher lookup";
+      } else {
+        flippedCardKeys.add(key);
+        card.classList.add("flipped");
+        edge.setAttribute("aria-label", "Flip card front");
+        edge.title = "Flip back";
+      }
+      playCardFlipSound();
     });
 
     searchInput.addEventListener("input", () => {
