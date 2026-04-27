@@ -22,7 +22,10 @@
       --red: #ff8978;
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
 
     html,
     body {
@@ -208,11 +211,6 @@
       position: absolute;
       inset: 0;
       transform-style: preserve-3d;
-      transition: transform 0.44s ease;
-    }
-
-    .card.flipped .card-shell {
-      transform: rotateY(180deg);
     }
 
     .card-face {
@@ -229,6 +227,16 @@
         0 14px 30px rgba(0, 0, 0, 0.32);
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
+      transform-style: preserve-3d;
+      transition: transform 0.44s ease;
+    }
+
+    .card-front {
+      transform: rotateY(0deg);
+    }
+
+    .card.flipped .card-front {
+      transform: rotateY(-180deg);
     }
 
     .card-back {
@@ -236,6 +244,10 @@
       background:
         linear-gradient(135deg, rgba(255,255,255,0.1), transparent 18%),
         linear-gradient(160deg, rgba(20, 27, 42, 0.98), rgba(9, 11, 19, 0.98));
+    }
+
+    .card.flipped .card-back {
+      transform: rotateY(0deg);
     }
 
     .card-face::before,
@@ -328,10 +340,10 @@
       bottom: 12px;
       z-index: 8;
       width: 28px;
-      border: 1px solid rgba(255, 188, 98, 0.34);
+      border: 0;
       border-radius: 999px;
-      background: rgba(255, 188, 98, 0.12);
-      color: #ffd7a3;
+      background: transparent;
+      color: transparent;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -339,12 +351,14 @@
       font-size: 1.1rem;
       line-height: 1;
       padding: 0;
+      appearance: none;
       touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
     }
 
     .flip-edge:focus-visible {
-      outline: 2px solid rgba(255, 215, 0, 0.78);
-      outline-offset: 2px;
+      outline: none;
     }
 
     .player-panel {
@@ -545,6 +559,67 @@
       text-align: center;
     }
 
+    .lookup-note-list {
+      display: grid;
+      gap: 10px;
+      padding-top: 12px;
+    }
+
+    .lookup-note-card {
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 14px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.045);
+    }
+
+    .lookup-note-card.up {
+      border-color: rgba(255, 177, 74, 0.5);
+      background: rgba(80, 47, 12, 0.38);
+    }
+
+    .lookup-note-card.down {
+      border-color: rgba(86, 152, 255, 0.5);
+      background: rgba(12, 34, 72, 0.42);
+    }
+
+    .lookup-note-card.neutral {
+      border-color: rgba(210, 180, 140, 0.34);
+      background: rgba(58, 45, 31, 0.34);
+    }
+
+    .lookup-note-tag {
+      display: inline-flex;
+      border-radius: 999px;
+      padding: 5px 10px;
+      margin-bottom: 9px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--muted);
+      font-size: 0.64rem;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .lookup-note-title {
+      color: var(--text);
+      font-size: 0.92rem;
+      font-weight: 900;
+      line-height: 1.25;
+      margin-bottom: 8px;
+    }
+
+    .lookup-note-body {
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 750;
+      line-height: 1.45;
+    }
+
+    .lookup-note-body strong {
+      color: #d5d9e1;
+      font-weight: 950;
+    }
+
     .footer {
       margin-top: 18px;
       color: rgba(246, 241, 232, 0.46);
@@ -636,17 +711,34 @@
     let dataRefreshChannel = null;
     let cardFlipAudio = null;
 
+    function getCardFlipAudio() {
+      if (!cardFlipAudio) {
+        cardFlipAudio = new Audio("sounds/cardflip.mp3");
+        cardFlipAudio.preload = "auto";
+        cardFlipAudio.volume = 0.8;
+      }
+      return cardFlipAudio;
+    }
+
+    function primeCardFlipSound() {
+      try {
+        getCardFlipAudio().load();
+      } catch (error) {
+      }
+    }
+
     function playCardFlipSound() {
       try {
-        if (!cardFlipAudio) {
-          cardFlipAudio = new Audio("sounds/cardflip.mp3");
-          cardFlipAudio.preload = "auto";
-          cardFlipAudio.volume = 0.7;
-        }
-        cardFlipAudio.currentTime = 0;
-        const playPromise = cardFlipAudio.play();
+        const audio = getCardFlipAudio();
+        audio.pause();
+        audio.currentTime = 0;
+        const playPromise = audio.play();
         if (playPromise && typeof playPromise.catch === "function") {
-          playPromise.catch(() => {});
+          playPromise.catch(() => {
+            const retryAudio = new Audio("sounds/cardflip.mp3");
+            retryAudio.volume = 0.8;
+            retryAudio.play().catch(() => {});
+          });
         }
       } catch (error) {
       }
@@ -936,6 +1028,74 @@
       `;
     }
 
+    function noteTagLabel(impact) {
+      if (impact === "up") return "Raises Ks";
+      if (impact === "down") return "Lowers Ks";
+      return "Informative";
+    }
+
+    function sanitizeNoteBody(value) {
+      return escapeHtml(value || "")
+        .replace(/&lt;strong&gt;/g, "<strong>")
+        .replace(/&lt;\/strong&gt;/g, "</strong>");
+    }
+
+    function noteFromText(value) {
+      const text = String(value || "").trim();
+      if (!text) return null;
+      return {
+        title: "Game Notes",
+        body: text,
+        impact: "neutral"
+      };
+    }
+
+    function lookupNotesForGame(game, fallbackNotes) {
+      const lookup = pitcherLookupByName.get(String(game.pitcher || "").trim().toLowerCase()) || {};
+      const payload = lookup.payload || {};
+      const upcomingGame = payload.upcoming_game || payload.live_game || {};
+      const noteSources = [
+        game.upcoming_notes,
+        upcomingGame.upcoming_notes,
+        payload.upcoming_notes
+      ];
+      for (const source of noteSources) {
+        if (Array.isArray(source) && source.length) {
+          return source.map(note => ({
+            title: String(note.title || "Game Notes").trim(),
+            body: String(note.body || "").trim(),
+            impact: ["up", "down", "neutral"].includes(String(note.impact || "")) ? note.impact : "neutral"
+          })).filter(note => note.body || note.title);
+        }
+      }
+      return String(fallbackNotes || "")
+        .split("|")
+        .map(noteFromText)
+        .filter(Boolean);
+    }
+
+    function renderLookupNotes(game, fallbackNotes) {
+      const notes = lookupNotesForGame(game, fallbackNotes);
+      if (!notes.length) {
+        notes.push({
+          title: "No Major Flags",
+          body: "No strong context edges are standing out for this upcoming projection yet.",
+          impact: "neutral"
+        });
+      }
+      return `
+        <div class="lookup-note-list">
+          ${notes.map(note => `
+            <div class="lookup-note-card ${escapeHtml(note.impact)}">
+              <div class="lookup-note-tag">${escapeHtml(noteTagLabel(note.impact))}</div>
+              <div class="lookup-note-title">${escapeHtml(note.title)}</div>
+              <div class="lookup-note-body">${sanitizeNoteBody(note.body)}</div>
+            </div>
+          `).join("")}
+        </div>
+      `;
+    }
+
     function cardKey(game) {
       return [
         activeView,
@@ -947,21 +1107,9 @@
     }
 
     function renderLookupBack(game, projected, date, time, volatilityLabel, volatilityScore, notes) {
-      const lookup = pitcherLookupByName.get(String(game.pitcher || "").trim().toLowerCase()) || {};
-      const payload = lookup.payload || {};
-      const history = Array.isArray(payload.recent_history) ? payload.recent_history.slice(0, 3) : [];
-      const lastHistory = history[0] || {};
-      const historySummary = history.length
-        ? history.map(row => {
-            const rowDate = formatGameDate(row);
-            const actual = String(row.actual_k || row.strikeouts || "").trim() || "-";
-            const opponent = String(row.opponent || "").trim() || "Opponent";
-            return `${rowDate || "Recent"} vs ${opponent}: ${actual} K`;
-          }).join(" | ")
-        : "";
       return `
         <div class="player-panel">
-          <h2 class="pitcher">${escapeHtml(game.pitcher || payload.pitcher || "Unknown")}</h2>
+          <h2 class="pitcher">${escapeHtml(game.pitcher || "Unknown")}</h2>
           <div class="team-name">Pitcher Lookup</div>
         </div>
         <div class="game-row">
@@ -980,9 +1128,8 @@
           ${renderSimpleMetric("Opponent", game.opponent || "Opponent pending")}
           ${renderSimpleMetric("Vix", volatilityLabel, volatilityClass(volatilityLabel), volatilityScore ? `Vix ${volatilityScore}` : "")}
           ${renderEdgeMetric(game)}
-          ${renderSimpleMetric("Last Game K", String(lastHistory.actual_k || lastHistory.strikeouts || "-"))}
-          ${renderNotesMetric(historySummary || notes)}
         </div>
+        ${renderLookupNotes(game, notes)}
       `;
     }
 
@@ -1051,7 +1198,7 @@
         const shimmerClass = lineDiscrepancyShimmerClass(game);
         return `
           <article class="card ${activeView === "live" ? "live" : ""} ${shimmerClass} ${flippedCardKeys.has(key) ? "flipped" : ""}" data-card-key="${escapeHtml(key)}">
-            <button class="flip-edge" type="button" aria-label="${flippedCardKeys.has(key) ? "Flip card front" : "Flip card to pitcher lookup"}" title="${flippedCardKeys.has(key) ? "Flip back" : "Pitcher lookup"}">↻</button>
+            <button class="flip-edge" type="button" aria-label="${flippedCardKeys.has(key) ? "Flip card front" : "Flip card to pitcher lookup"}" title="${flippedCardKeys.has(key) ? "Flip back" : "Pitcher lookup"}">Flip</button>
             <div class="card-shell">
               <div class="card-face card-front">
                 <div class="card-inner">
@@ -1279,6 +1426,11 @@
         tabs.forEach(item => item.classList.toggle("active", item === tab));
         renderCards();
       });
+    });
+
+    cardsContainer.addEventListener("pointerdown", event => {
+      if (!event.target.closest(".flip-edge")) return;
+      primeCardFlipSound();
     });
 
     cardsContainer.addEventListener("click", event => {
