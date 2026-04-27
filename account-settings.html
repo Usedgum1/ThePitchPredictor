@@ -309,6 +309,16 @@
       text-transform: uppercase;
     }
 
+    .tier-cta-current {
+      border-color: rgba(255, 215, 106, 0.5);
+      background: linear-gradient(135deg, rgba(141, 223, 159, 0.16), rgba(255, 215, 106, 0.2));
+      color: #ffd76a;
+    }
+
+    .tier-cta-current .tier-lock {
+      color: #ffd76a;
+    }
+
     .tier-lock {
       color: var(--success);
       font-size: 0.8rem;
@@ -530,12 +540,10 @@
             ${role === activeRole ? '<span class="badge">current</span>' : ""}
           </div>
           <p class="tier-copy">${tierDetails[role]}</p>
-          ${tierActions[role] ? `
-            <button class="tier-cta tier-cta-${role}" type="button" disabled>
-              <span class="tier-lock" aria-hidden="true">&#128274;</span>
-              <span>${tierActions[role]}</span>
-            </button>
-          ` : ""}
+          <button class="tier-cta ${role === activeRole ? "tier-cta-current" : `tier-cta-${role}`}" type="button" disabled>
+            <span class="tier-lock" aria-hidden="true">${role === activeRole ? "&#128275;" : "&#128274;"}</span>
+            <span>${role === activeRole ? "Current" : tierActions[role]}</span>
+          </button>
         </div>
       `).join("");
     }
