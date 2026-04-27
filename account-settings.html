@@ -260,6 +260,31 @@
       text-transform: capitalize;
     }
 
+    .tier-name-basic,
+    .tier-value-basic {
+      color: #b7bdc8;
+    }
+
+    .tier-name-pro,
+    .tier-value-pro {
+      color: var(--success);
+    }
+
+    .tier-name-life,
+    .tier-value-life {
+      color: #ffd76a;
+    }
+
+    .tier-name-owner,
+    .tier-value-owner {
+      color: var(--danger);
+    }
+
+    .tier-name-admin,
+    .tier-value-admin {
+      color: var(--violet);
+    }
+
     .tier-copy {
       color: var(--muted);
       font-size: 0.82rem;
@@ -288,6 +313,26 @@
       color: var(--success);
       font-size: 0.8rem;
       line-height: 1;
+    }
+
+    .tier-cta-pro {
+      border-color: rgba(141, 223, 159, 0.42);
+      background: rgba(141, 223, 159, 0.14);
+      color: var(--success);
+    }
+
+    .tier-cta-pro .tier-lock {
+      color: var(--success);
+    }
+
+    .tier-cta-life {
+      border-color: rgba(255, 215, 106, 0.46);
+      background: rgba(255, 215, 106, 0.13);
+      color: #ffd76a;
+    }
+
+    .tier-cta-life .tier-lock {
+      color: #ffd76a;
     }
 
     .badge {
@@ -474,18 +519,19 @@
       currentEmail.textContent = email || "unknown";
       currentUsername.textContent = username || "not set";
       currentTier.textContent = formatRoleLabel(activeRole);
+      currentTier.className = `meta-value tier-value-${activeRole || ""}`;
       usernameInput.value = username;
       emailInput.value = email;
 
       tierList.innerHTML = DISPLAY_TIERS.map(role => `
         <div class="tier ${role === activeRole ? "current" : ""}">
           <div class="tier-title">
-            <span>${formatRoleLabel(role)}</span>
+            <span class="tier-name-${role}">${formatRoleLabel(role)}</span>
             ${role === activeRole ? '<span class="badge">current</span>' : ""}
           </div>
           <p class="tier-copy">${tierDetails[role]}</p>
           ${tierActions[role] ? `
-            <button class="tier-cta" type="button" disabled>
+            <button class="tier-cta tier-cta-${role}" type="button" disabled>
               <span class="tier-lock" aria-hidden="true">&#128274;</span>
               <span>${tierActions[role]}</span>
             </button>
