@@ -263,20 +263,6 @@
       margin: 6px 0 0;
     }
 
-    .tier-action {
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.03);
-      color: var(--muted);
-      border-radius: 999px;
-      cursor: not-allowed;
-      font-size: 0.68rem;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      margin-top: 10px;
-      padding: 8px 11px;
-      text-transform: uppercase;
-    }
-
     .badge {
       color: var(--amber);
       font-size: 0.68rem;
@@ -408,12 +394,11 @@
     });
 
     const ALLOWED_ACCOUNT_ROLES = ["basic", "pro", "life", "admin", "owner"];
+    const DISPLAY_TIERS = ["basic", "pro", "life"];
     const tierDetails = {
       basic: "Starter access while the account system is being built.",
       pro: "Future upgraded access for expanded tools and premium views.",
-      life: "Future lifetime access tier.",
-      admin: "Operational access for managing the pitchIQ experience.",
-      owner: "Full owner access, including owner-only settings."
+      life: "Invite Only"
     };
 
     const usernameForm = document.getElementById("username-form");
@@ -461,14 +446,13 @@
       usernameInput.value = username;
       emailInput.value = email;
 
-      tierList.innerHTML = ALLOWED_ACCOUNT_ROLES.map(role => `
+      tierList.innerHTML = DISPLAY_TIERS.map(role => `
         <div class="tier ${role === activeRole ? "current" : ""}">
           <div class="tier-title">
             <span>${role}</span>
-            ${role === activeRole ? '<span class="badge">current</span>' : '<span class="badge">future</span>'}
+            ${role === activeRole ? '<span class="badge">current</span>' : ""}
           </div>
           <p class="tier-copy">${tierDetails[role]}</p>
-          ${role === activeRole ? "" : '<button class="tier-action" type="button" disabled>Upgrade Soon</button>'}
         </div>
       `).join("");
     }
