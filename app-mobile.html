@@ -554,6 +554,7 @@
     const searchInput = document.getElementById("search-input");
     const sortSelect = document.getElementById("sort-select");
     const cardsContainer = document.getElementById("cards");
+    const ALLOWED_ACCOUNT_ROLES = ["basic", "pro", "life", "admin", "owner"];
     const resultsMeta = document.getElementById("results-meta");
     const refreshMeta = document.getElementById("refresh-meta");
     const serverActivityFooter = document.getElementById("server-activity-footer");
@@ -986,7 +987,7 @@
         window.clearTimeout(authTimeout);
         return;
       }
-      if (!["admin", "owner"].includes(role)) {
+      if (!ALLOWED_ACCOUNT_ROLES.includes(role)) {
         await supabaseClient.auth.signOut();
         redirectToLogin();
         return;

@@ -651,6 +651,7 @@
     const forgotPasswordForm = document.getElementById("forgot-password-form");
     const forgotPasswordCancel = document.getElementById("forgot-password-cancel");
     const forgotPasswordStatus = document.getElementById("forgot-password-status");
+    const ALLOWED_ACCOUNT_ROLES = ["basic", "pro", "life", "admin", "owner"];
     let lastModalFocus = null;
     let responsibilityAcceptedAt = null;
 
@@ -728,7 +729,7 @@
       }
 
       const { role, error: roleError } = await getUserRole(data.session.user.id);
-      if (roleError || !["admin", "owner"].includes(role)) {
+      if (roleError || !ALLOWED_ACCOUNT_ROLES.includes(role)) {
         await supabaseClient.auth.signOut();
         loginStatus.textContent = "This site is currently limited to approved accounts.";
         loginStatus.style.color = "var(--danger)";

@@ -1194,6 +1194,7 @@
     const accountPill = document.getElementById("account-pill");
     const serverActivityFooter = document.getElementById("server-activity-footer");
     const workspaceSettings = document.getElementById("workspace-settings");
+    const ALLOWED_ACCOUNT_ROLES = ["basic", "pro", "life", "admin", "owner"];
 
     let authAccepted = false;
     let authRedirected = false;
@@ -1251,7 +1252,7 @@
         return;
       }
 
-      if (!["admin", "owner"].includes(role)) {
+      if (!ALLOWED_ACCOUNT_ROLES.includes(role)) {
         await supabaseClient.auth.signOut();
         redirectToLogin();
         return;
