@@ -251,6 +251,22 @@
         0 0 42px rgba(141, 223, 159, 0.1);
     }
 
+    .tier.current.tier-current-basic {
+      border-color: rgba(183, 189, 200, 0.28);
+      background: rgba(183, 189, 200, 0.045);
+      box-shadow:
+        0 0 0 1px rgba(183, 189, 200, 0.08) inset,
+        0 0 18px rgba(183, 189, 200, 0.08);
+    }
+
+    .tier.current.tier-current-pro {
+      border-color: rgba(141, 223, 159, 0.38);
+      background: rgba(141, 223, 159, 0.075);
+      box-shadow:
+        0 0 0 1px rgba(141, 223, 159, 0.1) inset,
+        0 0 28px rgba(141, 223, 159, 0.16);
+    }
+
     .tier-title {
       display: flex;
       justify-content: space-between;
@@ -317,6 +333,26 @@
 
     .tier-cta-current .tier-lock {
       color: #ffd76a;
+    }
+
+    .tier-cta-current-basic {
+      border-color: rgba(183, 189, 200, 0.32);
+      background: rgba(183, 189, 200, 0.08);
+      color: #d2d6df;
+    }
+
+    .tier-cta-current-basic .tier-lock {
+      color: #b7bdc8;
+    }
+
+    .tier-cta-current-pro {
+      border-color: rgba(141, 223, 159, 0.42);
+      background: rgba(141, 223, 159, 0.14);
+      color: var(--success);
+    }
+
+    .tier-cta-current-pro .tier-lock {
+      color: var(--success);
     }
 
     .tier-lock {
@@ -486,6 +522,13 @@
       pro: "Upgrade",
       life: "Invite Only"
     };
+    const tierRanks = {
+      basic: 1,
+      pro: 2,
+      life: 3,
+      admin: 3,
+      owner: 3
+    };
 
     const usernameForm = document.getElementById("username-form");
     const emailForm = document.getElementById("email-form");
@@ -533,19 +576,26 @@
       usernameInput.value = username;
       emailInput.value = email;
 
-      tierList.innerHTML = DISPLAY_TIERS.map(role => `
-        <div class="tier ${role === activeRole ? "current" : ""}">
+      tierList.innerHTML = DISPLAY_TIERS.map(role => {
+        const isCurrent = role === activeRole;
+        const isUnlocked = (tierRanks[activeRole] || 0) >= (tierRanks[role] || 0);
+        const buttonLabel = isCurrent ? "Current" : isUnlocked ? "Unlocked" : tierActions[role];
+        return `
+        <div class="tier ${isCurrent ? `current tier-current-${role}` : ""}">
           <div class="tier-title">
             <span class="tier-name-${role}">${formatRoleLabel(role)}</span>
-            ${role === activeRole ? '<span class="badge">current</span>' : ""}
+            ${isCurrent ? '<span class="badge">current</span>' : ""}
           </div>
           <p class="tier-copy">${tierDetails[role]}</p>
-          <button class="tier-cta ${role === activeRole ? "tier-cta-current" : `tier-cta-${role}`}" type="button" disabled>
-            <span class="tier-lock" aria-hidden="true">${role === activeRole ? "&#128275;" : "&#128274;"}</span>
-            <span>${role === activeRole ? "Current" : tierActions[role]}</span>
-          </button>
+          ${buttonLabel ? `
+            <button class="tier-cta ${isUnlocked ? `tier-cta-current tier-cta-current-${role}` : `tier-cta-${role}`}" type="button" disabled>
+              <span class="tier-lock" aria-hidden="true">${isUnlocked ? "&#128275;" : "&#128274;"}</span>
+              <span>${buttonLabel}</span>
+            </button>
+          ` : ""}
         </div>
-      `).join("");
+      `;
+      }).join("");
     }
 
     function formatRoleLabel(role) {
