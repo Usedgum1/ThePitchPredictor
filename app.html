@@ -165,17 +165,20 @@
       min-width: 0;
     }
 
-    .workspace-settings {
+    .workspace-actions {
       display: flex;
+      align-items: center;
+      gap: 10px;
       justify-content: flex-end;
       margin-left: auto;
     }
 
-    .workspace-settings.hidden {
+    .settings-tab.hidden {
       display: none;
     }
 
-    .workspace-tab {
+    .workspace-tab,
+    .nav-pill {
       border: 1px solid rgba(255,255,255,0.08);
       background: rgba(255,255,255,0.02);
       color: var(--muted);
@@ -187,6 +190,12 @@
       text-transform: uppercase;
       text-decoration: none;
       cursor: pointer;
+    }
+
+    .nav-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .account-summary {
@@ -207,6 +216,13 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+    }
+
+    .account-links {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      justify-content: flex-end;
     }
 
     .text-link,
@@ -237,7 +253,15 @@
     }
 
     .settings-tab {
-      border-color: rgba(255, 177, 74, 0.2);
+      border-color: rgba(255, 140, 122, 0.34);
+      background: rgba(255, 140, 122, 0.1);
+      color: #ffb7ad;
+    }
+
+    .settings-tab.active {
+      border-color: rgba(255, 140, 122, 0.58);
+      background: rgba(255, 140, 122, 0.18);
+      color: var(--text);
     }
 
     .coming-soon-tab {
@@ -947,12 +971,12 @@
       }
 
       .workspace-tabs,
-      .workspace-settings,
+      .workspace-actions,
       .page-head-meta {
         flex-wrap: wrap;
       }
 
-      .workspace-settings {
+      .workspace-actions {
         justify-content: flex-start;
         margin-left: 0;
       }
@@ -1015,9 +1039,11 @@
         <div class="page-head-meta">
           <div class="account-summary">
             <div id="account-pill" class="account-line">Welcome, ...</div>
-            <button id="logout-button" class="signout-link" type="button">sign out</button>
+            <div class="account-links">
+              <a class="signout-link" href="./account-settings.html">account settings</a>
+              <button id="logout-button" class="signout-link" type="button">sign out</button>
+            </div>
           </div>
-          <a class="text-link" href="./app-mobile.html">mobile view</a>
         </div>
       </div>
 
@@ -1027,8 +1053,9 @@
           <button class="workspace-tab active" data-view="upcoming-games">Upcoming Games</button>
           <button class="workspace-tab" data-view="live-games">Live Games</button>
         </div>
-        <div class="workspace-settings hidden" id="workspace-settings">
-          <button class="workspace-tab settings-tab" id="settings-tab" data-view="settings" type="button">Settings</button>
+        <div class="workspace-actions">
+          <a class="nav-pill" href="./app-mobile.html">Mobile View</a>
+          <button class="workspace-tab settings-tab hidden" id="settings-tab" data-view="settings" type="button">Owner's Settings</button>
         </div>
       </div>
 
@@ -1173,6 +1200,7 @@
           <div class="empty-state">Owner-only settings will live here.</div>
         </div>
       </div>
+
     </section>
   </div>
   <footer class="server-activity-footer" id="server-activity-footer">
@@ -1193,7 +1221,7 @@
     });
     const accountPill = document.getElementById("account-pill");
     const serverActivityFooter = document.getElementById("server-activity-footer");
-    const workspaceSettings = document.getElementById("workspace-settings");
+    const settingsTab = document.getElementById("settings-tab");
     const ALLOWED_ACCOUNT_ROLES = ["basic", "pro", "life", "admin", "owner"];
 
     let authAccepted = false;
@@ -1226,12 +1254,12 @@
       const user = session?.user;
       const username = user?.user_metadata?.username;
       const identityLabel = String(username || user?.email || "Unknown user").trim();
-      accountPill.textContent = `Welcome, ${identityLabel}`;
+      accountPill.textContent = `Welcome, ${identityLabel}!`;
     }
 
     function setOwnerControls(role) {
       currentUserRole = role || null;
-      workspaceSettings.classList.toggle("hidden", currentUserRole !== "owner");
+      settingsTab.classList.toggle("hidden", currentUserRole !== "owner");
     }
 
     function redirectToLogin() {

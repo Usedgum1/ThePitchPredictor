@@ -969,7 +969,7 @@
       const user = session?.user;
       const username = user?.user_metadata?.username;
       const identityLabel = String(username || user?.email || "Unknown user").trim();
-      accountPill.textContent = `Welcome, ${identityLabel}`;
+      accountPill.textContent = `Welcome, ${identityLabel}!`;
     }
 
     function redirectToLogin() {
