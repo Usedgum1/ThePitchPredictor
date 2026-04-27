@@ -362,6 +362,10 @@
       mix-blend-mode: screen;
     }
 
+    .card-back .card-inner::before {
+      display: none;
+    }
+
     .flip-edge {
       position: absolute;
       top: 12px;
@@ -600,7 +604,17 @@
     .lookup-note-list {
       display: grid;
       gap: 10px;
-      padding-top: 12px;
+      padding-top: 0;
+    }
+
+    .lookup-note-heading {
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 950;
+      letter-spacing: 0.16em;
+      text-align: center;
+      text-transform: uppercase;
+      margin: 0 0 12px;
     }
 
     .lookup-note-card {
@@ -1123,6 +1137,7 @@
         });
       }
       return `
+        <div class="lookup-note-heading">Upcoming Game Notes</div>
         <div class="lookup-note-list">
           ${notes.map(note => `
             <div class="lookup-note-card ${escapeHtml(note.impact)}">
@@ -1146,30 +1161,7 @@
     }
 
     function renderLookupBack(game, projected, date, time, volatilityLabel, volatilityScore, notes) {
-      return `
-        <div class="player-panel">
-          <h2 class="pitcher">${escapeHtml(game.pitcher || "Unknown")}</h2>
-          <div class="team-name">Pitcher Lookup</div>
-        </div>
-        <div class="game-row">
-          <div class="opponent">
-            <div><span>vs</span>${escapeHtml(game.opponent || "Opponent pending")}</div>
-            <div class="ump-line">Ump: ${escapeHtml(formatUmpire(game.plate_umpire))}</div>
-          </div>
-          <div class="date-block">
-            <span class="date-main">${escapeHtml(date || "Date pending")}</span>
-            <span class="date-time">${escapeHtml(time || "Time pending")}</span>
-          </div>
-        </div>
-        <div class="metric-list">
-          ${renderSimpleMetric("Ensemble K", projected, "ek-value")}
-          ${renderSimpleMetric("Team", game.pitcher_team || "Team pending")}
-          ${renderSimpleMetric("Opponent", game.opponent || "Opponent pending")}
-          ${renderSimpleMetric("Vix", volatilityLabel, volatilityClass(volatilityLabel), volatilityScore ? `Vix ${volatilityScore}` : "")}
-          ${renderEdgeMetric(game)}
-        </div>
-        ${renderLookupNotes(game, notes)}
-      `;
+      return renderLookupNotes(game, notes);
     }
 
     function cardSearchText(game) {
