@@ -228,26 +228,55 @@
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
       transform-style: preserve-3d;
-      transition: transform 0.44s ease;
+      transition: opacity 0.16s ease, transform 0.44s ease, visibility 0s linear 0.16s;
     }
 
     .card-front {
+      opacity: 1;
       transform: rotateY(0deg);
+      visibility: visible;
+      pointer-events: auto;
     }
 
     .card.flipped .card-front {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .card.flip-left.flipped .card-front {
+      transform: rotateY(180deg);
+    }
+
+    .card.flip-right.flipped .card-front,
+    .card:not(.flip-left).flipped .card-front {
       transform: rotateY(-180deg);
     }
 
     .card-back {
-      transform: rotateY(180deg);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
       background:
         linear-gradient(135deg, rgba(255,255,255,0.1), transparent 18%),
         linear-gradient(160deg, rgba(20, 27, 42, 0.98), rgba(9, 11, 19, 0.98));
     }
 
+    .card.flip-left .card-back {
+      transform: rotateY(-180deg);
+    }
+
+    .card.flip-right .card-back,
+    .card:not(.flip-left) .card-back {
+      transform: rotateY(180deg);
+    }
+
     .card.flipped .card-back {
+      opacity: 1;
       transform: rotateY(0deg);
+      visibility: visible;
+      pointer-events: auto;
+      transition-delay: 0s;
     }
 
     .card-face::before,
@@ -355,6 +384,15 @@
       touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
       user-select: none;
+    }
+
+    .flip-edge.left {
+      left: 9px;
+      right: auto;
+    }
+
+    .flip-edge.right {
+      right: 9px;
     }
 
     .flip-edge:focus-visible {
@@ -704,6 +742,7 @@
     let liveGames = [];
     let pitcherLookupByName = new Map();
     const flippedCardKeys = new Set();
+    const cardFlipDirections = new Map();
     let dataRefreshIntervalId = null;
     let dataRefreshTimeoutId = null;
     let dataRefreshInFlight = false;
@@ -1189,6 +1228,7 @@
 
       cardsContainer.innerHTML = games.map(game => {
         const key = cardKey(game);
+        const flipDirection = cardFlipDirections.get(key) === "left" ? "flip-left" : "flip-right";
         const projected = formatNumber(displayProjectionValue(game), 2) || "-";
         const time = String(game.time || formatDisplayTime(game.start_time) || "").trim();
         const date = formatGameDate(game);
@@ -1197,8 +1237,9 @@
         const notes = displayNotes(game);
         const shimmerClass = lineDiscrepancyShimmerClass(game);
         return `
-          <article class="card ${activeView === "live" ? "live" : ""} ${shimmerClass} ${flippedCardKeys.has(key) ? "flipped" : ""}" data-card-key="${escapeHtml(key)}">
-            <button class="flip-edge" type="button" aria-label="${flippedCardKeys.has(key) ? "Flip card front" : "Flip card to pitcher lookup"}" title="${flippedCardKeys.has(key) ? "Flip back" : "Pitcher lookup"}">Flip</button>
+          <article class="card ${activeView === "live" ? "live" : ""} ${shimmerClass} ${flipDirection} ${flippedCardKeys.has(key) ? "flipped" : ""}" data-card-key="${escapeHtml(key)}">
+            <button class="flip-edge left" type="button" data-flip-direction="left" aria-label="${flippedCardKeys.has(key) ? "Flip card front to the left" : "Flip card left to pitcher lookup"}" title="${flippedCardKeys.has(key) ? "Flip back left" : "Pitcher lookup"}">Flip</button>
+            <button class="flip-edge right" type="button" data-flip-direction="right" aria-label="${flippedCardKeys.has(key) ? "Flip card front to the right" : "Flip card right to pitcher lookup"}" title="${flippedCardKeys.has(key) ? "Flip back right" : "Pitcher lookup"}">Flip</button>
             <div class="card-shell">
               <div class="card-face card-front">
                 <div class="card-inner">
@@ -1439,16 +1480,26 @@
       const card = edge.closest(".card");
       const key = card?.dataset.cardKey;
       if (!key) return;
+      const direction = edge.dataset.flipDirection === "left" ? "left" : "right";
+      cardFlipDirections.set(key, direction);
+      card.classList.toggle("flip-left", direction === "left");
+      card.classList.toggle("flip-right", direction === "right");
       if (flippedCardKeys.has(key)) {
         flippedCardKeys.delete(key);
         card.classList.remove("flipped");
-        edge.setAttribute("aria-label", "Flip card to pitcher lookup");
-        edge.title = "Pitcher lookup";
+        card.querySelectorAll(".flip-edge").forEach(button => {
+          const buttonDirection = button.dataset.flipDirection === "left" ? "left" : "right";
+          button.setAttribute("aria-label", `Flip card ${buttonDirection} to pitcher lookup`);
+          button.title = "Pitcher lookup";
+        });
       } else {
         flippedCardKeys.add(key);
         card.classList.add("flipped");
-        edge.setAttribute("aria-label", "Flip card front");
-        edge.title = "Flip back";
+        card.querySelectorAll(".flip-edge").forEach(button => {
+          const buttonDirection = button.dataset.flipDirection === "left" ? "left" : "right";
+          button.setAttribute("aria-label", `Flip card front to the ${buttonDirection}`);
+          button.title = `Flip back ${buttonDirection}`;
+        });
       }
       playCardFlipSound();
     });
