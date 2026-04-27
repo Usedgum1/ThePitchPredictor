@@ -760,20 +760,40 @@
     let dataRefreshInFlight = false;
     let dataRefreshQueued = false;
     let dataRefreshChannel = null;
+    const CARD_FLIP_SOUND_URL = new URL("sounds/cardflip.mp3", window.location.href).href;
     let cardFlipAudio = null;
+    let cardFlipAudioContext = null;
 
     function getCardFlipAudio() {
       if (!cardFlipAudio) {
-        cardFlipAudio = new Audio("sounds/cardflip.mp3");
+        cardFlipAudio = new Audio(CARD_FLIP_SOUND_URL);
         cardFlipAudio.preload = "auto";
         cardFlipAudio.volume = 0.8;
       }
       return cardFlipAudio;
     }
 
-    function primeCardFlipSound() {
+    function playSyntheticCardFlipSound() {
       try {
-        getCardFlipAudio().load();
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContextClass) return;
+        cardFlipAudioContext = cardFlipAudioContext || new AudioContextClass();
+        if (cardFlipAudioContext.state === "suspended") {
+          cardFlipAudioContext.resume().catch(() => {});
+        }
+        const now = cardFlipAudioContext.currentTime;
+        const oscillator = cardFlipAudioContext.createOscillator();
+        const gain = cardFlipAudioContext.createGain();
+        oscillator.type = "triangle";
+        oscillator.frequency.setValueAtTime(740, now);
+        oscillator.frequency.exponentialRampToValueAtTime(185, now + 0.12);
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.exponentialRampToValueAtTime(0.13, now + 0.012);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.14);
+        oscillator.connect(gain);
+        gain.connect(cardFlipAudioContext.destination);
+        oscillator.start(now);
+        oscillator.stop(now + 0.15);
       } catch (error) {
       }
     }
@@ -786,12 +806,15 @@
         const playPromise = audio.play();
         if (playPromise && typeof playPromise.catch === "function") {
           playPromise.catch(() => {
-            const retryAudio = new Audio("sounds/cardflip.mp3");
+            const retryAudio = new Audio(CARD_FLIP_SOUND_URL);
             retryAudio.volume = 0.8;
-            retryAudio.play().catch(() => {});
+            retryAudio.play().catch(() => {
+              playSyntheticCardFlipSound();
+            });
           });
         }
       } catch (error) {
+        playSyntheticCardFlipSound();
       }
     }
 
@@ -1472,7 +1495,7 @@
 
     cardsContainer.addEventListener("pointerdown", event => {
       if (!event.target.closest(".flip-edge")) return;
-      primeCardFlipSound();
+      playCardFlipSound();
     });
 
     cardsContainer.addEventListener("click", event => {
@@ -1502,7 +1525,6 @@
           button.title = `Flip back ${buttonDirection}`;
         });
       }
-      playCardFlipSound();
     });
 
     searchInput.addEventListener("input", () => {
