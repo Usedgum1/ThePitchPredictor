@@ -1276,15 +1276,15 @@
                     <th class="sortable historical-sortable" data-sort-key="pitcher"><span class="th-inner">Pitcher <span class="sort-indicator"></span></span></th>
                     <th class="sortable historical-sortable" data-sort-key="opponent"><span class="th-inner">Opponent <span class="sort-indicator"></span></span></th>
                     <th class="sortable historical-sortable" data-sort-key="date"><span class="th-inner">Date <span class="sort-indicator"></span></span></th>
+                    <th class="sortable historical-sortable" data-sort-key="plate_umpire"><span class="th-inner">Ump <span class="sort-indicator"></span></span></th>
                     <th class="sortable historical-sortable" data-sort-key="dk_line"><span class="th-inner">DK Line <span class="sort-indicator"></span></span></th>
                     <th class="sortable historical-sortable" data-sort-key="fd_line"><span class="th-inner">FD Line <span class="sort-indicator"></span></span></th>
                     <th class="sortable historical-sortable" data-sort-key="projected_strikeouts"><span class="th-inner">Projected Ks <span class="sort-indicator"></span></span></th>
-                    <th class="sortable historical-sortable" data-sort-key="actual_k"><span class="th-inner">Actual Ks <span class="sort-indicator"></span></span></th>
+                    <th class="sortable historical-sortable" data-sort-key="volatility_score"><span class="th-inner">Volatility <span class="sort-indicator"></span></span></th>
                     <th class="sortable historical-sortable" data-sort-key="dk_edge"><span class="th-inner">DK Edge <span class="sort-indicator"></span></span></th>
-                    <th class="sortable historical-sortable" data-sort-key="dk_bet"><span class="th-inner">DK Bet <span class="sort-indicator"></span></span></th>
-                    <th class="sortable historical-sortable" data-sort-key="dk_correct"><span class="th-inner">DK Result <span class="sort-indicator"></span></span></th>
                     <th class="sortable historical-sortable" data-sort-key="fd_edge"><span class="th-inner">FD Edge <span class="sort-indicator"></span></span></th>
-                    <th class="sortable historical-sortable" data-sort-key="fd_bet"><span class="th-inner">FD Bet <span class="sort-indicator"></span></span></th>
+                    <th class="sortable historical-sortable" data-sort-key="notes"><span class="th-inner">Notes <span class="sort-indicator"></span></span></th>
+                    <th class="sortable historical-sortable" data-sort-key="dk_correct"><span class="th-inner">DK Result <span class="sort-indicator"></span></span></th>
                     <th class="sortable historical-sortable" data-sort-key="fd_correct"><span class="th-inner">FD Result <span class="sort-indicator"></span></span></th>
                   </tr>
                 </thead>
@@ -1851,8 +1851,18 @@
       return `Game time: ${timeText}`;
     }
 
+    function formatDisplayDate(value) {
+      const raw = String(value || "").trim();
+      if (!raw) return "";
+      const match = raw.match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if (match) {
+        return `${match[2]}/${match[3]}/${match[1]}`;
+      }
+      return raw;
+    }
+
     function renderDateCell(game) {
-      const displayValue = String(game?.date || "").trim();
+      const displayValue = String(game?.date || formatDisplayDate(game?.game_date_raw) || "").trim();
       const timeText = String(game?.time || formatDisplayTime(game?.start_time) || "").trim();
       return `
         <td>
@@ -2368,9 +2378,12 @@
           game.opponent,
           game.date,
           game.game_date_raw,
+          game.time || formatDisplayTime(game.start_time),
+          game.plate_umpire,
           game.dk_line,
           game.fd_line,
           formatNumber(displayProjectionValue(game), 2),
+          formatVolatility(game),
           formatActualStrikeouts(actual),
           formatEdge(game.dk_edge),
           game.dk_bet,
@@ -2577,7 +2590,7 @@
         const fdCorrect = evaluateBetCorrectness(actual, game.fd_line, game.fd_bet);
         return `
           <tr>
-            <td><button class="lookup-icon-btn" type="button" data-pitcher="${escapeHtml(game.pitcher)}" title="Open pitcher lookup">âŒ•</button></td>
+            <td><button class="lookup-icon-btn" type="button" data-pitcher="${escapeHtml(game.pitcher)}" title="Open pitcher lookup">&#8981;</button></td>
             <td>
               <div class="pitcher-cell">
                 <span class="pitcher-name">${escapeHtml(game.pitcher)}</span>
@@ -2586,15 +2599,15 @@
             </td>
             <td>${escapeHtml(game.opponent)}</td>
             ${renderDateCell(game)}
+            ${renderUmpCell(game)}
             ${renderBookLineCell(game.dk_line, game.dk_over_payout, game.dk_under_payout)}
             ${renderBookLineCell(game.fd_line, game.fd_over_payout, game.fd_under_payout)}
             <td class="projected-ks-value">${formatNumber(displayProjectionValue(game), 2)}</td>
-            <td>${escapeHtml(formatActualStrikeouts(actual))}</td>
+            ${renderVolatilityCell(game)}
             <td class="${edgeTone(game.dk_edge, game.dk_bet)}">${escapeHtml(formatEdge(game.dk_edge))}</td>
-            <td class="${leanClass(game.dk_bet)}">${escapeHtml(formatBetLabel(game.dk_bet))}</td>
-            <td class="${resultTone(dkCorrect)}">${escapeHtml(dkCorrect)}</td>
             <td class="${edgeTone(game.fd_edge, game.fd_bet)}">${escapeHtml(formatEdge(game.fd_edge))}</td>
-            <td class="${leanClass(game.fd_bet)}">${escapeHtml(formatBetLabel(game.fd_bet))}</td>
+            <td>${escapeHtml(displayNotesText(game))}</td>
+            <td class="${resultTone(dkCorrect)}">${escapeHtml(dkCorrect)}</td>
             <td class="${resultTone(fdCorrect)}">${escapeHtml(fdCorrect)}</td>
           </tr>
         `;
