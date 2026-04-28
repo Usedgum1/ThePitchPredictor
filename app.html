@@ -264,6 +264,25 @@
       color: var(--text);
     }
 
+    .historical-tab {
+      border-color: rgba(141, 223, 159, 0.34);
+      background: rgba(141, 223, 159, 0.1);
+      color: var(--success);
+    }
+
+    .historical-tab.active,
+    .historical-tab.is-unlocked {
+      border-color: rgba(141, 223, 159, 0.58);
+      background: rgba(141, 223, 159, 0.16);
+      color: var(--text);
+    }
+
+    .historical-tab-icon {
+      display: inline-block;
+      margin-right: 7px;
+      transform: translateY(-1px);
+    }
+
     .coming-soon-tab {
       opacity: 0.64;
     }
@@ -273,6 +292,40 @@
       font-size: 0.9rem;
       line-height: 1.6;
       text-align: center;
+    }
+
+    .locked-feature {
+      align-items: center;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      justify-content: center;
+      min-height: 260px;
+      padding: 34px 18px;
+      text-align: center;
+    }
+
+    .locked-badge {
+      border: 1px solid rgba(255, 177, 74, 0.28);
+      border-radius: 999px;
+      color: var(--amber);
+      font-size: 0.74rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      padding: 8px 12px;
+      text-transform: uppercase;
+    }
+
+    .locked-title {
+      color: var(--text);
+      font-size: 1.18rem;
+      font-weight: 800;
+    }
+
+    .locked-copy {
+      color: var(--muted);
+      line-height: 1.6;
+      max-width: 620px;
     }
 
     .workspace-panel { display: none; animation: panelFade 0.18s ease; }
@@ -1052,6 +1105,7 @@
           <button class="workspace-tab" data-view="pitcher-lookup">Pitcher Lookup</button>
           <button class="workspace-tab active" data-view="upcoming-games">Upcoming Games</button>
           <button class="workspace-tab" data-view="live-games">Live Games</button>
+          <button class="workspace-tab historical-tab" id="historical-tab" data-view="historical-games"><span class="historical-tab-icon" id="historical-tab-icon" aria-hidden="true">&#128274;</span>Historical</button>
         </div>
         <div class="workspace-actions">
           <a class="nav-pill" href="./app-mobile.html">Mobile View</a>
@@ -1194,6 +1248,62 @@
         </div>
       </div>
 
+      <div id="historical-games-panel" class="workspace-panel">
+        <div id="historical-locked-panel" class="subtile glass-subtile locked-feature hidden">
+          <div class="locked-badge">Pro Feature</div>
+          <div class="locked-title">Historical table locked</div>
+          <div class="locked-copy">Historical projections, closing lines, results, and correctness tracking are available to Pro, Life, Admin, and Owner accounts.</div>
+          <a class="nav-pill" href="./account-settings.html">View Account</a>
+        </div>
+
+        <div id="historical-table-panel">
+          <div class="table-toolbar">
+            <div class="field table-search">
+              <label for="historical-search-input">Search Historical Games</label>
+              <div class="search-row">
+                <input id="historical-search-input" type="text" placeholder="Search pitcher, team, opponent, line, bet, result..." />
+                <button id="clear-historical-search" class="clear-btn hidden" type="button" aria-label="Clear historical games search">x</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="table-shell" id="historical-table-shell">
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th class="sortable historical-sortable" data-sort-key="pitcher"><span class="th-inner">Pitcher <span class="sort-indicator"></span></span></th>
+                    <th class="sortable historical-sortable" data-sort-key="opponent"><span class="th-inner">Opponent <span class="sort-indicator"></span></span></th>
+                    <th class="sortable historical-sortable" data-sort-key="date"><span class="th-inner">Date <span class="sort-indicator"></span></span></th>
+                    <th class="sortable historical-sortable" data-sort-key="dk_line"><span class="th-inner">DK Line <span class="sort-indicator"></span></span></th>
+                    <th class="sortable historical-sortable" data-sort-key="fd_line"><span class="th-inner">FD Line <span class="sort-indicator"></span></span></th>
+                    <th class="sortable historical-sortable" data-sort-key="projected_strikeouts"><span class="th-inner">Projected Ks <span class="sort-indicator"></span></span></th>
+                    <th class="sortable historical-sortable" data-sort-key="actual_k"><span class="th-inner">Actual Ks <span class="sort-indicator"></span></span></th>
+                    <th class="sortable historical-sortable" data-sort-key="dk_edge"><span class="th-inner">DK Edge <span class="sort-indicator"></span></span></th>
+                    <th class="sortable historical-sortable" data-sort-key="dk_bet"><span class="th-inner">DK Bet <span class="sort-indicator"></span></span></th>
+                    <th class="sortable historical-sortable" data-sort-key="dk_correct"><span class="th-inner">DK Result <span class="sort-indicator"></span></span></th>
+                    <th class="sortable historical-sortable" data-sort-key="fd_edge"><span class="th-inner">FD Edge <span class="sort-indicator"></span></span></th>
+                    <th class="sortable historical-sortable" data-sort-key="fd_bet"><span class="th-inner">FD Bet <span class="sort-indicator"></span></span></th>
+                    <th class="sortable historical-sortable" data-sort-key="fd_correct"><span class="th-inner">FD Result <span class="sort-indicator"></span></span></th>
+                  </tr>
+                </thead>
+                <tbody id="historical-games-grid"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="pager">
+            <div class="pager-meta" id="historical-games-meta"></div>
+            <div class="pager-controls">
+              <button class="pager-button" id="historical-prev-button" type="button">Previous</button>
+              <div class="pager-page" id="historical-page-indicator"></div>
+              <button class="pager-button" id="historical-next-button" type="button">Next</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div id="settings-panel" class="workspace-panel">
         <div class="subtile glass-subtile">
           <div class="section-title center-title">Settings</div>
@@ -1222,6 +1332,8 @@
     const accountPill = document.getElementById("account-pill");
     const serverActivityFooter = document.getElementById("server-activity-footer");
     const settingsTab = document.getElementById("settings-tab");
+    const historicalTab = document.getElementById("historical-tab");
+    const historicalTabIcon = document.getElementById("historical-tab-icon");
     const ALLOWED_ACCOUNT_ROLES = ["basic", "pro", "life", "admin", "owner"];
 
     let authAccepted = false;
@@ -1259,7 +1371,11 @@
 
     function setOwnerControls(role) {
       currentUserRole = role || null;
+      const historicalUnlocked = canViewHistoricalGames();
+      historicalTab.classList.toggle("is-unlocked", historicalUnlocked);
+      historicalTabIcon.innerHTML = historicalUnlocked ? "&#128275;" : "&#128274;";
       settingsTab.classList.toggle("hidden", currentUserRole !== "owner");
+      refreshHistoricalGamesView();
     }
 
     function redirectToLogin() {
@@ -1339,11 +1455,22 @@
     const livePageIndicator = document.getElementById("live-page-indicator");
     const liveTableShell = document.getElementById("live-table-shell");
     const liveSortHeaders = Array.from(document.querySelectorAll("#live-games-panel th.sortable"));
+    const historicalSearchInput = document.getElementById("historical-search-input");
+    const clearHistoricalSearchButton = document.getElementById("clear-historical-search");
+    const historicalGamesMeta = document.getElementById("historical-games-meta");
+    const historicalPrevButton = document.getElementById("historical-prev-button");
+    const historicalNextButton = document.getElementById("historical-next-button");
+    const historicalPageIndicator = document.getElementById("historical-page-indicator");
+    const historicalTableShell = document.getElementById("historical-table-shell");
+    const historicalLockedPanel = document.getElementById("historical-locked-panel");
+    const historicalTablePanel = document.getElementById("historical-table-panel");
+    const historicalSortHeaders = Array.from(document.querySelectorAll("#historical-games-panel th.sortable"));
     const workspaceTabs = Array.from(document.querySelectorAll(".workspace-tab"));
     const workspacePanels = {
       "pitcher-lookup": document.getElementById("pitcher-lookup-panel"),
       "upcoming-games": document.getElementById("upcoming-games-panel"),
       "live-games": document.getElementById("live-games-panel"),
+      "historical-games": document.getElementById("historical-games-panel"),
       "settings": document.getElementById("settings-panel")
     };
     const pitcherInput = document.getElementById("pitcher-input");
@@ -1366,6 +1493,10 @@
     const liveGamesPageSize = 20;
     let liveSearchQuery = "";
     let liveSort = { key: "date", direction: "asc" };
+    let historicalGamesPage = 1;
+    const historicalGamesPageSize = 20;
+    let historicalSearchQuery = "";
+    let historicalSort = { key: "date", direction: "desc" };
     let lineInputTouched = false;
 
     function refreshPitcherList() {
@@ -1467,6 +1598,7 @@
         refreshPitcherList();
         refreshUpcomingGamesView();
         refreshLiveGamesView();
+        refreshHistoricalGamesView();
         return;
       }
 
@@ -1496,9 +1628,11 @@
       if (options.resetPages !== false) {
         upcomingGamesPage = 1;
         liveGamesPage = 1;
+        historicalGamesPage = 1;
       }
       refreshUpcomingGamesView();
       refreshLiveGamesView();
+      refreshHistoricalGamesView();
       if (pitcherInput.value.trim()) {
         projectPitcher();
       }
@@ -2105,6 +2239,18 @@
           ? Number.NEGATIVE_INFINITY
           : Number(game[key]);
       }
+      if (key === "actual_k") {
+        const actual = game.actual_k ?? game.strikeouts;
+        return actual === null || actual === undefined || actual === ""
+          ? Number.NEGATIVE_INFINITY
+          : Number(actual);
+      }
+      if (key === "dk_correct") {
+        return normalizeText(evaluateBetCorrectness(game.actual_k ?? game.strikeouts, game.dk_line, game.dk_bet));
+      }
+      if (key === "fd_correct") {
+        return normalizeText(evaluateBetCorrectness(game.actual_k ?? game.strikeouts, game.fd_line, game.fd_bet));
+      }
       if (key === "projected_strikeouts") {
         const projectionValue = displayProjectionValue(game);
         return projectionValue === null ? Number.NEGATIVE_INFINITY : projectionValue;
@@ -2184,12 +2330,84 @@
       });
     }
 
+    function canViewHistoricalGames() {
+      return ["pro", "life", "admin", "owner"].includes(String(currentUserRole || "").toLowerCase());
+    }
+
+    function formatActualStrikeouts(value) {
+      if (value === null || value === undefined || value === "" || Number.isNaN(Number(value))) return "";
+      return Number(value).toFixed(0);
+    }
+
+    function evaluateBetCorrectness(actualValue, lineValue, betValue) {
+      const bet = String(betValue || "").trim().toUpperCase();
+      const actual = Number(actualValue);
+      const line = Number(lineValue);
+      if (!["OVER", "UNDER"].includes(bet) || !Number.isFinite(actual) || !Number.isFinite(line)) return "";
+      if (actual === line) return "Push";
+      if (bet === "OVER") return actual > line ? "Win" : "Loss";
+      return actual < line ? "Win" : "Loss";
+    }
+
+    function resultTone(value) {
+      if (value === "Win") return "up-text";
+      if (value === "Loss") return "down-text";
+      if (value === "Push") return "avoid-text";
+      return "";
+    }
+
+    function getFilteredHistoricalGames() {
+      const query = normalizeText(historicalSearchQuery);
+      const filtered = !query ? gameHistory.slice() : gameHistory.filter(game => {
+        const actual = game.actual_k ?? game.strikeouts;
+        const dkCorrect = evaluateBetCorrectness(actual, game.dk_line, game.dk_bet);
+        const fdCorrect = evaluateBetCorrectness(actual, game.fd_line, game.fd_bet);
+        const haystack = [
+          game.pitcher,
+          game.pitcher_team,
+          game.opponent,
+          game.date,
+          game.game_date_raw,
+          game.dk_line,
+          game.fd_line,
+          formatNumber(displayProjectionValue(game), 2),
+          formatActualStrikeouts(actual),
+          formatEdge(game.dk_edge),
+          game.dk_bet,
+          dkCorrect,
+          formatEdge(game.fd_edge),
+          game.fd_bet,
+          fdCorrect,
+          displayNotesText(game)
+        ].map(normalizeText).join(" ");
+        return haystack.includes(query);
+      });
+      const direction = historicalSort.direction === "desc" ? -1 : 1;
+      return filtered.sort((left, right) => {
+        const a = parseSortableValue(left, historicalSort.key);
+        const b = parseSortableValue(right, historicalSort.key);
+        if (a < b) return -1 * direction;
+        if (a > b) return 1 * direction;
+        return normalizeText(left.pitcher).localeCompare(normalizeText(right.pitcher));
+      });
+    }
+
     function updateUpcomingSortIndicators() {
       upcomingSortHeaders.forEach(header => {
         const indicator = header.querySelector(".sort-indicator");
         if (!indicator) return;
         indicator.textContent = header.dataset.sortKey === upcomingSort.key
           ? (upcomingSort.direction === "asc" ? "▲" : "▼")
+          : "";
+      });
+    }
+
+    function updateHistoricalSortIndicators() {
+      historicalSortHeaders.forEach(header => {
+        const indicator = header.querySelector(".sort-indicator");
+        if (!indicator) return;
+        indicator.textContent = header.dataset.sortKey === historicalSort.key
+          ? (historicalSort.direction === "asc" ? "â–²" : "â–¼")
           : "";
       });
     }
@@ -2324,12 +2542,83 @@
       animateTableRows(container);
     }
 
+    function renderHistoricalGames(games) {
+      const unlocked = canViewHistoricalGames();
+      historicalLockedPanel.classList.toggle("hidden", unlocked);
+      historicalTablePanel.classList.toggle("hidden", !unlocked);
+      if (!unlocked) return;
+
+      const container = document.getElementById("historical-games-grid");
+      const totalRows = games ? games.length : 0;
+      const totalPages = Math.max(1, Math.ceil(totalRows / historicalGamesPageSize));
+      historicalGamesPage = Math.min(Math.max(1, historicalGamesPage), totalPages);
+      updateHistoricalSortIndicators();
+      historicalTableShell.classList.remove("loading");
+
+      if (!games || !games.length) {
+        container.innerHTML = `
+          <tr>
+            <td colspan="14">No historical games available.</td>
+          </tr>
+        `;
+        historicalGamesMeta.textContent = "0 results";
+        historicalPageIndicator.textContent = "Page 1 / 1";
+        historicalPrevButton.disabled = true;
+        historicalNextButton.disabled = true;
+        return;
+      }
+
+      const startIndex = (historicalGamesPage - 1) * historicalGamesPageSize;
+      const pageRows = games.slice(startIndex, startIndex + historicalGamesPageSize);
+
+      container.innerHTML = pageRows.map(game => {
+        const actual = game.actual_k ?? game.strikeouts;
+        const dkCorrect = evaluateBetCorrectness(actual, game.dk_line, game.dk_bet);
+        const fdCorrect = evaluateBetCorrectness(actual, game.fd_line, game.fd_bet);
+        return `
+          <tr>
+            <td><button class="lookup-icon-btn" type="button" data-pitcher="${escapeHtml(game.pitcher)}" title="Open pitcher lookup">âŒ•</button></td>
+            <td>
+              <div class="pitcher-cell">
+                <span class="pitcher-name">${escapeHtml(game.pitcher)}</span>
+                <span class="pitcher-team-sub">${escapeHtml(game.pitcher_team || "")}</span>
+              </div>
+            </td>
+            <td>${escapeHtml(game.opponent)}</td>
+            ${renderDateCell(game)}
+            ${renderBookLineCell(game.dk_line, game.dk_over_payout, game.dk_under_payout)}
+            ${renderBookLineCell(game.fd_line, game.fd_over_payout, game.fd_under_payout)}
+            <td class="projected-ks-value">${formatNumber(displayProjectionValue(game), 2)}</td>
+            <td>${escapeHtml(formatActualStrikeouts(actual))}</td>
+            <td class="${edgeTone(game.dk_edge, game.dk_bet)}">${escapeHtml(formatEdge(game.dk_edge))}</td>
+            <td class="${leanClass(game.dk_bet)}">${escapeHtml(formatBetLabel(game.dk_bet))}</td>
+            <td class="${resultTone(dkCorrect)}">${escapeHtml(dkCorrect)}</td>
+            <td class="${edgeTone(game.fd_edge, game.fd_bet)}">${escapeHtml(formatEdge(game.fd_edge))}</td>
+            <td class="${leanClass(game.fd_bet)}">${escapeHtml(formatBetLabel(game.fd_bet))}</td>
+            <td class="${resultTone(fdCorrect)}">${escapeHtml(fdCorrect)}</td>
+          </tr>
+        `;
+      }).join("");
+
+      const startDisplay = startIndex + 1;
+      const endDisplay = startIndex + pageRows.length;
+      historicalGamesMeta.textContent = `${startDisplay}-${endDisplay} of ${totalRows} games`;
+      historicalPageIndicator.textContent = `Page ${historicalGamesPage} / ${totalPages}`;
+      historicalPrevButton.disabled = historicalGamesPage <= 1;
+      historicalNextButton.disabled = historicalGamesPage >= totalPages;
+      animateTableRows(container);
+    }
+
     function refreshUpcomingGamesView() {
       renderUpcomingGames(getFilteredUpcomingGames());
     }
 
     function refreshLiveGamesView() {
       renderLiveGames(getFilteredLiveGames());
+    }
+
+    function refreshHistoricalGamesView() {
+      renderHistoricalGames(getFilteredHistoricalGames());
     }
 
     function setActiveWorkspace(view) {
@@ -2478,6 +2767,13 @@
       refreshLiveGamesView();
     }
 
+    function updateHistoricalSearch() {
+      toggleClearButton(historicalSearchInput, clearHistoricalSearchButton);
+      historicalSearchQuery = historicalSearchInput.value || "";
+      historicalGamesPage = 1;
+      refreshHistoricalGamesView();
+    }
+
     upcomingSortHeaders.forEach(header => {
       header.addEventListener("click", () => {
         const key = header.dataset.sortKey;
@@ -2503,6 +2799,20 @@
         }
         liveGamesPage = 1;
         refreshLiveGamesView();
+      });
+    });
+
+    historicalSortHeaders.forEach(header => {
+      header.addEventListener("click", () => {
+        const key = header.dataset.sortKey;
+        if (!key) return;
+        if (historicalSort.key === key) {
+          historicalSort.direction = historicalSort.direction === "asc" ? "desc" : "asc";
+        } else {
+          historicalSort = { key, direction: key === "date" ? "desc" : "asc" };
+        }
+        historicalGamesPage = 1;
+        refreshHistoricalGamesView();
       });
     });
 
@@ -2532,8 +2842,22 @@
       refreshLiveGamesView();
     });
 
+    historicalPrevButton.addEventListener("click", () => {
+      if (historicalGamesPage <= 1) return;
+      historicalGamesPage -= 1;
+      refreshHistoricalGamesView();
+    });
+
+    historicalNextButton.addEventListener("click", () => {
+      const totalPages = Math.max(1, Math.ceil(getFilteredHistoricalGames().length / historicalGamesPageSize));
+      if (historicalGamesPage >= totalPages) return;
+      historicalGamesPage += 1;
+      refreshHistoricalGamesView();
+    });
+
     upcomingSearchInput.addEventListener("input", updateUpcomingSearch);
     liveSearchInput.addEventListener("input", updateLiveSearch);
+    historicalSearchInput.addEventListener("input", updateHistoricalSearch);
 
     clearUpcomingSearchButton.addEventListener("click", () => {
       upcomingSearchInput.value = "";
@@ -2545,6 +2869,12 @@
       liveSearchInput.value = "";
       updateLiveSearch();
       liveSearchInput.focus();
+    });
+
+    clearHistoricalSearchButton.addEventListener("click", () => {
+      historicalSearchInput.value = "";
+      updateHistoricalSearch();
+      historicalSearchInput.focus();
     });
 
     workspaceTabs.forEach(tab => {
@@ -2620,6 +2950,12 @@
       openPitcherFromUpcoming(button.dataset.pitcher || "");
     });
 
+    document.getElementById("historical-games-grid").addEventListener("click", event => {
+      const button = event.target.closest(".lookup-icon-btn");
+      if (!button) return;
+      openPitcherFromUpcoming(button.dataset.pitcher || "");
+    });
+
     document.getElementById("logout-button").addEventListener("click", async () => {
       await supabaseClient.auth.signOut();
       window.location.href = "./login.html";
@@ -2629,6 +2965,7 @@
     renderEmptyPitcherLookup();
     refreshUpcomingGamesView();
     refreshLiveGamesView();
+    refreshHistoricalGamesView();
   </script>
 </body>
 </html>
