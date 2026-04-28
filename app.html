@@ -683,6 +683,16 @@
       color: var(--text);
     }
 
+    .breakdown-chip.projected-k-chip {
+      border-color: rgba(255, 215, 0, 0.34);
+      color: #ffd700;
+    }
+
+    .breakdown-chip.projected-k-chip strong,
+    .breakdown-chip.projected-k-chip span {
+      color: #ffd700;
+    }
+
     .breakdown-chip.volatility-low {
       border-color: rgba(141,223,159,0.38);
       color: var(--success);
@@ -2269,9 +2279,19 @@
     }
 
     function renderBreakdown(game) {
-      const rows = [["ENSEMBLE K", game.ensemble_prediction]];
+      const projectedValue = displayProjectionValue(game);
+      const projectedChip = Number.isFinite(Number(projectedValue))
+        ? `
+          <div class="breakdown-chip projected-k-chip">
+            <strong>PROJECTED K</strong>
+            <span>${formatNumber(projectedValue, 2)}</span>
+          </div>
+        `
+        : "";
+      const rows = [];
       if (canViewModelBreakdown()) {
         rows.push(
+          ["EK", game.ensemble_prediction],
           ["POISSON", game.poisson_prediction],
           ["LINEAR", game.linear_prediction],
           ["NONLINEAR", game.nonlinear_prediction]
@@ -2279,7 +2299,7 @@
       }
       const chips = rows.map(([label, value], index) => `
         <div class="breakdown-chip">
-          ${index === 0 ? `<strong>${label}</strong>` : `<span>${label}</span>`}
+          <span>${label}</span>
           <span>${formatNumber(value, 2)}</span>
         </div>
       `).join("");
@@ -2295,7 +2315,7 @@
         : "";
       const upcomingContainer = document.getElementById("upcoming-breakdown-row");
       if (upcomingContainer) {
-        upcomingContainer.innerHTML = chips + vixChip;
+        upcomingContainer.innerHTML = projectedChip + chips + vixChip;
       }
     }
 
