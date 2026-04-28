@@ -409,33 +409,40 @@
     }
 
     .player-panel {
-      min-height: 112px;
+      height: 112px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 14px 10px;
+      padding: 12px 10px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      overflow: hidden;
     }
 
     .pitcher {
       width: 100%;
-      margin: 7px 0 4px;
+      margin: 0 0 5px;
       font-size: clamp(1.55rem, 9.5vw, 2.45rem);
       line-height: 0.96;
       letter-spacing: 0;
-      overflow: hidden;
-      text-overflow: clip;
       white-space: nowrap;
     }
 
+    .pitcher.medium-name {
+      font-size: clamp(1.38rem, 8vw, 2.15rem);
+    }
+
     .pitcher.long-name {
-      font-size: clamp(1.25rem, 7vw, 1.95rem);
+      font-size: clamp(1.18rem, 6.8vw, 1.78rem);
     }
 
     .pitcher.very-long-name {
-      font-size: clamp(1.05rem, 5.8vw, 1.6rem);
+      font-size: clamp(0.98rem, 5.6vw, 1.42rem);
+    }
+
+    .pitcher.extra-long-name {
+      font-size: clamp(0.86rem, 4.8vw, 1.2rem);
     }
 
     .team-name,
@@ -1152,8 +1159,23 @@
         .filter(Boolean);
     }
 
+    function fitMobileLookupNotes(notes, maxNotes = 5) {
+      const directional = notes.filter(note => note.impact === "up" || note.impact === "down");
+      let informative = notes.filter(note => note.impact !== "up" && note.impact !== "down");
+
+      if (directional.length + informative.length > maxNotes) {
+        informative = informative.filter(note => normalizeText(note.title) !== "umpire pending");
+      }
+
+      while (directional.length + informative.length > maxNotes && informative.length) {
+        informative.pop();
+      }
+
+      return [...directional, ...informative];
+    }
+
     function renderLookupNotes(game, fallbackNotes) {
-      const notes = lookupNotesForGame(game, fallbackNotes);
+      const notes = fitMobileLookupNotes(lookupNotesForGame(game, fallbackNotes));
       if (!notes.length) {
         notes.push({
           title: "No Major Flags",
@@ -1213,8 +1235,10 @@
 
     function pitcherNameSizeClass(name) {
       const length = String(name || "").trim().length;
+      if (length >= 27) return " extra-long-name";
       if (length >= 23) return " very-long-name";
-      if (length >= 17) return " long-name";
+      if (length >= 18) return " long-name";
+      if (length >= 14) return " medium-name";
       return "";
     }
 
