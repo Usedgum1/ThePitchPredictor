@@ -283,6 +283,25 @@
       transform: translateY(-1px);
     }
 
+    .report-tab {
+      border-color: rgba(141, 223, 159, 0.34);
+      background: rgba(141, 223, 159, 0.1);
+      color: var(--success);
+    }
+
+    .report-tab.active,
+    .report-tab.is-unlocked {
+      border-color: rgba(141, 223, 159, 0.58);
+      background: rgba(141, 223, 159, 0.16);
+      color: var(--text);
+    }
+
+    .report-tab-icon {
+      display: inline-block;
+      margin-right: 7px;
+      transform: translateY(-1px);
+    }
+
     .coming-soon-tab {
       opacity: 0.64;
     }
@@ -386,6 +405,63 @@
       padding: 0 14px;
       font-size: 1rem;
       outline: none;
+    }
+
+    select {
+      width: 100%;
+      height: 48px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(42, 44, 56, 0.96);
+      color: var(--text);
+      padding: 0 14px;
+      font-size: 1rem;
+      outline: none;
+    }
+
+    .report-controls {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr;
+      gap: 14px;
+      align-items: end;
+    }
+
+    .report-column-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 10px;
+    }
+
+    .report-column-option {
+      align-items: center;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 10px;
+      color: var(--text);
+      display: flex;
+      gap: 10px;
+      min-height: 42px;
+      padding: 10px 12px;
+    }
+
+    .report-column-option input {
+      accent-color: #8ddf9f;
+      height: 16px;
+      margin: 0;
+      width: 16px;
+    }
+
+    .report-actions {
+      display: grid;
+      grid-template-columns: minmax(180px, 240px) 1fr;
+      gap: 14px;
+      align-items: center;
+      margin-top: 14px;
+    }
+
+    .report-summary {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
     }
 
     .search-row {
@@ -1064,6 +1140,8 @@
       }
 
       .controls,
+      .report-actions,
+      .report-controls,
       .info-grid,
       .info-grid.two,
       .info-grid.three,
@@ -1093,6 +1171,7 @@
           <div class="account-summary">
             <div id="account-pill" class="account-line">Welcome, ...</div>
             <div class="account-links">
+              <a class="signout-link" href="./app-mobile.html">mobile view</a>
               <a class="signout-link" href="./account-settings.html">account settings</a>
               <button id="logout-button" class="signout-link" type="button">sign out</button>
             </div>
@@ -1106,9 +1185,9 @@
           <button class="workspace-tab active" data-view="upcoming-games">Upcoming Games</button>
           <button class="workspace-tab" data-view="live-games">Live Games</button>
           <button class="workspace-tab historical-tab" id="historical-tab" data-view="historical-games"><span class="historical-tab-icon" id="historical-tab-icon" aria-hidden="true">&#128274;</span>Historical</button>
+          <button class="workspace-tab report-tab" id="report-tab" data-view="report-builder"><span class="report-tab-icon" id="report-tab-icon" aria-hidden="true">&#128274;</span>Report Builder</button>
         </div>
         <div class="workspace-actions">
-          <a class="nav-pill" href="./app-mobile.html">Mobile View</a>
           <button class="workspace-tab settings-tab hidden" id="settings-tab" data-view="settings" type="button">Owner's Settings</button>
         </div>
       </div>
@@ -1278,14 +1357,15 @@
                     <th class="sortable historical-sortable" data-sort-key="date"><span class="th-inner">Date <span class="sort-indicator"></span></span></th>
                     <th class="sortable historical-sortable" data-sort-key="plate_umpire"><span class="th-inner">Ump <span class="sort-indicator"></span></span></th>
                     <th class="sortable historical-sortable" data-sort-key="dk_line"><span class="th-inner">DK Line <span class="sort-indicator"></span></span></th>
+                    <th class="sortable historical-sortable" data-sort-key="dk_correct"><span class="th-inner">DK Result <span class="sort-indicator"></span></span></th>
                     <th class="sortable historical-sortable" data-sort-key="fd_line"><span class="th-inner">FD Line <span class="sort-indicator"></span></span></th>
+                    <th class="sortable historical-sortable" data-sort-key="fd_correct"><span class="th-inner">FD Result <span class="sort-indicator"></span></span></th>
                     <th class="sortable historical-sortable" data-sort-key="projected_strikeouts"><span class="th-inner">Projected Ks <span class="sort-indicator"></span></span></th>
+                    <th class="sortable historical-sortable" data-sort-key="actual_k"><span class="th-inner">Actual Ks <span class="sort-indicator"></span></span></th>
                     <th class="sortable historical-sortable" data-sort-key="volatility_score"><span class="th-inner">Volatility <span class="sort-indicator"></span></span></th>
                     <th class="sortable historical-sortable" data-sort-key="dk_edge"><span class="th-inner">DK Edge <span class="sort-indicator"></span></span></th>
                     <th class="sortable historical-sortable" data-sort-key="fd_edge"><span class="th-inner">FD Edge <span class="sort-indicator"></span></span></th>
                     <th class="sortable historical-sortable" data-sort-key="notes"><span class="th-inner">Notes <span class="sort-indicator"></span></span></th>
-                    <th class="sortable historical-sortable" data-sort-key="dk_correct"><span class="th-inner">DK Result <span class="sort-indicator"></span></span></th>
-                    <th class="sortable historical-sortable" data-sort-key="fd_correct"><span class="th-inner">FD Result <span class="sort-indicator"></span></span></th>
                   </tr>
                 </thead>
                 <tbody id="historical-games-grid"></tbody>
@@ -1299,6 +1379,48 @@
               <button class="pager-button" id="historical-prev-button" type="button">Previous</button>
               <div class="pager-page" id="historical-page-indicator"></div>
               <button class="pager-button" id="historical-next-button" type="button">Next</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="report-builder-panel" class="workspace-panel">
+        <div id="report-locked-panel" class="subtile glass-subtile locked-feature hidden">
+          <div class="locked-badge">Pro Feature</div>
+          <div class="locked-title">Report builder locked</div>
+          <div class="locked-copy">Custom report exports are available to Pro, Life, Admin, and Owner accounts.</div>
+          <a class="nav-pill" href="./account-settings.html">View Account</a>
+        </div>
+
+        <div id="report-builder-form">
+          <div class="subtile glass-subtile">
+            <div class="section-title">Report Options</div>
+            <div class="report-controls">
+              <div class="field">
+                <label for="report-source">Data Source</label>
+                <select id="report-source">
+                  <option value="upcoming">Upcoming</option>
+                  <option value="live">Live</option>
+                  <option value="historical">Historical</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="report-start-date">Start Date</label>
+                <input id="report-start-date" type="date" />
+              </div>
+              <div class="field">
+                <label for="report-end-date">End Date</label>
+                <input id="report-end-date" type="date" />
+              </div>
+            </div>
+          </div>
+
+          <div class="subtile glass-subtile">
+            <div class="section-title">Columns</div>
+            <div class="report-column-grid" id="report-column-grid"></div>
+            <div class="report-actions">
+              <button class="button" id="report-download-button" type="button">Download CSV</button>
+              <div class="report-summary" id="report-summary"></div>
             </div>
           </div>
         </div>
@@ -1334,6 +1456,8 @@
     const settingsTab = document.getElementById("settings-tab");
     const historicalTab = document.getElementById("historical-tab");
     const historicalTabIcon = document.getElementById("historical-tab-icon");
+    const reportTab = document.getElementById("report-tab");
+    const reportTabIcon = document.getElementById("report-tab-icon");
     const ALLOWED_ACCOUNT_ROLES = ["basic", "pro", "life", "admin", "owner"];
 
     let authAccepted = false;
@@ -1371,11 +1495,18 @@
 
     function setOwnerControls(role) {
       currentUserRole = role || null;
+      const proUnlocked = canUseProFeatures();
       const historicalUnlocked = canViewHistoricalGames();
       historicalTab.classList.toggle("is-unlocked", historicalUnlocked);
       historicalTabIcon.innerHTML = historicalUnlocked ? "&#128275;" : "&#128274;";
+      reportTab.classList.toggle("is-unlocked", proUnlocked);
+      reportTabIcon.innerHTML = proUnlocked ? "&#128275;" : "&#128274;";
       settingsTab.classList.toggle("hidden", currentUserRole !== "owner");
       refreshHistoricalGamesView();
+      refreshReportBuilderView();
+      if (pitcherInput?.value?.trim()) {
+        projectPitcher();
+      }
     }
 
     function redirectToLogin() {
@@ -1465,12 +1596,21 @@
     const historicalLockedPanel = document.getElementById("historical-locked-panel");
     const historicalTablePanel = document.getElementById("historical-table-panel");
     const historicalSortHeaders = Array.from(document.querySelectorAll("#historical-games-panel th.sortable"));
+    const reportLockedPanel = document.getElementById("report-locked-panel");
+    const reportBuilderForm = document.getElementById("report-builder-form");
+    const reportSourceSelect = document.getElementById("report-source");
+    const reportStartDateInput = document.getElementById("report-start-date");
+    const reportEndDateInput = document.getElementById("report-end-date");
+    const reportColumnGrid = document.getElementById("report-column-grid");
+    const reportDownloadButton = document.getElementById("report-download-button");
+    const reportSummary = document.getElementById("report-summary");
     const workspaceTabs = Array.from(document.querySelectorAll(".workspace-tab"));
     const workspacePanels = {
       "pitcher-lookup": document.getElementById("pitcher-lookup-panel"),
       "upcoming-games": document.getElementById("upcoming-games-panel"),
       "live-games": document.getElementById("live-games-panel"),
       "historical-games": document.getElementById("historical-games-panel"),
+      "report-builder": document.getElementById("report-builder-panel"),
       "settings": document.getElementById("settings-panel")
     };
     const pitcherInput = document.getElementById("pitcher-input");
@@ -1497,7 +1637,46 @@
     const historicalGamesPageSize = 20;
     let historicalSearchQuery = "";
     let historicalSort = { key: "date", direction: "desc" };
+    let reportSelectedColumns = [];
     let lineInputTouched = false;
+
+    const REPORT_COLUMNS = [
+      { key: "pitcher", label: "Pitcher", value: game => game.pitcher },
+      { key: "pitcher_team", label: "Team", value: game => game.pitcher_team },
+      { key: "opponent", label: "Opponent", value: game => game.opponent },
+      { key: "date", label: "Date", value: game => game.date || formatDisplayDate(game.game_date_raw) },
+      { key: "time", label: "Time", value: game => game.time || formatDisplayTime(game.start_time) },
+      { key: "game_status", label: "Status", value: game => game.game_status },
+      { key: "plate_umpire", label: "Ump", value: game => game.plate_umpire },
+      { key: "dk_line", label: "DK Line", value: game => game.dk_line },
+      { key: "dk_result", label: "DK Result", value: game => evaluateBetCorrectness(game.actual_k ?? game.strikeouts, game.dk_line, game.dk_bet) },
+      { key: "fd_line", label: "FD Line", value: game => game.fd_line },
+      { key: "fd_result", label: "FD Result", value: game => evaluateBetCorrectness(game.actual_k ?? game.strikeouts, game.fd_line, game.fd_bet) },
+      { key: "projected_strikeouts", label: "Projected Ks", value: game => formatNumber(displayProjectionValue(game), 2) },
+      { key: "volatility_score", label: "Volatility", value: game => formatVolatility(game) },
+      { key: "dk_bet", label: "DK Bet", value: game => game.dk_bet },
+      { key: "dk_edge", label: "DK Edge", value: game => formatEdge(game.dk_edge) },
+      { key: "fd_bet", label: "FD Bet", value: game => game.fd_bet },
+      { key: "fd_edge", label: "FD Edge", value: game => formatEdge(game.fd_edge) },
+      { key: "notes", label: "Notes", value: game => displayNotesText(game) },
+      { key: "actual_k", label: "Actual Ks", value: game => formatActualStrikeouts(game.actual_k ?? game.strikeouts) },
+    ];
+
+    const DEFAULT_REPORT_COLUMNS = [
+      "pitcher",
+      "opponent",
+      "date",
+      "plate_umpire",
+      "dk_line",
+      "dk_result",
+      "fd_line",
+      "fd_result",
+      "projected_strikeouts",
+      "volatility_score",
+      "dk_edge",
+      "fd_edge",
+      "notes",
+    ];
 
     function refreshPitcherList() {
       allPitchers = Array.from(new Set(
@@ -1599,6 +1778,7 @@
         refreshUpcomingGamesView();
         refreshLiveGamesView();
         refreshHistoricalGamesView();
+        refreshReportBuilderView();
         return;
       }
 
@@ -1633,6 +1813,7 @@
       refreshUpcomingGamesView();
       refreshLiveGamesView();
       refreshHistoricalGamesView();
+      refreshReportBuilderView();
       if (pitcherInput.value.trim()) {
         projectPitcher();
       }
@@ -1722,6 +1903,16 @@
     function sortableGameDate(game) {
       const parsed = Date.parse(game?.sort_datetime || game?.game_date_raw || game?.date || "");
       return Number.isNaN(parsed) ? 0 : parsed;
+    }
+
+    function isPastScheduledDate(game) {
+      const parsed = Date.parse(game?.sort_datetime || game?.game_date_raw || game?.date || "");
+      if (Number.isNaN(parsed)) return false;
+      const gameDate = new Date(parsed);
+      const today = new Date();
+      gameDate.setHours(0, 0, 0, 0);
+      today.setHours(0, 0, 0, 0);
+      return gameDate < today;
     }
 
     function formatVolatility(game) {
@@ -2063,12 +2254,14 @@
     }
 
     function renderBreakdown(game) {
-      const rows = [
-        ["ENSEMBLE K", game.ensemble_prediction],
-        ["POISSON", game.poisson_prediction],
-        ["LINEAR", game.linear_prediction],
-        ["NONLINEAR", game.nonlinear_prediction]
-      ];
+      const rows = [["ENSEMBLE K", game.ensemble_prediction]];
+      if (canViewModelBreakdown()) {
+        rows.push(
+          ["POISSON", game.poisson_prediction],
+          ["LINEAR", game.linear_prediction],
+          ["NONLINEAR", game.nonlinear_prediction]
+        );
+      }
       const chips = rows.map(([label, value], index) => `
         <div class="breakdown-chip">
           ${index === 0 ? `<strong>${label}</strong>` : `<span>${label}</span>`}
@@ -2243,6 +2436,52 @@
       renderBreakdown(game);
     }
 
+    function renderNotScheduledPitcherLookup(pitcherName, latestHistory = null) {
+      const lastGameK = latestHistory?.actual_k || latestHistory?.strikeouts || "";
+      renderCells("upcoming-game-grid", [
+        { label: "Pitcher", value: pitcherName || latestHistory?.pitcher || "" },
+        { label: "Opponent", value: "Not Scheduled" },
+        { label: "Game Date/Time", value: "Not Scheduled" },
+        { label: "Projected K", value: "Not Scheduled" },
+        { label: "Venue", value: "Not Scheduled" },
+        { label: "Home Or Away", value: "Not Scheduled" },
+        { label: "Plate Ump", value: "Not Scheduled" },
+        { label: "Last Game K", value: lastGameK }
+      ]);
+
+      renderProjection({
+        projected_strikeouts: " ",
+        lean: " ",
+        confidence: " ",
+        edge: null,
+        over_probability: null,
+        under_probability: null
+      });
+
+      renderSportsbookProjectionRow("upcoming-dk-grid", "DraftKings", " ", " ", " ", " ", {
+        lean: " ",
+        confidence_tier: " ",
+        edge: null,
+        over_probability: null,
+        under_probability: null
+      });
+      renderSportsbookProjectionRow("upcoming-fd-grid", "FanDuel", " ", " ", " ", " ", {
+        lean: " ",
+        confidence_tier: " ",
+        edge: null,
+        over_probability: null,
+        under_probability: null
+      });
+      renderNotes([
+        {
+          impact: "neutral",
+          title: "Not Scheduled",
+          body: `${pitcherName || "This pitcher"} does not have an upcoming probable-starter game in the current board.`
+        }
+      ]);
+      renderBreakdown({});
+    }
+
     function parseSortableValue(game, key) {
       if (key === "dk_edge" || key === "fd_edge" || key === "dk_line" || key === "fd_line" || key === "volatility_score") {
         return game[key] === null || game[key] === undefined || game[key] === ""
@@ -2267,6 +2506,9 @@
       }
       if (key === "plate_umpire") {
         return isAssignedUmp(game.plate_umpire) ? 1 : 0;
+      }
+      if (key === "notes") {
+        return normalizeText(displayNotesText(game));
       }
       if (key === "date" || key === "time") {
         const parsed = Date.parse(game.sort_datetime || game.date || "");
@@ -2340,8 +2582,16 @@
       });
     }
 
-    function canViewHistoricalGames() {
+    function canUseProFeatures() {
       return ["pro", "life", "admin", "owner"].includes(String(currentUserRole || "").toLowerCase());
+    }
+
+    function canViewHistoricalGames() {
+      return canUseProFeatures();
+    }
+
+    function canViewModelBreakdown() {
+      return String(currentUserRole || "").toLowerCase() === "owner";
     }
 
     function formatActualStrikeouts(value) {
@@ -2403,6 +2653,111 @@
         if (a > b) return 1 * direction;
         return normalizeText(left.pitcher).localeCompare(normalizeText(right.pitcher));
       });
+    }
+
+    function getReportDataset() {
+      const source = reportSourceSelect.value;
+      if (source === "live") return liveGames.slice();
+      if (source === "historical") return gameHistory.slice();
+      return upcomingGames.slice();
+    }
+
+    function dateInputToTime(value, endOfDay = false) {
+      if (!value) return null;
+      const suffix = endOfDay ? "T23:59:59" : "T00:00:00";
+      const parsed = Date.parse(`${value}${suffix}`);
+      return Number.isNaN(parsed) ? null : parsed;
+    }
+
+    function reportRowTime(game) {
+      const rawDate = game?.game_date_raw || game?.game_date || game?.date || "";
+      const rawTime = game?.start_time || game?.time || "";
+      const candidates = [
+        game?.sort_datetime,
+        rawTime,
+        rawDate && rawTime ? `${rawDate} ${rawTime}` : "",
+        rawDate
+      ];
+      for (const candidate of candidates) {
+        const parsed = Date.parse(candidate);
+        if (!Number.isNaN(parsed)) return parsed;
+      }
+      return sortableGameDate(game);
+    }
+
+    function getFilteredReportRows() {
+      const startTime = dateInputToTime(reportStartDateInput.value, false);
+      const endTime = dateInputToTime(reportEndDateInput.value, true);
+      return getReportDataset().filter(game => {
+        const rowTime = reportRowTime(game);
+        if (!Number.isFinite(rowTime)) return !startTime && !endTime;
+        if (startTime && rowTime < startTime) return false;
+        if (endTime && rowTime > endTime) return false;
+        return true;
+      });
+    }
+
+    function getSelectedReportColumns() {
+      const checked = Array.from(reportColumnGrid.querySelectorAll("input[type='checkbox']:checked"))
+        .map(input => input.value);
+      return REPORT_COLUMNS.filter(column => checked.includes(column.key));
+    }
+
+    function renderReportColumns() {
+      const selected = reportSelectedColumns.length ? reportSelectedColumns : DEFAULT_REPORT_COLUMNS;
+      reportColumnGrid.innerHTML = REPORT_COLUMNS.map(column => `
+        <label class="report-column-option">
+          <input type="checkbox" value="${escapeHtml(column.key)}" ${selected.includes(column.key) ? "checked" : ""} />
+          <span>${escapeHtml(column.label)}</span>
+        </label>
+      `).join("");
+      reportSelectedColumns = selected.slice();
+    }
+
+    function refreshReportBuilderView() {
+      const unlocked = canUseProFeatures();
+      reportLockedPanel.classList.toggle("hidden", unlocked);
+      reportBuilderForm.classList.toggle("hidden", !unlocked);
+      if (!unlocked) return;
+
+      const rows = getFilteredReportRows();
+      const selectedColumns = getSelectedReportColumns();
+      reportDownloadButton.disabled = !rows.length || !selectedColumns.length;
+      const sourceLabel = reportSourceSelect.options[reportSourceSelect.selectedIndex]?.text || "Selected";
+      const columnText = selectedColumns.length === 1 ? "1 column" : `${selectedColumns.length} columns`;
+      const rowText = rows.length === 1 ? "1 row" : `${rows.length} rows`;
+      reportSummary.textContent = `${sourceLabel} report ready with ${rowText} and ${columnText}.`;
+    }
+
+    function csvEscape(value) {
+      const text = String(value ?? "");
+      if (/[",\r\n]/.test(text)) return `"${text.replace(/"/g, '""')}"`;
+      return text;
+    }
+
+    function buildReportCsv(rows, columns) {
+      const header = columns.map(column => csvEscape(column.label)).join(",");
+      const body = rows.map(row => columns.map(column => csvEscape(column.value(row))).join(","));
+      return [header, ...body].join("\r\n");
+    }
+
+    function downloadReportCsv() {
+      const columns = getSelectedReportColumns();
+      const rows = getFilteredReportRows();
+      if (!canUseProFeatures() || !columns.length || !rows.length) return;
+
+      const csv = buildReportCsv(rows, columns);
+      const source = reportSourceSelect.value || "report";
+      const today = new Date().toISOString().slice(0, 10);
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `pitchiq-${source}-report-${today}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
     }
 
     function updateUpcomingSortIndicators() {
@@ -2601,14 +2956,15 @@
             ${renderDateCell(game)}
             ${renderUmpCell(game)}
             ${renderBookLineCell(game.dk_line, game.dk_over_payout, game.dk_under_payout)}
+            <td class="${resultTone(dkCorrect)}">${escapeHtml(dkCorrect)}</td>
             ${renderBookLineCell(game.fd_line, game.fd_over_payout, game.fd_under_payout)}
+            <td class="${resultTone(fdCorrect)}">${escapeHtml(fdCorrect)}</td>
             <td class="projected-ks-value">${formatNumber(displayProjectionValue(game), 2)}</td>
+            <td>${escapeHtml(formatActualStrikeouts(actual))}</td>
             ${renderVolatilityCell(game)}
             <td class="${edgeTone(game.dk_edge, game.dk_bet)}">${escapeHtml(formatEdge(game.dk_edge))}</td>
             <td class="${edgeTone(game.fd_edge, game.fd_bet)}">${escapeHtml(formatEdge(game.fd_edge))}</td>
             <td>${escapeHtml(displayNotesText(game))}</td>
-            <td class="${resultTone(dkCorrect)}">${escapeHtml(dkCorrect)}</td>
-            <td class="${resultTone(fdCorrect)}">${escapeHtml(fdCorrect)}</td>
           </tr>
         `;
       }).join("");
@@ -2632,6 +2988,10 @@
 
     function refreshHistoricalGamesView() {
       renderHistoricalGames(getFilteredHistoricalGames());
+    }
+
+    function refreshReportBuilder() {
+      refreshReportBuilderView();
     }
 
     function setActiveWorkspace(view) {
@@ -2684,8 +3044,8 @@
 
     function currentPitcherGame(pitcherName) {
       const normalizedPitcher = normalizeText(pitcherName);
-      return [...upcomingGames, ...liveGames, ...gameHistory]
-        .find(game => normalizeText(game.pitcher) === normalizedPitcher) || null;
+      return [...upcomingGames, ...liveGames]
+        .find(game => normalizeText(game.pitcher) === normalizedPitcher && !isPastScheduledDate(game)) || null;
     }
 
     function bestAvailableLine(game) {
@@ -2742,10 +3102,11 @@
         return;
       }
       const normalizedPitcher = normalizeText(pitcherName);
-      const match = [...upcomingGames, ...liveGames, ...gameHistory]
-        .find(game => normalizeText(game.pitcher) === normalizedPitcher);
+      const match = [...upcomingGames, ...liveGames]
+        .find(game => normalizeText(game.pitcher) === normalizedPitcher && !isPastScheduledDate(game));
       if (!match) {
-        renderEmptyPitcherLookup();
+        const latestHistory = latestHistoricalGameForPitcher(pitcherName);
+        renderNotScheduledPitcherLookup(pitcherName, latestHistory);
         return;
       }
       renderPitcherLookupGame(match);
@@ -2871,6 +3232,14 @@
     upcomingSearchInput.addEventListener("input", updateUpcomingSearch);
     liveSearchInput.addEventListener("input", updateLiveSearch);
     historicalSearchInput.addEventListener("input", updateHistoricalSearch);
+    reportSourceSelect.addEventListener("change", refreshReportBuilderView);
+    reportStartDateInput.addEventListener("change", refreshReportBuilderView);
+    reportEndDateInput.addEventListener("change", refreshReportBuilderView);
+    reportColumnGrid.addEventListener("change", () => {
+      reportSelectedColumns = getSelectedReportColumns().map(column => column.key);
+      refreshReportBuilderView();
+    });
+    reportDownloadButton.addEventListener("click", downloadReportCsv);
 
     clearUpcomingSearchButton.addEventListener("click", () => {
       upcomingSearchInput.value = "";
@@ -2976,9 +3345,11 @@
 
     refreshPitcherList();
     renderEmptyPitcherLookup();
+    renderReportColumns();
     refreshUpcomingGamesView();
     refreshLiveGamesView();
     refreshHistoricalGamesView();
+    refreshReportBuilderView();
   </script>
 </body>
 </html>

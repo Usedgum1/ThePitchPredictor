@@ -420,8 +420,17 @@
       font-size: clamp(1.55rem, 9.5vw, 2.45rem);
       line-height: 0.96;
       letter-spacing: 0;
-      text-wrap: balance;
-      overflow-wrap: anywhere;
+      overflow: hidden;
+      text-overflow: clip;
+      white-space: nowrap;
+    }
+
+    .pitcher.long-name {
+      font-size: clamp(1.25rem, 7vw, 1.95rem);
+    }
+
+    .pitcher.very-long-name {
+      font-size: clamp(1.05rem, 5.8vw, 1.6rem);
     }
 
     .team-name,
@@ -1174,6 +1183,13 @@
       ].map(normalizeText).join(" ");
     }
 
+    function pitcherNameSizeClass(name) {
+      const length = String(name || "").trim().length;
+      if (length >= 23) return " very-long-name";
+      if (length >= 17) return " long-name";
+      return "";
+    }
+
     function filteredSortedGames() {
       const query = normalizeText(searchQuery);
       const source = activeView === "live" ? liveGames : upcomingGames;
@@ -1229,7 +1245,7 @@
               <div class="card-face card-front">
                 <div class="card-inner">
                   <div class="player-panel">
-                    <h2 class="pitcher">${escapeHtml(game.pitcher || "Unknown")}</h2>
+                    <h2 class="pitcher${pitcherNameSizeClass(game.pitcher)}">${escapeHtml(game.pitcher || "Unknown")}</h2>
                     <div class="team-name">${escapeHtml(game.pitcher_team || "Team pending")}</div>
                   </div>
                   <div class="game-row">
