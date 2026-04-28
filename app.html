@@ -1060,6 +1060,21 @@
       font-weight: 700;
     }
 
+    .result-win {
+      color: var(--success);
+      font-weight: 700;
+    }
+
+    .result-loss {
+      color: var(--danger);
+      font-weight: 700;
+    }
+
+    .result-push {
+      color: var(--amber);
+      font-weight: 700;
+    }
+
     .projected-ks-value {
       color: #ffd700;
       font-weight: 800;
@@ -2650,9 +2665,9 @@
     }
 
     function resultTone(value) {
-      if (value === "Win") return "up-text";
-      if (value === "Loss") return "down-text";
-      if (value === "Push") return "avoid-text";
+      if (value === "Win") return "result-win";
+      if (value === "Loss") return "result-loss";
+      if (value === "Push") return "result-push";
       return "";
     }
 
