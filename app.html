@@ -836,6 +836,439 @@
       background: rgba(28, 31, 42, 0.84);
     }
 
+    .view-toggle {
+      display: inline-flex;
+      gap: 6px;
+      padding: 4px;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.035);
+    }
+
+    .view-toggle-button {
+      width: 38px;
+      height: 36px;
+      border: 0;
+      border-radius: 9px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    .view-toggle-button.active {
+      background: rgba(141, 138, 255, 0.16);
+      color: var(--text);
+      box-shadow: inset 0 0 0 1px rgba(141, 138, 255, 0.24);
+    }
+
+    .view-icon-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 6px);
+      gap: 3px;
+    }
+
+    .view-icon-grid span {
+      width: 6px;
+      height: 6px;
+      border-radius: 2px;
+      background: currentColor;
+    }
+
+    .view-icon-lines {
+      display: grid;
+      gap: 4px;
+      width: 18px;
+    }
+
+    .view-icon-lines span {
+      height: 2px;
+      border-radius: 999px;
+      background: currentColor;
+    }
+
+    .desktop-card-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .desktop-card-grid .empty-state {
+      grid-column: 1 / -1;
+    }
+
+    .desktop-card {
+      position: relative;
+      min-height: 430px;
+      perspective: 1200px;
+      transition: transform 0.22s ease, filter 0.22s ease;
+      will-change: transform;
+      cursor: pointer;
+    }
+
+    .desktop-card:hover {
+      z-index: 3;
+      transform: translateY(-6px) scale(1.012);
+      filter: brightness(1.04);
+    }
+
+    .desktop-card-shell {
+      position: absolute;
+      inset: 0;
+      transform-style: preserve-3d;
+    }
+
+    .desktop-card-face {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      border: 3px solid #020203;
+      border-radius: 16px;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.1), transparent 18%),
+        linear-gradient(160deg, rgba(30, 33, 46, 0.98), rgba(11, 12, 18, 0.98));
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.08), 0 14px 28px rgba(0,0,0,0.3);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      transform-style: preserve-3d;
+      transition: opacity 0.16s ease, transform 0.44s ease, visibility 0s linear 0.16s;
+    }
+
+    .desktop-card-face::before,
+    .desktop-card-face::after,
+    .desktop-card-inner::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .desktop-card-face::before {
+      background:
+        linear-gradient(118deg, transparent 0%, rgba(255,255,255,0.08) 42%, transparent 58%),
+        radial-gradient(circle at 12% 14%, rgba(255, 188, 98, 0.18), transparent 20%),
+        radial-gradient(circle at 92% 0%, rgba(117, 183, 255, 0.16), transparent 24%);
+    }
+
+    .desktop-card-face::after {
+      inset: -70%;
+      opacity: 0;
+      transform: translateX(-48%);
+    }
+
+    .desktop-card.dk-shimmer .desktop-card-face::after {
+      background: linear-gradient(115deg, transparent 38%, rgba(136,255,190,0.3) 46%, rgba(0,255,128,0.72) 50%, rgba(136,255,190,0.3) 54%, transparent 62%);
+      animation: cardGlowSweep 10s ease-in-out infinite;
+    }
+
+    .desktop-card.fd-shimmer .desktop-card-face::after {
+      background: linear-gradient(115deg, transparent 38%, rgba(88,214,255,0.3) 46%, rgba(0,157,255,0.78) 50%, rgba(88,214,255,0.3) 54%, transparent 62%);
+      animation: cardGlowSweep 10s ease-in-out infinite;
+    }
+
+    .desktop-card-front {
+      opacity: 1;
+      transform: rotateY(0deg);
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .desktop-card.flipped .desktop-card-front {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .desktop-card.flip-left.flipped .desktop-card-front {
+      transform: rotateY(180deg);
+    }
+
+    .desktop-card.flip-right.flipped .desktop-card-front,
+    .desktop-card:not(.flip-left).flipped .desktop-card-front {
+      transform: rotateY(-180deg);
+    }
+
+    .desktop-card-back {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.08), transparent 18%),
+        linear-gradient(160deg, rgba(20, 27, 42, 0.98), rgba(9, 11, 19, 0.98));
+    }
+
+    .desktop-card.flip-left .desktop-card-back {
+      transform: rotateY(-180deg);
+    }
+
+    .desktop-card.flip-right .desktop-card-back,
+    .desktop-card:not(.flip-left) .desktop-card-back {
+      transform: rotateY(180deg);
+    }
+
+    .desktop-card.flipped .desktop-card-back {
+      opacity: 1;
+      transform: rotateY(0deg);
+      visibility: visible;
+      pointer-events: auto;
+      transition-delay: 0s;
+    }
+
+    @keyframes cardGlowSweep {
+      0% { transform: translateX(-48%); opacity: 0; }
+      8% { opacity: 1; }
+      22% { opacity: 0.85; }
+      38%, 100% { transform: translateX(48%); opacity: 0; }
+    }
+
+    .desktop-card-inner {
+      position: relative;
+      height: 100%;
+      padding: 12px;
+      overflow: hidden;
+    }
+
+    .desktop-card-inner::before {
+      background: url("images/pitchIQ%20Logo%20v3.png") center center / min(58%, 150px) auto no-repeat;
+      opacity: 0.12;
+      mix-blend-mode: screen;
+    }
+
+    .desktop-card-back .desktop-card-inner::before {
+      display: none;
+    }
+
+    .desktop-player-panel {
+      height: 92px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      overflow: hidden;
+      padding: 8px 4px;
+    }
+
+    .desktop-card-pitcher {
+      width: 100%;
+      margin: 0 0 5px;
+      color: var(--text);
+      font-size: clamp(1.05rem, 1.45vw, 1.65rem);
+      line-height: 0.98;
+      white-space: nowrap;
+    }
+
+    .desktop-card-pitcher.medium-name { font-size: clamp(0.95rem, 1.25vw, 1.42rem); }
+    .desktop-card-pitcher.long-name { font-size: clamp(0.84rem, 1.05vw, 1.2rem); }
+    .desktop-card-pitcher.very-long-name { font-size: clamp(0.74rem, 0.92vw, 1.02rem); }
+    .desktop-card-pitcher.extra-long-name { font-size: clamp(0.66rem, 0.8vw, 0.9rem); }
+
+    .desktop-card-team,
+    .desktop-card-matchup {
+      color: var(--text);
+      font-size: 0.76rem;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .desktop-card-game-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .desktop-card-opponent {
+      color: var(--text);
+      font-size: 0.78rem;
+      font-weight: 900;
+      line-height: 1.2;
+    }
+
+    .desktop-card-opponent span {
+      color: var(--muted);
+      margin-right: 4px;
+    }
+
+    .desktop-card-ump,
+    .desktop-card-time {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 0.62rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .desktop-card-date {
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .desktop-card-date-main {
+      display: block;
+      color: var(--text);
+      font-size: 0.76rem;
+      font-weight: 800;
+    }
+
+    .desktop-card-metrics {
+      display: grid;
+    }
+
+    .desktop-card-metric {
+      min-height: 46px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+      padding: 7px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .desktop-card-metric-label {
+      color: var(--text);
+      font-size: 0.64rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      line-height: 1.2;
+      text-transform: uppercase;
+    }
+
+    .desktop-card-metric-context {
+      display: block;
+      margin-top: 3px;
+      color: rgba(170,178,192,0.72);
+      font-size: 0.55rem;
+      letter-spacing: 0.04em;
+    }
+
+    .desktop-card-metric-value {
+      min-width: 54px;
+      text-align: right;
+      color: var(--text);
+      font-size: 0.95rem;
+      font-weight: 900;
+      line-height: 1.1;
+    }
+
+    .desktop-card-metric-value.volatility-low {
+      color: var(--success);
+    }
+
+    .desktop-card-metric-value.volatility-medium {
+      color: var(--amber);
+    }
+
+    .desktop-card-metric-value.volatility-high {
+      color: var(--danger);
+    }
+
+    .desktop-card-subvalue {
+      margin-top: 4px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 5px;
+      color: rgba(170,178,192,0.8);
+      font-size: 0.58rem;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .desktop-card-edge-row {
+      grid-template-columns: 0.85fr 1fr 1fr;
+    }
+
+    .desktop-card-edge-value {
+      font-size: 0.88rem;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .desktop-card-note {
+      min-height: 38px;
+      color: var(--text);
+      font-size: 0.66rem;
+      font-weight: 800;
+      line-height: 1.35;
+      text-align: center;
+      overflow-wrap: anywhere;
+    }
+
+    .desktop-card-notes-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .desktop-card-note-card {
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px;
+      padding: 10px;
+      background: rgba(255,255,255,0.045);
+    }
+
+    .desktop-card-note-card.up {
+      border-color: rgba(255,177,74,0.5);
+      background: rgba(80,47,12,0.38);
+    }
+
+    .desktop-card-note-card.down {
+      border-color: rgba(86,152,255,0.5);
+      background: rgba(12,34,72,0.42);
+    }
+
+    .desktop-card-note-title {
+      color: var(--text);
+      font-size: 0.8rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .desktop-card-note-k {
+      color: var(--amber);
+      margin-left: 5px;
+    }
+
+    .desktop-card-note-k.down {
+      color: var(--blue);
+    }
+
+    .desktop-card-note-body {
+      color: var(--muted);
+      font-size: 0.72rem;
+      line-height: 1.45;
+    }
+
+    @media (max-width: 1500px) {
+      .desktop-card-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 1180px) {
+      .desktop-card-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 820px) {
+      .desktop-card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .desktop-card {
+        transition: none;
+      }
+
+      .desktop-card:hover {
+        transform: none;
+        filter: none;
+      }
+    }
+
     .table-scroll {
       overflow-x: auto;
     }
@@ -1294,6 +1727,14 @@
               <button id="clear-upcoming-search" class="clear-btn hidden" type="button" aria-label="Clear upcoming games search">x</button>
             </div>
           </div>
+          <div class="view-toggle" aria-label="Upcoming games view">
+            <button class="view-toggle-button active" id="upcoming-table-view-button" type="button" title="Table View" aria-label="Table View">
+              <span class="view-icon-lines" aria-hidden="true"><span></span><span></span><span></span></span>
+            </button>
+            <button class="view-toggle-button" id="upcoming-card-view-button" type="button" title="Card View" aria-label="Card View">
+              <span class="view-icon-grid" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+            </button>
+          </div>
         </div>
 
         <div class="table-shell" id="upcoming-table-shell">
@@ -1320,6 +1761,8 @@
           </div>
         </div>
 
+        <div class="desktop-card-grid hidden" id="upcoming-card-grid"></div>
+
         <div class="pager">
           <div class="pager-meta" id="upcoming-games-meta"></div>
           <div class="pager-controls">
@@ -1338,6 +1781,14 @@
               <input id="live-search-input" type="text" placeholder="Search pitcher, team, opponent, line, bet, edge..." />
               <button id="clear-live-search" class="clear-btn hidden" type="button" aria-label="Clear live games search">x</button>
             </div>
+          </div>
+          <div class="view-toggle" aria-label="Live games view">
+            <button class="view-toggle-button active" id="live-table-view-button" type="button" title="Table View" aria-label="Table View">
+              <span class="view-icon-lines" aria-hidden="true"><span></span><span></span><span></span></span>
+            </button>
+            <button class="view-toggle-button" id="live-card-view-button" type="button" title="Card View" aria-label="Card View">
+              <span class="view-icon-grid" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+            </button>
           </div>
         </div>
 
@@ -1364,6 +1815,8 @@
             </table>
           </div>
         </div>
+
+        <div class="desktop-card-grid hidden" id="live-card-grid"></div>
 
         <div class="pager">
           <div class="pager-meta" id="live-games-meta"></div>
@@ -1625,6 +2078,9 @@
     const upcomingNextButton = document.getElementById("upcoming-next-button");
     const upcomingPageIndicator = document.getElementById("upcoming-page-indicator");
     const upcomingTableShell = document.getElementById("upcoming-table-shell");
+    const upcomingCardGrid = document.getElementById("upcoming-card-grid");
+    const upcomingTableViewButton = document.getElementById("upcoming-table-view-button");
+    const upcomingCardViewButton = document.getElementById("upcoming-card-view-button");
     const upcomingSortHeaders = Array.from(document.querySelectorAll("#upcoming-games-panel th.sortable"));
     const liveSearchInput = document.getElementById("live-search-input");
     const clearLiveSearchButton = document.getElementById("clear-live-search");
@@ -1633,6 +2089,9 @@
     const liveNextButton = document.getElementById("live-next-button");
     const livePageIndicator = document.getElementById("live-page-indicator");
     const liveTableShell = document.getElementById("live-table-shell");
+    const liveCardGrid = document.getElementById("live-card-grid");
+    const liveTableViewButton = document.getElementById("live-table-view-button");
+    const liveCardViewButton = document.getElementById("live-card-view-button");
     const liveSortHeaders = Array.from(document.querySelectorAll("#live-games-panel th.sortable"));
     const historicalSearchInput = document.getElementById("historical-search-input");
     const clearHistoricalSearchButton = document.getElementById("clear-historical-search");
@@ -1677,16 +2136,20 @@
     const upcomingGamesPageSize = 20;
     let upcomingSearchQuery = "";
     let upcomingSort = { key: "date", direction: "asc" };
+    let upcomingViewMode = "table";
     let liveGamesPage = 1;
     const liveGamesPageSize = 20;
     let liveSearchQuery = "";
     let liveSort = { key: "date", direction: "asc" };
+    let liveViewMode = "table";
     let historicalGamesPage = 1;
     const historicalGamesPageSize = 20;
     let historicalSearchQuery = "";
     let historicalSort = { key: "date", direction: "desc" };
     let reportSelectedColumns = [];
     let lineInputTouched = false;
+    const desktopFlippedCardKeys = new Set();
+    const desktopCardFlipDirections = new Map();
 
     const REPORT_COLUMNS = [
       { key: "pitcher", label: "Pitcher", value: game => game.pitcher },
@@ -2911,6 +3374,207 @@
       `;
     }
 
+    function setViewMode(scope, mode) {
+      if (scope === "live") {
+        liveViewMode = mode === "cards" ? "cards" : "table";
+        refreshLiveGamesView();
+        return;
+      }
+      upcomingViewMode = mode === "cards" ? "cards" : "table";
+      refreshUpcomingGamesView();
+    }
+
+    function pitcherNameSizeClass(name) {
+      const length = String(name || "").trim().length;
+      if (length >= 27) return " extra-long-name";
+      if (length >= 23) return " very-long-name";
+      if (length >= 18) return " long-name";
+      if (length >= 14) return " medium-name";
+      return "";
+    }
+
+    function desktopCardKey(view, game) {
+      return [
+        view,
+        game?.event_key || "",
+        game?.pitcher || "",
+        game?.date || "",
+        game?.opponent || ""
+      ].map(value => String(value || "").trim()).join("|");
+    }
+
+    function desktopLineDiscrepancyShimmerClass(game) {
+      const notes = normalizeText(displayNotesText(game));
+      if (notes.includes("+dk line")) return "dk-shimmer";
+      if (notes.includes("+fd line")) return "fd-shimmer";
+      return "";
+    }
+
+    function desktopFormatLineOdds(lineValue, overPayout, underPayout) {
+      const line = String(lineValue || "").trim();
+      const over = String(overPayout || "").trim();
+      const under = String(underPayout || "").trim();
+      return {
+        line: line || "-",
+        odds: over || under ? `${over || "-"} / ${under || "-"}` : "",
+      };
+    }
+
+    function renderDesktopBookMetric(label, lineValue, overPayout, underPayout, betValue) {
+      const book = desktopFormatLineOdds(lineValue, overPayout, underPayout);
+      return `
+        <div class="desktop-card-metric">
+          <div class="desktop-card-metric-label">
+            ${escapeHtml(label)}
+            <span class="desktop-card-metric-context ${leanClass(betValue)}">${escapeHtml(formatBetLabel(betValue) || "Lean pending")}</span>
+          </div>
+          <div class="desktop-card-metric-value">
+            ${escapeHtml(book.line)}
+            <div class="desktop-card-subvalue">
+              <span class="up-text">${escapeHtml(String(overPayout || "-"))}</span>
+              <span>/</span>
+              <span class="down-text">${escapeHtml(String(underPayout || "-"))}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderDesktopSimpleMetric(label, value, className = "", context = "") {
+      return `
+        <div class="desktop-card-metric">
+          <div class="desktop-card-metric-label">
+            ${escapeHtml(label)}
+            ${context ? `<span class="desktop-card-metric-context">${escapeHtml(context)}</span>` : ""}
+          </div>
+          <div class="desktop-card-metric-value ${className}">${escapeHtml(value || "-")}</div>
+        </div>
+      `;
+    }
+
+    function renderDesktopEdgeMetric(game) {
+      return `
+        <div class="desktop-card-metric desktop-card-edge-row">
+          <div class="desktop-card-metric-label">Edge</div>
+          <div class="desktop-card-edge-value ${edgeTone(game.dk_edge, game.dk_bet)}">DK ${escapeHtml(formatEdge(game.dk_edge) || "-")}</div>
+          <div class="desktop-card-edge-value ${edgeTone(game.fd_edge, game.fd_bet)}" style="text-align:right;">FD ${escapeHtml(formatEdge(game.fd_edge) || "-")}</div>
+        </div>
+      `;
+    }
+
+    function noteImpactSuffix(impact) {
+      if (impact === "up") return { text: "+K", className: "" };
+      if (impact === "down") return { text: "-K", className: "down" };
+      return { text: "", className: "" };
+    }
+
+    function fitDesktopLookupNotes(notes, maxNotes = 4) {
+      const directional = notes.filter(note => note.impact === "up" || note.impact === "down");
+      let informative = notes.filter(note => note.impact !== "up" && note.impact !== "down");
+
+      if (directional.length + informative.length > maxNotes) {
+        informative = informative.filter(note => normalizeText(note.title) !== "umpire pending");
+      }
+
+      while (directional.length + informative.length > maxNotes && informative.length) {
+        informative.pop();
+      }
+
+      return [...directional, ...informative];
+    }
+
+    function renderDesktopLookupNotes(game) {
+      const notes = fitDesktopLookupNotes(dedupeNotes(notesFromGame(game)));
+      if (!notes.length) {
+        return `
+          <div class="desktop-card-note-card neutral">
+            <div class="desktop-card-note-title">No Major Flags</div>
+            <div class="desktop-card-note-body">No strong context edges are standing out for this projection yet.</div>
+          </div>
+        `;
+      }
+      return notes.map(note => {
+        const suffix = noteImpactSuffix(note.impact);
+        return `
+          <div class="desktop-card-note-card ${escapeHtml(note.impact || "neutral")}">
+            <div class="desktop-card-note-title">
+              ${escapeHtml(note.title || "")}
+              ${suffix.text ? `<span class="desktop-card-note-k ${suffix.className}">${suffix.text}</span>` : ""}
+            </div>
+            <div class="desktop-card-note-body">${sanitizeNoteHtml(note.body || "")}</div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderDesktopGameCard(game, view) {
+      const key = desktopCardKey(view, game);
+      const flipDirection = desktopCardFlipDirections.get(key) === "left" ? "flip-left" : "flip-right";
+      const projected = formatNumber(displayProjectionValue(game), 2) || "-";
+      const time = String(game.time || formatDisplayTime(game.start_time) || "").trim();
+      const date = String(game.date || formatDisplayDate(game.game_date_raw) || "").trim();
+      const volatilityLabel = String(game.volatility_label || "").trim() || "-";
+      const volatilityScore = formatNumber(game.volatility_score, 2);
+      const notes = displayNotesText(game);
+      const status = view === "live" ? (game.game_status || "In Progress") : formatUmpireForCard(game.plate_umpire);
+      const isFlipped = desktopFlippedCardKeys.has(key);
+      return `
+        <article class="desktop-card ${view === "live" ? "live" : ""} ${desktopLineDiscrepancyShimmerClass(game)} ${flipDirection} ${isFlipped ? "flipped" : ""}" data-card-key="${escapeHtml(key)}" role="button" tabindex="0" aria-label="${isFlipped ? "Flip card back to projection" : "Flip card to game notes"}" title="${isFlipped ? "Flip back" : "Game notes"}">
+          <div class="desktop-card-shell">
+            <div class="desktop-card-face desktop-card-front">
+              <div class="desktop-card-inner">
+                <div class="desktop-player-panel">
+                  <h2 class="desktop-card-pitcher${pitcherNameSizeClass(game.pitcher)}">${escapeHtml(game.pitcher || "Unknown")}</h2>
+                  <div class="desktop-card-team">${escapeHtml(game.pitcher_team || "Team pending")}</div>
+                </div>
+                <div class="desktop-card-game-row">
+                  <div class="desktop-card-opponent">
+                    <div><span>vs</span>${escapeHtml(game.opponent || "Opponent pending")}</div>
+                    <div class="desktop-card-ump">${escapeHtml(view === "live" ? status : `Ump: ${status}`)}</div>
+                  </div>
+                  <div class="desktop-card-date">
+                    <span class="desktop-card-date-main">${escapeHtml(date || "Date pending")}</span>
+                    <span class="desktop-card-time">${escapeHtml(time === "Pending" ? "" : time)}</span>
+                  </div>
+                </div>
+                <div class="desktop-card-metrics">
+                  ${renderDesktopSimpleMetric("Projected K", projected, "projected-ks-value")}
+                  ${renderDesktopBookMetric("DraftKings", game.dk_line, game.dk_over_payout, game.dk_under_payout, game.dk_bet)}
+                  ${renderDesktopBookMetric("FanDuel", game.fd_line, game.fd_over_payout, game.fd_under_payout, game.fd_bet)}
+                  ${renderDesktopSimpleMetric("Vix", volatilityLabel, volatilityTone(volatilityLabel), volatilityScore ? `Vix ${volatilityScore}` : "")}
+                  ${renderDesktopEdgeMetric(game)}
+                  <div class="desktop-card-note">${escapeHtml(notes || " ")}</div>
+                </div>
+              </div>
+            </div>
+            <div class="desktop-card-face desktop-card-back">
+              <div class="desktop-card-inner">
+                <div class="desktop-card-notes-list">
+                  ${renderDesktopLookupNotes(game)}
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function formatUmpireForCard(value) {
+      const umpire = String(value || "").trim();
+      if (!umpire || ["pending", "unknown", "n/a", "na"].includes(normalizeText(umpire))) {
+        return "Pending";
+      }
+      return umpire;
+    }
+
+    function renderDesktopCards(container, games, view) {
+      if (!games || !games.length) {
+        container.innerHTML = '<div class="empty-state">No matching pitcher cards right now.</div>';
+        return;
+      }
+      container.innerHTML = games.map(game => renderDesktopGameCard(game, view)).join("");
+    }
+
     function renderUpcomingGames(games) {
       const container = document.getElementById("upcoming-games-grid");
       const totalRows = games ? games.length : 0;
@@ -2918,6 +3582,11 @@
       upcomingGamesPage = Math.min(Math.max(1, upcomingGamesPage), totalPages);
       updateUpcomingSortIndicators();
       upcomingTableShell.classList.remove("loading");
+      const showingCards = upcomingViewMode === "cards";
+      upcomingTableShell.classList.toggle("hidden", showingCards);
+      upcomingCardGrid.classList.toggle("hidden", !showingCards);
+      upcomingTableViewButton.classList.toggle("active", !showingCards);
+      upcomingCardViewButton.classList.toggle("active", showingCards);
 
       if (!games || !games.length) {
         container.innerHTML = `
@@ -2925,6 +3594,7 @@
             <td colspan="12">No upcoming probable starters available.</td>
           </tr>
         `;
+        renderDesktopCards(upcomingCardGrid, [], "upcoming");
         upcomingGamesMeta.textContent = "0 results";
         upcomingPageIndicator.textContent = "Page 1 / 1";
         upcomingPrevButton.disabled = true;
@@ -2956,6 +3626,7 @@
           <td>${escapeHtml(displayNotesText(game))}</td>
         </tr>
       `).join("");
+      renderDesktopCards(upcomingCardGrid, pageRows, "upcoming");
 
       const startDisplay = startIndex + 1;
       const endDisplay = startIndex + pageRows.length;
@@ -2973,6 +3644,11 @@
       liveGamesPage = Math.min(Math.max(1, liveGamesPage), totalPages);
       updateLiveSortIndicators();
       liveTableShell.classList.remove("loading");
+      const showingCards = liveViewMode === "cards";
+      liveTableShell.classList.toggle("hidden", showingCards);
+      liveCardGrid.classList.toggle("hidden", !showingCards);
+      liveTableViewButton.classList.toggle("active", !showingCards);
+      liveCardViewButton.classList.toggle("active", showingCards);
 
       if (!games || !games.length) {
         container.innerHTML = `
@@ -2980,6 +3656,7 @@
             <td colspan="12">No live probable-starter games right now.</td>
           </tr>
         `;
+        renderDesktopCards(liveCardGrid, [], "live");
         liveGamesMeta.textContent = "0 results";
         livePageIndicator.textContent = "Page 1 / 1";
         livePrevButton.disabled = true;
@@ -3011,6 +3688,7 @@
           <td>${escapeHtml(displayNotesText(game))}</td>
         </tr>
       `).join("");
+      renderDesktopCards(liveCardGrid, pageRows, "live");
 
       const startDisplay = startIndex + 1;
       const endDisplay = startIndex + pageRows.length;
@@ -3348,8 +4026,49 @@
       refreshHistoricalGamesView();
     });
 
+    function handleDesktopCardFlip(event) {
+      const card = event.target.closest(".desktop-card");
+      const key = card?.dataset.cardKey;
+      if (!key) return;
+      const bounds = card.getBoundingClientRect();
+      const direction = event.clientX < bounds.left + bounds.width / 2 ? "left" : "right";
+      desktopCardFlipDirections.set(key, direction);
+      card.classList.toggle("flip-left", direction === "left");
+      card.classList.toggle("flip-right", direction === "right");
+      if (desktopFlippedCardKeys.has(key)) {
+        desktopFlippedCardKeys.delete(key);
+        card.classList.remove("flipped");
+      } else {
+        desktopFlippedCardKeys.add(key);
+        card.classList.add("flipped");
+      }
+      const isFlipped = desktopFlippedCardKeys.has(key);
+      card.setAttribute("aria-label", isFlipped ? "Flip card back to projection" : "Flip card to game notes");
+      card.title = isFlipped ? "Flip back" : "Game notes";
+    }
+
+    function handleDesktopCardKeyboardFlip(event) {
+      if (!["Enter", " "].includes(event.key)) return;
+      const card = event.target.closest(".desktop-card");
+      if (!card) return;
+      event.preventDefault();
+      const bounds = card.getBoundingClientRect();
+      handleDesktopCardFlip({
+        target: card,
+        clientX: bounds.left + bounds.width * 0.75
+      });
+    }
+
     upcomingSearchInput.addEventListener("input", updateUpcomingSearch);
     liveSearchInput.addEventListener("input", updateLiveSearch);
+    upcomingTableViewButton.addEventListener("click", () => setViewMode("upcoming", "table"));
+    upcomingCardViewButton.addEventListener("click", () => setViewMode("upcoming", "cards"));
+    liveTableViewButton.addEventListener("click", () => setViewMode("live", "table"));
+    liveCardViewButton.addEventListener("click", () => setViewMode("live", "cards"));
+    upcomingCardGrid.addEventListener("click", handleDesktopCardFlip);
+    liveCardGrid.addEventListener("click", handleDesktopCardFlip);
+    upcomingCardGrid.addEventListener("keydown", handleDesktopCardKeyboardFlip);
+    liveCardGrid.addEventListener("keydown", handleDesktopCardKeyboardFlip);
     historicalSearchInput.addEventListener("input", updateHistoricalSearch);
     reportSourceSelect.addEventListener("change", refreshReportBuilderView);
     reportStartDateInput.addEventListener("change", refreshReportBuilderView);
