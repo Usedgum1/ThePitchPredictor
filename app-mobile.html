@@ -475,12 +475,12 @@
     }
 
     .metric-row {
-      min-height: 60px;
+      min-height: 54px;
       display: grid;
       grid-template-columns: 1fr auto;
       gap: 10px;
       align-items: center;
-      padding: 9px 0;
+      padding: 7px 0;
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
 
@@ -520,6 +520,13 @@
       line-height: 1.1;
     }
 
+    .vix-row .metric-label,
+    .vix-row .metric-value {
+      font-size: 0.88rem;
+      letter-spacing: 0.02em;
+      text-transform: none;
+    }
+
     .metric-subvalue {
       margin-top: 5px;
       display: flex;
@@ -534,15 +541,19 @@
     .edge-row {
       grid-template-columns: 0.85fr 1fr 1fr;
       gap: 8px;
+      border-bottom: 0;
     }
 
     .edge-row .metric-label {
       text-align: left;
+      font-size: 1rem;
+      letter-spacing: 0;
+      text-transform: none;
     }
 
     .edge-value {
       min-width: 0;
-      font-size: 1.02rem;
+      font-size: 1rem;
       font-weight: 900;
       line-height: 1.1;
       white-space: nowrap;
@@ -1054,6 +1065,17 @@
       `;
     }
 
+    function renderVixMetric(label, score) {
+      const displayLabel = String(label || "").trim() || "-";
+      const displayScore = String(score || "").trim();
+      return `
+        <div class="metric-row vix-row">
+          <div class="metric-label">Vix${displayScore ? `: ${escapeHtml(displayScore)}` : ""}</div>
+          <div class="metric-value ${volatilityClass(displayLabel)}">${escapeHtml(displayLabel)}</div>
+        </div>
+      `;
+    }
+
     function renderEdgeMetric(game) {
       return `
         <div class="metric-row edge-row">
@@ -1084,10 +1106,18 @@
       return { text: "", className: "" };
     }
 
-    function sanitizeNoteBody(value) {
-      return escapeHtml(value || "")
+    function sanitizeNoteBody(value, title = "") {
+      let html = escapeHtml(value || "")
         .replace(/&lt;strong&gt;/g, "<strong>")
         .replace(/&lt;\/strong&gt;/g, "</strong>");
+      html = html.replace(/\b(DraftKings|FanDuel)\b/g, "<strong>$1</strong>");
+      if (normalizeText(title).includes("umpire")) {
+        html = html.replace(/^([A-Z][^<.]*?)(?= (?:has|is) )/, match => {
+          if (normalizeText(match).startsWith("the ")) return match;
+          return `<strong>${match}</strong>`;
+        });
+      }
+      return html;
     }
 
     function noteFromText(value) {
@@ -1159,7 +1189,7 @@
                 ${escapeHtml(note.title)}
                 ${suffix.text ? `<span class="lookup-note-k ${suffix.className}">${suffix.text}</span>` : ""}
               </div>
-              <div class="lookup-note-body">${sanitizeNoteBody(note.body)}</div>
+              <div class="lookup-note-body">${sanitizeNoteBody(note.body, note.title)}</div>
             </div>
           `;
           }).join("")}
@@ -1275,10 +1305,10 @@
                     </div>
                   </div>
                   <div class="metric-list">
-                    ${renderSimpleMetric("Ensemble K", projected, "ek-value")}
+                    ${renderSimpleMetric("Projected K", projected, "ek-value")}
+                    ${renderVixMetric(volatilityLabel, volatilityScore)}
                     ${renderBookMetric("DraftKings", game.dk_line, game.dk_over_payout, game.dk_under_payout, game.dk_bet)}
                     ${renderBookMetric("FanDuel", game.fd_line, game.fd_over_payout, game.fd_under_payout, game.fd_bet)}
-                    ${renderSimpleMetric("Vix", volatilityLabel, volatilityClass(volatilityLabel), volatilityScore ? `Vix ${volatilityScore}` : "")}
                     ${renderEdgeMetric(game)}
                     ${renderNotesMetric(notes)}
                   </div>

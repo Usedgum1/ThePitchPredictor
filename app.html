@@ -272,11 +272,16 @@
     .historical-tab {
       border-color: rgba(141, 223, 159, 0.34);
       background: rgba(141, 223, 159, 0.1);
-      color: var(--success);
+      color: var(--muted);
     }
 
-    .historical-tab.active,
     .historical-tab.is-unlocked {
+      border-color: rgba(141, 223, 159, 0.58);
+      background: rgba(141, 223, 159, 0.16);
+      color: var(--muted);
+    }
+
+    .historical-tab.active {
       border-color: rgba(141, 223, 159, 0.58);
       background: rgba(141, 223, 159, 0.16);
       color: var(--text);
@@ -291,11 +296,16 @@
     .report-tab {
       border-color: rgba(141, 223, 159, 0.34);
       background: rgba(141, 223, 159, 0.1);
-      color: var(--success);
+      color: var(--muted);
     }
 
-    .report-tab.active,
     .report-tab.is-unlocked {
+      border-color: rgba(141, 223, 159, 0.58);
+      background: rgba(141, 223, 159, 0.16);
+      color: var(--muted);
+    }
+
+    .report-tab.active {
       border-color: rgba(141, 223, 159, 0.58);
       background: rgba(141, 223, 159, 0.16);
       color: var(--text);
@@ -1042,6 +1052,13 @@
       display: none;
     }
 
+    .desktop-card-history-action {
+      position: absolute;
+      right: 12px;
+      bottom: 12px;
+      z-index: 4;
+    }
+
     .desktop-player-panel {
       height: 92px;
       display: flex;
@@ -1124,12 +1141,12 @@
     }
 
     .desktop-card-metric {
-      min-height: 46px;
+      min-height: 42px;
       display: grid;
       grid-template-columns: 1fr auto;
       gap: 8px;
       align-items: center;
-      padding: 7px 0;
+      padding: 6px 0;
       border-bottom: 1px solid rgba(255,255,255,0.08);
     }
 
@@ -1159,6 +1176,13 @@
       line-height: 1.1;
     }
 
+    .desktop-card-vix-row .desktop-card-metric-label,
+    .desktop-card-vix-row .desktop-card-metric-value {
+      font-size: 0.76rem;
+      letter-spacing: 0.02em;
+      text-transform: none;
+    }
+
     .desktop-card-metric-value.volatility-low {
       color: var(--success);
     }
@@ -1184,10 +1208,17 @@
 
     .desktop-card-edge-row {
       grid-template-columns: 0.85fr 1fr 1fr;
+      border-bottom: 0;
+    }
+
+    .desktop-card-edge-row .desktop-card-metric-label {
+      font-size: 0.84rem;
+      letter-spacing: 0;
+      text-transform: none;
     }
 
     .desktop-card-edge-value {
-      font-size: 0.88rem;
+      font-size: 0.84rem;
       font-weight: 900;
       white-space: nowrap;
     }
@@ -1652,7 +1683,6 @@
           <div class="account-summary">
             <div id="account-pill" class="account-line">Welcome, ...</div>
             <div class="account-links">
-              <a class="signout-link" href="./app-mobile.html">mobile view</a>
               <a class="signout-link" href="./account-settings.html">account settings</a>
               <button id="logout-button" class="signout-link" type="button">sign out</button>
             </div>
@@ -2529,10 +2559,18 @@
         .replace(/'/g, "&#39;");
     }
 
-    function sanitizeNoteHtml(value) {
-      return escapeHtml(value)
+    function sanitizeNoteHtml(value, title = "") {
+      let html = escapeHtml(value)
         .replace(/&lt;strong&gt;/gi, "<strong>")
         .replace(/&lt;\/strong&gt;/gi, "</strong>");
+      html = html.replace(/\b(DraftKings|FanDuel)\b/g, "<strong>$1</strong>");
+      if (normalizeText(title).includes("umpire")) {
+        html = html.replace(/^([A-Z][^<.]*?)(?= (?:has|is) )/, match => {
+          if (normalizeText(match).startsWith("the ")) return match;
+          return `<strong>${match}</strong>`;
+        });
+      }
+      return html;
     }
 
     function renderHoverDetail(displayValue, tooltipValue, className = "") {
@@ -2796,7 +2834,7 @@
         <div class="note-card ${escapeHtml(note.impact || "neutral")}">
           <div class="note-tag">${escapeHtml(noteTagLabel(note.impact))}</div>
           <div class="note-title">${escapeHtml(note.title || "")}</div>
-          <div class="note-body">${sanitizeNoteHtml(note.body || "")}</div>
+          <div class="note-body">${sanitizeNoteHtml(note.body || "", note.title || "")}</div>
         </div>
       `).join("");
     }
@@ -3373,6 +3411,18 @@
       `;
     }
 
+    function renderDesktopHistoricalAction(game) {
+      const pitcher = escapeHtml(game?.pitcher || "");
+      const historicalUnlocked = canViewHistoricalGames();
+      const historicalTitle = historicalUnlocked
+        ? "View historical games"
+        : "Historical lookup is a Pro feature";
+      const historicalIcon = historicalUnlocked ? "&#8634;" : "&#128274;";
+      return `
+        <button class="lookup-icon-btn historical-lookup-btn desktop-card-history-action" type="button" data-pitcher="${pitcher}" title="${historicalTitle}" aria-label="${historicalTitle}">${historicalIcon}</button>
+      `;
+    }
+
     function setViewMode(scope, mode) {
       if (scope === "live") {
         liveViewMode = mode === "cards" ? "cards" : "table";
@@ -3451,6 +3501,17 @@
       `;
     }
 
+    function renderDesktopVixMetric(label, score) {
+      const displayLabel = String(label || "").trim() || "-";
+      const displayScore = String(score || "").trim();
+      return `
+        <div class="desktop-card-metric desktop-card-vix-row">
+          <div class="desktop-card-metric-label">Vix${displayScore ? `: ${escapeHtml(displayScore)}` : ""}</div>
+          <div class="desktop-card-metric-value ${volatilityTone(displayLabel)}">${escapeHtml(displayLabel)}</div>
+        </div>
+      `;
+    }
+
     function renderDesktopEdgeMetric(game) {
       return `
         <div class="desktop-card-metric desktop-card-edge-row">
@@ -3500,7 +3561,7 @@
               ${escapeHtml(note.title || "")}
               ${suffix.text ? `<span class="desktop-card-note-k ${suffix.className}">${suffix.text}</span>` : ""}
             </div>
-            <div class="desktop-card-note-body">${sanitizeNoteHtml(note.body || "")}</div>
+            <div class="desktop-card-note-body">${sanitizeNoteHtml(note.body || "", note.title || "")}</div>
           </div>
         `;
       }).join("");
@@ -3538,12 +3599,13 @@
                 </div>
                 <div class="desktop-card-metrics">
                   ${renderDesktopSimpleMetric("Projected K", projected, "projected-ks-value")}
+                  ${renderDesktopVixMetric(volatilityLabel, volatilityScore)}
                   ${renderDesktopBookMetric("DraftKings", game.dk_line, game.dk_over_payout, game.dk_under_payout, game.dk_bet)}
                   ${renderDesktopBookMetric("FanDuel", game.fd_line, game.fd_over_payout, game.fd_under_payout, game.fd_bet)}
-                  ${renderDesktopSimpleMetric("Vix", volatilityLabel, volatilityTone(volatilityLabel), volatilityScore ? `Vix ${volatilityScore}` : "")}
                   ${renderDesktopEdgeMetric(game)}
                   <div class="desktop-card-note">${escapeHtml(notes || " ")}</div>
                 </div>
+                ${renderDesktopHistoricalAction(game)}
               </div>
             </div>
             <div class="desktop-card-face desktop-card-back">
@@ -4026,6 +4088,13 @@
     });
 
     function handleDesktopCardFlip(event) {
+      const historicalButton = event.target.closest(".historical-lookup-btn");
+      if (historicalButton) {
+        event.stopPropagation();
+        openHistoricalLookup(historicalButton.dataset.pitcher || "");
+        return;
+      }
+      if (event.target.closest("button, a, input, select, textarea")) return;
       const card = event.target.closest(".desktop-card");
       const key = card?.dataset.cardKey;
       if (!key) return;
