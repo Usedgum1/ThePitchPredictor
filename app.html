@@ -2189,6 +2189,20 @@
       return "Informative";
     }
 
+    function dedupeNotes(notes) {
+      const seen = new Set();
+      return (Array.isArray(notes) ? notes : []).filter(note => {
+        const key = [
+          normalizeText(note?.title),
+          normalizeText(note?.body),
+          normalizeText(note?.impact)
+        ].join("|");
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+    }
+
     function normalizeText(value) {
       return String(value || "").trim().toLowerCase();
     }
@@ -2233,6 +2247,7 @@
 
     function renderNotes(notes) {
       const container = document.getElementById("notes-grid");
+      notes = dedupeNotes(notes);
       if (!notes || !notes.length) {
         container.innerHTML = `
           <div class="note-card neutral">
@@ -2333,7 +2348,7 @@
 
     function notesFromGame(game) {
       if (Array.isArray(game.upcoming_notes) && game.upcoming_notes.length) {
-        return game.upcoming_notes;
+        return dedupeNotes(game.upcoming_notes);
       }
 
       const notes = [];
