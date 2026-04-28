@@ -984,9 +984,27 @@
       padding: 0;
     }
 
+    .row-actions {
+      display: inline-flex;
+      gap: 6px;
+      align-items: center;
+      justify-content: center;
+    }
+
     .lookup-icon-btn:hover {
       border-color: rgba(255,177,74,0.26);
       background: rgba(255,177,74,0.1);
+    }
+
+    .historical-lookup-btn {
+      border-color: rgba(141, 223, 159, 0.34);
+      background: rgba(141, 223, 159, 0.08);
+      color: var(--success);
+    }
+
+    .historical-lookup-btn:hover {
+      border-color: rgba(141, 223, 159, 0.58);
+      background: rgba(141, 223, 159, 0.16);
     }
 
     .ump-cell {
@@ -2855,6 +2873,21 @@
       container.classList.add("render-fade");
     }
 
+    function renderRowActions(game, options = {}) {
+      const pitcher = escapeHtml(game?.pitcher || "");
+      const historicalUnlocked = canViewHistoricalGames();
+      const historicalTitle = historicalUnlocked
+        ? "View historical games"
+        : "Historical lookup is a Pro feature";
+      const historicalIcon = historicalUnlocked ? "&#8634;" : "&#128274;";
+      return `
+        <div class="row-actions">
+          <button class="lookup-icon-btn pitcher-lookup-btn" type="button" data-pitcher="${pitcher}" title="Open pitcher lookup" aria-label="Open pitcher lookup">&#8981;</button>
+          ${options.includeHistorical === false ? "" : `<button class="lookup-icon-btn historical-lookup-btn" type="button" data-pitcher="${pitcher}" title="${historicalTitle}" aria-label="${historicalTitle}">${historicalIcon}</button>`}
+        </div>
+      `;
+    }
+
     function renderUpcomingGames(games) {
       const container = document.getElementById("upcoming-games-grid");
       const totalRows = games ? games.length : 0;
@@ -2881,7 +2914,7 @@
 
       container.innerHTML = pageRows.map(game => `
         <tr>
-          <td><button class="lookup-icon-btn" type="button" data-pitcher="${escapeHtml(game.pitcher)}" title="Open pitcher lookup">⌕</button></td>
+          <td>${renderRowActions(game)}</td>
           <td>
             <div class="pitcher-cell">
               <span class="pitcher-name">${escapeHtml(game.pitcher)}</span>
@@ -2936,7 +2969,7 @@
 
       container.innerHTML = pageRows.map(game => `
         <tr>
-          <td><button class="lookup-icon-btn" type="button" data-pitcher="${escapeHtml(game.pitcher)}" title="Open pitcher lookup">⌕</button></td>
+          <td>${renderRowActions(game)}</td>
           <td>
             <div class="pitcher-cell">
               <span class="pitcher-name">${escapeHtml(game.pitcher)}</span>
@@ -3000,7 +3033,7 @@
         const fdCorrect = evaluateBetCorrectness(actual, game.fd_line, game.fd_bet);
         return `
           <tr>
-            <td><button class="lookup-icon-btn" type="button" data-pitcher="${escapeHtml(game.pitcher)}" title="Open pitcher lookup">&#8981;</button></td>
+            <td>${renderRowActions(game, { includeHistorical: false })}</td>
             <td>
               <div class="pitcher-cell">
                 <span class="pitcher-name">${escapeHtml(game.pitcher)}</span>
@@ -3176,6 +3209,14 @@
       updatePitcherClearButton();
       closePitcherDropdown();
       projectPitcher();
+    }
+
+    function openHistoricalLookup(pitcherName) {
+      if (!pitcherName) return;
+      setActiveWorkspace("historical-games");
+      historicalSearchInput.value = pitcherName;
+      updateHistoricalSearch();
+      historicalSearchInput.focus();
     }
 
     function toggleClearButton(input, button) {
@@ -3376,19 +3417,27 @@
     lineInput.addEventListener("change", projectPitcher);
 
     document.getElementById("upcoming-games-grid").addEventListener("click", event => {
-      const button = event.target.closest(".lookup-icon-btn");
-      if (!button) return;
-      openPitcherFromUpcoming(button.dataset.pitcher || "");
+      const historicalButton = event.target.closest(".historical-lookup-btn");
+      if (historicalButton) {
+        openHistoricalLookup(historicalButton.dataset.pitcher || "");
+        return;
+      }
+      const button = event.target.closest(".pitcher-lookup-btn");
+      if (button) openPitcherFromUpcoming(button.dataset.pitcher || "");
     });
 
     document.getElementById("live-games-grid").addEventListener("click", event => {
-      const button = event.target.closest(".lookup-icon-btn");
-      if (!button) return;
-      openPitcherFromUpcoming(button.dataset.pitcher || "");
+      const historicalButton = event.target.closest(".historical-lookup-btn");
+      if (historicalButton) {
+        openHistoricalLookup(historicalButton.dataset.pitcher || "");
+        return;
+      }
+      const button = event.target.closest(".pitcher-lookup-btn");
+      if (button) openPitcherFromUpcoming(button.dataset.pitcher || "");
     });
 
     document.getElementById("historical-games-grid").addEventListener("click", event => {
-      const button = event.target.closest(".lookup-icon-btn");
+      const button = event.target.closest(".pitcher-lookup-btn");
       if (!button) return;
       openPitcherFromUpcoming(button.dataset.pitcher || "");
     });
