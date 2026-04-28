@@ -2409,8 +2409,8 @@
       upcomingSortHeaders.forEach(header => {
         const indicator = header.querySelector(".sort-indicator");
         if (!indicator) return;
-        indicator.textContent = header.dataset.sortKey === upcomingSort.key
-          ? (upcomingSort.direction === "asc" ? "▲" : "▼")
+        indicator.innerHTML = header.dataset.sortKey === upcomingSort.key
+          ? (upcomingSort.direction === "asc" ? "&#9650;" : "&#9660;")
           : "";
       });
     }
@@ -2419,8 +2419,8 @@
       historicalSortHeaders.forEach(header => {
         const indicator = header.querySelector(".sort-indicator");
         if (!indicator) return;
-        indicator.textContent = header.dataset.sortKey === historicalSort.key
-          ? (historicalSort.direction === "asc" ? "â–²" : "â–¼")
+        indicator.innerHTML = header.dataset.sortKey === historicalSort.key
+          ? (historicalSort.direction === "asc" ? "&#9650;" : "&#9660;")
           : "";
       });
     }
@@ -2429,8 +2429,8 @@
       liveSortHeaders.forEach(header => {
         const indicator = header.querySelector(".sort-indicator");
         if (!indicator) return;
-        indicator.textContent = header.dataset.sortKey === liveSort.key
-          ? (liveSort.direction === "asc" ? "▲" : "▼")
+        indicator.innerHTML = header.dataset.sortKey === liveSort.key
+          ? (liveSort.direction === "asc" ? "&#9650;" : "&#9660;")
           : "";
       });
     }
