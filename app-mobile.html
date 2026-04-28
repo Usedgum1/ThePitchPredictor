@@ -964,9 +964,9 @@
     }
 
     function lineDiscrepancyNote(game) {
-      const dkLine = Number(game?.dk_line);
-      const fdLine = Number(game?.fd_line);
-      if (!Number.isFinite(dkLine) || !Number.isFinite(fdLine) || dkLine === fdLine) return "";
+      const dkLine = parseValidLine(game?.dk_line);
+      const fdLine = parseValidLine(game?.fd_line);
+      if (dkLine === null || fdLine === null || dkLine === fdLine) return "";
 
       const side = recommendedSide(game);
       if (side === "UNDER") {
@@ -978,8 +978,31 @@
       return "";
     }
 
+    function parseValidLine(value) {
+      const normalized = String(value ?? "").trim().toLowerCase();
+      if (!normalized || ["-", "pending", "unknown", "n/a", "na"].includes(normalized)) return null;
+      const line = Number(value);
+      return Number.isFinite(line) && line > 0 ? line : null;
+    }
+
+    function cleanLineNotes(game, notes) {
+      const hasDkLine = parseValidLine(game?.dk_line) !== null;
+      const hasFdLine = parseValidLine(game?.fd_line) !== null;
+      return String(notes || "")
+        .split(/\s*(?:,|\|)\s*/)
+        .map(note => note.trim())
+        .filter(Boolean)
+        .filter(note => {
+          const normalized = normalizeText(note);
+          if (normalized === "+dk line") return hasDkLine && hasFdLine;
+          if (normalized === "+fd line") return hasDkLine && hasFdLine;
+          return true;
+        })
+        .join(", ");
+    }
+
     function displayNotes(game) {
-      const rawNotes = String(game?.notes || "").trim();
+      const rawNotes = cleanLineNotes(game, game?.notes);
       const discrepancyNote = lineDiscrepancyNote(game);
       if (!discrepancyNote || normalizeText(rawNotes).includes(normalizeText(discrepancyNote))) {
         return rawNotes;
