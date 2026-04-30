@@ -73,6 +73,7 @@
       display: flex;
       align-items: center;
       justify-content: flex-end;
+      gap: 10px;
     }
 
     .login-button {
@@ -98,6 +99,18 @@
       transform: translateY(-1px);
       border-color: rgba(141, 223, 159, 0.5);
       background: var(--dk-green);
+      color: #050505;
+    }
+
+    .demo-login-button {
+      border-color: rgba(255, 177, 74, 0.42);
+      background: rgba(255, 177, 74, 0.12);
+      color: #ffe0b3;
+    }
+
+    .demo-login-button:hover {
+      border-color: rgba(255, 177, 74, 0.62);
+      background: var(--over-orange);
       color: #050505;
     }
 
@@ -175,6 +188,43 @@
       max-width: 60ch;
       margin-top: 18px;
       margin-bottom: 0;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .demo-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 10px 18px;
+      border: 1px solid rgba(255, 177, 74, 0.42);
+      border-radius: 999px;
+      background: rgba(255, 177, 74, 0.14);
+      color: #ffe0b3;
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: transform 140ms ease, border-color 140ms ease, background 140ms ease, color 140ms ease;
+    }
+
+    .demo-button:hover {
+      transform: translateY(-1px);
+      border-color: rgba(255, 177, 74, 0.62);
+      background: var(--over-orange);
+      color: #050505;
+    }
+
+    .demo-button:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 4px rgba(255, 177, 74, 0.18);
     }
 
     .chips {
@@ -785,6 +835,7 @@
 <body>
   <header class="site-header" aria-label="Site header">
     <div class="site-header-inner">
+      <a class="login-button demo-login-button" href="./demo.html" aria-label="Open The Pitch Predictor demo">Demo</a>
       <a class="login-button" href="./login.html" aria-label="Log in to The Pitch Predictor">Log In</a>
     </div>
   </header>
@@ -797,6 +848,9 @@
 		<div class="domain">ThePitchPredictor.com</div>
 
 		<h1>Strikeout projections built for betting edges.</h1>
+        <div class="hero-actions">
+          <a class="demo-button" href="./demo.html">View Demo</a>
+        </div>
 
 		<p>
 		  Powered by our PitchIQ software, The Pitch Predictor gives you projected strikeouts, sportsbook lines,
