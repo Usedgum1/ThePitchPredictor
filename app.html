@@ -1057,6 +1057,9 @@
       right: 12px;
       bottom: 12px;
       z-index: 4;
+      width: 42px;
+      height: 42px;
+      font-size: 1.08rem;
     }
 
     .desktop-player-panel {
@@ -1091,6 +1094,15 @@
       font-size: 0.76rem;
       font-weight: 700;
       line-height: 1.25;
+    }
+
+    .desktop-card-record-line {
+      margin-top: 3px;
+      color: var(--text);
+      font-size: 0.68rem;
+      font-weight: 900;
+      line-height: 1.1;
+      white-space: nowrap;
     }
 
     .desktop-card-game-row {
@@ -1560,6 +1572,29 @@
     .projected-ks-value {
       color: #ffd700;
       font-weight: 800;
+    }
+
+    .projected-ks-cell {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      line-height: 1.15;
+    }
+
+    .historical-record-subline {
+      color: var(--text);
+      font-size: 0.72rem;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .historical-record-win {
+      color: var(--success);
+    }
+
+    .historical-record-loss {
+      color: var(--danger);
     }
 
     .pager {
@@ -2178,6 +2213,7 @@
     let historicalSort = { key: "date", direction: "desc" };
     let reportSelectedColumns = [];
     let lineInputTouched = false;
+    let historicalBetRecordCache = new Map();
     const desktopFlippedCardKeys = new Set();
     const desktopCardFlipDirections = new Map();
 
@@ -2343,6 +2379,7 @@
           if (leftDate > rightDate) return -1;
           return normalizeText(left.pitcher).localeCompare(normalizeText(right.pitcher));
         });
+        historicalBetRecordCache = new Map();
       }
 
       refreshPitcherList();
@@ -3212,6 +3249,72 @@
       return "";
     }
 
+    function hasResolvedHistoricalStatus(game) {
+      const status = normalizeText(game?.game_status || game?.status || game?.abstract_game_state);
+      return !status || isClearlyCompletedGame(game);
+    }
+
+    function countHistoricalBetOutcome(record, outcome) {
+      if (outcome === "Win") record.wins += 1;
+      if (outcome === "Loss") record.losses += 1;
+    }
+
+    function historicalBetRecordForPitcher(pitcherName) {
+      const normalizedPitcher = normalizeText(pitcherName);
+      if (!normalizedPitcher) return { wins: 0, losses: 0 };
+      if (historicalBetRecordCache.has(normalizedPitcher)) {
+        return historicalBetRecordCache.get(normalizedPitcher);
+      }
+
+      const record = { wins: 0, losses: 0 };
+      gameHistory.forEach(game => {
+        if (normalizeText(game?.pitcher) !== normalizedPitcher) return;
+        if (!hasResolvedHistoricalStatus(game)) return;
+        if (!Number.isFinite(Number(displayProjectionValue(game)))) return;
+
+        const actual = game.actual_k ?? game.strikeouts;
+        countHistoricalBetOutcome(record, evaluateBetCorrectness(actual, game.dk_line, game.dk_bet));
+        countHistoricalBetOutcome(record, evaluateBetCorrectness(actual, game.fd_line, game.fd_bet));
+      });
+
+      historicalBetRecordCache.set(normalizedPitcher, record);
+      return record;
+    }
+
+    function historicalBetRecordTone(record) {
+      if (record.wins > record.losses) return "record-winning";
+      if (record.losses > record.wins) return "record-losing";
+      return "record-even";
+    }
+
+    function renderHistoricalBetRecord(game, className = "historical-record-subline") {
+      const record = historicalBetRecordForPitcher(game?.pitcher);
+      if (!record.wins && !record.losses) return "";
+      const toneClass = className.includes("desktop-card-record-stamp") ? ` ${historicalBetRecordTone(record)}` : "";
+      return `
+        <span class="${className}${toneClass}" title="Historical bet record">
+          <span>(</span><span class="historical-record-win">${record.wins}</span><span>-</span><span class="historical-record-loss">${record.losses}</span><span>)</span>
+        </span>
+      `;
+    }
+
+    function renderDesktopHistoricalRecordLine(game) {
+      const record = renderHistoricalBetRecord(game, "desktop-card-record-line");
+      if (!record) return "";
+      return `<div class="desktop-card-record-line">IQ ${record}</div>`;
+    }
+
+    function renderProjectedKsCell(game) {
+      return `
+        <td class="projected-ks-value">
+          <div class="projected-ks-cell">
+            <span>${escapeHtml(formatNumber(displayProjectionValue(game), 2))}</span>
+            ${renderHistoricalBetRecord(game)}
+          </div>
+        </td>
+      `;
+    }
+
     function getFilteredHistoricalGames() {
       const query = normalizeText(historicalSearchQuery);
       const filtered = !query ? gameHistory.slice() : gameHistory.filter(game => {
@@ -3586,6 +3689,7 @@
                 <div class="desktop-player-panel">
                   <h2 class="desktop-card-pitcher${pitcherNameSizeClass(game.pitcher)}">${escapeHtml(game.pitcher || "Unknown")}</h2>
                   <div class="desktop-card-team">${escapeHtml(game.pitcher_team || "Team pending")}</div>
+                  ${renderDesktopHistoricalRecordLine(game)}
                 </div>
                 <div class="desktop-card-game-row">
                   <div class="desktop-card-opponent">
@@ -3680,7 +3784,7 @@
           ${renderUmpCell(game)}
           ${renderBookLineCell(game.dk_line, game.dk_over_payout, game.dk_under_payout)}
           ${renderBookLineCell(game.fd_line, game.fd_over_payout, game.fd_under_payout)}
-          <td class="projected-ks-value">${formatNumber(displayProjectionValue(game), 2)}</td>
+          ${renderProjectedKsCell(game)}
           ${renderVolatilityCell(game)}
           <td class="${edgeTone(game.dk_edge, game.dk_bet)}">${escapeHtml(formatEdge(game.dk_edge))}</td>
           <td class="${edgeTone(game.fd_edge, game.fd_bet)}">${escapeHtml(formatEdge(game.fd_edge))}</td>
@@ -3742,7 +3846,7 @@
           ${renderUmpCell(game)}
           ${renderBookLineCell(game.dk_line, game.dk_over_payout, game.dk_under_payout)}
           ${renderBookLineCell(game.fd_line, game.fd_over_payout, game.fd_under_payout)}
-          <td class="projected-ks-value">${formatNumber(displayProjectionValue(game), 2)}</td>
+          ${renderProjectedKsCell(game)}
           ${renderVolatilityCell(game)}
           <td class="${edgeTone(game.dk_edge, game.dk_bet)}">${escapeHtml(formatEdge(game.dk_edge))}</td>
           <td class="${edgeTone(game.fd_edge, game.fd_bet)}">${escapeHtml(formatEdge(game.fd_edge))}</td>

@@ -419,6 +419,23 @@
       line-height: 1.35;
     }
 
+    .card-record-line {
+      margin-top: 3px;
+      color: var(--text);
+      font-size: 0.76rem;
+      font-weight: 900;
+      line-height: 1.1;
+      white-space: nowrap;
+    }
+
+    .historical-record-win {
+      color: var(--success);
+    }
+
+    .historical-record-loss {
+      color: var(--danger);
+    }
+
     .game-row {
       display: grid;
       grid-template-columns: 1fr auto;
@@ -752,7 +769,9 @@
     let controlsCollapsed = false;
     let upcomingGames = [];
     let liveGames = [];
+    let gameHistory = [];
     let pitcherLookupByName = new Map();
+    let historicalBetRecordCache = new Map();
     const flippedCardKeys = new Set();
     const cardFlipDirections = new Map();
     let dataRefreshIntervalId = null;
@@ -934,6 +953,64 @@
       if (value === null || value === undefined || value === "" || Number.isNaN(Number(value))) return "";
       const number = Number(value);
       return `${number >= 0 ? "+" : ""}${number.toFixed(2)}`;
+    }
+
+    function evaluateBetCorrectness(actualValue, lineValue, betValue) {
+      const bet = String(betValue || "").trim().toUpperCase();
+      const actual = Number(actualValue);
+      const line = Number(lineValue);
+      if (!["OVER", "UNDER"].includes(bet) || !Number.isFinite(actual) || !Number.isFinite(line)) return "";
+      if (actual === line) return "Push";
+      if (bet === "OVER") return actual > line ? "Win" : "Loss";
+      return actual < line ? "Win" : "Loss";
+    }
+
+    function hasResolvedHistoricalStatus(game) {
+      const status = normalizeText(game?.game_status || game?.status || game?.abstract_game_state);
+      return !status || isClearlyCompletedGame(game);
+    }
+
+    function countHistoricalBetOutcome(record, outcome) {
+      if (outcome === "Win") record.wins += 1;
+      if (outcome === "Loss") record.losses += 1;
+    }
+
+    function historicalBetRecordForPitcher(pitcherName) {
+      const normalizedPitcher = normalizeText(pitcherName);
+      if (!normalizedPitcher) return { wins: 0, losses: 0 };
+      if (historicalBetRecordCache.has(normalizedPitcher)) {
+        return historicalBetRecordCache.get(normalizedPitcher);
+      }
+
+      const record = { wins: 0, losses: 0 };
+      gameHistory.forEach(game => {
+        if (normalizeText(game?.pitcher) !== normalizedPitcher) return;
+        if (!hasResolvedHistoricalStatus(game)) return;
+        if (!Number.isFinite(Number(displayProjectionValue(game)))) return;
+
+        const actual = game.actual_k ?? game.strikeouts;
+        countHistoricalBetOutcome(record, evaluateBetCorrectness(actual, game.dk_line, game.dk_bet));
+        countHistoricalBetOutcome(record, evaluateBetCorrectness(actual, game.fd_line, game.fd_bet));
+      });
+
+      historicalBetRecordCache.set(normalizedPitcher, record);
+      return record;
+    }
+
+    function renderHistoricalBetRecord(game) {
+      const record = historicalBetRecordForPitcher(game?.pitcher);
+      if (!record.wins && !record.losses) return "";
+      return `
+        <span title="Historical bet record">
+          <span>(</span><span class="historical-record-win">${record.wins}</span><span>-</span><span class="historical-record-loss">${record.losses}</span><span>)</span>
+        </span>
+      `;
+    }
+
+    function renderCardHistoricalRecordLine(game) {
+      const record = renderHistoricalBetRecord(game);
+      if (!record) return "";
+      return `<div class="card-record-line">IQ ${record}</div>`;
     }
 
     function recommendedSide(game) {
@@ -1293,6 +1370,7 @@
                   <div class="player-panel">
                     <h2 class="pitcher${pitcherNameSizeClass(game.pitcher)}">${escapeHtml(game.pitcher || "Unknown")}</h2>
                     <div class="team-name">${escapeHtml(game.pitcher_team || "Team pending")}</div>
+                    ${renderCardHistoricalRecordLine(game)}
                   </div>
                   <div class="game-row">
                     <div class="opponent">
@@ -1369,7 +1447,11 @@
     }
 
     async function loadSupabaseTables() {
-      const [{ data: gameRows, error }, { data: lookupRows, error: lookupError }] = await Promise.all([
+      const [
+        { data: gameRows, error },
+        { data: lookupRows, error: lookupError },
+        { data: historyRows, error: historyError }
+      ] = await Promise.all([
         supabaseClient
           .from("pitchiq_game_rows")
           .select("table_type,payload,updated_at")
@@ -1377,7 +1459,12 @@
         supabaseClient
           .from("pitchiq_pitcher_lookup")
           .select("pitcher,payload,updated_at")
+          .order("updated_at", { ascending: false }),
+        supabaseClient
+          .from("pitchiq_historical_rows")
+          .select("payload,updated_at")
           .order("updated_at", { ascending: false })
+          .limit(2000)
       ]);
       if (error) {
         renderCards();
@@ -1389,6 +1476,12 @@
             .filter(row => String(row.pitcher || "").trim())
             .map(row => [String(row.pitcher || "").trim().toLowerCase(), row])
         );
+      }
+      if (!historyError) {
+        gameHistory = (historyRows || [])
+          .filter(row => row.payload)
+          .map(row => row.payload);
+        historicalBetRecordCache = new Map();
       }
       const splitGames = splitSupabaseGameRows(gameRows || []);
       upcomingGames = splitGames.upcoming;
