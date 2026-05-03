@@ -11,6 +11,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="./images/favicon/favicon-16x16.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="./images/favicon/apple-touch-icon.png" />
   <link rel="manifest" href="./images/favicon/site.webmanifest" />
+  <link rel="stylesheet" href="./pitchiq-desktop-card.css" />
 
   <style>
     :root {
@@ -26,6 +27,8 @@
       --green: #85dfa2;
       --blue: #75b7ff;
       --red: #ff8978;
+      --success: #8ddf9f;
+      --danger: #ff8c7a;
     }
 
     * {
@@ -204,508 +207,83 @@
 
     .cards {
       display: grid;
-      gap: 10px;
+      gap: 14px;
     }
 
-    .card {
-      position: relative;
-      min-height: 575px;
-      perspective: 1200px;
-      cursor: pointer;
+    .cards .desktop-card {
+      width: 100%;
+      max-width: 100%;
       touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
     }
 
-    .card.live {
-      min-height: 602px;
-    }
-
-    .card-shell {
-      position: absolute;
-      inset: 0;
-      transform-style: preserve-3d;
-    }
-
-    .card-face {
-      position: absolute;
-      inset: 0;
-      overflow: hidden;
-      border: 4px solid #020203;
-      border-radius: 16px;
-      background:
-        linear-gradient(135deg, rgba(255,255,255,0.12), transparent 18%),
-        linear-gradient(160deg, rgba(30, 33, 46, 0.98), rgba(11, 12, 18, 0.98));
-      box-shadow:
-        0 0 0 1px rgba(255, 255, 255, 0.08),
-        0 14px 30px rgba(0, 0, 0, 0.32);
-      backface-visibility: hidden;
-      -webkit-backface-visibility: hidden;
-      transform-style: preserve-3d;
-      transition: opacity 0.16s ease, transform 0.44s ease, visibility 0s linear 0.16s;
-    }
-
-    .card-front {
-      opacity: 1;
-      transform: rotateY(0deg);
-      visibility: visible;
-      pointer-events: auto;
-    }
-
-    .card.flipped .card-front {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-    }
-
-    .card.flip-left.flipped .card-front {
-      transform: rotateY(180deg);
-    }
-
-    .card.flip-right.flipped .card-front,
-    .card:not(.flip-left).flipped .card-front {
-      transform: rotateY(-180deg);
-    }
-
-    .card-back {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-      background:
-        linear-gradient(135deg, rgba(255,255,255,0.1), transparent 18%),
-        linear-gradient(160deg, rgba(20, 27, 42, 0.98), rgba(9, 11, 19, 0.98));
-    }
-
-    .card.flip-left .card-back {
-      transform: rotateY(-180deg);
-    }
-
-    .card.flip-right .card-back,
-    .card:not(.flip-left) .card-back {
-      transform: rotateY(180deg);
-    }
-
-    .card.flipped .card-back {
-      opacity: 1;
-      transform: rotateY(0deg);
-      visibility: visible;
-      pointer-events: auto;
-      transition-delay: 0s;
-    }
-
-    .card-face::before,
-    .card-face::after,
-    .card-inner::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-    }
-
-    .card-face::before {
-      background:
-        linear-gradient(118deg, transparent 0%, rgba(255,255,255,0.1) 42%, transparent 58%),
-        radial-gradient(circle at 12% 14%, rgba(255, 188, 98, 0.2), transparent 20%),
-        radial-gradient(circle at 92% 0%, rgba(117, 183, 255, 0.18), transparent 24%);
-    }
-
-    .card-face::after {
-      inset: -70%;
-      opacity: 0;
-      transform: translateX(-48%);
-    }
-
-    .card.dk-shimmer .card-face::after {
-      background: linear-gradient(
-        115deg,
-        transparent 38%,
-        rgba(136, 255, 190, 0.3) 46%,
-        rgba(0, 255, 128, 0.78) 50%,
-        rgba(136, 255, 190, 0.3) 54%,
-        transparent 62%
-      );
-      animation: cardGlowSweep 10s ease-in-out infinite;
-    }
-
-    .card.fd-shimmer .card-face::after {
-      background: linear-gradient(
-        115deg,
-        transparent 38%,
-        rgba(88, 214, 255, 0.3) 46%,
-        rgba(0, 157, 255, 0.82) 50%,
-        rgba(88, 214, 255, 0.3) 54%,
-        transparent 62%
-      );
-      animation: cardGlowSweep 10s ease-in-out infinite;
-    }
-
-    @keyframes cardGlowSweep {
-      0% {
-        transform: translateX(-48%);
-        opacity: 0;
-      }
-      8% {
-        opacity: 1;
-      }
-      22% {
-        opacity: 0.85;
-      }
-      38%,
-      100% {
-        transform: translateX(48%);
-        opacity: 0;
-      }
-    }
-
-    .card.live .card-face {
-      box-shadow:
-        0 0 0 1px rgba(133, 223, 162, 0.28),
-        0 14px 30px rgba(0, 0, 0, 0.32);
-    }
-
-    .card-inner {
-      position: relative;
-      padding: 13px;
-      height: 100%;
+    .desktop-card-back .desktop-card-inner {
       overflow-y: auto;
+      max-height: 100%;
     }
 
-    .card.live .card-front .card-inner {
-      padding-bottom: 58px;
+    .desktop-live-name.medium-name {
+      font-size: clamp(0.95rem, 4.2vw, 1.22rem);
     }
 
-    .card-inner::before {
-      background: url("images/pitchIQ%20Logo%20v4.png") center center / min(58%, 190px) auto no-repeat;
-      opacity: 0.13;
-      mix-blend-mode: screen;
+    .desktop-live-name.long-name {
+      font-size: clamp(0.84rem, 3.8vw, 1.08rem);
     }
 
-    .card-back .card-inner::before {
-      display: none;
+    .desktop-live-name.very-long-name {
+      font-size: clamp(0.74rem, 3.4vw, 0.96rem);
     }
 
-    .player-panel {
-      height: 112px;
-      display: flex;
-      flex-direction: column;
+    .desktop-live-name.extra-long-name {
+      font-size: clamp(0.66rem, 3vw, 0.86rem);
+    }
+
+    .lookup-icon-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      border: 1px solid rgba(35, 134, 235, 0.36);
+      background: rgba(24, 91, 173, 0.12);
+      color: #6bb6ff;
+      cursor: pointer;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      text-align: center;
-      padding: 12px 10px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      overflow: hidden;
-    }
-
-    .pitcher {
-      width: 100%;
-      margin: 0 0 5px;
-      font-size: clamp(1.55rem, 9.5vw, 2.45rem);
-      line-height: 0.96;
-      letter-spacing: 0;
-      white-space: nowrap;
-    }
-
-    .pitcher.medium-name {
-      font-size: clamp(1.38rem, 8vw, 2.15rem);
-    }
-
-    .pitcher.long-name {
-      font-size: clamp(1.18rem, 6.8vw, 1.78rem);
-    }
-
-    .pitcher.very-long-name {
-      font-size: clamp(0.98rem, 5.6vw, 1.42rem);
-    }
-
-    .pitcher.extra-long-name {
-      font-size: clamp(0.86rem, 4.8vw, 1.2rem);
-    }
-
-    .team-name,
-    .matchup {
-      color: var(--text);
-      font-size: 0.88rem;
-      font-weight: 700;
-      line-height: 1.35;
-    }
-
-    .card-record-line {
-      margin-top: 3px;
-      color: var(--text);
-      font-size: 0.76rem;
-      font-weight: 900;
-      line-height: 1.1;
-      white-space: nowrap;
-    }
-
-    .historical-record-win {
-      color: var(--success);
-    }
-
-    .historical-record-loss {
-      color: var(--danger);
-    }
-
-    .game-row {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 10px;
-      align-items: center;
-      padding: 12px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    .opponent {
-      color: var(--text);
-      font-size: 0.94rem;
-      font-weight: 900;
-      line-height: 1.2;
-    }
-
-    .opponent span {
-      color: var(--muted);
-      margin-right: 5px;
-    }
-
-    .ump-line {
-      margin-top: 5px;
-      color: var(--muted);
-      font-size: 0.72rem;
-      font-weight: 800;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-    }
-
-    .date-block {
-      text-align: right;
-      white-space: nowrap;
-    }
-
-    .date-main {
-      display: block;
-      color: var(--text);
       font-size: 0.9rem;
-      font-weight: 800;
-    }
-
-    .date-time {
-      display: block;
-      margin-top: 4px;
-      color: var(--muted);
-      font-size: 0.8rem;
-      font-weight: 700;
-    }
-
-    .metric-list {
-      display: grid;
-      gap: 0;
-    }
-
-    .metric-row {
-      min-height: 54px;
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 10px;
-      align-items: center;
-      padding: 7px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    .metric-row:last-child {
-      border-bottom: 0;
-    }
-
-    .metric-label {
-      min-width: 0;
-      color: var(--text);
-      font-size: 0.75rem;
-      font-weight: 900;
-      letter-spacing: 0.08em;
-      line-height: 1.2;
-      text-transform: uppercase;
-    }
-
-    .metric-context {
-      display: block;
-      margin-top: 4px;
-      color: rgba(170, 178, 192, 0.72);
-      font-size: 0.6rem;
-      letter-spacing: 0.04em;
-    }
-
-    .ek-value {
-      color: #ffd700;
-      text-shadow: 0 0 10px rgba(255, 215, 0, 0.42);
-    }
-
-    .metric-value {
-      min-width: 66px;
-      text-align: right;
-      color: var(--text);
-      font-size: 1.08rem;
-      font-weight: 900;
-      line-height: 1.1;
-    }
-
-    .vix-row .metric-label,
-    .vix-row .metric-value {
-      font-size: 0.88rem;
-      letter-spacing: 0.02em;
-      text-transform: none;
-    }
-
-    .metric-subvalue {
-      margin-top: 5px;
-      display: flex;
-      justify-content: flex-end;
-      gap: 6px;
-      color: rgba(170, 178, 192, 0.8);
-      font-size: 0.68rem;
-      font-weight: 900;
-      white-space: nowrap;
-    }
-
-    .edge-row {
-      grid-template-columns: 0.85fr 1fr 1fr;
-      gap: 8px;
-      border-bottom: 0;
-    }
-
-    .edge-row .metric-label {
-      text-align: left;
-      font-size: 1rem;
-      letter-spacing: 0;
-      text-transform: none;
-    }
-
-    .edge-value {
-      min-width: 0;
-      font-size: 1rem;
-      font-weight: 900;
-      line-height: 1.1;
-      white-space: nowrap;
-    }
-
-    .edge-dk {
-      text-align: center;
-    }
-
-    .edge-fd {
-      text-align: right;
-    }
-
-    .over { color: var(--amber); }
-    .under { color: var(--violet); }
-    .avoid { color: var(--red); }
-    .positive { color: var(--amber); }
-    .negative { color: var(--blue); }
-    .vol-low { color: var(--green); }
-    .vol-medium { color: var(--vol-medium); }
-    .vol-high { color: var(--red); }
-
-    .note-row {
-      grid-template-columns: 1fr;
-    }
-
-    .note-value {
-      min-width: 0;
-      color: var(--text);
-      font-size: 0.76rem;
-      font-weight: 800;
-      line-height: 1.45;
-      text-align: center;
-      overflow-wrap: anywhere;
-    }
-
-    .live-k-progress {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      z-index: 5;
-      padding: 8px 13px 13px;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      background: linear-gradient(180deg, rgba(10, 12, 18, 0.14), rgba(10, 12, 18, 0.64));
-      transform: translateY(5px);
-      pointer-events: none;
-    }
-
-    .live-k-progress-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 6px;
-    }
-
-    .live-k-title {
-      color: var(--muted);
-      font-size: 0.6rem;
-      font-weight: 900;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    .live-k-count {
-      color: var(--green);
-      font-size: 1rem;
-      font-weight: 950;
       line-height: 1;
-      white-space: nowrap;
+      padding: 0;
     }
 
-    .live-k-meta {
-      color: rgba(170, 178, 192, 0.82);
-      font-size: 0.6rem;
-      font-weight: 800;
-      text-align: right;
-      white-space: nowrap;
+    .lookup-icon-btn:hover {
+      border-color: rgba(35, 134, 235, 0.68);
+      background: rgba(24, 91, 173, 0.2);
+      box-shadow: 0 0 14px rgba(35, 134, 235, 0.3);
     }
 
-    .live-k-track {
-      position: relative;
-      height: 14px;
-      overflow: visible;
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.08);
-      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.24);
-    }
-
-    .live-k-fill {
-      position: absolute;
-      inset: 0 auto 0 0;
-      width: var(--live-k-fill, 0%);
-      border-radius: inherit;
-      background: linear-gradient(90deg, rgba(133, 223, 162, 0.7), rgba(255, 188, 98, 0.86));
-      box-shadow: 0 0 12px rgba(133, 223, 162, 0.26);
-      transition: width 0.32s ease;
-    }
-
-    .live-k-marker {
-      position: absolute;
-      left: var(--projected-k-marker, 50%);
-      top: 50%;
-      z-index: 2;
-      width: 2px;
-      height: 23px;
-      border-radius: 999px;
-      background: #f6f1e8;
-      box-shadow: 0 0 8px rgba(246, 241, 232, 0.42);
-      transform: translate(-50%, -50%);
-    }
-
-    .live-k-marker span {
-      position: absolute;
-      left: 50%;
-      bottom: 20px;
-      padding: 1px 5px;
-      border-radius: 999px;
-      background: rgba(246, 241, 232, 0.96);
-      color: #08090d;
-      font-size: 0.54rem;
+    .historical-lookup-btn {
+      border-color: rgba(255, 148, 46, 0.48);
+      background: rgba(255, 148, 46, 0.1);
+      color: #ff942e;
       font-weight: 950;
-      white-space: nowrap;
-      transform: translateX(-50%);
+      text-shadow: 0 0 10px rgba(255, 148, 46, 0.5);
+    }
+
+    .historical-lookup-btn:hover {
+      border-color: rgba(255, 148, 46, 0.76);
+      background: rgba(255, 148, 46, 0.18);
+      box-shadow: 0 0 16px rgba(255, 148, 46, 0.32);
+    }
+
+    .historical-lookup-btn svg {
+      width: 17px;
+      height: 17px;
+      stroke: currentColor;
+      filter: drop-shadow(0 0 5px rgba(255, 148, 46, 0.5));
+    }
+
+    .desktop-card-note-card.neutral {
+      border-color: rgba(210, 180, 140, 0.34);
+      background: rgba(58, 45, 31, 0.34);
     }
 
     .empty {
@@ -874,6 +452,7 @@
     let gameHistory = [];
     let pitcherLookupByName = new Map();
     let historicalBetRecordCache = new Map();
+    let currentUserRole = null;
     const flippedCardKeys = new Set();
     const cardFlipDirections = new Map();
     let dataRefreshIntervalId = null;
@@ -1457,41 +1036,402 @@
       return Math.max(0, Math.min(100, value));
     }
 
-    function renderLiveKFooter(game) {
-      if (activeView !== "live") return "";
-      const strikeouts = liveStrikeoutValue(game);
-      const hasLiveKs = Boolean(strikeouts);
-      const displayStrikeouts = hasLiveKs ? strikeouts : "0";
-      const liveKs = Number(displayStrikeouts);
-      const projectedKs = Number(displayProjectionValue(game));
-      const scaleMax = Math.max(
-        8,
-        Number.isFinite(projectedKs) ? Math.ceil(projectedKs + 2) : 0,
-        Number.isFinite(liveKs) ? liveKs + 1 : 0
-      );
-      const fillPercent = clampPercent((liveKs / scaleMax) * 100);
-      const markerPercent = clampPercent((projectedKs / scaleMax) * 100);
-      const metaParts = [];
-      if (game.live_innings_pitched) metaParts.push(`${game.live_innings_pitched} IP`);
-      if (!hasLiveKs) metaParts.push("K feed pending");
+    function canUseProFeatures() {
+      return ["pro", "life", "admin", "owner"].includes(String(currentUserRole || "").toLowerCase());
+    }
+
+    function canViewHistoricalGames() {
+      return canUseProFeatures();
+    }
+
+    function displayNotesText(game) {
+      return displayNotes(game);
+    }
+
+    function formatDisplayDate(value) {
+      const raw = String(value || "").trim();
+      if (!raw) return "";
+      const match = raw.match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if (match) {
+        return `${match[2]}/${match[3]}/${match[1]}`;
+      }
+      return raw;
+    }
+
+    function formatUmpireForCard(value) {
+      const umpire = String(value || "").trim();
+      if (!umpire || ["pending", "unknown", "n/a", "na"].includes(normalizeText(umpire))) {
+        return "Pending";
+      }
+      return umpire;
+    }
+
+    function isAssignedUmp(value) {
+      const normalized = String(value || "").trim().toLowerCase();
+      return Boolean(normalized && !["pending", "unknown", "n/a", "na"].includes(normalized));
+    }
+
+    function isAvoidBet(value) {
+      const normalized = String(value || "").trim().toUpperCase();
+      return normalized === "PASS" || normalized === "AVOID";
+    }
+
+    function edgeTone(value, betValue) {
+      if (isAvoidBet(betValue)) return "avoid-text";
+      const side = String(betValue || "").trim().toUpperCase();
+      if (side === "OVER") return "up-text";
+      if (side === "UNDER") return "down-text";
+      if (value === null || value === undefined || value === "" || Number.isNaN(Number(value))) return "";
+      return Number(value) >= 0 ? "up-text" : "down-text";
+    }
+
+    function volatilityTone(label) {
+      if (label === "Low") return "volatility-low";
+      if (label === "Medium") return "volatility-medium";
+      if (label === "High") return "volatility-high";
+      return "";
+    }
+
+    function sanitizeNoteHtml(value, title = "") {
+      return sanitizeNoteBody(value, title);
+    }
+
+    function dedupeNotes(notes) {
+      const seen = new Set();
+      return (Array.isArray(notes) ? notes : []).filter(note => {
+        const key = [
+          normalizeText(note?.title),
+          normalizeText(note?.body),
+          normalizeText(note?.impact)
+        ].join("|");
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+    }
+
+    function notesFromGame(game) {
+      if (Array.isArray(game.upcoming_notes) && game.upcoming_notes.length) {
+        return dedupeNotes(game.upcoming_notes);
+      }
+
+      const notes = [];
+      const projected = displayProjectionValue(game);
+      const bestEdge = Math.max(Number(game.dk_edge) || 0, Number(game.fd_edge) || 0);
+      if (bestEdge >= 1) {
+        notes.push({
+          impact: "up",
+          title: "Edge Showing",
+          body: `The board is showing at least a +${formatNumber(bestEdge, 2)} edge against one available sportsbook line.`
+        });
+      }
+      if (isAssignedUmp(game.plate_umpire)) {
+        notes.push({
+          impact: "neutral",
+          title: "Umpire Assigned",
+          body: `${game.plate_umpire} is listed behind the plate for this matchup.`
+        });
+      }
+      if (game.weather || game.wind) {
+        notes.push({
+          impact: "neutral",
+          title: "Game Context",
+          body: [game.weather, game.temperature ? `${game.temperature}F` : "", game.wind].filter(Boolean).join(", ")
+        });
+      }
+      const displayNotesMerged = displayNotesText(game);
+      if (!notes.length && displayNotesMerged) {
+        notes.push({ impact: "neutral", title: "Notes", body: displayNotesMerged });
+      }
+      if (!notes.length && Number.isFinite(Number(projected))) {
+        notes.push({
+          impact: "neutral",
+          title: "Projection Ready",
+          body: `${game.pitcher} is projected for ${formatNumber(projected, 2)} strikeouts.`
+        });
+      }
+      return notes;
+    }
+
+    function displaySystemNotesText(game) {
+      const notes = displayNotesText(game)
+        .split(/\s*(?:,|\|)\s*/)
+        .map(note => note.trim())
+        .filter(Boolean)
+        .filter(note => normalizeText(note) !== "no major flags");
+      return notes.join(", ");
+    }
+
+    function fitDesktopLookupNotes(notes, maxNotes = 4) {
+      const directional = notes.filter(note => note.impact === "up" || note.impact === "down");
+      let informative = notes.filter(note => note.impact !== "up" && note.impact !== "down");
+
+      if (directional.length + informative.length > maxNotes) {
+        informative = informative.filter(note => normalizeText(note.title) !== "umpire pending");
+      }
+
+      while (directional.length + informative.length > maxNotes && informative.length) {
+        informative.pop();
+      }
+
+      return [...directional, ...informative];
+    }
+
+    function renderDesktopFrontNotesRow(game) {
+      const notes = displaySystemNotesText(game);
       return `
-        <div class="live-k-progress">
-          <div class="live-k-progress-head">
-            <div>
-              <div class="live-k-title">Live Ks</div>
-              <div class="live-k-count">${escapeHtml(displayStrikeouts)} K</div>
-            </div>
-            <div class="live-k-meta">${escapeHtml(metaParts.join(" | "))}</div>
-          </div>
-          <div class="live-k-track" style="--live-k-fill: ${fillPercent.toFixed(2)}%; --projected-k-marker: ${markerPercent.toFixed(2)}%;">
-            <div class="live-k-fill"></div>
-            ${
-              Number.isFinite(projectedKs)
-                ? `<div class="live-k-marker"><span>${escapeHtml(formatNumber(projectedKs, 1))}</span></div>`
-                : ""
-            }
-          </div>
+        <div class="desktop-live-notes-row">
+          <div class="desktop-live-notes-copy">${escapeHtml(notes)}</div>
         </div>
+      `;
+    }
+
+    function renderDesktopLookupNotes(game) {
+      const notes = fitDesktopLookupNotes(dedupeNotes(notesFromGame(game)));
+      if (!notes.length) {
+        return `
+          <div class="desktop-card-note-card neutral">
+            <div class="desktop-card-note-title">No Major Flags</div>
+            <div class="desktop-card-note-body">No strong context edges are standing out for this projection yet.</div>
+          </div>
+        `;
+      }
+      return notes.map(note => {
+        const suffix = noteImpactSuffix(note.impact);
+        return `
+          <div class="desktop-card-note-card ${escapeHtml(note.impact || "neutral")}">
+            <div class="desktop-card-note-title">
+              ${escapeHtml(note.title || "")}
+              ${suffix.text ? `<span class="desktop-card-note-k ${suffix.className}">${suffix.text}</span>` : ""}
+            </div>
+            <div class="desktop-card-note-body">${sanitizeNoteHtml(note.body || "", note.title || "")}</div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderDesktopHistoricalAction(game) {
+      const pitcher = escapeHtml(game?.pitcher || "");
+      const historicalUnlocked = canViewHistoricalGames();
+      const historicalTitle = historicalUnlocked
+        ? "View historical games"
+        : "Historical lookup is a Pro feature";
+      const historicalIcon = historicalUnlocked
+        ? '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/><path d="M12 7v5l3 2"/></svg>'
+        : "&#128274;";
+      return `
+        <button class="lookup-icon-btn historical-lookup-btn desktop-card-history-action" type="button" data-pitcher="${pitcher}" title="${historicalTitle}" aria-label="${historicalTitle}">${historicalIcon}</button>
+      `;
+    }
+
+    function desktopFormatLineOdds(lineValue, overPayout, underPayout) {
+      const line = String(lineValue || "").trim();
+      const over = String(overPayout || "").trim();
+      const under = String(underPayout || "").trim();
+      return {
+        line: line || "-",
+        over: over || "-",
+        under: under || "-",
+        odds: over || under ? `${over || "-"} / ${under || "-"}` : "",
+      };
+    }
+
+    function desktopLineDiscrepancyShimmerClass(game) {
+      return lineDiscrepancyShimmerClass(game);
+    }
+
+    const LIVE_K_DOT_COUNT = 10;
+    const LIVE_K_DOT_GAP_PX = 3;
+
+    function liveKLineBoundarySlot(line) {
+      if (line === null || line === undefined || !Number.isFinite(line) || line <= 0) return null;
+      const gapAfterBall = Math.round(line - 0.5);
+      return Math.min(LIVE_K_DOT_COUNT - 1, Math.max(1, gapAfterBall));
+    }
+
+    function liveKLineMarkerLeftCalc(boundarySlot) {
+      const g = LIVE_K_DOT_GAP_PX;
+      const n = LIVE_K_DOT_COUNT;
+      return `calc(${boundarySlot} * (100% - ${(n - 1) * g}px) / ${n} + ${(boundarySlot - 1) * g}px + ${g / 2}px)`;
+    }
+
+    function renderDesktopLiveKLineMarkers(game) {
+      const dkLine = parseValidLine(game?.dk_line);
+      const fdLine = parseValidLine(game?.fd_line);
+      const dkSlot = liveKLineBoundarySlot(dkLine);
+      const fdSlot = liveKLineBoundarySlot(fdLine);
+      if (dkSlot === null && fdSlot === null) return "";
+
+      const sameBookLine =
+        dkLine !== null &&
+        fdLine !== null &&
+        Math.abs(dkLine - fdLine) < 1e-9 &&
+        dkSlot !== null &&
+        dkSlot === fdSlot;
+
+      if (sameBookLine) {
+        const left = liveKLineMarkerLeftCalc(dkSlot);
+        const title = `DraftKings & FanDuel line ${escapeHtml(String(dkLine))}`;
+        return `<span class="desktop-live-line desktop-live-line-book-split" style="left:${left};" title="${title}"></span>`;
+      }
+
+      const parts = [];
+      if (dkSlot !== null) {
+        parts.push(
+          `<span class="desktop-live-line desktop-live-line-dk" style="left:${liveKLineMarkerLeftCalc(dkSlot)};" title="DraftKings line ${escapeHtml(String(dkLine))}"></span>`
+        );
+      }
+      if (fdSlot !== null) {
+        parts.push(
+          `<span class="desktop-live-line desktop-live-line-fd" style="left:${liveKLineMarkerLeftCalc(fdSlot)};" title="FanDuel line ${escapeHtml(String(fdLine))}"></span>`
+        );
+      }
+      return parts.join("");
+    }
+
+    function desktopLiveBaseballSvg() {
+      return `<svg class="desktop-live-dot-ball" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+        <circle cx="16" cy="16" r="14.35" fill="#ffffff" stroke="rgba(28,29,34,0.5)" stroke-width="0.75"/>
+        <path d="M5.86 5.86Q12.15 16 5.86 26.14" fill="none" stroke="#b81d25" stroke-width="1" stroke-linecap="round"/>
+        <path d="M26.14 5.86Q19.85 16 26.14 26.14" fill="none" stroke="#b81d25" stroke-width="1" stroke-linecap="round"/>
+      </svg>`;
+    }
+
+    function renderDesktopLiveKDots(liveKs) {
+      const resolvedLiveKs = Number.isFinite(Number(liveKs)) ? Number(liveKs) : 0;
+      const ball = desktopLiveBaseballSvg();
+      return Array.from({ length: LIVE_K_DOT_COUNT }, (_, index) => {
+        const dotValue = index + 1;
+        const classes = [
+          "desktop-live-dot",
+          resolvedLiveKs >= dotValue ? "filled" : "",
+        ].filter(Boolean).join(" ");
+        return `<span class="desktop-live-dot-cell"><span class="${classes}">${ball}<span class="desktop-live-dot-label" aria-hidden="true">${dotValue}</span></span></span>`;
+      }).join("");
+    }
+
+    function renderMobileDesktopGameCard(game, view, key, flipDirection, isFlipped) {
+      const projectedValue = displayProjectionValue(game);
+      const projected =
+        projectedValue == null || !Number.isFinite(projectedValue)
+          ? "-"
+          : formatNumber(projectedValue, 2) || "-";
+      const time = String(game.time || formatDisplayTime(game.start_time) || "").trim();
+      const date = String(game.date || formatDisplayDate(game.game_date_raw) || "").trim();
+      const currentPitcherId = String(game.current_pitcher_id ?? "").trim();
+      const starterPitcherId = String(game.mlb_pitcher_id ?? game.pitcher_id ?? "").trim();
+      const currentPitcherName = normalizeText(game.current_pitcher);
+      const starterPitcherName = normalizeText(game.pitcher);
+      const isCurrentStarter = Boolean(
+        (currentPitcherId && starterPitcherId && currentPitcherId === starterPitcherId)
+        || (currentPitcherName && starterPitcherName && currentPitcherName === starterPitcherName)
+      );
+      const starterStatus = isCurrentStarter ? "Pitching" : String(game.starter_status || "").trim();
+      const matchupStatusLeft =
+        view === "live"
+          ? escapeHtml(starterStatus || game.game_status || "In Progress")
+          : escapeHtml(`Ump: ${formatUmpireForCard(game.plate_umpire)}`);
+      const dkBook = desktopFormatLineOdds(game.dk_line, game.dk_over_payout, game.dk_under_payout);
+      const fdBook = desktopFormatLineOdds(game.fd_line, game.fd_over_payout, game.fd_under_payout);
+      const strikeouts = liveStrikeoutValue(game);
+      const displayStrikeouts = strikeouts || "0";
+      return `
+        <article class="desktop-card live ${desktopLineDiscrepancyShimmerClass(game)} ${flipDirection} ${isFlipped ? "flipped" : ""}" data-card-key="${escapeHtml(key)}" role="button" tabindex="0" aria-label="${isFlipped ? "Flip card back to projection" : "Flip card to game notes"}" title="${isFlipped ? "Flip back" : "Game notes"}">
+          <div class="desktop-card-shell">
+            <div class="desktop-card-face desktop-card-front">
+              ${renderDesktopHistoricalAction(game)}
+              <div class="desktop-live-watermark" aria-hidden="true">
+                <img src="images/pitchIQ%20Logo%20v4.png" alt="" />
+              </div>
+              <div class="desktop-live-layout">
+                <div class="desktop-live-header">
+                  <h2 class="desktop-live-name${pitcherNameSizeClass(game.pitcher)}">${escapeHtml(game.pitcher || "Unknown")}</h2>
+                  <div class="desktop-live-team">${escapeHtml(game.pitcher_team || "Team pending")}</div>
+                </div>
+                <div class="desktop-live-matchup">
+                  <div class="desktop-live-opponent"><span class="desktop-live-matchup-vs">vs</span>${escapeHtml(game.opponent || "Opponent pending")}</div>
+                  <span class="desktop-live-date">${escapeHtml(date || "Date pending")}</span>
+                  <div class="desktop-live-status">${matchupStatusLeft}</div>
+                  <span class="desktop-live-time">${escapeHtml(time === "Pending" ? "" : time)}</span>
+                </div>
+                <div class="desktop-live-corner-grid">
+                  <div class="desktop-live-stats desktop-live-pitchiq-stats-columns">
+                    <div class="desktop-live-sk-column">
+                      <div class="desktop-live-stat-stack">
+                        <div class="desktop-live-stat">
+                          <span class="desktop-live-stat-label">DK Under</span>
+                          <span class="desktop-live-stat-value desktop-live-stat-blue">${escapeHtml(dkBook.under)}</span>
+                        </div>
+                        <div class="desktop-live-stat">
+                          <span class="desktop-live-stat-label">FD Under</span>
+                          <span class="desktop-live-stat-value desktop-live-stat-blue">${escapeHtml(fdBook.under)}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="desktop-live-sk-column">
+                      <div class="desktop-live-stat-stack">
+                        <div class="desktop-live-stat">
+                          <span class="desktop-live-stat-label">DK Over</span>
+                          <span class="desktop-live-stat-value desktop-live-stat-orange">${escapeHtml(dkBook.over)}</span>
+                        </div>
+                        <div class="desktop-live-stat">
+                          <span class="desktop-live-stat-label">FD Over</span>
+                          <span class="desktop-live-stat-value desktop-live-stat-orange">${escapeHtml(fdBook.over)}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="desktop-live-sk-column">
+                      <div class="desktop-live-stat-stack">
+                        <div class="desktop-live-stat">
+                          <span class="desktop-live-stat-label">DK Edge</span>
+                          <span class="desktop-live-stat-value ${edgeTone(game.dk_edge, game.dk_bet)}">${escapeHtml(formatEdge(game.dk_edge) || "-")}</span>
+                        </div>
+                        <div class="desktop-live-stat">
+                          <span class="desktop-live-stat-label">FD Edge</span>
+                          <span class="desktop-live-stat-value ${edgeTone(game.fd_edge, game.fd_bet)}">${escapeHtml(formatEdge(game.fd_edge) || "-")}</span>
+                        </div>
+                      </div>
+                    </div>
+                    ${renderDesktopFrontNotesRow(game)}
+                  </div>
+                  <div class="desktop-live-chip-bridge">
+                    <div class="desktop-live-chip-row">
+                      <div class="desktop-live-line-chip desktop-live-line-chip-pitchiq" title="pitchIQ projected K">
+                        <span class="desktop-live-line-chip-label">IQ</span>
+                        <span class="desktop-live-line-chip-value">${escapeHtml(projected)}</span>
+                      </div>
+                      <div class="desktop-live-line-chip desktop-live-line-chip-dk" title="DraftKings line">
+                        <span class="desktop-live-line-chip-label">DK</span>
+                        <span class="desktop-live-line-chip-value">${escapeHtml(dkBook.line)}</span>
+                      </div>
+                      <div class="desktop-live-line-chip desktop-live-line-chip-fd" title="FanDuel line">
+                        <span class="desktop-live-line-chip-label">FD</span>
+                        <span class="desktop-live-line-chip-value">${escapeHtml(fdBook.line)}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="desktop-live-kpanel">
+                  <div class="desktop-live-line-layer" aria-hidden="true">
+                    ${renderDesktopLiveKLineMarkers(game)}
+                  </div>
+                  <div class="desktop-live-dot-track">
+                    <div class="desktop-live-dot-row">
+                      ${renderDesktopLiveKDots(displayStrikeouts)}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="desktop-card-face desktop-card-back">
+              <div class="desktop-card-inner">
+                <div class="desktop-card-notes-list">
+                  ${renderDesktopLookupNotes(game)}
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
       `;
     }
 
@@ -1507,61 +1447,8 @@
       cardsContainer.innerHTML = games.map(game => {
         const key = cardKey(game);
         const flipDirection = cardFlipDirections.get(key) === "left" ? "flip-left" : "flip-right";
-        const projected = formatNumber(displayProjectionValue(game), 2) || "-";
-        const time = String(game.time || formatDisplayTime(game.start_time) || "").trim();
-        const date = formatGameDate(game);
-        const currentPitcherId = String(game.current_pitcher_id ?? "").trim();
-        const starterPitcherId = String(game.mlb_pitcher_id ?? game.pitcher_id ?? "").trim();
-        const currentPitcherName = normalizeText(game.current_pitcher);
-        const starterPitcherName = normalizeText(game.pitcher);
-        const isCurrentStarter = Boolean(
-          (currentPitcherId && starterPitcherId && currentPitcherId === starterPitcherId)
-          || (currentPitcherName && starterPitcherName && currentPitcherName === starterPitcherName)
-        );
-        const liveStarterStatus = isCurrentStarter ? "Pitching" : String(game.starter_status || game.game_status || "").trim();
-        const volatilityLabel = String(game.volatility_label || "").trim() || "-";
-        const volatilityScore = formatNumber(game.volatility_score, 2);
-        const notes = displayNotes(game);
-        const shimmerClass = lineDiscrepancyShimmerClass(game);
         const isFlipped = flippedCardKeys.has(key);
-        return `
-          <article class="card ${activeView === "live" ? "live" : ""} ${shimmerClass} ${flipDirection} ${isFlipped ? "flipped" : ""}" data-card-key="${escapeHtml(key)}" role="button" tabindex="0" aria-label="${isFlipped ? "Flip card back to projection" : "Flip card to pitcher lookup"}" title="${isFlipped ? "Flip back" : "Pitcher lookup"}">
-            <div class="card-shell">
-              <div class="card-face card-front">
-                <div class="card-inner">
-                  <div class="player-panel">
-                    <h2 class="pitcher${pitcherNameSizeClass(game.pitcher)}">${escapeHtml(game.pitcher || "Unknown")}</h2>
-                    <div class="team-name">${escapeHtml(game.pitcher_team || "Team pending")}</div>
-                    ${renderCardHistoricalRecordLine(game)}
-                  </div>
-                  <div class="game-row">
-                    <div class="opponent">
-                      <div><span>vs</span>${escapeHtml(game.opponent || "Opponent pending")}</div>
-                      <div class="ump-line">${activeView === "live" ? escapeHtml(liveStarterStatus || "In Progress") : `Ump: ${escapeHtml(formatUmpire(game.plate_umpire))}`}</div>
-                    </div>
-                    <div class="date-block">
-                      <span class="date-main">${escapeHtml(date || "Date pending")}</span>
-                      <span class="date-time">${escapeHtml(time || "Time pending")}</span>
-                    </div>
-                  </div>
-                  <div class="metric-list">
-                    ${renderSimpleMetric("Projected K", projected, "ek-value")}
-                    ${renderVixMetric(volatilityLabel, volatilityScore)}
-                    ${renderBookMetric("DraftKings", game.dk_line, game.dk_over_payout, game.dk_under_payout, game.dk_bet, game.dk_edge)}
-                    ${renderBookMetric("FanDuel", game.fd_line, game.fd_over_payout, game.fd_under_payout, game.fd_bet, game.fd_edge)}
-                    ${renderNotesMetric(notes)}
-                  </div>
-                  ${renderLiveKFooter(game)}
-                </div>
-              </div>
-              <div class="card-face card-back">
-                <div class="card-inner">
-                  ${renderLookupBack(game, projected, date, time, volatilityLabel, volatilityScore, notes)}
-                </div>
-              </div>
-            </div>
-          </article>
-        `;
+        return renderMobileDesktopGameCard(game, activeView, key, flipDirection, isFlipped);
       }).join("");
     }
 
@@ -1603,6 +1490,7 @@
         return;
       }
       authAccepted = true;
+      currentUserRole = role || null;
       setAccountIdentity(session);
       refreshSupabaseData();
       startSupabaseAutoRefresh();
@@ -1772,7 +1660,7 @@
     });
 
     cardsContainer.addEventListener("pointerdown", event => {
-      if (!event.target.closest(".card")) return;
+      if (!event.target.closest(".desktop-card")) return;
       playCardFlipSound();
     });
 
@@ -1792,19 +1680,32 @@
         card.classList.add("flipped");
       }
       const isFlipped = flippedCardKeys.has(key);
-      card.setAttribute("aria-label", isFlipped ? "Flip card back to projection" : "Flip card to pitcher lookup");
-      card.title = isFlipped ? "Flip back" : "Pitcher lookup";
+      card.setAttribute("aria-label", isFlipped ? "Flip card back to projection" : "Flip card to game notes");
+      card.title = isFlipped ? "Flip back" : "Game notes";
     }
 
     cardsContainer.addEventListener("click", event => {
-      const card = event.target.closest(".card");
+      const historicalButton = event.target.closest(".historical-lookup-btn");
+      if (historicalButton) {
+        event.stopPropagation();
+        const pitcher = historicalButton.dataset.pitcher || "";
+        if (pitcher) {
+          const dest = new URL("./app.html", window.location.href);
+          dest.searchParams.set("desktop", "1");
+          dest.searchParams.set("openHistorical", pitcher);
+          window.location.href = dest.toString();
+        }
+        return;
+      }
+      if (event.target.closest("button, a, input, select, textarea")) return;
+      const card = event.target.closest(".desktop-card");
       if (!card) return;
       flipCardFromPoint(card, event.clientX);
     });
 
     cardsContainer.addEventListener("keydown", event => {
       if (!["Enter", " "].includes(event.key)) return;
-      const card = event.target.closest(".card");
+      const card = event.target.closest(".desktop-card");
       if (!card) return;
       event.preventDefault();
       const bounds = card.getBoundingClientRect();
