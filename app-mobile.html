@@ -340,70 +340,98 @@
       font-size: 0.52rem;
     }
 
-    /* Do not use display:contents here — iOS Safari can break grid descendants and collapse the stats layout. */
-    .shell .cards .desktop-live-corner-grid {
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      align-items: stretch;
-      flex: 0 1 auto;
-      min-height: 0;
-    }
-
-    /* Four rows: header, matchup, stats+chips, K — last row grows so K can sit on the card bottom */
+    /*
+      Mobile live card in quarters (middle row = two logical quarters):
+      1fr — player / team header
+      1fr — matchup + status / time
+      2fr — stat box + IQ·DK·FD circles (halved inside .desktop-live-corner-grid)
+      minmax(40px, auto) — K strip (taller than bare content, shorter than a full quarter)
+    */
     .shell .cards .desktop-live-layout {
-      grid-template-rows: auto auto auto minmax(0, 1fr);
-      align-content: start;
-      padding: 6px 7px 6px;
-      gap: 3px;
+      grid-template-rows: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 2fr) minmax(40px, auto);
+      align-content: stretch;
+      padding: 6px 8px 6px;
+      gap: 4px;
       min-height: 0;
-    }
-
-    .shell .cards .desktop-live-chip-bridge {
-      flex: 0 0 auto;
-      min-height: 0;
-      padding: 2px 0 1px;
-      align-items: center;
     }
 
     .shell .cards .desktop-live-header {
+      height: 100%;
       min-height: 0;
-      padding-bottom: 4px;
+      align-content: center;
+      padding: 4px 4px 6px;
     }
 
     .shell .cards .desktop-live-matchup {
-      padding: 6px 0 7px;
+      height: 100%;
+      min-height: 0;
+      align-content: center;
+      padding: 6px 0;
       column-gap: 8px;
-      row-gap: 3px;
+      row-gap: 4px;
+    }
+
+    /* Quarter 3: upper half = stats, lower half = line chips (Safari-safe: keep this wrapper, no display:contents) */
+    .shell .cards .desktop-live-corner-grid {
+      display: grid;
+      grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+      align-self: stretch;
+      min-height: 0;
+      height: 100%;
+      width: 100%;
+      gap: 4px;
+    }
+
+    .shell .cards .desktop-live-corner-grid > .desktop-live-stats.desktop-live-pitchiq-stats-columns {
+      align-self: center;
+      justify-self: stretch;
+      width: 100%;
+      min-height: 0;
+      margin: 0;
+    }
+
+    .shell .cards .desktop-live-chip-bridge {
+      display: flex;
+      align-self: center;
+      justify-content: center;
+      justify-self: stretch;
+      width: 100%;
+      min-height: 0;
+      margin: 0;
+      padding: 2px 0 4px;
+      align-items: center;
     }
 
     .shell .cards .desktop-live-pitchiq-stats-columns {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      column-gap: 7px;
-      row-gap: 5px;
+      column-gap: 10px;
+      row-gap: 10px;
     }
 
     .shell .cards .desktop-live-sk-column,
     .shell .cards .desktop-live-stat-stack {
-      gap: 5px;
+      gap: 8px;
     }
 
     .shell .cards .desktop-live-stats {
-      padding: 4px 5px 5px;
+      padding: 8px 7px 6px;
       min-height: 0;
     }
 
     .shell .cards .desktop-live-stat-label {
-      font-size: 0.48rem;
+      font-size: 0.56rem;
+      letter-spacing: 0.05em;
     }
 
     .shell .cards .desktop-live-stat-value {
-      font-size: 0.62rem;
+      font-size: 0.78rem;
+      line-height: 1.12;
     }
 
     .shell .cards .desktop-live-notes-copy {
-      font-size: 0.52rem;
+      font-size: 0.6rem;
+      line-height: 1.2;
     }
 
     .shell .cards .desktop-live-line-chip {
@@ -442,39 +470,40 @@
     }
 
     .shell .cards .desktop-live-kpanel {
-      align-self: end;
       width: 100%;
-      min-height: 32px;
-      padding: 2px 5px;
-      --live-k-panel-pad-inline: 5px;
+      align-self: stretch;
+      min-height: 44px;
+      box-sizing: border-box;
+      padding: 4px 6px;
+      --live-k-panel-pad-inline: 6px;
       overflow: hidden;
     }
 
     .shell .cards .desktop-live-dot-track {
-      --live-dot-gap: 2px;
-      --live-dot-size: 12px;
-      max-height: 22px;
+      --live-dot-gap: 3px;
+      --live-dot-size: 15px;
+      max-height: 26px;
     }
 
     .shell .cards .desktop-live-dot-row {
-      max-height: 22px;
+      max-height: 26px;
       align-items: center;
     }
 
     .shell .cards .desktop-live-dot {
-      width: 12px;
-      height: 12px;
-      min-width: 12px;
-      min-height: 12px;
-      max-width: 12px;
-      max-height: 12px;
+      width: 15px;
+      height: 15px;
+      min-width: 15px;
+      min-height: 15px;
+      max-width: 15px;
+      max-height: 15px;
     }
 
     .shell .cards .desktop-live-dot-ball {
-      width: 12px;
-      height: 12px;
-      max-width: 12px;
-      max-height: 12px;
+      width: 15px;
+      height: 15px;
+      max-width: 15px;
+      max-height: 15px;
     }
 
     .shell .cards .desktop-live-dot-label {
