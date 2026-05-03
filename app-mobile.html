@@ -340,13 +340,19 @@
       font-size: 0.52rem;
     }
 
-    /* Flatten corner-grid so stats → chips → K are consecutive rows (no 1fr flex gap pushing K downward) */
+    /* Do not use display:contents here — iOS Safari can break grid descendants and collapse the stats layout. */
     .shell .cards .desktop-live-corner-grid {
-      display: contents;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: stretch;
+      flex: 0 1 auto;
+      min-height: 0;
     }
 
+    /* Four rows: header, matchup, stats+chips, K — last row grows so K can sit on the card bottom */
     .shell .cards .desktop-live-layout {
-      grid-template-rows: auto auto auto auto minmax(0, 1fr);
+      grid-template-rows: auto auto auto minmax(0, 1fr);
       align-content: start;
       padding: 6px 7px 6px;
       gap: 3px;
@@ -372,6 +378,8 @@
     }
 
     .shell .cards .desktop-live-pitchiq-stats-columns {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       column-gap: 7px;
       row-gap: 5px;
     }
