@@ -21,7 +21,8 @@
       --text: #f6f1e8;
       --muted: #aab2c0;
       --violet: #9c92ff;
-      --amber: #ffbc62;
+      --amber: #ff942e;
+      --vol-medium: #fff159;
       --green: #85dfa2;
       --blue: #75b7ff;
       --red: #ff8978;
@@ -215,6 +216,10 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    .card.live {
+      min-height: 602px;
+    }
+
     .card-shell {
       position: absolute;
       inset: 0;
@@ -362,6 +367,10 @@
       padding: 13px;
       height: 100%;
       overflow-y: auto;
+    }
+
+    .card.live .card-front .card-inner {
+      padding-bottom: 58px;
     }
 
     .card-inner::before {
@@ -590,7 +599,7 @@
     .positive { color: var(--amber); }
     .negative { color: var(--blue); }
     .vol-low { color: var(--green); }
-    .vol-medium { color: var(--amber); }
+    .vol-medium { color: var(--vol-medium); }
     .vol-high { color: var(--red); }
 
     .note-row {
@@ -605,6 +614,98 @@
       line-height: 1.45;
       text-align: center;
       overflow-wrap: anywhere;
+    }
+
+    .live-k-progress {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 5;
+      padding: 8px 13px 13px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      background: linear-gradient(180deg, rgba(10, 12, 18, 0.14), rgba(10, 12, 18, 0.64));
+      transform: translateY(5px);
+      pointer-events: none;
+    }
+
+    .live-k-progress-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .live-k-title {
+      color: var(--muted);
+      font-size: 0.6rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .live-k-count {
+      color: var(--green);
+      font-size: 1rem;
+      font-weight: 950;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .live-k-meta {
+      color: rgba(170, 178, 192, 0.82);
+      font-size: 0.6rem;
+      font-weight: 800;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .live-k-track {
+      position: relative;
+      height: 14px;
+      overflow: visible;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.24);
+    }
+
+    .live-k-fill {
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: var(--live-k-fill, 0%);
+      border-radius: inherit;
+      background: linear-gradient(90deg, rgba(133, 223, 162, 0.7), rgba(255, 188, 98, 0.86));
+      box-shadow: 0 0 12px rgba(133, 223, 162, 0.26);
+      transition: width 0.32s ease;
+    }
+
+    .live-k-marker {
+      position: absolute;
+      left: var(--projected-k-marker, 50%);
+      top: 50%;
+      z-index: 2;
+      width: 2px;
+      height: 23px;
+      border-radius: 999px;
+      background: #f6f1e8;
+      box-shadow: 0 0 8px rgba(246, 241, 232, 0.42);
+      transform: translate(-50%, -50%);
+    }
+
+    .live-k-marker span {
+      position: absolute;
+      left: 50%;
+      bottom: 20px;
+      padding: 1px 5px;
+      border-radius: 999px;
+      background: rgba(246, 241, 232, 0.96);
+      color: #08090d;
+      font-size: 0.54rem;
+      font-weight: 950;
+      white-space: nowrap;
+      transform: translateX(-50%);
     }
 
     .empty {
@@ -642,7 +743,7 @@
     }
 
     .lookup-note-card.up {
-      border-color: rgba(255, 177, 74, 0.5);
+      border-color: rgba(255, 148, 46, 0.5);
       background: rgba(80, 47, 12, 0.38);
     }
 
@@ -735,6 +836,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
+    window.PITCHIQ_LIVE_K_RAIL = "2026-05-01-live-k-progress";
     const SUPABASE_URL = "https://odvopvoqssamjquinhft.supabase.co";
     const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_7g1yX__kNzT-6tj8Tr4SIg_T4BX9BlV";
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
@@ -1110,13 +1212,14 @@
       return umpire;
     }
 
-    function renderBookMetric(label, lineValue, overPayout, underPayout, betValue) {
+    function renderBookMetric(label, lineValue, overPayout, underPayout, betValue, edgeValue) {
       const book = formatLineOdds(lineValue, overPayout, underPayout);
+      const edgeText = formatEdge(edgeValue) || "Edge pending";
       return `
         <div class="metric-row">
           <div class="metric-label">
             ${escapeHtml(label)}
-            <span class="metric-context ${leanClass(betValue)}">${escapeHtml(formatBetLabel(betValue) || "Lean pending")}</span>
+            <span class="metric-context ${edgeClass(edgeValue, betValue)}">${escapeHtml(edgeText)}</span>
           </div>
           <div class="metric-value">
             ${escapeHtml(book.line)}
@@ -1342,6 +1445,56 @@
       });
     }
 
+    function liveStrikeoutValue(game) {
+      const value = game?.live_strikeouts ?? game?.live_ks ?? game?.starter_strikeouts;
+      if (value === null || value === undefined || value === "") return "";
+      const numeric = Number(value);
+      return Number.isFinite(numeric) ? String(Math.trunc(numeric)) : String(value).trim();
+    }
+
+    function clampPercent(value) {
+      if (!Number.isFinite(value)) return 0;
+      return Math.max(0, Math.min(100, value));
+    }
+
+    function renderLiveKFooter(game) {
+      if (activeView !== "live") return "";
+      const strikeouts = liveStrikeoutValue(game);
+      const hasLiveKs = Boolean(strikeouts);
+      const displayStrikeouts = hasLiveKs ? strikeouts : "0";
+      const liveKs = Number(displayStrikeouts);
+      const projectedKs = Number(displayProjectionValue(game));
+      const scaleMax = Math.max(
+        8,
+        Number.isFinite(projectedKs) ? Math.ceil(projectedKs + 2) : 0,
+        Number.isFinite(liveKs) ? liveKs + 1 : 0
+      );
+      const fillPercent = clampPercent((liveKs / scaleMax) * 100);
+      const markerPercent = clampPercent((projectedKs / scaleMax) * 100);
+      const metaParts = [];
+      if (game.live_innings_pitched) metaParts.push(`${game.live_innings_pitched} IP`);
+      if (!hasLiveKs) metaParts.push("K feed pending");
+      return `
+        <div class="live-k-progress">
+          <div class="live-k-progress-head">
+            <div>
+              <div class="live-k-title">Live Ks</div>
+              <div class="live-k-count">${escapeHtml(displayStrikeouts)} K</div>
+            </div>
+            <div class="live-k-meta">${escapeHtml(metaParts.join(" | "))}</div>
+          </div>
+          <div class="live-k-track" style="--live-k-fill: ${fillPercent.toFixed(2)}%; --projected-k-marker: ${markerPercent.toFixed(2)}%;">
+            <div class="live-k-fill"></div>
+            ${
+              Number.isFinite(projectedKs)
+                ? `<div class="live-k-marker"><span>${escapeHtml(formatNumber(projectedKs, 1))}</span></div>`
+                : ""
+            }
+          </div>
+        </div>
+      `;
+    }
+
     function renderCards() {
       const games = filteredSortedGames();
       const total = activeView === "live" ? liveGames.length : upcomingGames.length;
@@ -1357,6 +1510,15 @@
         const projected = formatNumber(displayProjectionValue(game), 2) || "-";
         const time = String(game.time || formatDisplayTime(game.start_time) || "").trim();
         const date = formatGameDate(game);
+        const currentPitcherId = String(game.current_pitcher_id ?? "").trim();
+        const starterPitcherId = String(game.mlb_pitcher_id ?? game.pitcher_id ?? "").trim();
+        const currentPitcherName = normalizeText(game.current_pitcher);
+        const starterPitcherName = normalizeText(game.pitcher);
+        const isCurrentStarter = Boolean(
+          (currentPitcherId && starterPitcherId && currentPitcherId === starterPitcherId)
+          || (currentPitcherName && starterPitcherName && currentPitcherName === starterPitcherName)
+        );
+        const liveStarterStatus = isCurrentStarter ? "Pitching" : String(game.starter_status || game.game_status || "").trim();
         const volatilityLabel = String(game.volatility_label || "").trim() || "-";
         const volatilityScore = formatNumber(game.volatility_score, 2);
         const notes = displayNotes(game);
@@ -1375,7 +1537,7 @@
                   <div class="game-row">
                     <div class="opponent">
                       <div><span>vs</span>${escapeHtml(game.opponent || "Opponent pending")}</div>
-                      <div class="ump-line">Ump: ${escapeHtml(formatUmpire(game.plate_umpire))}</div>
+                      <div class="ump-line">${activeView === "live" ? escapeHtml(liveStarterStatus || "In Progress") : `Ump: ${escapeHtml(formatUmpire(game.plate_umpire))}`}</div>
                     </div>
                     <div class="date-block">
                       <span class="date-main">${escapeHtml(date || "Date pending")}</span>
@@ -1385,11 +1547,11 @@
                   <div class="metric-list">
                     ${renderSimpleMetric("Projected K", projected, "ek-value")}
                     ${renderVixMetric(volatilityLabel, volatilityScore)}
-                    ${renderBookMetric("DraftKings", game.dk_line, game.dk_over_payout, game.dk_under_payout, game.dk_bet)}
-                    ${renderBookMetric("FanDuel", game.fd_line, game.fd_over_payout, game.fd_under_payout, game.fd_bet)}
-                    ${renderEdgeMetric(game)}
+                    ${renderBookMetric("DraftKings", game.dk_line, game.dk_over_payout, game.dk_under_payout, game.dk_bet, game.dk_edge)}
+                    ${renderBookMetric("FanDuel", game.fd_line, game.fd_over_payout, game.fd_under_payout, game.fd_bet, game.fd_edge)}
                     ${renderNotesMetric(notes)}
                   </div>
+                  ${renderLiveKFooter(game)}
                 </div>
               </div>
               <div class="card-face card-back">

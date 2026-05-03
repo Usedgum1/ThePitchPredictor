@@ -19,9 +19,11 @@
       --text: #f4f0e8;
       --muted: #a7afbc;
       --violet: #8d8aff;
-      --amber: #ffb14a;
+      --amber: #ff942e;
       --success: #8ddf9f;
       --danger: #ff8c7a;
+      --neon-red: #ff174d;
+      --vol-medium: #fff159;
     }
 
     * { box-sizing: border-box; }
@@ -39,11 +41,11 @@
       min-height: 100vh;
       background:
         radial-gradient(circle at 12% 14%, rgba(141, 138, 255, 0.2), transparent 22%),
-        radial-gradient(circle at 86% 10%, rgba(255, 177, 74, 0.18), transparent 20%),
+        radial-gradient(circle at 86% 10%, rgba(255, 148, 46, 0.18), transparent 20%),
         radial-gradient(circle at 62% 28%, rgba(86, 152, 255, 0.14), transparent 18%),
         radial-gradient(circle at 28% 52%, rgba(141, 138, 255, 0.12), transparent 20%),
-        radial-gradient(circle at 76% 56%, rgba(255, 177, 74, 0.12), transparent 18%),
-        radial-gradient(circle at 20% 82%, rgba(255, 177, 74, 0.14), transparent 20%),
+        radial-gradient(circle at 76% 56%, rgba(255, 148, 46, 0.12), transparent 18%),
+        radial-gradient(circle at 20% 82%, rgba(255, 148, 46, 0.14), transparent 20%),
         radial-gradient(circle at 88% 76%, rgba(141, 138, 255, 0.12), transparent 18%),
         radial-gradient(circle at 52% 88%, rgba(210, 180, 140, 0.1), transparent 16%),
         linear-gradient(180deg, #050505 0%, #090a10 100%);
@@ -66,11 +68,15 @@
       max-width: 1380px;
       margin: 0 auto;
       padding: 0 18px 22px;
-      color: rgba(244, 240, 232, 0.48);
+      color: #ff942e;
       font-size: 0.76rem;
       letter-spacing: 0.04em;
       text-align: center;
       text-transform: uppercase;
+      text-shadow:
+        0 0 6px rgba(255, 148, 46, 0.9),
+        0 0 14px rgba(255, 148, 46, 0.62),
+        0 0 26px rgba(255, 148, 46, 0.36);
     }
 
     .app::before {
@@ -80,9 +86,9 @@
       border-radius: 28px;
       background:
         radial-gradient(circle at 18% 22%, rgba(141, 138, 255, 0.16), transparent 24%),
-        radial-gradient(circle at 80% 18%, rgba(255, 177, 74, 0.14), transparent 22%),
+        radial-gradient(circle at 80% 18%, rgba(255, 148, 46, 0.14), transparent 22%),
         radial-gradient(circle at 66% 46%, rgba(86, 152, 255, 0.11), transparent 20%),
-        radial-gradient(circle at 28% 72%, rgba(255, 177, 74, 0.1), transparent 22%);
+        radial-gradient(circle at 28% 72%, rgba(255, 148, 46, 0.1), transparent 22%);
       filter: blur(18px);
       opacity: 0.95;
       z-index: -1;
@@ -106,7 +112,7 @@
       position: absolute;
       inset: 0 18px auto 18px;
       height: 1px;
-      background: linear-gradient(90deg, rgba(141,138,255,0.2), rgba(255,177,74,0.08), transparent);
+      background: linear-gradient(90deg, rgba(141,138,255,0.2), rgba(255,148,46,0.08), transparent);
       border-radius: 999px;
       pointer-events: none;
     }
@@ -175,9 +181,9 @@
 
     .workspace-tab,
     .nav-pill {
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.02);
-      color: var(--muted);
+      border: 1px solid rgba(35, 134, 235, 0.22);
+      background: rgba(24, 91, 173, 0.06);
+      color: #6bb6ff;
       border-radius: 999px;
       padding: 10px 16px;
       font-size: 0.82rem;
@@ -221,9 +227,9 @@
       gap: 14px;
       margin: 0 0 16px;
       padding: 12px 14px;
-      border: 1px solid rgba(255, 177, 74, 0.24);
+      border: 1px solid rgba(255, 148, 46, 0.24);
       border-radius: 14px;
-      background: rgba(255, 177, 74, 0.08);
+      background: rgba(255, 148, 46, 0.08);
       color: var(--text);
       font-size: 0.88rem;
       line-height: 1.45;
@@ -276,38 +282,49 @@
 
     .workspace-tab.active {
       color: var(--text);
-      border-color: rgba(141,138,255,0.28);
-      background: rgba(141,138,255,0.1);
+      border-color: rgba(35, 134, 235, 0.58);
+      background: rgba(24, 91, 173, 0.16);
+      box-shadow: 0 0 18px rgba(35, 134, 235, 0.18);
     }
 
     .settings-tab {
-      border-color: rgba(255, 140, 122, 0.34);
-      background: rgba(255, 140, 122, 0.1);
-      color: #ffb7ad;
+      border-color: rgba(255, 23, 77, 0.58);
+      background: rgba(255, 23, 77, 0.14);
+      color: var(--neon-red);
+      box-shadow:
+        0 0 0 1px rgba(255, 23, 77, 0.12) inset,
+        0 0 16px rgba(255, 23, 77, 0.28);
+      text-shadow: 0 0 10px rgba(255, 23, 77, 0.68);
     }
 
     .settings-tab.active {
-      border-color: rgba(255, 140, 122, 0.58);
-      background: rgba(255, 140, 122, 0.18);
-      color: var(--text);
+      border-color: rgba(255, 23, 77, 0.76);
+      background: rgba(255, 23, 77, 0.2);
+      color: var(--neon-red);
+      box-shadow:
+        0 0 0 1px rgba(255, 23, 77, 0.14) inset,
+        0 0 18px rgba(255, 23, 77, 0.38),
+        0 0 28px rgba(255, 23, 77, 0.22);
+      text-shadow: 0 0 12px rgba(255, 23, 77, 0.85);
     }
 
     .historical-tab {
-      border-color: rgba(141, 223, 159, 0.34);
-      background: rgba(141, 223, 159, 0.1);
+      border-color: rgba(255, 148, 46, 0.38);
+      background: rgba(255, 148, 46, 0.1);
       color: var(--muted);
     }
 
     .historical-tab.is-unlocked {
-      border-color: rgba(141, 223, 159, 0.58);
-      background: rgba(141, 223, 159, 0.16);
-      color: var(--muted);
+      border-color: rgba(255, 148, 46, 0.62);
+      background: rgba(255, 148, 46, 0.16);
+      color: #ff942e;
     }
 
     .historical-tab.active {
-      border-color: rgba(141, 223, 159, 0.58);
-      background: rgba(141, 223, 159, 0.16);
+      border-color: rgba(255, 148, 46, 0.72);
+      background: rgba(255, 148, 46, 0.2);
       color: var(--text);
+      box-shadow: 0 0 18px rgba(255, 148, 46, 0.22);
     }
 
     .historical-tab-icon {
@@ -317,21 +334,22 @@
     }
 
     .report-tab {
-      border-color: rgba(141, 223, 159, 0.34);
-      background: rgba(141, 223, 159, 0.1);
+      border-color: rgba(255, 148, 46, 0.38);
+      background: rgba(255, 148, 46, 0.1);
       color: var(--muted);
     }
 
     .report-tab.is-unlocked {
-      border-color: rgba(141, 223, 159, 0.58);
-      background: rgba(141, 223, 159, 0.16);
-      color: var(--muted);
+      border-color: rgba(255, 148, 46, 0.62);
+      background: rgba(255, 148, 46, 0.16);
+      color: #ff942e;
     }
 
     .report-tab.active {
-      border-color: rgba(141, 223, 159, 0.58);
-      background: rgba(141, 223, 159, 0.16);
+      border-color: rgba(255, 148, 46, 0.72);
+      background: rgba(255, 148, 46, 0.2);
       color: var(--text);
+      box-shadow: 0 0 18px rgba(255, 148, 46, 0.22);
     }
 
     .report-tab-icon {
@@ -363,7 +381,7 @@
     }
 
     .locked-badge {
-      border: 1px solid rgba(255, 177, 74, 0.28);
+      border: 1px solid rgba(255, 148, 46, 0.28);
       border-radius: 999px;
       color: var(--amber);
       font-size: 0.74rem;
@@ -617,8 +635,8 @@
     }
 
     .button.demo-locked-button {
-      border-color: rgba(255, 177, 74, 0.28);
-      background: rgba(255, 177, 74, 0.08);
+      border-color: rgba(255, 148, 46, 0.28);
+      background: rgba(255, 148, 46, 0.08);
       color: rgba(244, 240, 232, 0.72);
       cursor: not-allowed;
     }
@@ -744,8 +762,8 @@
     }
 
     .breakdown-chip.volatility-medium {
-      border-color: rgba(255,177,74,0.38);
-      color: var(--amber);
+      border-color: rgba(255, 244, 120, 0.42);
+      color: var(--vol-medium);
     }
 
     .breakdown-chip.volatility-high {
@@ -771,9 +789,9 @@
     }
 
     .note-card.up {
-      border-color: rgba(255,177,74,0.55);
+      border-color: rgba(255,148,46,0.55);
       background: linear-gradient(180deg, rgba(46, 30, 12, 0.92), rgba(22, 17, 12, 0.92));
-      box-shadow: inset 0 1px 0 rgba(255,177,74,0.18);
+      box-shadow: inset 0 1px 0 rgba(255,148,46,0.18);
     }
 
     .note-card.down {
@@ -803,8 +821,8 @@
     }
 
     .note-card.up .note-tag {
-      background: rgba(255,177,74,0.22);
-      color: #ffd7a3;
+      background: rgba(255,148,46,0.22);
+      color: #ffad48;
     }
 
     .note-card.down .note-tag {
@@ -841,9 +859,9 @@
     }
 
     .warning-button {
-      border: 1px solid rgba(255, 187, 102, 0.36);
+      border: 1px solid rgba(255, 148, 46, 0.36);
       background: linear-gradient(180deg, rgba(108, 62, 16, 0.98), rgba(78, 45, 12, 0.98));
-      color: #ffe2b8;
+      color: #ffca82;
     }
 
     .success-button {
@@ -950,6 +968,149 @@
       cursor: pointer;
     }
 
+    .desktop-card.live {
+      height: 458px;
+      min-height: 458px;
+      max-height: 458px;
+      box-sizing: border-box;
+    }
+
+    .desktop-card.live .desktop-card-face {
+      border: 6px solid #020203;
+      border-radius: 18px;
+      background:
+        radial-gradient(circle at 88% 0%, rgba(46, 132, 255, 0.22), transparent 34%),
+        linear-gradient(135deg, rgba(255, 148, 46, 0.12), transparent 19%),
+        linear-gradient(160deg, rgba(18, 23, 34, 0.99), rgba(3, 7, 12, 0.99));
+      box-shadow: 0 18px 34px rgba(0, 0, 0, 0.34);
+    }
+
+    .desktop-card.live .desktop-card-history-action {
+      top: 10px;
+      right: 10px;
+      bottom: auto;
+      left: auto;
+      z-index: 6;
+      width: 36px;
+      height: 36px;
+      font-size: 0.98rem;
+    }
+
+    .desktop-card.live .desktop-player-panel {
+      height: 98px;
+      border-bottom-color: rgba(255, 148, 46, 0.5);
+    }
+
+    .desktop-card.live .desktop-card-pitcher {
+      font-size: clamp(1.28rem, 1.7vw, 1.9rem);
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    .desktop-card.live .desktop-card-team {
+      color: var(--amber);
+      font-size: 0.68rem;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .desktop-card.live .desktop-card-record-line {
+      color: #f7f3eb;
+      font-size: 0.67rem;
+    }
+
+    .desktop-card.live .desktop-card-game-row {
+      padding: 11px 0 10px;
+      border-bottom-color: rgba(255, 148, 46, 0.42);
+    }
+
+    .desktop-card.live .desktop-card-opponent {
+      font-size: 0.76rem;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    .desktop-card.live .desktop-card-ump,
+    .desktop-card.live .desktop-card-time {
+      color: #5db2ff;
+      font-size: 0.6rem;
+    }
+
+    .desktop-card.live .desktop-card-metrics {
+      overflow: hidden;
+      border: 1px solid rgba(255, 148, 46, 0.34);
+      border-radius: 12px;
+      background: rgba(3, 8, 14, 0.44);
+    }
+
+    .desktop-card.live .desktop-card-metric {
+      min-height: 52px;
+      grid-template-columns: minmax(0, 1fr) minmax(64px, 80px);
+      gap: 10px;
+      padding: 8px 10px;
+      border-bottom-color: rgba(255, 255, 255, 0.09);
+    }
+
+    .desktop-card.live .desktop-card-metric-label {
+      font-size: 0.66rem;
+      letter-spacing: 0.08em;
+    }
+
+    .desktop-card.live .desktop-card-metric-context {
+      font-size: 0.58rem;
+    }
+
+    .desktop-card.live .desktop-card-metric-value {
+      min-width: 0;
+      padding: 6px 8px;
+      border: 1px solid rgba(255, 148, 46, 0.36);
+      border-radius: 7px;
+      background: rgba(255, 148, 46, 0.1);
+      color: #ff942e;
+      text-align: center;
+    }
+
+    .desktop-card.live .desktop-card-metric-value.volatility-low {
+      border-color: rgba(141, 223, 159, 0.48);
+      background: rgba(141, 223, 159, 0.12);
+      color: var(--success);
+    }
+
+    .desktop-card.live .desktop-card-metric-value.volatility-medium {
+      border-color: rgba(255, 244, 120, 0.48);
+      background: rgba(255, 244, 120, 0.1);
+      color: var(--vol-medium);
+    }
+
+    .desktop-card.live .desktop-card-metric-value.volatility-high {
+      border-color: rgba(255, 140, 122, 0.48);
+      background: rgba(255, 140, 122, 0.12);
+      color: var(--danger);
+    }
+
+    .desktop-card.live .desktop-card-subvalue {
+      justify-content: center;
+      font-size: 0.55rem;
+    }
+
+    .desktop-card.live .desktop-card-edge-row {
+      grid-template-columns: 0.8fr 1fr 1fr;
+      min-height: 50px;
+    }
+
+    .desktop-card.live .desktop-card-edge-value {
+      padding: 6px 6px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 7px;
+      background: rgba(255, 255, 255, 0.045);
+      text-align: center;
+    }
+
+    .desktop-card.live .desktop-card-note {
+      display: none;
+    }
+
     .desktop-card:hover {
       z-index: 3;
       transform: translateY(-6px) scale(1.012);
@@ -990,7 +1151,7 @@
     .desktop-card-face::before {
       background:
         linear-gradient(118deg, transparent 0%, rgba(255,255,255,0.08) 42%, transparent 58%),
-        radial-gradient(circle at 12% 14%, rgba(255, 188, 98, 0.18), transparent 20%),
+        radial-gradient(circle at 12% 14%, rgba(255, 148, 46, 0.18), transparent 20%),
         radial-gradient(circle at 92% 0%, rgba(117, 183, 255, 0.16), transparent 24%);
     }
 
@@ -1218,7 +1379,7 @@
     }
 
     .desktop-card-metric-value.volatility-medium {
-      color: var(--amber);
+      color: var(--vol-medium);
     }
 
     .desktop-card-metric-value.volatility-high {
@@ -1263,6 +1424,615 @@
       overflow-wrap: anywhere;
     }
 
+    .desktop-live-watermark {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .desktop-live-watermark img {
+      width: min(76%, 220px);
+      height: auto;
+      object-fit: contain;
+      opacity: 0.14;
+      mix-blend-mode: screen;
+      filter: drop-shadow(0 0 12px rgba(255, 148, 46, 0.22));
+    }
+
+    .desktop-live-layout {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-rows: auto auto 1fr auto;
+      gap: 6px;
+      height: 100%;
+      min-height: 0;
+      padding: 10px 12px 10px;
+      box-sizing: border-box;
+    }
+
+    .desktop-live-header {
+      min-height: 74px;
+      padding-bottom: 6px;
+      display: grid;
+      align-content: center;
+      justify-items: center;
+      text-align: center;
+      border-bottom: 1px solid rgba(255, 148, 46, 0.5);
+    }
+
+    .desktop-live-name {
+      width: 100%;
+      margin: 0 0 4px;
+      color: #f4f0e8;
+      font-size: clamp(1rem, 1.22vw, 1.38rem);
+      line-height: 0.96;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .desktop-live-team {
+      color: var(--amber);
+      font-size: 0.54rem;
+      font-weight: 950;
+      letter-spacing: 0.14em;
+      line-height: 1.1;
+      text-transform: uppercase;
+    }
+
+    /* Two-column � two-row grid: baselines pair per row; edges flush left/right */
+    .desktop-live-matchup {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-rows: auto auto;
+      column-gap: 12px;
+      row-gap: 5px;
+      align-items: baseline;
+      justify-items: start;
+      padding: 10px 0 11px;
+      box-sizing: border-box;
+    }
+
+    .desktop-live-matchup > .desktop-live-date,
+    .desktop-live-matchup > .desktop-live-time {
+      justify-self: end;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .desktop-live-opponent {
+      min-width: 0;
+      color: #f4f0e8;
+      font-size: 0.76rem;
+      font-weight: 950;
+      letter-spacing: 0.04em;
+      line-height: 1.15;
+      text-transform: uppercase;
+    }
+
+    .desktop-live-opponent .desktop-live-matchup-vs {
+      color: var(--amber);
+      margin-right: 5px;
+      font-size: 0.62rem;
+      font-weight: 950;
+      letter-spacing: 0.06em;
+      vertical-align: baseline;
+    }
+
+    .desktop-live-status,
+    .desktop-live-time {
+      margin-top: 0;
+      color: #5db2ff;
+      font-size: 0.58rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      line-height: 1.15;
+      text-transform: uppercase;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .desktop-live-date {
+      display: block;
+      color: #f4f0e8;
+      font-size: 0.76rem;
+      font-weight: 950;
+      line-height: 1.15;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Middle band: statistics grid + flexible bridge centers IQ/DK/FD circles above K dots */
+    .desktop-live-corner-grid {
+      min-height: 0;
+      align-self: stretch;
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 0;
+    }
+
+    .desktop-live-pitchiq-stats-columns {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      column-gap: 12px;
+      row-gap: 10px;
+      align-items: center;
+      justify-items: center;
+      width: 100%;
+      box-sizing: border-box;
+      flex: 0 0 auto;
+    }
+
+    .desktop-live-chip-bridge {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .desktop-live-chip-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      column-gap: 12px;
+      width: 100%;
+      align-items: center;
+      justify-items: center;
+      box-sizing: border-box;
+    }
+
+    .desktop-live-chip-row .desktop-live-line-chip {
+      flex-shrink: 0;
+    }
+
+    .desktop-live-sk-column {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-width: 0;
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .desktop-live-stat-stack {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .desktop-live-sk-column .desktop-live-stat {
+      align-items: center;
+      text-align: center;
+      width: 100%;
+    }
+
+    .desktop-live-corner-grid > .desktop-live-stats.desktop-live-pitchiq-stats-columns {
+      padding-bottom: 4px;
+    }
+
+    .desktop-live-notes-row {
+      grid-column: 1 / -1;
+      width: 100%;
+      min-width: 0;
+      padding: 0;
+      box-sizing: border-box;
+      text-align: center;
+    }
+
+    .desktop-live-notes-copy {
+      min-width: 0;
+      color: #f4f0e8;
+      font-size: 0.6rem;
+      font-weight: 850;
+      line-height: 1.2;
+      text-transform: none;
+      text-align: center;
+    }
+
+    .desktop-live-corner {
+      min-height: 61px;
+      padding: 7px 8px;
+      border: 1px solid rgba(255, 255, 255, 0.11);
+      border-radius: 10px;
+      background: rgba(3, 8, 14, 0.46);
+    }
+
+    .desktop-live-corner-title {
+      color: #f4f0e8;
+      font-size: 0.52rem;
+      font-weight: 950;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .desktop-live-corner-primary {
+      margin-top: 5px;
+      color: #f4f0e8;
+      font-size: 0.76rem;
+      font-weight: 950;
+      line-height: 1;
+    }
+
+    .desktop-live-corner-sub {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 0.5rem;
+      font-weight: 850;
+      line-height: 1.15;
+    }
+
+    .desktop-live-line-chip {
+      flex: 0 0 55px;
+      width: 55px;
+      height: 55px;
+      min-width: 55px;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      padding: 5px 3px;
+      border-radius: 50%;
+      box-sizing: border-box;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .desktop-live-line-chip-label {
+      font-size: calc(0.45rem + 2px);
+      font-weight: 950;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      line-height: 1;
+      opacity: 0.92;
+    }
+
+    .desktop-live-line-chip-value {
+      font-size: calc(0.7rem + 2px);
+      font-weight: 950;
+      line-height: 1.05;
+    }
+
+    .desktop-live-line-chip-pitchiq {
+      color: #fff089;
+      background: rgba(255, 200, 80, 0.12);
+      border: 4px solid rgba(255, 220, 120, 0.55);
+      box-shadow:
+        0 0 18px rgba(255, 210, 90, 0.42),
+        0 0 28px rgba(255, 200, 70, 0.22);
+    }
+
+    .desktop-live-line-chip-pitchiq .desktop-live-line-chip-value {
+      text-shadow:
+        0 0 12px rgba(255, 236, 140, 0.5),
+        0 0 22px rgba(255, 200, 80, 0.3);
+    }
+
+    .desktop-live-line-chip-dk {
+      color: #5cff77;
+      background: rgba(57, 255, 106, 0.14);
+      border: 4px solid rgba(92, 255, 119, 0.55);
+      box-shadow: 0 0 18px rgba(92, 255, 119, 0.42);
+    }
+
+    .desktop-live-line-chip-dk .desktop-live-line-chip-value {
+      text-shadow: 0 0 12px rgba(92, 255, 119, 0.45);
+    }
+
+    .desktop-live-line-chip-fd {
+      color: #6bb6ff;
+      background: rgba(24, 91, 173, 0.12);
+      border: 4px solid rgba(35, 134, 235, 0.55);
+      box-shadow: 0 0 18px rgba(35, 134, 235, 0.42);
+    }
+
+    .desktop-live-line-chip-fd .desktop-live-line-chip-value {
+      text-shadow: 0 0 12px rgba(35, 134, 235, 0.45);
+    }
+
+    .desktop-live-stats {
+      background: transparent;
+      border: none;
+      border-radius: 10px;
+      padding: 7px 10px 9px;
+      min-height: 61px;
+    }
+
+    .desktop-live-stat {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      min-width: 0;
+    }
+
+    .desktop-live-stat-label {
+      font-size: 0.56rem;
+      font-weight: 950;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #f4f0e8;
+    }
+
+    .desktop-live-stat-value {
+      font-size: 0.78rem;
+      font-weight: 950;
+      color: #f4f0e8;
+      line-height: 1.12;
+    }
+
+    .desktop-live-stat-value.desktop-live-stat-blue {
+      color: #6bb6ff;
+    }
+
+    .desktop-live-stat-value.desktop-live-stat-orange {
+      color: #ff942e;
+    }
+
+    .desktop-live-stat-value.volatility-low {
+      color: var(--success);
+    }
+
+    .desktop-live-stat-value.volatility-medium {
+      color: var(--vol-medium);
+    }
+
+    .desktop-live-stat-value.volatility-high {
+      color: var(--danger);
+    }
+
+    .desktop-live-stats .desktop-live-stat-value.up-text {
+      color: #ff942e;
+      font-weight: 950;
+    }
+
+    .desktop-live-stats .desktop-live-stat-value.down-text {
+      color: #6bb6ff;
+      font-weight: 950;
+    }
+
+    .desktop-live-stats .desktop-live-stat-value.avoid-text {
+      color: var(--danger);
+      font-weight: 950;
+    }
+
+    .historical-record-win {
+      color: var(--success);
+    }
+
+    .historical-record-loss {
+      color: var(--danger);
+    }
+
+    .desktop-live-stat-empty {
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .desktop-live-kpanel {
+      --live-k-panel-pad-inline: 8px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 4px var(--live-k-panel-pad-inline);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 11px;
+      background: #020203;
+    }
+
+    .desktop-live-dot-track {
+      --live-dot-gap: 3px;
+      --live-dot-size: 20px;
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      min-width: 0;
+      pointer-events: auto;
+    }
+
+    .desktop-live-line-layer {
+      position: absolute;
+      z-index: 0;
+      top: 0;
+      bottom: 0;
+      left: var(--live-k-panel-pad-inline);
+      right: var(--live-k-panel-pad-inline);
+      pointer-events: none;
+    }
+
+    .desktop-live-line {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      margin: 0;
+      padding: 0;
+      border: none;
+      border-radius: 2px;
+      transform: translateX(-50%);
+    }
+
+    .desktop-live-line-dk {
+      background: linear-gradient(180deg, #8bff9f, #39ff6a);
+      box-shadow:
+        0 0 12px rgba(92, 255, 119, 0.65),
+        0 0 22px rgba(57, 255, 106, 0.35);
+    }
+
+    .desktop-live-line-fd {
+      background: linear-gradient(180deg, #7cf4ff, #38d4ff);
+      box-shadow:
+        0 0 12px rgba(35, 134, 235, 0.65),
+        0 0 22px rgba(24, 91, 173, 0.35);
+    }
+
+    .desktop-live-line.desktop-live-line-book-split {
+      width: 3px;
+      border-radius: 999px;
+      background: linear-gradient(
+        180deg,
+        #8bff9f 0%,
+        #39ff6a 50%,
+        #38d4ff 50%,
+        #7cf4ff 100%
+      );
+      box-shadow:
+        0 -2px 12px rgba(92, 255, 119, 0.55),
+        0 2px 12px rgba(35, 134, 235, 0.55);
+    }
+
+    .desktop-live-dot-row {
+      position: relative;
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: var(--live-dot-gap, 3px);
+      align-items: center;
+      justify-items: center;
+    }
+
+    .desktop-live-dot-cell {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 0;
+      --dot-hover-bounce-delay: 0ms;
+    }
+
+    .desktop-live-dot-cell:nth-child(1) {
+      --dot-hover-bounce-delay: 0ms;
+    }
+    .desktop-live-dot-cell:nth-child(2) {
+      --dot-hover-bounce-delay: 55ms;
+    }
+    .desktop-live-dot-cell:nth-child(3) {
+      --dot-hover-bounce-delay: 110ms;
+    }
+    .desktop-live-dot-cell:nth-child(4) {
+      --dot-hover-bounce-delay: 40ms;
+    }
+    .desktop-live-dot-cell:nth-child(5) {
+      --dot-hover-bounce-delay: 95ms;
+    }
+    .desktop-live-dot-cell:nth-child(6) {
+      --dot-hover-bounce-delay: 12ms;
+    }
+    .desktop-live-dot-cell:nth-child(7) {
+      --dot-hover-bounce-delay: 72ms;
+    }
+    .desktop-live-dot-cell:nth-child(8) {
+      --dot-hover-bounce-delay: 128ms;
+    }
+    .desktop-live-dot-cell:nth-child(9) {
+      --dot-hover-bounce-delay: 28ms;
+    }
+    .desktop-live-dot-cell:nth-child(10) {
+      --dot-hover-bounce-delay: 85ms;
+    }
+
+    @keyframes desktop-live-dot-idle-sway {
+      0%,
+      100% {
+        transform: rotate(-6.5deg);
+      }
+      25% {
+        transform: rotate(0deg);
+      }
+      50% {
+        transform: rotate(6.5deg);
+      }
+      75% {
+        transform: rotate(0deg);
+      }
+    }
+
+    .desktop-live-dot {
+      position: relative;
+      box-sizing: border-box;
+      width: var(--live-dot-size);
+      height: var(--live-dot-size);
+      min-width: var(--live-dot-size);
+      min-height: var(--live-dot-size);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      overflow: hidden;
+    }
+
+    .desktop-live-dot-ball {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      pointer-events: none;
+    }
+
+    .desktop-live-dot:not(.filled) .desktop-live-dot-ball {
+      opacity: 0.18;
+      filter: saturate(0.35) brightness(1.05);
+    }
+
+    .desktop-live-dot:not(.filled) .desktop-live-dot-label {
+      display: none;
+    }
+
+    .desktop-live-dot-label {
+      position: relative;
+      z-index: 1;
+      color: #0a0a0c;
+      font-size: 0.52rem;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      user-select: none;
+      text-shadow:
+        0 0 3px rgba(255, 252, 246, 0.95),
+        0 0 5px rgba(255, 252, 246, 0.75);
+    }
+
+    .desktop-live-dot.filled .desktop-live-dot-ball {
+      opacity: 1;
+      filter: brightness(1.04);
+    }
+
+    .desktop-live-dot.filled .desktop-live-dot-label {
+      color: #08090a;
+    }
+
+    .desktop-live-dot.filled {
+      animation: desktop-live-dot-idle-sway 2.85s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+      animation-delay: var(--dot-hover-bounce-delay);
+      will-change: transform;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .desktop-live-dot.filled {
+        animation: none;
+        will-change: auto;
+      }
+    }
+
     .desktop-card-notes-list {
       display: grid;
       gap: 8px;
@@ -1276,7 +2046,7 @@
     }
 
     .desktop-card-note-card.up {
-      border-color: rgba(255,177,74,0.5);
+      border-color: rgba(255,148,46,0.5);
       background: rgba(80,47,12,0.38);
     }
 
@@ -1436,10 +2206,10 @@
       font-weight: 700;
     }
 
-    .book-line-under-odds {
-      color: var(--violet);
-      font-weight: 700;
-    }
+.book-line-under-odds {
+  color: #6bb6ff;
+  font-weight: 700;
+}
 
     .book-line-odds-divider {
       color: var(--text);
@@ -1466,9 +2236,9 @@
       width: 30px;
       height: 30px;
       border-radius: 999px;
-      border: 1px solid rgba(141,138,255,0.2);
-      background: rgba(141,138,255,0.08);
-      color: var(--text);
+      border: 1px solid rgba(35, 134, 235, 0.36);
+      background: rgba(24, 91, 173, 0.12);
+      color: #6bb6ff;
       cursor: default;
       display: inline-flex;
       align-items: center;
@@ -1486,19 +2256,30 @@
     }
 
     .lookup-icon-btn:hover {
-      border-color: rgba(255,177,74,0.26);
-      background: rgba(255,177,74,0.1);
+      border-color: rgba(35, 134, 235, 0.68);
+      background: rgba(24, 91, 173, 0.2);
+      box-shadow: 0 0 14px rgba(35, 134, 235, 0.3);
     }
 
     .historical-lookup-btn {
-      border-color: rgba(141, 223, 159, 0.34);
-      background: rgba(141, 223, 159, 0.08);
-      color: var(--success);
+      border-color: rgba(255, 148, 46, 0.48);
+      background: rgba(255, 148, 46, 0.1);
+      color: #ff942e;
+      font-weight: 950;
+      text-shadow: 0 0 10px rgba(255, 148, 46, 0.5);
     }
 
     .historical-lookup-btn:hover {
-      border-color: rgba(141, 223, 159, 0.58);
-      background: rgba(141, 223, 159, 0.16);
+      border-color: rgba(255, 148, 46, 0.76);
+      background: rgba(255, 148, 46, 0.18);
+      box-shadow: 0 0 16px rgba(255, 148, 46, 0.32);
+    }
+
+    .historical-lookup-btn svg {
+      width: 17px;
+      height: 17px;
+      stroke: currentColor;
+      filter: drop-shadow(0 0 5px rgba(255, 148, 46, 0.5));
     }
 
     .ump-cell {
@@ -1521,10 +2302,10 @@
     }
 
     .ump-indicator.assigned {
-      border-color: rgba(255, 200, 86, 0.52);
-      background: rgba(255, 177, 74, 0.1);
-      color: #ffc856;
-      box-shadow: 0 0 0 1px rgba(255, 200, 86, 0.08);
+      border-color: rgba(255, 148, 46, 0.52);
+      background: rgba(255, 148, 46, 0.1);
+      color: #ff942e;
+      box-shadow: 0 0 0 1px rgba(255, 148, 46, 0.08);
     }
 
     .table-hover-detail {
@@ -1554,7 +2335,7 @@
     }
 
     .volatility-value.volatility-medium {
-      color: var(--amber);
+      color: var(--vol-medium);
     }
 
     .volatility-value.volatility-high {
@@ -1563,7 +2344,7 @@
     }
 
     .down-text {
-      color: var(--violet);
+      color: #6bb6ff;
       font-weight: 600;
     }
 
@@ -2025,6 +2806,9 @@
     let dataRefreshInFlight = false;
     let dataRefreshQueued = false;
     let dataRefreshChannel = null;
+    /** Max `updated_at` from the latest in-memory table fetch (keeps footer in sync with displayed rows). */
+    let latestFetchedGameRowsUpdatedAt = null;
+    let latestFetchedHistoricalRowsUpdatedAt = null;
 
     function setOwnerControls(role) {
       currentUserRole = role || null;
@@ -2121,6 +2905,7 @@
     let lineInputTouched = false;
     const desktopFlippedCardKeys = new Set();
     const desktopCardFlipDirections = new Map();
+    let historicalBetRecordCache = new Map();
     const DEMO_SNAPSHOT_NOW = new Date("2025-07-18T12:00:00-04:00");
 
     const REPORT_COLUMNS = [
@@ -2400,10 +3185,14 @@
         home_or_away: "Home",
         plate_umpire: "Grant Hill",
         dk_line: 5.5,
+        dk_over_payout: "-108",
+        dk_under_payout: "-112",
         dk_bet: "OVER",
         dk_confidence: "Medium",
         dk_edge: 0.81,
         fd_line: 5.5,
+        fd_over_payout: "-105",
+        fd_under_payout: "-115",
         fd_bet: "OVER",
         fd_confidence: "Medium",
         fd_edge: 0.68,
@@ -2426,6 +3215,7 @@
       upcomingGames = DEMO_UPCOMING_GAMES.map(game => ({ ...game }));
       liveGames = DEMO_LIVE_GAMES.map(game => ({ ...game }));
       gameHistory = DEMO_HISTORICAL_GAMES.map(game => ({ ...game })).sort((left, right) => sortableGameDate(right) - sortableGameDate(left));
+      historicalBetRecordCache = new Map();
       setOwnerControls("pro");
       setServerActivity("2025-07-18T12:00:00-04:00");
       refreshPitcherList();
@@ -2520,7 +3310,21 @@
       };
     }
 
+    function maxUpdatedAtFromRows(rows) {
+      if (!Array.isArray(rows) || !rows.length) return null;
+      let maxMs = 0;
+      rows.forEach(row => {
+        if (!row?.updated_at) return;
+        const t = Date.parse(row.updated_at);
+        if (!Number.isNaN(t) && t > maxMs) maxMs = t;
+      });
+      return maxMs ? new Date(maxMs).toISOString() : null;
+    }
+
     async function loadSupabaseTables(options = {}) {
+      latestFetchedGameRowsUpdatedAt = null;
+      latestFetchedHistoricalRowsUpdatedAt = null;
+
       const { data: gameRows, error: gameRowsError } = await supabaseClient
         .from("pitchiq_game_rows")
         .select("table_type,payload,updated_at")
@@ -2535,6 +3339,8 @@
         return;
       }
 
+      latestFetchedGameRowsUpdatedAt = maxUpdatedAtFromRows(gameRows || []);
+
       const { data: historyRows, error: historyRowsError } = await supabaseClient
         .from("pitchiq_historical_rows")
         .select("payload,updated_at")
@@ -2545,6 +3351,7 @@
       upcomingGames = splitGames.upcoming;
       liveGames = splitGames.live;
       if (!historyRowsError) {
+        latestFetchedHistoricalRowsUpdatedAt = maxUpdatedAtFromRows(historyRows || []);
         gameHistory = (historyRows || [])
           .filter(row => row.payload)
           .map(row => row.payload);
@@ -2555,6 +3362,7 @@
           if (leftDate > rightDate) return -1;
           return normalizeText(left.pitcher).localeCompare(normalizeText(right.pitcher));
         });
+        historicalBetRecordCache = new Map();
       }
 
       refreshPitcherList();
@@ -2592,12 +3400,15 @@
       dataRefreshInFlight = true;
       try {
         await loadSupabaseTables(options);
-        await loadServerActivity();
       } finally {
-        dataRefreshInFlight = false;
-        if (dataRefreshQueued) {
-          dataRefreshQueued = false;
-          queueSupabaseRefresh();
+        try {
+          await loadServerActivity();
+        } finally {
+          dataRefreshInFlight = false;
+          if (dataRefreshQueued) {
+            dataRefreshQueued = false;
+            queueSupabaseRefresh();
+          }
         }
       }
     }
@@ -2747,15 +3558,17 @@
         .eq("id", "worker")
         .maybeSingle();
 
-      const [latestGameRowsUpdate, latestHistoryRowsUpdate, latestLookupUpdate] = await Promise.all([
+      const [queriedGameRowsUpdate, queriedHistoryRowsUpdate, latestLookupUpdate] = await Promise.all([
         loadLatestTableUpdate("pitchiq_game_rows"),
         loadLatestTableUpdate("pitchiq_historical_rows"),
         loadLatestTableUpdate("pitchiq_pitcher_lookup"),
       ]);
       const latestActivity = latestTimestamp([
         !error ? data?.last_activity_at : null,
-        latestGameRowsUpdate,
-        latestHistoryRowsUpdate,
+        latestFetchedGameRowsUpdatedAt,
+        queriedGameRowsUpdate,
+        latestFetchedHistoricalRowsUpdatedAt,
+        queriedHistoryRowsUpdate,
         latestLookupUpdate,
       ]);
 
@@ -2898,6 +3711,9 @@
 
     function edgeTone(value, betValue) {
       if (isAvoidBet(betValue)) return "avoid-text";
+      const side = String(betValue || "").trim().toUpperCase();
+      if (side === "OVER") return "up-text";
+      if (side === "UNDER") return "down-text";
       if (value === null || value === undefined || value === "" || Number.isNaN(Number(value))) return "";
       return Number(value) >= 0 ? "up-text" : "down-text";
     }
@@ -2957,6 +3773,15 @@
         return rawNotes;
       }
       return [discrepancyNote, rawNotes].filter(Boolean).join(" | ");
+    }
+
+    function displaySystemNotesText(game) {
+      const notes = displayNotesText(game)
+        .split(/\s*(?:,|\|)\s*/)
+        .map(note => note.trim())
+        .filter(Boolean)
+        .filter(note => normalizeText(note) !== "no major flags");
+      return notes.join(", ");
     }
 
     function confidenceTone(value) {
@@ -3398,6 +4223,38 @@
       return "";
     }
 
+    function hasResolvedHistoricalStatus(game) {
+      const status = normalizeText(game?.game_status || game?.status || game?.abstract_game_state);
+      return !status || isClearlyCompletedGame(game);
+    }
+
+    function countHistoricalBetOutcome(record, outcome) {
+      if (outcome === "Win") record.wins += 1;
+      if (outcome === "Loss") record.losses += 1;
+    }
+
+    function historicalBetRecordForPitcher(pitcherName) {
+      const normalizedPitcher = normalizeText(pitcherName);
+      if (!normalizedPitcher) return { wins: 0, losses: 0 };
+      if (historicalBetRecordCache.has(normalizedPitcher)) {
+        return historicalBetRecordCache.get(normalizedPitcher);
+      }
+
+      const record = { wins: 0, losses: 0 };
+      gameHistory.forEach(game => {
+        if (normalizeText(game?.pitcher) !== normalizedPitcher) return;
+        if (!hasResolvedHistoricalStatus(game)) return;
+        if (!Number.isFinite(Number(displayProjectionValue(game)))) return;
+
+        const actual = game.actual_k ?? game.strikeouts;
+        countHistoricalBetOutcome(record, evaluateBetCorrectness(actual, game.dk_line, game.dk_bet));
+        countHistoricalBetOutcome(record, evaluateBetCorrectness(actual, game.fd_line, game.fd_bet));
+      });
+
+      historicalBetRecordCache.set(normalizedPitcher, record);
+      return record;
+    }
+
     function getFilteredHistoricalGames() {
       const query = normalizeText(historicalSearchQuery);
       const filtered = !query ? gameHistory.slice() : gameHistory.filter(game => {
@@ -3590,7 +4447,9 @@
       const historicalTitle = historicalUnlocked
         ? "View historical games"
         : "Historical lookup is a Pro feature";
-      const historicalIcon = historicalUnlocked ? "&#8634;" : "&#128274;";
+      const historicalIcon = historicalUnlocked
+        ? '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/><path d="M12 7v5l3 2"/></svg>'
+        : "&#128274;";
       return `
         <div class="row-actions">
           <button class="lookup-icon-btn pitcher-lookup-btn" type="button" data-pitcher="${pitcher}" title="Open pitcher lookup" aria-label="Open pitcher lookup">&#8981;</button>
@@ -3605,7 +4464,9 @@
       const historicalTitle = historicalUnlocked
         ? "View historical games"
         : "Historical lookup is a Pro feature";
-      const historicalIcon = historicalUnlocked ? "&#8634;" : "&#128274;";
+      const historicalIcon = historicalUnlocked
+        ? '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/><path d="M12 7v5l3 2"/></svg>'
+        : "&#128274;";
       return `
         <button class="lookup-icon-btn historical-lookup-btn desktop-card-history-action" type="button" data-pitcher="${pitcher}" title="${historicalTitle}" aria-label="${historicalTitle}">${historicalIcon}</button>
       `;
@@ -3700,6 +4561,15 @@
       `;
     }
 
+    function renderDesktopFrontNotesRow(game) {
+      const notes = displaySystemNotesText(game);
+      return `
+        <div class="desktop-live-notes-row">
+          <div class="desktop-live-notes-copy">${escapeHtml(notes)}</div>
+        </div>
+      `;
+    }
+
     function renderDesktopEdgeMetric(game) {
       return `
         <div class="desktop-card-metric desktop-card-edge-row">
@@ -3755,57 +4625,219 @@
       }).join("");
     }
 
-    function renderDesktopGameCard(game, view) {
-      const key = desktopCardKey(view, game);
-      const flipDirection = desktopCardFlipDirections.get(key) === "left" ? "flip-left" : "flip-right";
-      const projected = formatNumber(displayProjectionValue(game), 2) || "-";
+    function liveStrikeoutValue(game) {
+      const value = game?.live_strikeouts ?? game?.live_ks ?? game?.starter_strikeouts;
+      if (value === null || value === undefined || value === "") return "";
+      const numeric = Number(value);
+      return Number.isFinite(numeric) ? String(Math.trunc(numeric)) : String(value).trim();
+    }
+
+    function clampPercent(value) {
+      if (!Number.isFinite(value)) return 0;
+      return Math.max(0, Math.min(100, value));
+    }
+
+    const LIVE_K_DOT_COUNT = 10;
+    const LIVE_K_DOT_GAP_PX = 3;
+
+    /** Half-K props ? gap between balls k and k+1; markers use the .5 midpoint between those balls. */
+    function liveKLineBoundarySlot(line) {
+      if (line === null || line === undefined || !Number.isFinite(line) || line <= 0) return null;
+      const gapAfterBall = Math.round(line - 0.5);
+      return Math.min(LIVE_K_DOT_COUNT - 1, Math.max(1, gapAfterBall));
+    }
+
+    function liveKLineMarkerLeftCalc(boundarySlot) {
+      const g = LIVE_K_DOT_GAP_PX;
+      const n = LIVE_K_DOT_COUNT;
+      return `calc(${boundarySlot} * (100% - ${(n - 1) * g}px) / ${n} + ${(boundarySlot - 1) * g}px + ${g / 2}px)`;
+    }
+
+    function renderDesktopLiveKLineMarkers(game) {
+      const dkLine = parseValidLine(game?.dk_line);
+      const fdLine = parseValidLine(game?.fd_line);
+      const dkSlot = liveKLineBoundarySlot(dkLine);
+      const fdSlot = liveKLineBoundarySlot(fdLine);
+      if (dkSlot === null && fdSlot === null) return "";
+
+      const sameBookLine =
+        dkLine !== null &&
+        fdLine !== null &&
+        Math.abs(dkLine - fdLine) < 1e-9 &&
+        dkSlot !== null &&
+        dkSlot === fdSlot;
+
+      if (sameBookLine) {
+        const left = liveKLineMarkerLeftCalc(dkSlot);
+        const title = `DraftKings & FanDuel line ${escapeHtml(String(dkLine))}`;
+        return `<span class="desktop-live-line desktop-live-line-book-split" style="left:${left};" title="${title}"></span>`;
+      }
+
+      const parts = [];
+      if (dkSlot !== null) {
+        parts.push(
+          `<span class="desktop-live-line desktop-live-line-dk" style="left:${liveKLineMarkerLeftCalc(dkSlot)};" title="DraftKings line ${escapeHtml(String(dkLine))}"></span>`
+        );
+      }
+      if (fdSlot !== null) {
+        parts.push(
+          `<span class="desktop-live-line desktop-live-line-fd" style="left:${liveKLineMarkerLeftCalc(fdSlot)};" title="FanDuel line ${escapeHtml(String(fdLine))}"></span>`
+        );
+      }
+      return parts.join("");
+    }
+
+    function desktopLiveBaseballSvg() {
+      return `<svg class="desktop-live-dot-ball" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+        <circle cx="16" cy="16" r="14.35" fill="#ffffff" stroke="rgba(28,29,34,0.5)" stroke-width="0.75"/>
+        <path d="M5.86 5.86Q12.15 16 5.86 26.14" fill="none" stroke="#b81d25" stroke-width="1" stroke-linecap="round"/>
+        <path d="M26.14 5.86Q19.85 16 26.14 26.14" fill="none" stroke="#b81d25" stroke-width="1" stroke-linecap="round"/>
+      </svg>`;
+    }
+
+    function renderDesktopLiveKDots(liveKs) {
+      const resolvedLiveKs = Number.isFinite(Number(liveKs)) ? Number(liveKs) : 0;
+      const ball = desktopLiveBaseballSvg();
+      return Array.from({ length: LIVE_K_DOT_COUNT }, (_, index) => {
+        const dotValue = index + 1;
+        const classes = [
+          "desktop-live-dot",
+          resolvedLiveKs >= dotValue ? "filled" : "",
+        ].filter(Boolean).join(" ");
+        return `<span class="desktop-live-dot-cell"><span class="${classes}">${ball}<span class="desktop-live-dot-label" aria-hidden="true">${dotValue}</span></span></span>`;
+      }).join("");
+    }
+
+    function renderDesktopLiveGameCard(game, view, key, flipDirection, isFlipped) {
+      const projectedValue = displayProjectionValue(game);
+      const projected =
+        projectedValue == null || !Number.isFinite(projectedValue)
+          ? "-"
+          : formatNumber(projectedValue, 2) || "-";
       const time = String(game.time || formatDisplayTime(game.start_time) || "").trim();
       const date = String(game.date || formatDisplayDate(game.game_date_raw) || "").trim();
-      const volatilityLabel = String(game.volatility_label || "").trim() || "-";
-      const volatilityScore = formatNumber(game.volatility_score, 2);
-      const notes = view === "live" ? "" : displayNotesText(game);
-      const status = view === "live" ? (game.game_status || "In Progress") : formatUmpireForCard(game.plate_umpire);
-      const isFlipped = desktopFlippedCardKeys.has(key);
+      const currentPitcherId = String(game.current_pitcher_id ?? "").trim();
+      const starterPitcherId = String(game.mlb_pitcher_id ?? game.pitcher_id ?? "").trim();
+      const currentPitcherName = normalizeText(game.current_pitcher);
+      const starterPitcherName = normalizeText(game.pitcher);
+      const isCurrentStarter = Boolean(
+        (currentPitcherId && starterPitcherId && currentPitcherId === starterPitcherId)
+        || (currentPitcherName && starterPitcherName && currentPitcherName === starterPitcherName)
+      );
+      const starterStatus = isCurrentStarter ? "Pitching" : String(game.starter_status || "").trim();
+      const matchupStatusLeft =
+        view === "live"
+          ? escapeHtml(starterStatus || game.game_status || "In Progress")
+          : escapeHtml(`Ump: ${formatUmpireForCard(game.plate_umpire)}`);
+      const dkBook = desktopFormatLineOdds(game.dk_line, game.dk_over_payout, game.dk_under_payout);
+      const fdBook = desktopFormatLineOdds(game.fd_line, game.fd_over_payout, game.fd_under_payout);
+      const strikeouts = liveStrikeoutValue(game);
+      const displayStrikeouts = strikeouts || "0";
       return `
-        <article class="desktop-card ${view === "live" ? "live" : ""} ${view === "live" ? "" : desktopLineDiscrepancyShimmerClass(game)} ${flipDirection} ${isFlipped ? "flipped" : ""}" data-card-key="${escapeHtml(key)}" data-card-view="${escapeHtml(view)}" role="button" tabindex="0" aria-label="${view === "live" ? "Live game snapshot" : (isFlipped ? "Flip card back to projection" : "Flip card to game notes")}" title="${view === "live" ? "Live game snapshot" : (isFlipped ? "Flip back" : "Game notes")}">
+        <article class="desktop-card live ${desktopLineDiscrepancyShimmerClass(game)} ${flipDirection} ${isFlipped ? "flipped" : ""}" data-card-key="${escapeHtml(key)}" data-card-view="${escapeHtml(view)}" role="button" tabindex="0" aria-label="${isFlipped ? "Flip card back to projection" : "Flip card to game notes"}" title="${isFlipped ? "Flip back" : "Game notes"}">
           <div class="desktop-card-shell">
             <div class="desktop-card-face desktop-card-front">
-              <div class="desktop-card-inner">
-                <div class="desktop-player-panel">
-                  <h2 class="desktop-card-pitcher${pitcherNameSizeClass(game.pitcher)}">${escapeHtml(game.pitcher || "Unknown")}</h2>
-                  <div class="desktop-card-team">${escapeHtml(game.pitcher_team || "Team pending")}</div>
+              ${renderDesktopHistoricalAction(game)}
+              <div class="desktop-live-watermark" aria-hidden="true">
+                <img src="images/pitchIQ%20Logo%20v4.png" alt="" />
+              </div>
+              <div class="desktop-live-layout">
+                <div class="desktop-live-header">
+                  <h2 class="desktop-live-name${pitcherNameSizeClass(game.pitcher)}">${escapeHtml(game.pitcher || "Unknown")}</h2>
+                  <div class="desktop-live-team">${escapeHtml(game.pitcher_team || "Team pending")}</div>
                 </div>
-                <div class="desktop-card-game-row">
-                  <div class="desktop-card-opponent">
-                    <div><span>vs</span>${escapeHtml(game.opponent || "Opponent pending")}</div>
-                    <div class="desktop-card-ump">${escapeHtml(view === "live" ? status : `Ump: ${status}`)}</div>
+                <div class="desktop-live-matchup">
+                  <div class="desktop-live-opponent"><span class="desktop-live-matchup-vs">vs</span>${escapeHtml(game.opponent || "Opponent pending")}</div>
+                  <span class="desktop-live-date">${escapeHtml(date || "Date pending")}</span>
+                  <div class="desktop-live-status">${matchupStatusLeft}</div>
+                  <span class="desktop-live-time">${escapeHtml(time === "Pending" ? "" : time)}</span>
+                </div>
+                <div class="desktop-live-corner-grid">
+                  <div class="desktop-live-stats desktop-live-pitchiq-stats-columns">
+                    <div class="desktop-live-sk-column">
+                      <div class="desktop-live-stat-stack">
+                        <div class="desktop-live-stat">
+                          <span class="desktop-live-stat-label">DK Under</span>
+                          <span class="desktop-live-stat-value desktop-live-stat-blue">${escapeHtml(dkBook.under)}</span>
+                        </div>
+                        <div class="desktop-live-stat">
+                          <span class="desktop-live-stat-label">FD Under</span>
+                          <span class="desktop-live-stat-value desktop-live-stat-blue">${escapeHtml(fdBook.under)}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="desktop-live-sk-column">
+                      <div class="desktop-live-stat-stack">
+                        <div class="desktop-live-stat">
+                          <span class="desktop-live-stat-label">DK Over</span>
+                          <span class="desktop-live-stat-value desktop-live-stat-orange">${escapeHtml(dkBook.over)}</span>
+                        </div>
+                        <div class="desktop-live-stat">
+                          <span class="desktop-live-stat-label">FD Over</span>
+                          <span class="desktop-live-stat-value desktop-live-stat-orange">${escapeHtml(fdBook.over)}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="desktop-live-sk-column">
+                      <div class="desktop-live-stat-stack">
+                        <div class="desktop-live-stat">
+                          <span class="desktop-live-stat-label">DK Edge</span>
+                          <span class="desktop-live-stat-value ${edgeTone(game.dk_edge, game.dk_bet)}">${escapeHtml(formatEdge(game.dk_edge) || "-")}</span>
+                        </div>
+                        <div class="desktop-live-stat">
+                          <span class="desktop-live-stat-label">FD Edge</span>
+                          <span class="desktop-live-stat-value ${edgeTone(game.fd_edge, game.fd_bet)}">${escapeHtml(formatEdge(game.fd_edge) || "-")}</span>
+                        </div>
+                      </div>
+                    </div>
+                    ${renderDesktopFrontNotesRow(game)}
                   </div>
-                  <div class="desktop-card-date">
-                    <span class="desktop-card-date-main">${escapeHtml(date || "Date pending")}</span>
-                    <span class="desktop-card-time">${escapeHtml(time === "Pending" ? "" : time)}</span>
+                  <div class="desktop-live-chip-bridge">
+                    <div class="desktop-live-chip-row">
+                      <div class="desktop-live-line-chip desktop-live-line-chip-pitchiq" title="pitchIQ projected K">
+                        <span class="desktop-live-line-chip-label">IQ</span>
+                        <span class="desktop-live-line-chip-value">${escapeHtml(projected)}</span>
+                      </div>
+                      <div class="desktop-live-line-chip desktop-live-line-chip-dk" title="DraftKings line">
+                        <span class="desktop-live-line-chip-label">DK</span>
+                        <span class="desktop-live-line-chip-value">${escapeHtml(dkBook.line)}</span>
+                      </div>
+                      <div class="desktop-live-line-chip desktop-live-line-chip-fd" title="FanDuel line">
+                        <span class="desktop-live-line-chip-label">FD</span>
+                        <span class="desktop-live-line-chip-value">${escapeHtml(fdBook.line)}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div class="desktop-card-metrics">
-                  ${renderDesktopSimpleMetric("Projected K", projected, "projected-ks-value")}
-                  ${renderDesktopVixMetric(volatilityLabel, volatilityScore)}
-                  ${renderDesktopBookMetric("DraftKings", game.dk_line, game.dk_over_payout, game.dk_under_payout, game.dk_bet)}
-                  ${renderDesktopBookMetric("FanDuel", game.fd_line, game.fd_over_payout, game.fd_under_payout, game.fd_bet)}
-                  ${renderDesktopEdgeMetric(game)}
-                  ${view === "live" ? "" : `<div class="desktop-card-note">${escapeHtml(notes || " ")}</div>`}
+                <div class="desktop-live-kpanel">
+                  <div class="desktop-live-line-layer" aria-hidden="true">
+                    ${renderDesktopLiveKLineMarkers(game)}
+                  </div>
+                  <div class="desktop-live-dot-track">
+                    <div class="desktop-live-dot-row">
+                      ${renderDesktopLiveKDots(displayStrikeouts)}
+                    </div>
+                  </div>
                 </div>
-                ${renderDesktopHistoricalAction(game)}
               </div>
             </div>
-            ${view === "live" ? "" : `<div class="desktop-card-face desktop-card-back">
+            <div class="desktop-card-face desktop-card-back">
               <div class="desktop-card-inner">
                 <div class="desktop-card-notes-list">
                   ${renderDesktopLookupNotes(game)}
                 </div>
               </div>
-            </div>`}
+            </div>
           </div>
         </article>
       `;
+    }
+
+    function renderDesktopGameCard(game, view) {
+      const key = desktopCardKey(view, game);
+      const flipDirection = desktopCardFlipDirections.get(key) === "left" ? "flip-left" : "flip-right";
+      const isFlipped = desktopFlippedCardKeys.has(key);
+      return renderDesktopLiveGameCard(game, view, key, flipDirection, isFlipped);
     }
 
     function formatUmpireForCard(value) {

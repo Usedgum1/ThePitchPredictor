@@ -20,7 +20,10 @@
       --text: #f4f0e8;
       --muted: #a7afbc;
       --violet: #8d8aff;
-      --amber: #ffb14a;
+      --amber: #ff942e;
+      --neon-blue: #2f9bff;
+      --neon-gold: #ffd84f;
+      --neon-red: #ff174d;
       --success: #8ddf9f;
       --danger: #ff8c7a;
     }
@@ -40,7 +43,7 @@
       min-height: 100vh;
       background:
         radial-gradient(circle at 12% 14%, rgba(141, 138, 255, 0.2), transparent 22%),
-        radial-gradient(circle at 86% 10%, rgba(255, 177, 74, 0.18), transparent 20%),
+        radial-gradient(circle at 86% 10%, rgba(255, 148, 46, 0.18), transparent 20%),
         radial-gradient(circle at 62% 28%, rgba(86, 152, 255, 0.14), transparent 18%),
         linear-gradient(180deg, #050505 0%, #090a10 100%);
     }
@@ -248,28 +251,47 @@
     }
 
     .tier.current {
-      border-color: rgba(255, 177, 74, 0.34);
-      background: rgba(255, 177, 74, 0.08);
+      border-color: rgba(255, 148, 46, 0.34);
+      background: rgba(255, 148, 46, 0.08);
       box-shadow:
-        0 0 0 1px rgba(255, 177, 74, 0.12) inset,
-        0 0 26px rgba(255, 177, 74, 0.18),
-        0 0 42px rgba(141, 223, 159, 0.1);
+        0 0 0 1px rgba(255, 148, 46, 0.12) inset,
+        0 0 26px rgba(255, 148, 46, 0.18);
     }
 
     .tier.current.tier-current-basic {
-      border-color: rgba(183, 189, 200, 0.28);
-      background: rgba(183, 189, 200, 0.045);
+      border-color: rgba(47, 155, 255, 0.56);
+      background: rgba(47, 155, 255, 0.1);
       box-shadow:
-        0 0 0 1px rgba(183, 189, 200, 0.08) inset,
-        0 0 18px rgba(183, 189, 200, 0.08);
+        0 0 0 1px rgba(47, 155, 255, 0.16) inset,
+        0 0 18px rgba(47, 155, 255, 0.28),
+        0 0 34px rgba(47, 155, 255, 0.16);
     }
 
     .tier.current.tier-current-pro {
-      border-color: rgba(141, 223, 159, 0.38);
-      background: rgba(141, 223, 159, 0.075);
+      border-color: rgba(255, 148, 46, 0.58);
+      background: rgba(255, 148, 46, 0.1);
       box-shadow:
-        0 0 0 1px rgba(141, 223, 159, 0.1) inset,
-        0 0 28px rgba(141, 223, 159, 0.16);
+        0 0 0 1px rgba(255, 148, 46, 0.18) inset,
+        0 0 18px rgba(255, 148, 46, 0.28),
+        0 0 34px rgba(255, 148, 46, 0.18);
+    }
+
+    .tier.current.tier-current-life {
+      border-color: rgba(255, 216, 79, 0.58);
+      background: rgba(255, 216, 79, 0.1);
+      box-shadow:
+        0 0 0 1px rgba(255, 216, 79, 0.18) inset,
+        0 0 18px rgba(255, 216, 79, 0.28),
+        0 0 34px rgba(255, 216, 79, 0.18);
+    }
+
+    .tier.current.tier-current-owner {
+      border-color: rgba(255, 23, 77, 0.58);
+      background: rgba(255, 23, 77, 0.1);
+      box-shadow:
+        0 0 0 1px rgba(255, 23, 77, 0.18) inset,
+        0 0 18px rgba(255, 23, 77, 0.28),
+        0 0 34px rgba(255, 23, 77, 0.18);
     }
 
     .tier-title {
@@ -283,22 +305,34 @@
 
     .tier-name-basic,
     .tier-value-basic {
-      color: #b7bdc8;
+      color: var(--neon-blue);
+      text-shadow:
+        0 0 8px rgba(47, 155, 255, 0.72),
+        0 0 18px rgba(47, 155, 255, 0.38);
     }
 
     .tier-name-pro,
     .tier-value-pro {
-      color: var(--success);
+      color: var(--amber);
+      text-shadow:
+        0 0 8px rgba(255, 148, 46, 0.72),
+        0 0 18px rgba(255, 148, 46, 0.38);
     }
 
     .tier-name-life,
     .tier-value-life {
-      color: #ffd76a;
+      color: var(--neon-gold);
+      text-shadow:
+        0 0 8px rgba(255, 216, 79, 0.72),
+        0 0 18px rgba(255, 216, 79, 0.38);
     }
 
     .tier-name-owner,
     .tier-value-owner {
-      color: var(--danger);
+      color: var(--neon-red);
+      text-shadow:
+        0 0 8px rgba(255, 23, 77, 0.72),
+        0 0 18px rgba(255, 23, 77, 0.38);
     }
 
     .tier-name-admin,
@@ -315,8 +349,8 @@
 
     .tier-cta {
       align-items: center;
-      border: 1px solid rgba(255, 177, 74, 0.42);
-      background: linear-gradient(135deg, rgba(141, 223, 159, 0.16), rgba(255, 177, 74, 0.16));
+      border: 1px solid rgba(255, 148, 46, 0.42);
+      background: rgba(255, 148, 46, 0.14);
       color: var(--text);
       border-radius: 999px;
       cursor: not-allowed;
@@ -331,59 +365,144 @@
     }
 
     .tier-cta-current {
-      border-color: rgba(255, 215, 106, 0.5);
-      background: linear-gradient(135deg, rgba(141, 223, 159, 0.16), rgba(255, 215, 106, 0.2));
-      color: #ffd76a;
+      border-color: rgba(255, 216, 79, 0.5);
+      background: rgba(255, 216, 79, 0.14);
+      color: #ff942e;
     }
 
     .tier-cta-current .tier-lock {
-      color: #ffd76a;
+      color: #ff942e;
     }
 
     .tier-cta-current-basic {
-      border-color: rgba(183, 189, 200, 0.32);
-      background: rgba(183, 189, 200, 0.08);
-      color: #d2d6df;
+      border-color: rgba(47, 155, 255, 0.58);
+      background: rgba(47, 155, 255, 0.14);
+      color: var(--neon-blue);
+      box-shadow:
+        0 0 0 1px rgba(47, 155, 255, 0.12) inset,
+        0 0 16px rgba(47, 155, 255, 0.28);
+      text-shadow: 0 0 10px rgba(47, 155, 255, 0.68);
     }
 
     .tier-cta-current-basic .tier-lock {
-      color: #b7bdc8;
+      color: var(--neon-blue);
+      filter: drop-shadow(0 0 5px rgba(47, 155, 255, 0.72));
     }
 
     .tier-cta-current-pro {
-      border-color: rgba(141, 223, 159, 0.42);
-      background: rgba(141, 223, 159, 0.14);
-      color: var(--success);
+      border-color: rgba(255, 148, 46, 0.58);
+      background: rgba(255, 148, 46, 0.14);
+      color: var(--amber);
+      box-shadow:
+        0 0 0 1px rgba(255, 148, 46, 0.12) inset,
+        0 0 16px rgba(255, 148, 46, 0.28);
+      text-shadow: 0 0 10px rgba(255, 148, 46, 0.68);
     }
 
     .tier-cta-current-pro .tier-lock {
-      color: var(--success);
+      color: var(--amber);
+      filter: drop-shadow(0 0 5px rgba(255, 148, 46, 0.72));
+    }
+
+    .tier-cta-current-life {
+      border-color: rgba(255, 216, 79, 0.58);
+      background: rgba(255, 216, 79, 0.14);
+      color: var(--neon-gold);
+      box-shadow:
+        0 0 0 1px rgba(255, 216, 79, 0.12) inset,
+        0 0 16px rgba(255, 216, 79, 0.28);
+      text-shadow: 0 0 10px rgba(255, 216, 79, 0.68);
+    }
+
+    .tier-cta-current-life .tier-lock {
+      color: var(--neon-gold);
+      filter: drop-shadow(0 0 5px rgba(255, 216, 79, 0.72));
+    }
+
+    .tier-cta-current-owner {
+      border-color: rgba(255, 23, 77, 0.58);
+      background: rgba(255, 23, 77, 0.14);
+      color: var(--neon-red);
+      box-shadow:
+        0 0 0 1px rgba(255, 23, 77, 0.12) inset,
+        0 0 16px rgba(255, 23, 77, 0.28);
+      text-shadow: 0 0 10px rgba(255, 23, 77, 0.68);
+    }
+
+    .tier-cta-current-owner .tier-lock {
+      color: var(--neon-red);
+      filter: drop-shadow(0 0 5px rgba(255, 23, 77, 0.72));
+    }
+
+    .tier-current-owner .badge {
+      color: var(--neon-red);
+      text-shadow: 0 0 10px rgba(255, 23, 77, 0.68);
     }
 
     .tier-lock {
-      color: var(--success);
+      color: #ff942e;
       font-size: 0.8rem;
       line-height: 1;
     }
 
     .tier-cta-pro {
-      border-color: rgba(141, 223, 159, 0.42);
-      background: rgba(141, 223, 159, 0.14);
-      color: var(--success);
+      border-color: rgba(255, 148, 46, 0.58);
+      background: rgba(255, 148, 46, 0.14);
+      color: var(--amber);
+      box-shadow:
+        0 0 0 1px rgba(255, 148, 46, 0.12) inset,
+        0 0 16px rgba(255, 148, 46, 0.28);
+      text-shadow: 0 0 10px rgba(255, 148, 46, 0.68);
     }
 
     .tier-cta-pro .tier-lock {
-      color: var(--success);
+      color: var(--amber);
+      filter: drop-shadow(0 0 5px rgba(255, 148, 46, 0.72));
     }
 
     .tier-cta-life {
-      border-color: rgba(255, 215, 106, 0.46);
-      background: rgba(255, 215, 106, 0.13);
-      color: #ffd76a;
+      border-color: rgba(255, 216, 79, 0.58);
+      background: rgba(255, 216, 79, 0.14);
+      color: var(--neon-gold);
+      box-shadow:
+        0 0 0 1px rgba(255, 216, 79, 0.12) inset,
+        0 0 16px rgba(255, 216, 79, 0.28);
+      text-shadow: 0 0 10px rgba(255, 216, 79, 0.68);
     }
 
     .tier-cta-life .tier-lock {
-      color: #ffd76a;
+      color: var(--neon-gold);
+      filter: drop-shadow(0 0 5px rgba(255, 216, 79, 0.72));
+    }
+
+    .tier-current-basic .badge {
+      color: var(--neon-blue);
+      text-shadow: 0 0 10px rgba(47, 155, 255, 0.68);
+    }
+
+    .tier-current-pro .badge {
+      color: var(--amber);
+      text-shadow: 0 0 10px rgba(255, 148, 46, 0.68);
+    }
+
+    .tier-current-life .badge {
+      color: var(--neon-gold);
+      text-shadow: 0 0 10px rgba(255, 216, 79, 0.68);
+    }
+
+    .tier-cta-owner {
+      border-color: rgba(255, 23, 77, 0.58);
+      background: rgba(255, 23, 77, 0.14);
+      color: var(--neon-red);
+      box-shadow:
+        0 0 0 1px rgba(255, 23, 77, 0.12) inset,
+        0 0 16px rgba(255, 23, 77, 0.28);
+      text-shadow: 0 0 10px rgba(255, 23, 77, 0.68);
+    }
+
+    .tier-cta-owner .tier-lock {
+      color: var(--neon-red);
+      filter: drop-shadow(0 0 5px rgba(255, 23, 77, 0.72));
     }
 
     .badge {
@@ -521,7 +640,8 @@
     const tierDetails = {
       basic: "Starter access while the account system is being built.",
       pro: "Future upgraded access for expanded tools and premium views.",
-      life: "Access to everything, all the time, forever."
+      life: "Access to everything, all the time, forever.",
+      owner: "Full owner access for pitchIQ."
     };
     const tierActions = {
       pro: "Upgrade",
@@ -581,7 +701,8 @@
       usernameInput.value = username;
       emailInput.value = email;
 
-      tierList.innerHTML = DISPLAY_TIERS.map(role => {
+      const visibleTiers = activeRole === "owner" ? [...DISPLAY_TIERS, "owner"] : DISPLAY_TIERS;
+      tierList.innerHTML = visibleTiers.map(role => {
         const isCurrent = role === activeRole;
         const isUnlocked = (tierRanks[activeRole] || 0) >= (tierRanks[role] || 0);
         const buttonLabel = isCurrent ? "Current" : isUnlocked ? "Unlocked" : tierActions[role];
