@@ -3105,8 +3105,10 @@
     let authRedirected = false;
     let authCheckId = 0;
     let currentUserRole = null;
-    const DATA_REFRESH_INTERVAL_MS = 300000;
-    const DATA_REFRESH_DEBOUNCE_MS = 5000;
+    // Website felt "delayed" mostly because this polling fallback was 5 minutes.
+    // Realtime events should refresh sooner, but keep the fallback snappy.
+    const DATA_REFRESH_INTERVAL_MS = 60000;
+    const DATA_REFRESH_DEBOUNCE_MS = 1500;
     let dataRefreshIntervalId = null;
     let dataRefreshTimeoutId = null;
     let dataRefreshInFlight = false;
@@ -3757,6 +3759,21 @@
         return `${match[2]}/${match[3]}/${match[1]}`;
       }
       return raw;
+    }
+
+    function formatInningCompact(value) {
+      const raw = String(value || "").trim();
+      if (!raw) return "";
+      const match = raw.match(/^(Top|Bottom|Middle|Mid)\s+(\d+)(?:st|nd|rd|th)?$/i);
+      if (match) {
+        const halfRaw = match[1].toLowerCase();
+        const half = halfRaw.startsWith("mid") ? "Mid" : (halfRaw.startsWith("top") ? "Top" : "Bottom");
+        return `${half} ${match[2]}`;
+      }
+      return raw
+        .replace(/^Middle\b/i, "Mid")
+        .replace(/(\d+)(st|nd|rd|th)\b/gi, "$1")
+        .trim();
     }
 
     function renderDateCell(game) {
@@ -4940,7 +4957,8 @@
         projectedValue == null || !Number.isFinite(projectedValue)
           ? "-"
           : formatNumber(projectedValue, 2) || "-";
-      const time = String(game.time || formatDisplayTime(game.start_time) || "").trim();
+      const inningCompact = view === "live" ? formatInningCompact(game.game_inning) : "";
+      const time = String(inningCompact || game.time || formatDisplayTime(game.start_time) || "").trim();
       const date = String(game.date || formatDisplayDate(game.game_date_raw) || "").trim();
       const currentPitcherId = String(game.current_pitcher_id ?? "").trim();
       const starterPitcherId = String(game.mlb_pitcher_id ?? game.pitcher_id ?? "").trim();

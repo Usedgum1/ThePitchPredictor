@@ -807,6 +807,21 @@
       return parsed.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }).toLowerCase();
     }
 
+    function formatInningCompact(value) {
+      const raw = String(value || "").trim();
+      if (!raw) return "";
+      const match = raw.match(/^(Top|Bottom|Middle|Mid)\s+(\d+)(?:st|nd|rd|th)?$/i);
+      if (match) {
+        const halfRaw = match[1].toLowerCase();
+        const half = halfRaw.startsWith("mid") ? "Mid" : (halfRaw.startsWith("top") ? "Top" : "Bottom");
+        return `${half} ${match[2]}`;
+      }
+      return raw
+        .replace(/^Middle\b/i, "Mid")
+        .replace(/(\d+)(st|nd|rd|th)\b/gi, "$1")
+        .trim();
+    }
+
     function formatServerActivity(value) {
       const parsed = new Date(value);
       if (Number.isNaN(parsed.getTime())) return "";
@@ -1621,7 +1636,8 @@
         projectedValue == null || !Number.isFinite(projectedValue)
           ? "-"
           : formatNumber(projectedValue, 2) || "-";
-      const time = String(game.time || formatDisplayTime(game.start_time) || "").trim();
+      const inningCompact = view === "live" ? formatInningCompact(game.game_inning) : "";
+      const time = String(inningCompact || game.time || formatDisplayTime(game.start_time) || "").trim();
       const date = String(game.date || formatDisplayDate(game.game_date_raw) || "").trim();
       const currentPitcherId = String(game.current_pitcher_id ?? "").trim();
       const starterPitcherId = String(game.mlb_pitcher_id ?? game.pitcher_id ?? "").trim();
