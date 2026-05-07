@@ -20,7 +20,10 @@
       --muted: #a7afbc;
       --violet: #8d8aff;
       --amber: #ff942e;
+      --blue: #6bb6ff;
       --connected-neon: #39ff14;
+      --neon-blue: #2f9bff;
+      --neon-gold: #ffd84f;
       --success: #8ddf9f;
       --danger: #ff8c7a;
       --neon-red: #ff174d;
@@ -43,7 +46,7 @@
       background:
         radial-gradient(circle at 12% 14%, rgba(141, 138, 255, 0.2), transparent 22%),
         radial-gradient(circle at 86% 10%, rgba(255, 148, 46, 0.18), transparent 20%),
-        radial-gradient(circle at 62% 28%, rgba(86, 152, 255, 0.14), transparent 18%),
+        radial-gradient(circle at 62% 28%, rgba(107, 182, 255, 0.14), transparent 18%),
         radial-gradient(circle at 28% 52%, rgba(141, 138, 255, 0.12), transparent 20%),
         radial-gradient(circle at 76% 56%, rgba(255, 148, 46, 0.12), transparent 18%),
         radial-gradient(circle at 20% 82%, rgba(255, 148, 46, 0.14), transparent 20%),
@@ -71,7 +74,6 @@
       padding: 0 18px 22px;
       color: var(--connected-neon);
       font-size: 0.76rem;
-      font-weight: 800;
       letter-spacing: 0.04em;
       text-align: center;
       text-transform: uppercase;
@@ -89,7 +91,7 @@
       background:
         radial-gradient(circle at 18% 22%, rgba(141, 138, 255, 0.16), transparent 24%),
         radial-gradient(circle at 80% 18%, rgba(255, 148, 46, 0.14), transparent 22%),
-        radial-gradient(circle at 66% 46%, rgba(86, 152, 255, 0.11), transparent 20%),
+        radial-gradient(circle at 66% 46%, rgba(107, 182, 255, 0.11), transparent 20%),
         radial-gradient(circle at 28% 72%, rgba(255, 148, 46, 0.1), transparent 22%);
       filter: blur(18px);
       opacity: 0.95;
@@ -98,19 +100,19 @@
     }
 
     .tile {
-      background: linear-gradient(180deg, rgba(15, 17, 24, 0.42), rgba(10, 11, 17, 0.36));
-      backdrop-filter: blur(18px);
-      border: 1px solid var(--border);
+      background: transparent;
+      backdrop-filter: none;
+      border: 1px solid transparent;
       border-radius: 20px;
       padding: 18px;
       margin-bottom: 16px;
-      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.24);
+      box-shadow: none;
       position: relative;
       overflow: visible;
     }
 
     .tile::before {
-      content: "";
+      content: none;
       position: absolute;
       inset: 0 18px auto 18px;
       height: 1px;
@@ -183,9 +185,9 @@
 
     .workspace-tab,
     .nav-pill {
-      border: 1px solid rgba(35, 134, 235, 0.22);
+      border: 3px solid rgba(107, 182, 255, 0.22);
       background: rgba(24, 91, 173, 0.06);
-      color: #6bb6ff;
+      color: var(--blue);
       border-radius: 999px;
       padding: 10px 16px;
       font-size: 0.82rem;
@@ -220,6 +222,42 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+    }
+
+    .account-username {
+      font-weight: 800;
+    }
+
+    .account-username.tier-value-basic {
+      color: var(--neon-blue);
+      text-shadow:
+        0 0 8px rgba(47, 155, 255, 0.72),
+        0 0 18px rgba(47, 155, 255, 0.38);
+    }
+
+    .account-username.tier-value-pro {
+      color: var(--amber);
+      text-shadow:
+        0 0 8px rgba(255, 148, 46, 0.72),
+        0 0 18px rgba(255, 148, 46, 0.38);
+    }
+
+    .account-username.tier-value-life {
+      color: var(--neon-gold);
+      text-shadow:
+        0 0 8px rgba(255, 216, 79, 0.72),
+        0 0 18px rgba(255, 216, 79, 0.38);
+    }
+
+    .account-username.tier-value-owner {
+      color: var(--neon-red);
+      text-shadow:
+        0 0 8px rgba(255, 23, 77, 0.72),
+        0 0 18px rgba(255, 23, 77, 0.38);
+    }
+
+    .account-username.tier-value-admin {
+      color: var(--violet);
     }
 
     .demo-banner {
@@ -284,9 +322,13 @@
 
     .workspace-tab.active {
       color: var(--text);
-      border-color: rgba(35, 134, 235, 0.58);
-      background: rgba(24, 91, 173, 0.16);
-      box-shadow: 0 0 18px rgba(35, 134, 235, 0.18);
+      border-color: rgba(107, 182, 255, 0.9);
+      background: rgba(24, 91, 173, 0.24);
+      box-shadow:
+        0 0 0 1px rgba(107, 182, 255, 0.16) inset,
+        0 0 16px rgba(107, 182, 255, 0.42),
+        0 0 32px rgba(107, 182, 255, 0.26);
+      text-shadow: 0 0 10px rgba(107, 182, 255, 0.72);
     }
 
     .settings-tab {
@@ -300,14 +342,14 @@
     }
 
     .settings-tab.active {
-      border-color: rgba(255, 23, 77, 0.76);
-      background: rgba(255, 23, 77, 0.2);
+      border-color: rgba(255, 23, 77, 0.96);
+      background: rgba(255, 23, 77, 0.26);
       color: var(--neon-red);
       box-shadow:
-        0 0 0 1px rgba(255, 23, 77, 0.14) inset,
-        0 0 18px rgba(255, 23, 77, 0.38),
-        0 0 28px rgba(255, 23, 77, 0.22);
-      text-shadow: 0 0 12px rgba(255, 23, 77, 0.85);
+        0 0 0 1px rgba(255, 23, 77, 0.24) inset,
+        0 0 18px rgba(255, 23, 77, 0.62),
+        0 0 36px rgba(255, 23, 77, 0.36);
+      text-shadow: 0 0 12px rgba(255, 23, 77, 0.95);
     }
 
     .historical-tab {
@@ -323,10 +365,14 @@
     }
 
     .historical-tab.active {
-      border-color: rgba(255, 148, 46, 0.72);
-      background: rgba(255, 148, 46, 0.2);
+      border-color: rgba(255, 148, 46, 0.94);
+      background: rgba(255, 148, 46, 0.26);
       color: var(--text);
-      box-shadow: 0 0 18px rgba(255, 148, 46, 0.22);
+      box-shadow:
+        0 0 0 1px rgba(255, 148, 46, 0.18) inset,
+        0 0 16px rgba(255, 148, 46, 0.5),
+        0 0 34px rgba(255, 148, 46, 0.3);
+      text-shadow: 0 0 10px rgba(255, 148, 46, 0.78);
     }
 
     .historical-tab-icon {
@@ -348,10 +394,14 @@
     }
 
     .report-tab.active {
-      border-color: rgba(255, 148, 46, 0.72);
-      background: rgba(255, 148, 46, 0.2);
+      border-color: rgba(255, 148, 46, 0.94);
+      background: rgba(255, 148, 46, 0.26);
       color: var(--text);
-      box-shadow: 0 0 18px rgba(255, 148, 46, 0.22);
+      box-shadow:
+        0 0 0 1px rgba(255, 148, 46, 0.18) inset,
+        0 0 16px rgba(255, 148, 46, 0.5),
+        0 0 34px rgba(255, 148, 46, 0.3);
+      text-shadow: 0 0 10px rgba(255, 148, 46, 0.78);
     }
 
     .report-tab-icon {
@@ -420,6 +470,18 @@
       letter-spacing: 0.08em;
       text-transform: uppercase;
       margin-bottom: 8px;
+    }
+
+    .table-search label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
     }
 
     .subtile {
@@ -791,21 +853,21 @@
     }
 
     .note-card.up {
-      border-color: rgba(255,148,46,0.55);
-      background: linear-gradient(180deg, rgba(46, 30, 12, 0.92), rgba(22, 17, 12, 0.92));
-      box-shadow: inset 0 1px 0 rgba(255,148,46,0.18);
+      border-color: rgba(255, 148, 46, 0.58);
+      background: linear-gradient(180deg, rgba(52, 28, 6, 0.92), rgba(24, 15, 8, 0.92));
+      box-shadow: inset 0 1px 0 rgba(255, 148, 46, 0.18);
     }
 
     .note-card.down {
-      border-color: rgba(86, 152, 255, 0.5);
-      background: linear-gradient(180deg, rgba(15, 24, 44, 0.92), rgba(12, 16, 30, 0.92));
-      box-shadow: inset 0 1px 0 rgba(86,152,255,0.16);
+      border-color: rgba(107, 182, 255, 0.58);
+      background: linear-gradient(180deg, rgba(8, 22, 48, 0.92), rgba(8, 14, 28, 0.92));
+      box-shadow: inset 0 1px 0 rgba(107, 182, 255, 0.16);
     }
 
     .note-card.neutral {
-      border-color: rgba(210, 180, 140, 0.46);
-      background: linear-gradient(180deg, rgba(42, 33, 24, 0.92), rgba(24, 19, 15, 0.92));
-      box-shadow: inset 0 1px 0 rgba(210,180,140,0.14);
+      border-color: rgba(167, 175, 188, 0.34);
+      background: linear-gradient(180deg, rgba(28, 30, 38, 0.88), rgba(15, 17, 24, 0.88));
+      box-shadow: inset 0 1px 0 rgba(167, 175, 188, 0.12);
     }
 
     .note-tag {
@@ -823,29 +885,58 @@
     }
 
     .note-card.up .note-tag {
-      background: rgba(255,148,46,0.22);
-      color: #ffad48;
+      background: rgba(255, 148, 46, 0.22);
+      color: var(--amber);
     }
 
     .note-card.down .note-tag {
-      background: rgba(86,152,255,0.2);
-      color: #bdd8ff;
+      background: rgba(107, 182, 255, 0.2);
+      color: var(--blue);
     }
 
     .note-card.neutral .note-tag {
-      background: rgba(210,180,140,0.18);
-      color: #f0dcc1;
+      background: rgba(167, 175, 188, 0.16);
+      color: var(--muted);
     }
 
     .note-title {
       font-size: 0.98rem;
-      font-weight: 600;
+      font-weight: 800;
       margin-bottom: 8px;
     }
 
+    .note-k {
+      color: var(--amber);
+      margin-left: 8px;
+    }
+
+    .note-k.down {
+      color: var(--blue);
+    }
+
     .note-body {
-      color: var(--muted);
+      color: var(--text);
       line-height: 1.6;
+    }
+
+    .note-card.up .note-body strong {
+      color: var(--blue);
+      font-weight: 950;
+    }
+
+    .note-card.down .note-body strong {
+      color: var(--amber);
+      font-weight: 950;
+    }
+
+    .note-body strong.note-book-dk {
+      color: #5cff77;
+      font-weight: 950;
+    }
+
+    .note-body strong.note-book-fd {
+      color: var(--blue);
+      font-weight: 950;
     }
 
     .neutral-button {
@@ -873,7 +964,7 @@
     }
 
     .table-shell {
-      border: 1px solid rgba(255,255,255,0.04);
+      border: 1px solid rgba(167, 175, 188, 0.34);
       border-radius: 14px;
       overflow: hidden;
       background: rgba(9, 9, 13, 0.92);
@@ -1154,7 +1245,7 @@
       background:
         linear-gradient(118deg, transparent 0%, rgba(255,255,255,0.08) 42%, transparent 58%),
         radial-gradient(circle at 12% 14%, rgba(255, 148, 46, 0.18), transparent 20%),
-        radial-gradient(circle at 92% 0%, rgba(117, 183, 255, 0.16), transparent 24%);
+        radial-gradient(circle at 92% 0%, rgba(107, 182, 255, 0.16), transparent 24%);
     }
 
     .desktop-card-face::after {
@@ -1734,14 +1825,14 @@
     }
 
     .desktop-live-line-chip-fd {
-      color: #6bb6ff;
+      color: var(--blue);
       background: rgba(24, 91, 173, 0.12);
-      border: 4px solid rgba(35, 134, 235, 0.55);
-      box-shadow: 0 0 18px rgba(35, 134, 235, 0.42);
+      border: 4px solid rgba(107, 182, 255, 0.55);
+      box-shadow: 0 0 18px rgba(107, 182, 255, 0.42);
     }
 
     .desktop-live-line-chip-fd .desktop-live-line-chip-value {
-      text-shadow: 0 0 12px rgba(35, 134, 235, 0.45);
+      text-shadow: 0 0 12px rgba(107, 182, 255, 0.45);
     }
 
     .desktop-live-stats {
@@ -1775,7 +1866,7 @@
     }
 
     .desktop-live-stat-value.desktop-live-stat-blue {
-      color: #6bb6ff;
+      color: var(--blue);
     }
 
     .desktop-live-stat-value.desktop-live-stat-orange {
@@ -1800,7 +1891,7 @@
     }
 
     .desktop-live-stats .desktop-live-stat-value.down-text {
-      color: #6bb6ff;
+      color: var(--blue);
       font-weight: 950;
     }
 
@@ -1829,7 +1920,7 @@
       align-items: center;
       min-height: 44px;
       padding: 4px var(--live-k-panel-pad-inline);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(167, 175, 188, 0.34);
       border-radius: 11px;
       background: #020203;
     }
@@ -1879,7 +1970,7 @@
     .desktop-live-line-fd {
       background: linear-gradient(180deg, #7cf4ff, #38d4ff);
       box-shadow:
-        0 0 12px rgba(35, 134, 235, 0.65),
+        0 0 12px rgba(107, 182, 255, 0.65),
         0 0 22px rgba(24, 91, 173, 0.35);
     }
 
@@ -1895,7 +1986,7 @@
       );
       box-shadow:
         0 -2px 12px rgba(92, 255, 119, 0.55),
-        0 2px 12px rgba(35, 134, 235, 0.55);
+        0 2px 12px rgba(107, 182, 255, 0.55);
     }
 
     .desktop-live-dot-row {
@@ -2044,17 +2135,25 @@
       border: 1px solid rgba(255,255,255,0.12);
       border-radius: 12px;
       padding: 10px;
-      background: rgba(255,255,255,0.045);
+      background: linear-gradient(180deg, rgba(28, 30, 38, 0.88), rgba(15, 17, 24, 0.88));
     }
 
     .desktop-card-note-card.up {
-      border-color: rgba(255,148,46,0.5);
-      background: rgba(80,47,12,0.38);
+      border-color: rgba(255, 148, 46, 0.58);
+      background: linear-gradient(180deg, rgba(52, 28, 6, 0.92), rgba(24, 15, 8, 0.92));
+      box-shadow: inset 0 1px 0 rgba(255, 148, 46, 0.18);
     }
 
     .desktop-card-note-card.down {
-      border-color: rgba(86,152,255,0.5);
-      background: rgba(12,34,72,0.42);
+      border-color: rgba(107, 182, 255, 0.58);
+      background: linear-gradient(180deg, rgba(8, 22, 48, 0.92), rgba(8, 14, 28, 0.92));
+      box-shadow: inset 0 1px 0 rgba(107, 182, 255, 0.16);
+    }
+
+    .desktop-card-note-card.neutral {
+      border-color: rgba(167, 175, 188, 0.34);
+      background: linear-gradient(180deg, rgba(28, 30, 38, 0.88), rgba(15, 17, 24, 0.88));
+      box-shadow: inset 0 1px 0 rgba(167, 175, 188, 0.12);
     }
 
     .desktop-card-note-title {
@@ -2074,9 +2173,29 @@
     }
 
     .desktop-card-note-body {
-      color: var(--muted);
+      color: var(--text);
       font-size: 0.72rem;
       line-height: 1.45;
+    }
+
+    .desktop-card-note-card.up .desktop-card-note-body strong {
+      color: var(--blue);
+      font-weight: 950;
+    }
+
+    .desktop-card-note-card.down .desktop-card-note-body strong {
+      color: var(--amber);
+      font-weight: 950;
+    }
+
+    .desktop-card-note-body strong.note-book-dk {
+      color: #5cff77;
+      font-weight: 950;
+    }
+
+    .desktop-card-note-body strong.note-book-fd {
+      color: var(--blue);
+      font-weight: 950;
     }
 
     @media (max-width: 1500px) {
@@ -2110,6 +2229,83 @@
       width: 100%;
       min-width: 1180px;
       border-collapse: collapse;
+    }
+
+    #upcoming-table-shell table,
+    #live-table-shell table {
+      table-layout: fixed;
+      min-width: 1120px;
+    }
+
+    #upcoming-table-shell th,
+    #upcoming-table-shell td,
+    #live-table-shell th,
+    #live-table-shell td {
+      padding-left: 8px;
+      padding-right: 8px;
+    }
+
+    #upcoming-table-shell th:nth-child(1),
+    #upcoming-table-shell td:nth-child(1),
+    #live-table-shell th:nth-child(1),
+    #live-table-shell td:nth-child(1) { width: 84px; }
+
+    #upcoming-table-shell th:nth-child(2),
+    #upcoming-table-shell td:nth-child(2),
+    #live-table-shell th:nth-child(2),
+    #live-table-shell td:nth-child(2) { width: 168px; }
+
+    #upcoming-table-shell th:nth-child(3),
+    #upcoming-table-shell td:nth-child(3),
+    #live-table-shell th:nth-child(3),
+    #live-table-shell td:nth-child(3) { width: 150px; }
+
+    #upcoming-table-shell th:nth-child(4),
+    #upcoming-table-shell td:nth-child(4),
+    #live-table-shell th:nth-child(4),
+    #live-table-shell td:nth-child(4) { width: 106px; }
+
+    #upcoming-table-shell th:nth-child(5),
+    #upcoming-table-shell td:nth-child(5),
+    #live-table-shell th:nth-child(5),
+    #live-table-shell td:nth-child(5) { width: 48px; }
+
+    #upcoming-table-shell th:nth-child(6),
+    #upcoming-table-shell td:nth-child(6),
+    #upcoming-table-shell th:nth-child(7),
+    #upcoming-table-shell td:nth-child(7),
+    #live-table-shell th:nth-child(6),
+    #live-table-shell td:nth-child(6),
+    #live-table-shell th:nth-child(7),
+    #live-table-shell td:nth-child(7) { width: 90px; }
+
+    #upcoming-table-shell th:nth-child(8),
+    #upcoming-table-shell td:nth-child(8),
+    #live-table-shell th:nth-child(8),
+    #live-table-shell td:nth-child(8) { width: 88px; }
+
+    #upcoming-table-shell th:nth-child(9),
+    #upcoming-table-shell td:nth-child(9),
+    #live-table-shell th:nth-child(9),
+    #live-table-shell td:nth-child(9) { width: 92px; }
+
+    #upcoming-table-shell th:nth-child(10),
+    #upcoming-table-shell td:nth-child(10),
+    #upcoming-table-shell th:nth-child(11),
+    #upcoming-table-shell td:nth-child(11),
+    #live-table-shell th:nth-child(10),
+    #live-table-shell td:nth-child(10),
+    #live-table-shell th:nth-child(11),
+    #live-table-shell td:nth-child(11) { width: 72px; }
+
+    #upcoming-table-shell th:nth-child(12),
+    #upcoming-table-shell td:nth-child(12),
+    #live-table-shell th:nth-child(12),
+    #live-table-shell td:nth-child(12) {
+      width: auto;
+      min-width: 118px;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     th,
@@ -2164,12 +2360,21 @@
       display: flex;
       flex-direction: column;
       gap: 3px;
+      min-width: 0;
     }
 
     .pitcher-name,
     .date-main {
       color: var(--text);
       font-weight: 700;
+    }
+
+    .pitcher-name {
+      display: block;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .pitcher-team-sub,
@@ -2185,7 +2390,7 @@
       justify-items: center;
       gap: 4px;
       line-height: 1.2;
-      min-width: 4.7rem;
+      min-width: 4.4rem;
     }
 
     .book-line-main {
@@ -2209,7 +2414,7 @@
     }
 
 .book-line-under-odds {
-  color: #6bb6ff;
+  color: var(--blue);
   font-weight: 700;
 }
 
@@ -2238,9 +2443,9 @@
       width: 30px;
       height: 30px;
       border-radius: 999px;
-      border: 1px solid rgba(35, 134, 235, 0.36);
+      border: 1px solid rgba(107, 182, 255, 0.36);
       background: rgba(24, 91, 173, 0.12);
-      color: #6bb6ff;
+      color: var(--blue);
       cursor: default;
       display: inline-flex;
       align-items: center;
@@ -2258,9 +2463,9 @@
     }
 
     .lookup-icon-btn:hover {
-      border-color: rgba(35, 134, 235, 0.68);
+      border-color: rgba(107, 182, 255, 0.68);
       background: rgba(24, 91, 173, 0.2);
-      box-shadow: 0 0 14px rgba(35, 134, 235, 0.3);
+      box-shadow: 0 0 14px rgba(107, 182, 255, 0.3);
     }
 
     .historical-lookup-btn {
@@ -2346,7 +2551,7 @@
     }
 
     .down-text {
-      color: #6bb6ff;
+      color: var(--blue);
       font-weight: 600;
     }
 
@@ -2384,7 +2589,7 @@
     }
 
     .pager-meta {
-      color: var(--muted);
+      color: var(--text);
       font-size: 0.88rem;
     }
 
@@ -2494,7 +2699,7 @@
         </div>
         <div class="page-head-meta">
           <div class="account-summary">
-            <div id="account-pill" class="account-line">Welcome, Demo Pro!</div>
+          <div id="account-pill" class="account-line">Welcome, <span class="account-username tier-value-pro">Demo Pro</span>!</div>
             <div class="account-links">
               <a class="signout-link" href="./index.html">landing page</a>
               <button id="logout-button" class="signout-link" type="button">exit demo</button>
@@ -2534,14 +2739,6 @@
                 </div>
                 <div id="pitcher-dropdown" class="search-dropdown hidden"></div>
               </div>
-            </div>
-            <div class="field">
-              <label for="line-input">Line / Fallback</label>
-              <input id="line-input" type="number" min="0" max="15" step="0.5" value="5.5" />
-            </div>
-            <div class="field">
-              <label>&nbsp;</label>
-              <button class="button" id="project-button" type="button">Project</button>
             </div>
           </div>
         </div>
@@ -2880,8 +3077,6 @@
     const pitcherInput = document.getElementById("pitcher-input");
     const pitcherDropdown = document.getElementById("pitcher-dropdown");
     const clearPitcherButton = document.getElementById("clear-pitcher");
-    const lineInput = document.getElementById("line-input");
-    const projectButton = document.getElementById("project-button");
 
     let upcomingGames = [];
     let liveGames = [];
@@ -2904,7 +3099,6 @@
     let historicalSearchQuery = "";
     let historicalSort = { key: "date", direction: "desc" };
     let reportSelectedColumns = [];
-    let lineInputTouched = false;
     const desktopFlippedCardKeys = new Set();
     const desktopCardFlipDirections = new Map();
     let historicalBetRecordCache = new Map();
@@ -3590,7 +3784,15 @@
       let html = escapeHtml(value)
         .replace(/&lt;strong&gt;/gi, "<strong>")
         .replace(/&lt;\/strong&gt;/gi, "</strong>");
-      html = html.replace(/\b(DraftKings|FanDuel)\b/g, "<strong>$1</strong>");
+      const dkToken = "__NOTE_BOOK_DK__";
+      const fdToken = "__NOTE_BOOK_FD__";
+      html = html
+        .replace(/<strong>DraftKings<\/strong>/g, dkToken)
+        .replace(/<strong>FanDuel<\/strong>/g, fdToken)
+        .replace(/\bDraftKings\b/g, dkToken)
+        .replace(/\bFanDuel\b/g, fdToken)
+        .replace(new RegExp(dkToken, "g"), '<strong class="note-book-dk">DraftKings</strong>')
+        .replace(new RegExp(fdToken, "g"), '<strong class="note-book-fd">FanDuel</strong>');
       if (normalizeText(title).includes("umpire")) {
         html = html.replace(/^([A-Z][^<.]*?)(?= (?:has|is) )/, match => {
           if (normalizeText(match).startsWith("the ")) return match;
@@ -3861,7 +4063,6 @@
       if (!notes || !notes.length) {
         container.innerHTML = `
           <div class="note-card neutral">
-            <div class="note-tag">Informative</div>
             <div class="note-title">No Major Flags</div>
             <div class="note-body"></div>
           </div>
@@ -3869,13 +4070,18 @@
         return;
       }
 
-      container.innerHTML = notes.map(note => `
-        <div class="note-card ${escapeHtml(note.impact || "neutral")}">
-          <div class="note-tag">${escapeHtml(noteTagLabel(note.impact))}</div>
-          <div class="note-title">${escapeHtml(note.title || "")}</div>
-          <div class="note-body">${sanitizeNoteHtml(note.body || "", note.title || "")}</div>
-        </div>
-      `).join("");
+      container.innerHTML = notes.map(note => {
+        const suffix = noteImpactSuffix(note.impact);
+        return `
+          <div class="note-card ${escapeHtml(note.impact || "neutral")}">
+            <div class="note-title">
+              ${escapeHtml(note.title || "")}
+              ${suffix.text ? `<span class="note-k ${suffix.className}">${suffix.text}</span>` : ""}
+            </div>
+            <div class="note-body">${sanitizeNoteHtml(note.body || "", note.title || "")}</div>
+          </div>
+        `;
+      }).join("");
     }
 
     function renderBreakdown(game) {
@@ -3958,14 +4164,6 @@
       renderBreakdown({});
     }
 
-    function fallbackLean(projectedKs, lineValue) {
-      const projection = Number(projectedKs);
-      const line = Number(lineValue);
-      if (!Number.isFinite(projection) || !Number.isFinite(line)) return "PASS";
-      if (Math.abs(projection - line) < 0.35) return "PASS";
-      return projection > line ? "OVER" : "UNDER";
-    }
-
     function notesFromGame(game) {
       if (Array.isArray(game.upcoming_notes) && game.upcoming_notes.length) {
         return dedupeNotes(game.upcoming_notes);
@@ -3985,11 +4183,6 @@
 
     function renderPitcherLookupGame(game) {
       const projected = displayProjectionValue(game);
-      const manualLine = Number(lineInput.value);
-      const manualLean = fallbackLean(projected, manualLine);
-      const manualEdge = Number.isFinite(Number(projected)) && Number.isFinite(manualLine)
-        ? Number(projected) - manualLine
-        : null;
       const latestHistory = latestHistoricalGameForPitcher(game.pitcher);
       const lastGameK = game.last_game_k || latestHistory?.actual_k || latestHistory?.strikeouts || "";
 
@@ -4006,9 +4199,9 @@
 
       renderProjection({
         projected_strikeouts: projected,
-        lean: manualLean,
+        lean: "",
         confidence: "",
-        edge: manualEdge,
+        edge: null,
         over_probability: null,
         under_probability: null
       });
@@ -4893,7 +5086,7 @@
           <td>${renderRowActions(game)}</td>
           <td>
             <div class="pitcher-cell">
-              <span class="pitcher-name">${escapeHtml(game.pitcher)}</span>
+              <span class="pitcher-name" title="${escapeHtml(game.pitcher)}">${escapeHtml(game.pitcher)}</span>
               <span class="pitcher-team-sub">${escapeHtml(game.pitcher_team || "")}</span>
             </div>
           </td>
@@ -4955,7 +5148,7 @@
           <td>${renderRowActions(game)}</td>
           <td>
             <div class="pitcher-cell">
-              <span class="pitcher-name">${escapeHtml(game.pitcher)}</span>
+              <span class="pitcher-name" title="${escapeHtml(game.pitcher)}">${escapeHtml(game.pitcher)}</span>
               <span class="pitcher-team-sub">${escapeHtml(game.pitcher_team || "")}</span>
             </div>
           </td>
@@ -5019,7 +5212,7 @@
             <td>${renderRowActions(game, { includeHistorical: false })}</td>
             <td>
               <div class="pitcher-cell">
-                <span class="pitcher-name">${escapeHtml(game.pitcher)}</span>
+                <span class="pitcher-name" title="${escapeHtml(game.pitcher)}">${escapeHtml(game.pitcher)}</span>
                 <span class="pitcher-team-sub">${escapeHtml(game.pitcher_team || "")}</span>
               </div>
             </td>
@@ -5119,24 +5312,11 @@
         .find(game => normalizeText(game.pitcher) === normalizedPitcher && !isPastScheduledDate(game)) || null;
     }
 
-    function bestAvailableLine(game) {
-      if (!game) return "";
-      return String(game.dk_line || game.fd_line || "").trim();
-    }
-
     function latestHistoricalGameForPitcher(pitcherName) {
       const normalizedPitcher = normalizeText(pitcherName);
       return gameHistory
         .filter(game => normalizeText(game.pitcher) === normalizedPitcher)
         .sort((left, right) => sortableGameDate(right) - sortableGameDate(left))[0] || null;
-    }
-
-    function applyDefaultLineForPitcher(pitcherName, options = {}) {
-      if (lineInputTouched && !options.force) return;
-      const game = currentPitcherGame(pitcherName);
-      const line = bestAvailableLine(game);
-      if (!line) return;
-      lineInput.value = line;
     }
 
     function updatePitcherClearButton() {
@@ -5148,19 +5328,16 @@
       if (!raw) return "";
       const exact = allPitchers.find(name => name.toLowerCase() === raw.toLowerCase());
       if (exact) {
-        applyDefaultLineForPitcher(exact);
         return exact;
       }
       const startsWith = allPitchers.find(name => name.toLowerCase().startsWith(raw.toLowerCase()));
       if (startsWith) {
         pitcherInput.value = startsWith;
-        applyDefaultLineForPitcher(startsWith);
         return startsWith;
       }
       const contains = allPitchers.find(name => name.toLowerCase().includes(raw.toLowerCase()));
       if (contains) {
         pitcherInput.value = contains;
-        applyDefaultLineForPitcher(contains);
         return contains;
       }
       return raw;
@@ -5187,8 +5364,6 @@
       if (!pitcherName) return;
       setActiveWorkspace("pitcher-lookup");
       pitcherInput.value = pitcherName;
-      applyDefaultLineForPitcher(pitcherName, { force: true });
-      lineInputTouched = false;
       updatePitcherClearButton();
       closePitcherDropdown();
       projectPitcher();
@@ -5441,12 +5616,6 @@
       pitcherInput.focus();
       openPitcherDropdown();
     });
-
-    projectButton.addEventListener("click", projectPitcher);
-    lineInput.addEventListener("input", () => {
-      lineInputTouched = true;
-    });
-    lineInput.addEventListener("change", projectPitcher);
 
     document.getElementById("upcoming-games-grid").addEventListener("click", event => {
       const historicalButton = event.target.closest(".historical-lookup-btn");

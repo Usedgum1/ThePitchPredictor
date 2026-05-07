@@ -1,4 +1,4 @@
-﻿/* pitchIQ desktop-style game cards (sourced from app.html; used by app-mobile) */
+/* pitchIQ desktop-style game cards (sourced from app.html; used by app-mobile) */
 
     .desktop-card {
       position: relative;
@@ -66,7 +66,7 @@
       background:
         linear-gradient(118deg, transparent 0%, rgba(255,255,255,0.08) 42%, transparent 58%),
         radial-gradient(circle at 12% 14%, rgba(255, 148, 46, 0.18), transparent 20%),
-        radial-gradient(circle at 92% 0%, rgba(117, 183, 255, 0.16), transparent 24%);
+        radial-gradient(circle at 92% 0%, rgba(107, 182, 255, 0.16), transparent 24%);
     }
 
     .desktop-card-face::after {
@@ -625,7 +625,7 @@
       text-transform: uppercase;
     }
 
-    /* Two-column ï¿½ two-row grid: baselines pair per row; edges flush left/right */
+    /* Two-column � two-row grid: baselines pair per row; edges flush left/right */
     .desktop-live-matchup {
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
@@ -872,14 +872,14 @@
     }
 
     .desktop-live-line-chip-fd {
-      color: #6bb6ff;
+      color: var(--blue, #6bb6ff);
       background: rgba(24, 91, 173, 0.12);
-      border: 4px solid rgba(35, 134, 235, 0.55);
-      box-shadow: 0 0 18px rgba(35, 134, 235, 0.42);
+      border: 4px solid rgba(107, 182, 255, 0.55);
+      box-shadow: 0 0 18px rgba(107, 182, 255, 0.42);
     }
 
     .desktop-live-line-chip-fd .desktop-live-line-chip-value {
-      text-shadow: 0 0 12px rgba(35, 134, 235, 0.45);
+      text-shadow: 0 0 12px rgba(107, 182, 255, 0.45);
     }
 
     .desktop-live-stats {
@@ -913,7 +913,7 @@
     }
 
     .desktop-live-stat-value.desktop-live-stat-blue {
-      color: #6bb6ff;
+      color: var(--blue, #6bb6ff);
     }
 
     .desktop-live-stat-value.desktop-live-stat-orange {
@@ -939,7 +939,7 @@
     }
 
     .desktop-live-stats .desktop-live-stat-value.down-text {
-      color: #6bb6ff;
+      color: var(--blue, #6bb6ff);
       font-weight: 950;
     }
 
@@ -960,7 +960,7 @@
       align-items: center;
       min-height: 44px;
       padding: 4px var(--live-k-panel-pad-inline);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(167, 175, 188, 0.34);
       border-radius: 11px;
       background: #020203;
     }
@@ -1010,7 +1010,7 @@
     .desktop-live-line-fd {
       background: linear-gradient(180deg, #7cf4ff, #38d4ff);
       box-shadow:
-        0 0 12px rgba(35, 134, 235, 0.65),
+        0 0 12px rgba(107, 182, 255, 0.65),
         0 0 22px rgba(24, 91, 173, 0.35);
     }
 
@@ -1027,7 +1027,7 @@
       );
       box-shadow:
         0 -2px 12px rgba(92, 255, 119, 0.55),
-        0 2px 12px rgba(35, 134, 235, 0.55);
+        0 2px 12px rgba(107, 182, 255, 0.55);
     }
 
     .desktop-live-dot-row {
@@ -1172,22 +1172,30 @@
       gap: 8px;
     }
 
-    .desktop-card-note-card {
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 12px;
-      padding: 10px;
-      background: rgba(255,255,255,0.045);
-    }
+.desktop-card-note-card {
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 12px;
+    padding: 10px;
+    background: linear-gradient(180deg, rgba(28, 30, 38, 0.88), rgba(15, 17, 24, 0.88));
+}
 
-    .desktop-card-note-card.up {
-      border-color: rgba(255,148,46,0.5);
-      background: rgba(80,47,12,0.38);
-    }
+.desktop-card-note-card.up {
+    border-color: rgba(255, 148, 46, 0.58);
+    background: linear-gradient(180deg, rgba(52, 28, 6, 0.92), rgba(24, 15, 8, 0.92));
+    box-shadow: inset 0 1px 0 rgba(255, 148, 46, 0.18);
+}
 
-    .desktop-card-note-card.down {
-      border-color: rgba(86,152,255,0.5);
-      background: rgba(12,34,72,0.42);
-    }
+.desktop-card-note-card.down {
+    border-color: rgba(107, 182, 255, 0.58);
+    background: linear-gradient(180deg, rgba(8, 22, 48, 0.92), rgba(8, 14, 28, 0.92));
+    box-shadow: inset 0 1px 0 rgba(107, 182, 255, 0.16);
+}
+
+.desktop-card-note-card.neutral {
+    border-color: rgba(167, 175, 188, 0.34);
+    background: linear-gradient(180deg, rgba(28, 30, 38, 0.88), rgba(15, 17, 24, 0.88));
+    box-shadow: inset 0 1px 0 rgba(167, 175, 188, 0.12);
+}
 
     .desktop-card-note-title {
       color: var(--text);
@@ -1202,11 +1210,31 @@
     }
 
     .desktop-card-note-k.down {
-      color: var(--blue);
+      color: var(--blue, #6bb6ff);
     }
 
-    .desktop-card-note-body {
-      color: var(--muted);
-      font-size: 0.72rem;
-      line-height: 1.45;
-    }
+.desktop-card-note-body {
+    color: var(--text);
+    font-size: 0.72rem;
+    line-height: 1.45;
+}
+
+.desktop-card-note-card.up .desktop-card-note-body strong {
+    color: var(--blue, #6bb6ff);
+    font-weight: 950;
+}
+
+.desktop-card-note-card.down .desktop-card-note-body strong {
+    color: var(--amber);
+    font-weight: 950;
+}
+
+.desktop-card-note-body strong.note-book-dk {
+    color: #5cff77;
+    font-weight: 950;
+}
+
+.desktop-card-note-body strong.note-book-fd {
+    color: var(--blue, #6bb6ff);
+    font-weight: 950;
+}

@@ -24,9 +24,12 @@
       --violet: #9c92ff;
       --amber: #ff942e;
       --connected-neon: #39ff14;
+      --neon-blue: #2f9bff;
+      --neon-gold: #ffd84f;
+      --neon-red: #ff174d;
       --vol-medium: #fff159;
       --green: #85dfa2;
-      --blue: #75b7ff;
+      --blue: #6bb6ff;
       --red: #ff8978;
       --success: #8ddf9f;
       --danger: #ff8c7a;
@@ -132,6 +135,42 @@
       font-size: 0.74rem;
       letter-spacing: 0.06em;
       text-transform: uppercase;
+    }
+
+    .account-username {
+      font-weight: 900;
+    }
+
+    .account-username.tier-value-basic {
+      color: var(--neon-blue);
+      text-shadow:
+        0 0 8px rgba(47, 155, 255, 0.72),
+        0 0 18px rgba(47, 155, 255, 0.38);
+    }
+
+    .account-username.tier-value-pro {
+      color: var(--amber);
+      text-shadow:
+        0 0 8px rgba(255, 148, 46, 0.72),
+        0 0 18px rgba(255, 148, 46, 0.38);
+    }
+
+    .account-username.tier-value-life {
+      color: var(--neon-gold);
+      text-shadow:
+        0 0 8px rgba(255, 216, 79, 0.72),
+        0 0 18px rgba(255, 216, 79, 0.38);
+    }
+
+    .account-username.tier-value-owner {
+      color: var(--neon-red);
+      text-shadow:
+        0 0 8px rgba(255, 23, 77, 0.72),
+        0 0 18px rgba(255, 23, 77, 0.38);
+    }
+
+    .account-username.tier-value-admin {
+      color: var(--violet);
     }
 
     .controls {
@@ -257,9 +296,9 @@
       width: 26px;
       height: 26px;
       border-radius: 999px;
-      border: 1px solid rgba(35, 134, 235, 0.36);
+      border: 1px solid rgba(107, 182, 255, 0.36);
       background: rgba(24, 91, 173, 0.12);
-      color: #6bb6ff;
+      color: var(--blue);
       cursor: pointer;
       display: inline-flex;
       align-items: center;
@@ -270,9 +309,9 @@
     }
 
     .lookup-icon-btn:hover {
-      border-color: rgba(35, 134, 235, 0.68);
+      border-color: rgba(107, 182, 255, 0.68);
       background: rgba(24, 91, 173, 0.2);
-      box-shadow: 0 0 14px rgba(35, 134, 235, 0.3);
+      box-shadow: 0 0 14px rgba(107, 182, 255, 0.3);
     }
 
     .historical-lookup-btn {
@@ -297,8 +336,9 @@
     }
 
     .desktop-card-note-card.neutral {
-      border-color: rgba(210, 180, 140, 0.34);
-      background: rgba(58, 45, 31, 0.34);
+      border-color: rgba(167, 175, 188, 0.34);
+      background: linear-gradient(180deg, rgba(28, 30, 38, 0.88), rgba(15, 17, 24, 0.88));
+      box-shadow: inset 0 1px 0 rgba(167, 175, 188, 0.12);
     }
 
     /* Desktop card chrome is tuned for wide grids; scale it down inside the mobile shell */
@@ -467,7 +507,7 @@
     }
 
     .shell .cards .desktop-live-line-chip-fd {
-      box-shadow: 0 0 12px rgba(35, 134, 235, 0.32);
+      box-shadow: 0 0 12px rgba(107, 182, 255, 0.32);
     }
 
     .shell .cards .desktop-live-kpanel {
@@ -555,17 +595,17 @@
 
     .lookup-note-card.up {
       border-color: rgba(255, 148, 46, 0.5);
-      background: rgba(80, 47, 12, 0.38);
+      background: rgba(255, 148, 46, 0.12);
     }
 
     .lookup-note-card.down {
-      border-color: rgba(86, 152, 255, 0.5);
-      background: rgba(12, 34, 72, 0.42);
+      border-color: rgba(107, 182, 255, 0.5);
+      background: rgba(107, 182, 255, 0.12);
     }
 
     .lookup-note-card.neutral {
-      border-color: rgba(210, 180, 140, 0.34);
-      background: rgba(58, 45, 31, 0.34);
+      border-color: rgba(170, 178, 192, 0.28);
+      background: rgba(170, 178, 192, 0.08);
     }
 
     .lookup-note-title {
@@ -586,7 +626,7 @@
     }
 
     .lookup-note-body {
-      color: var(--muted);
+      color: var(--text);
       font-size: 0.82rem;
       font-weight: 750;
       line-height: 1.45;
@@ -597,11 +637,30 @@
       font-weight: 950;
     }
 
+    .lookup-note-card.up .lookup-note-body strong {
+      color: var(--blue);
+    }
+
+    .lookup-note-card.down .lookup-note-body strong {
+      color: var(--amber);
+    }
+
+    .lookup-note-body strong.note-book-dk,
+    .desktop-card-note-body strong.note-book-dk {
+      color: #5cff77;
+      font-weight: 950;
+    }
+
+    .lookup-note-body strong.note-book-fd,
+    .desktop-card-note-body strong.note-book-fd {
+      color: var(--blue);
+      font-weight: 950;
+    }
+
     .footer {
       margin-top: 18px;
       color: var(--connected-neon);
       font-size: 0.68rem;
-      font-weight: 800;
       letter-spacing: 0.08em;
       text-align: center;
       text-transform: uppercase;
@@ -1107,7 +1166,15 @@
       let html = escapeHtml(value || "")
         .replace(/&lt;strong&gt;/g, "<strong>")
         .replace(/&lt;\/strong&gt;/g, "</strong>");
-      html = html.replace(/\b(DraftKings|FanDuel)\b/g, "<strong>$1</strong>");
+      const dkToken = "__NOTE_BOOK_DK__";
+      const fdToken = "__NOTE_BOOK_FD__";
+      html = html
+        .replace(/<strong>DraftKings<\/strong>/g, dkToken)
+        .replace(/<strong>FanDuel<\/strong>/g, fdToken)
+        .replace(/\bDraftKings\b/g, dkToken)
+        .replace(/\bFanDuel\b/g, fdToken)
+        .replace(new RegExp(dkToken, "g"), '<strong class="note-book-dk">DraftKings</strong>')
+        .replace(new RegExp(fdToken, "g"), '<strong class="note-book-fd">FanDuel</strong>');
       if (normalizeText(title).includes("umpire")) {
         html = html.replace(/^([A-Z][^<.]*?)(?= (?:has|is) )/, match => {
           if (normalizeText(match).startsWith("the ")) return match;
@@ -1700,11 +1767,12 @@
       return { role: data?.role || null, error: null };
     }
 
-    function setAccountIdentity(session) {
+    function setAccountIdentity(session, role = currentUserRole) {
       const user = session?.user;
       const username = user?.user_metadata?.username;
       const identityLabel = String(username || user?.email || "Unknown user").trim();
-      accountPill.textContent = `Welcome, ${identityLabel}!`;
+      const normalizedRole = ALLOWED_ACCOUNT_ROLES.includes(role) ? role : "";
+      accountPill.innerHTML = `Welcome, <span class="account-username tier-value-${escapeHtml(normalizedRole)}">${escapeHtml(identityLabel)}</span>!`;
     }
 
     function redirectToLogin() {
@@ -1729,7 +1797,7 @@
       }
       authAccepted = true;
       currentUserRole = role || null;
-      setAccountIdentity(session);
+      setAccountIdentity(session, role);
       refreshSupabaseData();
       startSupabaseAutoRefresh();
     }
