@@ -20,6 +20,7 @@
       --muted: #a7afbc;
       --violet: #8d8aff;
       --amber: #ff942e;
+      --connected-neon: #39ff14;
       --success: #8ddf9f;
       --danger: #ff8c7a;
       --neon-red: #ff174d;
@@ -68,15 +69,16 @@
       max-width: 1380px;
       margin: 0 auto;
       padding: 0 18px 22px;
-      color: #ff942e;
+      color: var(--connected-neon);
       font-size: 0.76rem;
+      font-weight: 800;
       letter-spacing: 0.04em;
       text-align: center;
       text-transform: uppercase;
       text-shadow:
-        0 0 6px rgba(255, 148, 46, 0.9),
-        0 0 14px rgba(255, 148, 46, 0.62),
-        0 0 26px rgba(255, 148, 46, 0.36);
+        0 0 6px rgba(57, 255, 20, 0.92),
+        0 0 14px rgba(57, 255, 20, 0.62),
+        0 0 26px rgba(57, 255, 20, 0.36);
     }
 
     .app::before {
@@ -2488,7 +2490,7 @@
       <div class="page-head">
         <div>
           <h1 class="brand">pitchIQ</h1>
-          <p class="sub">Demo snapshot for MLB strikeout props, built to compare model forecasts against sample bookmaker markets and highlight betting value faster.</p>
+          <p class="sub">Advanced MLB strikeout projections with live sportsbook market comparison.</p>
         </div>
         <div class="page-head-meta">
           <div class="account-summary">

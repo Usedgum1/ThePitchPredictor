@@ -29,6 +29,7 @@
       --muted: #a7afbc;
       --violet: #8d8aff;
       --amber: #ff942e;
+      --connected-neon: #39ff14;
       --success: #8ddf9f;
       --danger: #ff8c7a;
       --neon-red: #ff174d;
@@ -77,15 +78,16 @@
       max-width: 1380px;
       margin: 0 auto;
       padding: 0 18px 22px;
-      color: #ff942e;
+      color: var(--connected-neon);
       font-size: 0.76rem;
+      font-weight: 800;
       letter-spacing: 0.04em;
       text-align: center;
       text-transform: uppercase;
       text-shadow:
-        0 0 6px rgba(255, 148, 46, 0.9),
-        0 0 14px rgba(255, 148, 46, 0.62),
-        0 0 26px rgba(255, 148, 46, 0.36);
+        0 0 6px rgba(57, 255, 20, 0.92),
+        0 0 14px rgba(57, 255, 20, 0.62),
+        0 0 26px rgba(57, 255, 20, 0.36);
     }
 
     .app::before {
@@ -609,6 +611,21 @@
     .button:disabled {
       opacity: 0.6;
       cursor: wait;
+    }
+
+    a.button {
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .settings-owner-intro {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.55;
+      text-align: center;
     }
 
     .section-title {
@@ -2571,7 +2588,7 @@
       <div class="page-head">
         <div>
           <h1 class="brand">pitchIQ</h1>
-          <p class="sub">A decision platform for MLB strikeout props, built to compare model forecasts against live bookmaker markets and highlight betting value faster.</p>
+          <p class="sub">Advanced MLB strikeout projections with live sportsbook market comparison.</p>
         </div>
         <div class="page-head-meta">
           <div class="account-summary">
@@ -2853,8 +2870,9 @@
 
       <div id="settings-panel" class="workspace-panel">
         <div class="subtile glass-subtile">
-          <div class="section-title center-title">Settings</div>
-          <div class="empty-state">Owner-only settings will live here.</div>
+          <div class="section-title center-title">Owner's Settings</div>
+          <p class="settings-owner-intro">Open the phone-first card board (same session as this site).</p>
+          <a class="button" href="./app-mobile.html">Mobile View</a>
         </div>
       </div>
 
@@ -2967,6 +2985,21 @@
       setOwnerControls(role);
       refreshSupabaseData({ resetPages: true });
       startSupabaseAutoRefresh();
+      consumeOpenHistoricalFromUrl();
+    }
+
+    function consumeOpenHistoricalFromUrl() {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const pitcher = params.get("openHistorical");
+        if (!pitcher) return;
+        params.delete("openHistorical");
+        const qs = params.toString();
+        const nextUrl = `${window.location.pathname}${qs ? `?${qs}` : ""}${window.location.hash || ""}`;
+        window.history.replaceState({}, "", nextUrl);
+        openHistoricalLookup(decodeURIComponent(pitcher));
+      } catch (error) {
+      }
     }
 
     const authTimeout = window.setTimeout(() => {
