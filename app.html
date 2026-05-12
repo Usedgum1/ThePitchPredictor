@@ -4055,6 +4055,7 @@
       saved_styles: []
     });
     let siteAlertSettings = { ...DEFAULT_SITE_ALERT_SETTINGS };
+    let siteAlertSettingsSignature = "";
     const desktopFlippedCardKeys = new Set();
     const desktopCardFlipDirections = new Map();
     const LIVE_GAME_MAX_MINUTES = 18 * 60;
@@ -4572,6 +4573,9 @@
 
     function renderSiteAlert(settings = siteAlertSettings) {
       const normalized = normalizeSiteAlertSettings(settings);
+      const nextSignature = JSON.stringify(normalized);
+      if (nextSignature === siteAlertSettingsSignature) return;
+      siteAlertSettingsSignature = nextSignature;
       siteAlertSettings = normalized;
       applyAlertStyles(siteAlertTicker, normalized);
       const message = normalized.text.trim();
@@ -4849,7 +4853,6 @@
       dataRefreshInFlight = true;
       try {
         await loadSupabaseTables(options);
-        await loadSiteAlertSettings();
       } finally {
         try {
           await loadServerActivity();
@@ -4882,7 +4885,7 @@
         .on("postgres_changes", { event: "*", schema: "public", table: "pitchiq_saved_cards" }, queueSupabaseRefresh)
         .on("postgres_changes", { event: "*", schema: "public", table: "pitchiq_pitcher_lookup" }, queueSupabaseRefresh)
         .on("postgres_changes", { event: "*", schema: "public", table: "pitchiq_server_activity" }, queueSupabaseRefresh)
-        .on("postgres_changes", { event: "*", schema: "public", table: "pitchiq_site_settings" }, queueSupabaseRefresh)
+        .on("postgres_changes", { event: "*", schema: "public", table: "pitchiq_site_settings" }, loadSiteAlertSettings)
         .subscribe();
     }
 
@@ -7224,6 +7227,7 @@
     ownerAlertSaveButton.addEventListener("click", saveOwnerAlertSettings);
     populateOwnerAlertForm(DEFAULT_SITE_ALERT_SETTINGS);
     renderSiteAlert(DEFAULT_SITE_ALERT_SETTINGS);
+    loadSiteAlertSettings();
 
     clearUpcomingSearchButton.addEventListener("click", () => {
       upcomingSearchInput.value = "";
