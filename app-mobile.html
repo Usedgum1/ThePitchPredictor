@@ -882,6 +882,7 @@
       text_transform: "none",
       font_weight: "700"
     });
+    let siteAlertSettingsSignature = "";
     const flippedCardKeys = new Set();
     const cardFlipDirections = new Map();
     let dataRefreshIntervalId = null;
@@ -947,6 +948,9 @@
 
     function renderSiteAlert(settings) {
       const normalized = normalizeSiteAlertSettings(settings);
+      const nextSignature = JSON.stringify(normalized);
+      if (nextSignature === siteAlertSettingsSignature) return;
+      siteAlertSettingsSignature = nextSignature;
       siteAlertTicker.style.setProperty("--alert-bg", normalized.background_color);
       siteAlertTicker.style.setProperty("--alert-text", normalized.text_color);
       siteAlertTicker.style.setProperty("--alert-accent", normalized.accent_color);
@@ -986,12 +990,16 @@
     }
 
     async function loadSiteAlertSettings() {
-      const { data, error } = await supabaseClient
-        .from("pitchiq_site_settings")
-        .select("payload")
-        .eq("id", "global_alert")
-        .maybeSingle();
-      renderSiteAlert(error ? DEFAULT_SITE_ALERT_SETTINGS : data?.payload || DEFAULT_SITE_ALERT_SETTINGS);
+      try {
+        const { data, error } = await supabaseClient
+          .from("pitchiq_site_settings")
+          .select("payload")
+          .eq("id", "global_alert")
+          .maybeSingle();
+        renderSiteAlert(error ? DEFAULT_SITE_ALERT_SETTINGS : data?.payload || DEFAULT_SITE_ALERT_SETTINGS);
+      } catch (error) {
+        renderSiteAlert(DEFAULT_SITE_ALERT_SETTINGS);
+      }
     }
 
     function normalizeText(value) {
@@ -2224,6 +2232,7 @@
       currentUserRole = role || null;
       currentUserId = session.user.id;
       setAccountIdentity(session, role);
+      await loadSiteAlertSettings();
       refreshSupabaseData();
       startSupabaseAutoRefresh();
     }
@@ -2342,7 +2351,6 @@
       dataRefreshInFlight = true;
       try {
         await loadSupabaseTables();
-        await loadSiteAlertSettings();
         await loadServerActivity();
       } finally {
         dataRefreshInFlight = false;
@@ -2371,7 +2379,7 @@
         .on("postgres_changes", { event: "*", schema: "public", table: "pitchiq_saved_cards" }, queueSupabaseRefresh)
         .on("postgres_changes", { event: "*", schema: "public", table: "pitchiq_pitcher_lookup" }, queueSupabaseRefresh)
         .on("postgres_changes", { event: "*", schema: "public", table: "pitchiq_server_activity" }, queueSupabaseRefresh)
-        .on("postgres_changes", { event: "*", schema: "public", table: "pitchiq_site_settings" }, queueSupabaseRefresh)
+        .on("postgres_changes", { event: "*", schema: "public", table: "pitchiq_site_settings" }, loadSiteAlertSettings)
         .subscribe();
     }
 
@@ -2488,6 +2496,7 @@
     });
 
     renderCards();
+    renderSiteAlert(DEFAULT_SITE_ALERT_SETTINGS);
   </script>
 </body>
 </html>

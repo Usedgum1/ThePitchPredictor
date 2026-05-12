@@ -3861,6 +3861,7 @@
       applyDefaultViewPreference(session);
       setAccountIdentity(session, role);
       setOwnerControls(role);
+      await loadSiteAlertSettings();
       refreshSupabaseData({ resetPages: true });
       startSupabaseAutoRefresh();
       consumeWorkspaceParamsFromUrl();
@@ -4697,28 +4698,32 @@
     }
 
     async function loadSiteAlertSettings() {
-      const { data, error } = await supabaseClient
-        .from("pitchiq_site_settings")
-        .select("payload")
-        .eq("id", "global_alert")
-        .maybeSingle();
+      try {
+        const { data, error } = await supabaseClient
+          .from("pitchiq_site_settings")
+          .select("payload")
+          .eq("id", "global_alert")
+          .maybeSingle();
 
-      if (error) {
-        const fallback = normalizeSiteAlertSettings(siteAlertSettings || DEFAULT_SITE_ALERT_SETTINGS);
-        renderSiteAlert(fallback);
+        if (error) {
+          const fallback = normalizeSiteAlertSettings(siteAlertSettings || DEFAULT_SITE_ALERT_SETTINGS);
+          renderSiteAlert(fallback);
+          if (currentUserRole === "owner") {
+            populateOwnerAlertForm(fallback);
+          }
+          if (ownerAlertStatus && currentUserRole === "owner") {
+            ownerAlertStatus.textContent = `Unable to load alert settings: ${error.message || "check Supabase policy"}.`;
+          }
+          return;
+        }
+
+        const settings = normalizeSiteAlertSettings(data?.payload || DEFAULT_SITE_ALERT_SETTINGS);
+        renderSiteAlert(settings);
         if (currentUserRole === "owner") {
-          populateOwnerAlertForm(fallback);
+          populateOwnerAlertForm(settings);
         }
-        if (ownerAlertStatus && currentUserRole === "owner") {
-          ownerAlertStatus.textContent = `Unable to load alert settings: ${error.message || "check Supabase policy"}.`;
-        }
-        return;
-      }
-
-      const settings = normalizeSiteAlertSettings(data?.payload || DEFAULT_SITE_ALERT_SETTINGS);
-      renderSiteAlert(settings);
-      if (currentUserRole === "owner") {
-        populateOwnerAlertForm(settings);
+      } catch (error) {
+        renderSiteAlert(DEFAULT_SITE_ALERT_SETTINGS);
       }
     }
 
@@ -7227,7 +7232,6 @@
     ownerAlertSaveButton.addEventListener("click", saveOwnerAlertSettings);
     populateOwnerAlertForm(DEFAULT_SITE_ALERT_SETTINGS);
     renderSiteAlert(DEFAULT_SITE_ALERT_SETTINGS);
-    loadSiteAlertSettings();
 
     clearUpcomingSearchButton.addEventListener("click", () => {
       upcomingSearchInput.value = "";
