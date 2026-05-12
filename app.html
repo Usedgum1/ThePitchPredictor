@@ -11,6 +11,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="./images/favicon/favicon-16x16.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="./images/favicon/apple-touch-icon.png" />
   <link rel="manifest" href="./images/favicon/site.webmanifest" />
+  <link rel="stylesheet" href="./Card%20Styles/BaseDesign.css" />
   <script>
     if (
       window.matchMedia("(max-width: 760px)").matches &&
@@ -90,6 +91,80 @@
         0 0 6px rgba(57, 255, 20, 0.92),
         0 0 14px rgba(57, 255, 20, 0.62),
         0 0 26px rgba(57, 255, 20, 0.36);
+    }
+
+    .site-alert-ticker {
+      --alert-bg: rgba(37, 8, 20, 0.96);
+      --alert-text: #ffffff;
+      --alert-accent: #ff174d;
+      --alert-speed: 24s;
+      --alert-start-x: 100%;
+      --alert-end-x: -100%;
+      border: 1px solid color-mix(in srgb, var(--alert-accent) 58%, transparent);
+      background:
+        linear-gradient(90deg, color-mix(in srgb, var(--alert-accent) 20%, transparent), transparent 16%, transparent 84%, color-mix(in srgb, var(--alert-accent) 18%, transparent)),
+        var(--alert-bg);
+      border-radius: 12px;
+      box-shadow:
+        0 0 0 1px color-mix(in srgb, var(--alert-accent) 18%, transparent) inset,
+        0 0 20px color-mix(in srgb, var(--alert-accent) 24%, transparent);
+      color: var(--alert-text);
+      margin: 0 0 16px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .site-alert-ticker.hidden {
+      display: none;
+    }
+
+    .site-alert-track {
+      align-items: center;
+      display: inline-flex;
+      gap: 42px;
+      min-width: max-content;
+      padding: 10px 0;
+      white-space: nowrap;
+      will-change: transform;
+      animation: siteAlertScroll var(--alert-speed) linear infinite;
+    }
+
+    .site-alert-message {
+      color: var(--alert-text);
+      flex: 0 0 auto;
+      font-family: var(--alert-font-family, "Segoe UI", Arial, sans-serif);
+      font-size: 0.88rem;
+      font-weight: var(--alert-font-weight, 700);
+      letter-spacing: 0.06em;
+      padding: 0 42px;
+      text-transform: var(--alert-text-transform, none);
+    }
+
+    .site-alert-message[aria-hidden="true"] {
+      display: none;
+    }
+
+    .site-alert-prefix,
+    .site-alert-suffix {
+      color: var(--alert-accent);
+      display: inline-block;
+      font-size: 0.74rem;
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-shadow: 0 0 10px color-mix(in srgb, var(--alert-accent) 80%, transparent);
+    }
+
+    .site-alert-prefix {
+      margin-right: 14px;
+    }
+
+    .site-alert-suffix {
+      margin-left: 14px;
+    }
+
+    @keyframes siteAlertScroll {
+      from { transform: translateX(var(--alert-start-x)); }
+      to { transform: translateX(var(--alert-end-x)); }
     }
 
     .app::before {
@@ -329,19 +404,22 @@
       text-shadow: 0 0 12px rgba(255, 23, 77, 0.95);
     }
 
-    .historical-tab {
+    .historical-tab,
+    .my-cards-tab {
       border-color: rgba(255, 148, 46, 0.38);
       background: rgba(255, 148, 46, 0.1);
       color: var(--muted);
     }
 
-    .historical-tab.is-unlocked {
+    .historical-tab.is-unlocked,
+    .my-cards-tab.is-unlocked {
       border-color: rgba(255, 148, 46, 0.62);
       background: rgba(255, 148, 46, 0.16);
       color: #ff942e;
     }
 
-    .historical-tab.active {
+    .historical-tab.active,
+    .my-cards-tab.active {
       border-color: rgba(255, 148, 46, 0.94);
       background: rgba(255, 148, 46, 0.26);
       color: var(--text);
@@ -352,36 +430,8 @@
       text-shadow: 0 0 10px rgba(255, 148, 46, 0.78);
     }
 
-    .historical-tab-icon {
-      display: inline-block;
-      margin-right: 7px;
-      transform: translateY(-1px);
-    }
-
-    .report-tab {
-      border-color: rgba(255, 148, 46, 0.38);
-      background: rgba(255, 148, 46, 0.1);
-      color: var(--muted);
-    }
-
-    .report-tab.is-unlocked {
-      border-color: rgba(255, 148, 46, 0.62);
-      background: rgba(255, 148, 46, 0.16);
-      color: #ff942e;
-    }
-
-    .report-tab.active {
-      border-color: rgba(255, 148, 46, 0.94);
-      background: rgba(255, 148, 46, 0.26);
-      color: var(--text);
-      box-shadow:
-        0 0 0 1px rgba(255, 148, 46, 0.18) inset,
-        0 0 16px rgba(255, 148, 46, 0.5),
-        0 0 34px rgba(255, 148, 46, 0.3);
-      text-shadow: 0 0 10px rgba(255, 148, 46, 0.78);
-    }
-
-    .report-tab-icon {
+    .historical-tab-icon,
+    .my-cards-tab-icon {
       display: inline-block;
       margin-right: 7px;
       transform: translateY(-1px);
@@ -389,6 +439,11 @@
 
     .coming-soon-tab {
       opacity: 0.64;
+    }
+
+    .owner-settings-divider {
+      border-top: 1px solid rgba(255, 148, 46, 0.22);
+      margin: 18px 0;
     }
 
     .empty-state {
@@ -559,6 +614,73 @@
       color: var(--muted);
       font-size: 0.9rem;
       line-height: 1.5;
+    }
+
+    .owner-alert-form {
+      display: grid;
+      gap: 14px;
+    }
+
+    .owner-alert-controls {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      align-items: end;
+    }
+
+    .owner-alert-actions {
+      display: grid;
+      grid-template-columns: minmax(160px, 220px) 1fr;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .owner-alert-status {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+      min-height: 1.5em;
+    }
+
+    .owner-alert-toggle {
+      align-items: center;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+      display: flex;
+      gap: 10px;
+      min-height: 48px;
+      padding: 0 14px;
+    }
+
+    .owner-alert-toggle input {
+      accent-color: var(--neon-red);
+      height: 18px;
+      width: 18px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 92px;
+      resize: vertical;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(42, 44, 56, 0.96);
+      color: var(--text);
+      padding: 12px 14px;
+      font: inherit;
+      outline: none;
+    }
+
+    input[type="color"] {
+      cursor: pointer;
+      padding: 6px;
+    }
+
+    .site-alert-preview-label {
+      color: var(--muted);
+      font-size: 0.74rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
 
     .search-row {
@@ -1200,13 +1322,25 @@
 
     .desktop-card-history-action {
       position: absolute;
-      top: 10px;
+      top: 13px;
       right: 10px;
       bottom: auto;
       z-index: 6;
       width: 36px;
       height: 36px;
       font-size: 0.98rem;
+    }
+
+    .desktop-card-add-action {
+      position: absolute;
+      top: 45px;
+      right: 10px;
+      bottom: auto;
+      z-index: 6;
+      width: 36px;
+      height: 36px;
+      font-size: 0.98rem;
+      font-weight: 950;
     }
 
     .desktop-card.live .desktop-player-panel {
@@ -1919,6 +2053,38 @@
       text-shadow: 0 0 12px rgba(107, 182, 255, 0.45);
     }
 
+    @keyframes desktop-line-chip-pulse-dk {
+      0%, 100% {
+        box-shadow: 0 0 18px rgba(92, 255, 119, 0.42);
+        transform: scale(1);
+      }
+      50% {
+        box-shadow: 0 0 18px rgba(92, 255, 119, 0.72), 0 0 34px rgba(57, 255, 106, 0.62);
+        transform: scale(1.08);
+      }
+    }
+
+    @keyframes desktop-line-chip-pulse-fd {
+      0%, 100% {
+        box-shadow: 0 0 18px rgba(107, 182, 255, 0.42);
+        transform: scale(1);
+      }
+      50% {
+        box-shadow: 0 0 18px rgba(107, 182, 255, 0.78), 0 0 34px rgba(56, 212, 255, 0.64);
+        transform: scale(1.08);
+      }
+    }
+
+    .desktop-live-line-chip.line-pulse-dk {
+      animation: desktop-line-chip-pulse-dk 2.4s ease-in-out infinite;
+      will-change: transform, box-shadow;
+    }
+
+    .desktop-live-line-chip.line-pulse-fd {
+      animation: desktop-line-chip-pulse-fd 2.4s ease-in-out infinite;
+      will-change: transform, box-shadow;
+    }
+
     .desktop-live-stats {
       background: transparent;
       border: none;
@@ -2065,6 +2231,44 @@
       box-shadow:
         0 -2px 12px rgba(92, 255, 119, 0.55),
         0 2px 12px rgba(107, 182, 255, 0.55);
+    }
+
+    @keyframes desktop-live-line-pulse-dk {
+      0%, 100% {
+        box-shadow:
+          0 0 12px rgba(92, 255, 119, 0.65),
+          0 0 22px rgba(57, 255, 106, 0.35);
+        transform: translateX(-50%) scaleX(1);
+      }
+      50% {
+        box-shadow:
+          0 0 16px rgba(92, 255, 119, 0.95),
+          0 0 34px rgba(57, 255, 106, 0.78);
+        transform: translateX(-50%) scaleX(2.35);
+      }
+    }
+
+    @keyframes desktop-live-line-pulse-fd {
+      0%, 100% {
+        box-shadow:
+          0 0 12px rgba(107, 182, 255, 0.65),
+          0 0 22px rgba(24, 91, 173, 0.35);
+        transform: translateX(-50%) scaleX(1);
+      }
+      50% {
+        box-shadow:
+          0 0 16px rgba(107, 182, 255, 0.98),
+          0 0 34px rgba(56, 212, 255, 0.78);
+        transform: translateX(-50%) scaleX(2.35);
+      }
+    }
+
+    .desktop-live-line.line-pulse-dk {
+      animation: desktop-live-line-pulse-dk 2.4s ease-in-out infinite;
+    }
+
+    .desktop-live-line.line-pulse-fd {
+      animation: desktop-live-line-pulse-fd 2.4s ease-in-out infinite;
     }
 
     .desktop-live-dot-row {
@@ -2307,7 +2511,8 @@
     }
 
     #upcoming-table-shell table,
-    #live-table-shell table {
+    #live-table-shell table,
+    #my-cards-table-shell table {
       table-layout: fixed;
       min-width: 1120px;
     }
@@ -2315,7 +2520,9 @@
     #upcoming-table-shell th,
     #upcoming-table-shell td,
     #live-table-shell th,
-    #live-table-shell td {
+    #live-table-shell td,
+    #my-cards-table-shell th,
+    #my-cards-table-shell td {
       padding-left: 8px;
       padding-right: 8px;
     }
@@ -2323,27 +2530,54 @@
     #upcoming-table-shell th:nth-child(1),
     #upcoming-table-shell td:nth-child(1),
     #live-table-shell th:nth-child(1),
-    #live-table-shell td:nth-child(1) { width: 84px; }
+    #live-table-shell td:nth-child(1),
+    #my-cards-table-shell th:nth-child(1),
+    #my-cards-table-shell td:nth-child(1) { width: 106px; }
 
     #upcoming-table-shell th:nth-child(2),
     #upcoming-table-shell td:nth-child(2),
     #live-table-shell th:nth-child(2),
-    #live-table-shell td:nth-child(2) { width: 168px; }
+    #live-table-shell td:nth-child(2),
+    #my-cards-table-shell th:nth-child(2),
+    #my-cards-table-shell td:nth-child(2) { width: 174px; }
 
     #upcoming-table-shell th:nth-child(3),
     #upcoming-table-shell td:nth-child(3),
     #live-table-shell th:nth-child(3),
-    #live-table-shell td:nth-child(3) { width: 150px; }
+    #live-table-shell td:nth-child(3),
+    #my-cards-table-shell th:nth-child(3),
+    #my-cards-table-shell td:nth-child(3) { width: 150px; }
 
     #upcoming-table-shell th:nth-child(4),
     #upcoming-table-shell td:nth-child(4),
     #live-table-shell th:nth-child(4),
-    #live-table-shell td:nth-child(4) { width: 106px; }
+    #live-table-shell td:nth-child(4),
+    #my-cards-table-shell th:nth-child(4),
+    #my-cards-table-shell td:nth-child(4) { width: 106px; }
 
     #upcoming-table-shell th:nth-child(5),
     #upcoming-table-shell td:nth-child(5),
     #live-table-shell th:nth-child(5),
-    #live-table-shell td:nth-child(5) { width: 48px; }
+    #live-table-shell td:nth-child(5),
+    #my-cards-table-shell th:nth-child(5),
+    #my-cards-table-shell td:nth-child(5) { width: 58px; }
+
+    #upcoming-table-shell th:nth-child(5) .th-inner,
+    #live-table-shell th:nth-child(5) .th-inner,
+    #my-cards-table-shell th:nth-child(5) .th-inner,
+    #historical-table-shell th:nth-child(5) .th-inner {
+      display: inline-flex;
+      gap: 3px;
+      justify-content: center;
+      width: 100%;
+    }
+
+    #upcoming-table-shell th:nth-child(5) .th-inner::before,
+    #live-table-shell th:nth-child(5) .th-inner::before,
+    #my-cards-table-shell th:nth-child(5) .th-inner::before,
+    #historical-table-shell th:nth-child(5) .th-inner::before {
+      display: none;
+    }
 
     #upcoming-table-shell th:nth-child(6),
     #upcoming-table-shell td:nth-child(6),
@@ -2352,17 +2586,25 @@
     #live-table-shell th:nth-child(6),
     #live-table-shell td:nth-child(6),
     #live-table-shell th:nth-child(7),
-    #live-table-shell td:nth-child(7) { width: 90px; }
+    #live-table-shell td:nth-child(7),
+    #my-cards-table-shell th:nth-child(6),
+    #my-cards-table-shell td:nth-child(6),
+    #my-cards-table-shell th:nth-child(7),
+    #my-cards-table-shell td:nth-child(7) { width: 90px; }
 
     #upcoming-table-shell th:nth-child(8),
     #upcoming-table-shell td:nth-child(8),
     #live-table-shell th:nth-child(8),
-    #live-table-shell td:nth-child(8) { width: 88px; }
+    #live-table-shell td:nth-child(8),
+    #my-cards-table-shell th:nth-child(8),
+    #my-cards-table-shell td:nth-child(8) { width: 88px; }
 
     #upcoming-table-shell th:nth-child(9),
     #upcoming-table-shell td:nth-child(9),
     #live-table-shell th:nth-child(9),
-    #live-table-shell td:nth-child(9) { width: 92px; }
+    #live-table-shell td:nth-child(9),
+    #my-cards-table-shell th:nth-child(9),
+    #my-cards-table-shell td:nth-child(9) { width: 92px; }
 
     #upcoming-table-shell th:nth-child(10),
     #upcoming-table-shell td:nth-child(10),
@@ -2371,12 +2613,18 @@
     #live-table-shell th:nth-child(10),
     #live-table-shell td:nth-child(10),
     #live-table-shell th:nth-child(11),
-    #live-table-shell td:nth-child(11) { width: 72px; }
+    #live-table-shell td:nth-child(11),
+    #my-cards-table-shell th:nth-child(10),
+    #my-cards-table-shell td:nth-child(10),
+    #my-cards-table-shell th:nth-child(11),
+    #my-cards-table-shell td:nth-child(11) { width: 72px; }
 
     #upcoming-table-shell th:nth-child(12),
     #upcoming-table-shell td:nth-child(12),
     #live-table-shell th:nth-child(12),
-    #live-table-shell td:nth-child(12) {
+    #live-table-shell td:nth-child(12),
+    #my-cards-table-shell th:nth-child(12),
+    #my-cards-table-shell td:nth-child(12) {
       width: auto;
       min-width: 118px;
       overflow: hidden;
@@ -2518,14 +2766,14 @@
       width: 30px;
       height: 30px;
       border-radius: 999px;
-      border: 1px solid rgba(107, 182, 255, 0.36);
+      border: 2px solid rgba(107, 182, 255, 0.36);
       background: rgba(24, 91, 173, 0.12);
       color: var(--blue);
       cursor: default;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.9rem;
+      font-size: 1.05rem;
       line-height: 1;
       padding: 0;
     }
@@ -2535,6 +2783,7 @@
       gap: 6px;
       align-items: center;
       justify-content: center;
+      min-width: 98px;
     }
 
     .lookup-icon-btn:hover {
@@ -2543,7 +2792,14 @@
       box-shadow: 0 0 14px rgba(107, 182, 255, 0.3);
     }
 
-    .historical-lookup-btn {
+    .pitcher-lookup-btn {
+      line-height: 0;
+      padding-bottom: 1px;
+    }
+
+    .historical-lookup-btn,
+    .add-card-btn {
+      border-width: 2px;
       border-color: rgba(255, 148, 46, 0.48);
       background: rgba(255, 148, 46, 0.1);
       color: #ff942e;
@@ -2551,10 +2807,18 @@
       text-shadow: 0 0 10px rgba(255, 148, 46, 0.5);
     }
 
-    .historical-lookup-btn:hover {
+    .historical-lookup-btn:hover,
+    .add-card-btn:hover {
       border-color: rgba(255, 148, 46, 0.76);
       background: rgba(255, 148, 46, 0.18);
       box-shadow: 0 0 16px rgba(255, 148, 46, 0.32);
+    }
+
+    .add-card-btn.is-saved {
+      border-color: rgba(79, 255, 146, 0.72);
+      background: rgba(79, 255, 146, 0.16);
+      color: var(--success);
+      text-shadow: 0 0 10px rgba(79, 255, 146, 0.5);
     }
 
     .historical-lookup-btn svg {
@@ -2562,6 +2826,199 @@
       height: 17px;
       stroke: currentColor;
       filter: drop-shadow(0 0 5px rgba(255, 148, 46, 0.5));
+    }
+
+    .add-card-btn svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      filter: drop-shadow(0 0 5px rgba(255, 148, 46, 0.5));
+    }
+
+    .desktop-card-add-action svg {
+      width: 19px;
+      height: 19px;
+    }
+
+    .wallet-context-menu {
+      position: fixed;
+      z-index: 1400;
+      min-width: 164px;
+      padding: 7px;
+      display: grid;
+      gap: 7px;
+      border: 1px solid rgba(255, 138, 31, 0.65);
+      border-radius: 8px;
+      background: rgba(8, 9, 18, 0.96);
+      box-shadow: 0 18px 44px rgba(0, 0, 0, 0.52), 0 0 22px rgba(255, 138, 31, 0.16);
+      backdrop-filter: blur(14px);
+    }
+
+    .wallet-context-menu.hidden,
+    .wallet-confirm-overlay.hidden {
+      display: none;
+    }
+
+    .wallet-context-menu button {
+      width: 100%;
+      border: 1px solid rgba(255, 63, 89, 0.45);
+      border-radius: 6px;
+      background: rgba(255, 63, 89, 0.08);
+      color: #ff6a7f;
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0;
+      padding: 9px 11px;
+      text-align: left;
+      text-transform: uppercase;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease, color 0.18s ease, background 0.18s ease;
+    }
+
+    .wallet-context-menu button.wallet-mark-won {
+      border-color: rgba(49, 255, 126, 0.48);
+      background: rgba(49, 255, 126, 0.08);
+      color: #31ff7e;
+    }
+
+    .wallet-context-menu button.wallet-mark-lost {
+      border-color: rgba(255, 63, 89, 0.48);
+      background: rgba(255, 63, 89, 0.08);
+      color: #ff6a7f;
+    }
+
+    .wallet-context-menu button:hover {
+      background: rgba(255, 63, 89, 0.16);
+      border-color: rgba(255, 63, 89, 0.9);
+      box-shadow: 0 0 16px rgba(255, 63, 89, 0.28);
+      color: #ff8b9b;
+    }
+
+    .wallet-context-menu button.wallet-mark-won:hover {
+      background: rgba(49, 255, 126, 0.16);
+      border-color: rgba(49, 255, 126, 0.9);
+      box-shadow: 0 0 16px rgba(49, 255, 126, 0.28);
+      color: #78ffa7;
+    }
+
+    .wallet-context-menu button.wallet-mark-lost:hover {
+      background: rgba(255, 63, 89, 0.16);
+      border-color: rgba(255, 63, 89, 0.9);
+      box-shadow: 0 0 16px rgba(255, 63, 89, 0.28);
+      color: #ff8b9b;
+    }
+
+    .wallet-outcome-stamp {
+      position: absolute;
+      right: 14px;
+      bottom: 12px;
+      z-index: 8;
+      min-width: 72px;
+      border: 2px solid currentColor;
+      border-radius: 7px;
+      padding: 5px 10px 4px;
+      background: rgba(3, 6, 10, 0.74);
+      box-shadow: 0 0 18px currentColor;
+      font-size: 0.82rem;
+      font-weight: 950;
+      letter-spacing: 0;
+      line-height: 1;
+      text-align: center;
+      text-transform: uppercase;
+      transform: rotate(-8deg);
+      pointer-events: none;
+    }
+
+    .wallet-outcome-stamp.won {
+      color: #31ff7e;
+    }
+
+    .wallet-outcome-stamp.loss {
+      color: #ff3f59;
+    }
+
+    .wallet-confirm-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(4, 5, 12, 0.78);
+      backdrop-filter: blur(10px);
+    }
+
+    .wallet-confirm-dialog {
+      width: min(430px, 100%);
+      border: 1px solid rgba(255, 138, 31, 0.58);
+      border-radius: 8px;
+      background: linear-gradient(145deg, rgba(13, 15, 28, 0.98), rgba(18, 24, 42, 0.98));
+      box-shadow: 0 26px 70px rgba(0, 0, 0, 0.62), 0 0 34px rgba(255, 138, 31, 0.18);
+      padding: 22px;
+    }
+
+    .wallet-confirm-title {
+      color: var(--orange);
+      font-size: 1.04rem;
+      font-weight: 900;
+      letter-spacing: 0;
+      margin: 0 0 10px;
+      text-transform: uppercase;
+    }
+
+    .wallet-confirm-message {
+      color: rgba(245, 248, 255, 0.9);
+      font-size: 0.96rem;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .wallet-confirm-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      margin-top: 22px;
+    }
+
+    .wallet-confirm-actions button {
+      min-width: 104px;
+      border-radius: 7px;
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.82rem;
+      font-weight: 900;
+      letter-spacing: 0;
+      padding: 10px 14px;
+      text-transform: uppercase;
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .wallet-confirm-actions button:hover {
+      transform: translateY(-1px);
+    }
+
+    .wallet-confirm-yes {
+      border: 1px solid rgba(49, 255, 126, 0.9);
+      background: rgba(49, 255, 126, 0.12);
+      color: #31ff7e;
+      box-shadow: 0 0 18px rgba(49, 255, 126, 0.25);
+    }
+
+    .wallet-confirm-yes:hover {
+      box-shadow: 0 0 24px rgba(49, 255, 126, 0.42);
+    }
+
+    .wallet-confirm-cancel {
+      border: 1px solid rgba(255, 63, 89, 0.9);
+      background: rgba(255, 63, 89, 0.1);
+      color: #ff3f59;
+      box-shadow: 0 0 18px rgba(255, 63, 89, 0.22);
+    }
+
+    .wallet-confirm-cancel:hover {
+      box-shadow: 0 0 24px rgba(255, 63, 89, 0.38);
     }
 
     .ump-cell {
@@ -2770,6 +3227,8 @@
       .controls,
       .report-actions,
       .report-controls,
+      .owner-alert-actions,
+      .owner-alert-controls,
       .info-grid,
       .info-grid.two,
       .info-grid.three,
@@ -2806,13 +3265,20 @@
         </div>
       </div>
 
+      <div class="site-alert-ticker hidden" id="site-alert-ticker" role="status" aria-live="polite">
+        <div class="site-alert-track" id="site-alert-track">
+          <span class="site-alert-message" id="site-alert-message"></span>
+          <span class="site-alert-message" id="site-alert-message-copy" aria-hidden="true"></span>
+        </div>
+      </div>
+
       <div class="workspace-nav">
         <div class="workspace-tabs">
           <button class="workspace-tab" data-view="pitcher-lookup">Pitcher Lookup</button>
           <button class="workspace-tab active" data-view="upcoming-games">Upcoming Games</button>
           <button class="workspace-tab" data-view="live-games">Live Games</button>
+          <button class="workspace-tab my-cards-tab" id="my-cards-tab" data-view="my-cards"><span class="my-cards-tab-icon" id="my-cards-tab-icon" aria-hidden="true">&#128274;</span>My Cards</button>
           <button class="workspace-tab historical-tab" id="historical-tab" data-view="historical-games"><span class="historical-tab-icon" id="historical-tab-icon" aria-hidden="true">&#128274;</span>Historical</button>
-          <button class="workspace-tab report-tab" id="report-tab" data-view="report-builder"><span class="report-tab-icon" id="report-tab-icon" aria-hidden="true">&#128274;</span>Report Builder</button>
         </div>
         <div class="workspace-actions">
           <button class="workspace-tab settings-tab hidden" id="settings-tab" data-view="settings" type="button">Owner's Settings</button>
@@ -2966,6 +3432,70 @@
         </div>
       </div>
 
+      <div id="my-cards-panel" class="workspace-panel">
+        <div id="my-cards-locked-panel" class="subtile glass-subtile locked-feature hidden">
+          <div class="locked-badge">Pro Feature</div>
+          <div class="locked-title">My Cards locked</div>
+          <div class="locked-copy">Saved projection cards are available to Pro, Life, Admin, and Owner accounts.</div>
+          <a class="nav-pill" href="./account-settings.html">View Account</a>
+        </div>
+
+        <div id="my-cards-content-panel">
+          <div class="table-toolbar">
+            <div class="field table-search">
+              <label for="my-cards-search-input">Search My Cards</label>
+              <div class="search-row">
+                <input id="my-cards-search-input" type="text" placeholder="Search saved pitcher, team, opponent, line, bet, edge..." />
+                <button id="clear-my-cards-search" class="clear-btn hidden" type="button" aria-label="Clear my cards search">x</button>
+              </div>
+            </div>
+            <div class="view-toggle" aria-label="My cards view">
+              <button class="view-toggle-button active" id="my-cards-table-view-button" type="button" title="Table View" aria-label="Table View">
+                <span class="view-icon-lines" aria-hidden="true"><span></span><span></span><span></span></span>
+              </button>
+              <button class="view-toggle-button" id="my-cards-card-view-button" type="button" title="Card View" aria-label="Card View">
+                <span class="view-icon-grid" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+              </button>
+            </div>
+          </div>
+
+          <div class="table-shell" id="my-cards-table-shell">
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th class="sortable my-cards-sortable" data-sort-key="pitcher"><span class="th-inner">Pitcher <span class="sort-indicator"></span></span></th>
+                    <th class="sortable my-cards-sortable" data-sort-key="opponent"><span class="th-inner">Opponent <span class="sort-indicator"></span></span></th>
+                    <th class="sortable my-cards-sortable" data-sort-key="date"><span class="th-inner">Date <span class="sort-indicator"></span></span></th>
+                    <th class="sortable my-cards-sortable" data-sort-key="plate_umpire"><span class="th-inner">Ump <span class="sort-indicator"></span></span></th>
+                    <th class="sortable my-cards-sortable" data-sort-key="dk_line"><span class="th-inner">DK Line <span class="sort-indicator"></span></span></th>
+                    <th class="sortable my-cards-sortable" data-sort-key="fd_line"><span class="th-inner">FD Line <span class="sort-indicator"></span></span></th>
+                    <th class="sortable my-cards-sortable" data-sort-key="projected_strikeouts"><span class="th-inner">Projected Ks <span class="sort-indicator"></span></span></th>
+                    <th class="sortable my-cards-sortable" data-sort-key="volatility_score"><span class="th-inner">Volatility <span class="sort-indicator"></span></span></th>
+                    <th class="sortable my-cards-sortable" data-sort-key="dk_edge"><span class="th-inner">DK Edge <span class="sort-indicator"></span></span></th>
+                    <th class="sortable my-cards-sortable" data-sort-key="fd_edge"><span class="th-inner">FD Edge <span class="sort-indicator"></span></span></th>
+                    <th class="sortable my-cards-sortable" data-sort-key="notes"><span class="th-inner">Notes <span class="sort-indicator"></span></span></th>
+                  </tr>
+                </thead>
+                <tbody id="my-cards-grid"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="desktop-card-grid hidden" id="my-cards-card-grid"></div>
+
+          <div class="pager">
+            <div class="pager-meta" id="my-cards-meta"></div>
+            <div class="pager-controls">
+              <button class="pager-button" id="my-cards-prev-button" type="button">Previous</button>
+              <div class="pager-page" id="my-cards-page-indicator"></div>
+              <button class="pager-button" id="my-cards-next-button" type="button">Next</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div id="historical-games-panel" class="workspace-panel">
         <div id="historical-locked-panel" class="subtile glass-subtile locked-feature hidden">
           <div class="locked-badge">Pro Feature</div>
@@ -3023,17 +3553,113 @@
         </div>
       </div>
 
-      <div id="report-builder-panel" class="workspace-panel">
-        <div id="report-locked-panel" class="subtile glass-subtile locked-feature hidden">
-          <div class="locked-badge">Pro Feature</div>
-          <div class="locked-title">Report builder locked</div>
-          <div class="locked-copy">Custom report exports are available to Pro, Life, Admin, and Owner accounts.</div>
-          <a class="nav-pill" href="./account-settings.html">View Account</a>
+      <div id="settings-panel" class="workspace-panel">
+        <div class="subtile glass-subtile">
+          <div class="section-title center-title">Owner's Settings</div>
+          <p class="settings-owner-intro">Open the phone-first card board (same session as this site).</p>
+          <a class="button" href="./app-mobile.html">Mobile View</a>
         </div>
+        <div class="owner-settings-divider" aria-hidden="true"></div>
+        <div class="subtile glass-subtile">
+          <div class="section-title center-title">Site Alert</div>
+          <div class="owner-alert-form" id="owner-alert-form">
+              <div class="field">
+                <label for="owner-alert-text">Alert Text</label>
+                <textarea id="owner-alert-text" maxlength="240" placeholder="DraftKings is currently experiencing issues with the API."></textarea>
+              </div>
+              <div class="owner-alert-controls">
+                <div class="field">
+                  <label for="owner-alert-style-select">Saved Alert Styles</label>
+                  <select id="owner-alert-style-select">
+                    <option value="">Select saved style</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="owner-alert-style-name">Style Name</label>
+                  <input id="owner-alert-style-name" type="text" maxlength="48" placeholder="API Issue" />
+                </div>
+                <button class="button" id="owner-alert-style-load-button" type="button">Load Style</button>
+                <button class="button" id="owner-alert-style-save-button" type="button">Save Style</button>
+                <button class="button" id="owner-alert-style-delete-button" type="button">Delete Style</button>
+              </div>
+              <div class="owner-alert-controls">
+                <div class="field">
+                  <label for="owner-alert-prefix">Pre Message</label>
+                  <input id="owner-alert-prefix" type="text" maxlength="32" />
+                </div>
+                <div class="field">
+                  <label for="owner-alert-suffix">Post Message</label>
+                  <input id="owner-alert-suffix" type="text" maxlength="32" />
+                </div>
+              </div>
+            <div class="owner-alert-controls">
+              <label class="owner-alert-toggle" for="owner-alert-enabled">
+                <input id="owner-alert-enabled" type="checkbox" />
+                <span id="owner-alert-enabled-label">Alert Off</span>
+              </label>
+              <div class="field">
+                <label for="owner-alert-speed">Speed Seconds</label>
+                <input id="owner-alert-speed" type="number" min="8" max="90" step="1" />
+              </div>
+              <div class="field">
+                <label for="owner-alert-font">Text Type</label>
+                <select id="owner-alert-font">
+                  <option value="Segoe UI, Arial, sans-serif">Clean Sans</option>
+                  <option value="Georgia, serif">Editorial Serif</option>
+                  <option value="Consolas, monospace">Data Mono</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="owner-alert-transform">Text Style</label>
+                <select id="owner-alert-transform">
+                  <option value="none">Normal</option>
+                  <option value="uppercase">Uppercase</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="owner-alert-background-color">Background</label>
+                <input id="owner-alert-background-color" type="color" />
+              </div>
+              <div class="field">
+                <label for="owner-alert-text-color">Text Color</label>
+                <input id="owner-alert-text-color" type="color" />
+              </div>
+              <div class="field">
+                <label for="owner-alert-accent-color">Accent Color</label>
+                <input id="owner-alert-accent-color" type="color" />
+              </div>
+              <div class="field">
+                <label for="owner-alert-weight">Text Weight</label>
+                <select id="owner-alert-weight">
+                  <option value="600">Regular</option>
+                  <option value="700">Bold</option>
+                  <option value="800">Heavy</option>
+                </select>
+              </div>
+            </div>
+            <div class="site-alert-preview-label">Preview</div>
+            <div class="site-alert-ticker" id="owner-alert-preview" aria-hidden="true">
+              <div class="site-alert-track" id="owner-alert-preview-track">
+                <span class="site-alert-message" id="owner-alert-preview-message"></span>
+                <span class="site-alert-message" id="owner-alert-preview-message-copy"></span>
+              </div>
+            </div>
+            <div class="owner-alert-actions">
+              <button class="button" id="owner-alert-save-button" type="button">Publish Alert</button>
+              <div class="owner-alert-status" id="owner-alert-status"></div>
+            </div>
+          </div>
+        </div>
+        <div class="owner-settings-divider" aria-hidden="true"></div>
+        <div class="subtile glass-subtile">
+          <div class="section-title center-title">Report Settings</div>
+          <div id="report-locked-panel" class="locked-feature hidden">
+            <div class="locked-badge">Owner Tool</div>
+            <div class="locked-title">Report builder locked</div>
+            <div class="locked-copy">Custom report exports are managed from Owner's Settings.</div>
+          </div>
 
-        <div id="report-builder-form">
-          <div class="subtile glass-subtile">
-            <div class="section-title">Report Options</div>
+          <div id="report-builder-form">
             <div class="report-controls">
               <div class="field">
                 <label for="report-source">Data Source</label>
@@ -3052,9 +3678,7 @@
                 <input id="report-end-date" type="date" />
               </div>
             </div>
-          </div>
-
-          <div class="subtile glass-subtile">
+            <div style="height:18px;"></div>
             <div class="section-title">Columns</div>
             <div class="report-column-grid" id="report-column-grid"></div>
             <div class="report-actions">
@@ -3065,20 +3689,30 @@
         </div>
       </div>
 
-      <div id="settings-panel" class="workspace-panel">
-        <div class="subtile glass-subtile">
-          <div class="section-title center-title">Owner's Settings</div>
-          <p class="settings-owner-intro">Open the phone-first card board (same session as this site).</p>
-          <a class="button" href="./app-mobile.html">Mobile View</a>
-        </div>
-      </div>
-
     </section>
   </div>
   <footer class="server-activity-footer" id="server-activity-footer">
     last server activity: pending
   </footer>
 
+  <div class="wallet-context-menu hidden" id="wallet-context-menu" role="menu" aria-label="Saved card actions">
+    <button class="wallet-mark-won" id="wallet-mark-won-button" type="button" role="menuitem">Mark Won</button>
+    <button class="wallet-mark-lost" id="wallet-mark-lost-button" type="button" role="menuitem">Mark Lost</button>
+    <button id="wallet-remove-card-button" type="button" role="menuitem">Remove Card</button>
+  </div>
+
+  <div class="wallet-confirm-overlay hidden" id="wallet-confirm-overlay" role="dialog" aria-modal="true" aria-labelledby="wallet-confirm-title">
+    <div class="wallet-confirm-dialog">
+      <h2 class="wallet-confirm-title" id="wallet-confirm-title">Remove Card?</h2>
+      <p class="wallet-confirm-message">Are you sure? This will PERMANETLY remove this card and there is no way to retrieve it once deleted.</p>
+      <div class="wallet-confirm-actions">
+        <button class="wallet-confirm-cancel" id="wallet-confirm-cancel" type="button">Cancel</button>
+        <button class="wallet-confirm-yes" id="wallet-confirm-yes" type="button">Yes</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="./Card%20Styles/DropRateController.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     window.PITCHIQ_LIVE_K_RAIL = "2026-05-01-live-k-progress";
@@ -3092,18 +3726,39 @@
         storage: window.localStorage,
       },
     });
+    const cardStyleController = window.PitchIQCardStyles;
+
+    function ensureCardStyleId(game) {
+      const fallback = cardStyleController?.BASE_STYLE_ID || "base-design";
+      if (!game || typeof game !== "object") return fallback;
+      const existingStyleId = game._card_style || game.card_style || game.cardStyle;
+      game._card_style = existingStyleId
+        ? cardStyleController?.resolveCardStyleId(existingStyleId) || fallback
+        : cardStyleController?.chooseStyleId() || fallback;
+      return game._card_style;
+    }
+
+    function cardStyleClass(game) {
+      const styleId = ensureCardStyleId(game);
+      return cardStyleController?.getStyleClass(styleId) || "card-style-base-design";
+    }
+
     const accountPill = document.getElementById("account-pill");
     const serverActivityFooter = document.getElementById("server-activity-footer");
+    const siteAlertTicker = document.getElementById("site-alert-ticker");
+    const siteAlertMessage = document.getElementById("site-alert-message");
+    const siteAlertMessageCopy = document.getElementById("site-alert-message-copy");
     const settingsTab = document.getElementById("settings-tab");
+    const myCardsTab = document.getElementById("my-cards-tab");
+    const myCardsTabIcon = document.getElementById("my-cards-tab-icon");
     const historicalTab = document.getElementById("historical-tab");
     const historicalTabIcon = document.getElementById("historical-tab-icon");
-    const reportTab = document.getElementById("report-tab");
-    const reportTabIcon = document.getElementById("report-tab-icon");
     const ALLOWED_ACCOUNT_ROLES = ["basic", "pro", "life", "admin", "owner"];
 
     let authAccepted = false;
     let authRedirected = false;
     let authCheckId = 0;
+    let currentUserId = null;
     let currentUserRole = null;
     // Website felt "delayed" mostly because this polling fallback was 5 minutes.
     // Realtime events should refresh sooner, but keep the fallback snappy.
@@ -3143,17 +3798,38 @@
     function setOwnerControls(role) {
       currentUserRole = role || null;
       const proUnlocked = canUseProFeatures();
+      myCardsTab.classList.toggle("is-unlocked", proUnlocked);
+      myCardsTabIcon.innerHTML = proUnlocked ? "&#128275;" : "&#128274;";
       const historicalUnlocked = canViewHistoricalGames();
       historicalTab.classList.toggle("is-unlocked", historicalUnlocked);
       historicalTabIcon.innerHTML = historicalUnlocked ? "&#128275;" : "&#128274;";
-      reportTab.classList.toggle("is-unlocked", proUnlocked);
-      reportTabIcon.innerHTML = proUnlocked ? "&#128275;" : "&#128274;";
       settingsTab.classList.toggle("hidden", currentUserRole !== "owner");
+      refreshMyCardsView();
       refreshHistoricalGamesView();
       refreshReportBuilderView();
       if (pitcherInput?.value?.trim()) {
         projectPitcher();
       }
+    }
+
+    function normalizeDefaultView(value) {
+      return String(value || "").trim().toLowerCase() === "cards" ? "cards" : "table";
+    }
+
+    function defaultViewStorageKey(userId = currentUserId) {
+      return userId ? `pitchiq.defaultView.${userId}` : "pitchiq.defaultView";
+    }
+
+    function applyDefaultViewPreference(session) {
+      const userId = session?.user?.id || currentUserId;
+      const defaultView = normalizeDefaultView(
+        session?.user?.user_metadata?.default_view
+        || window.localStorage.getItem(defaultViewStorageKey(userId))
+      );
+      window.localStorage.setItem(defaultViewStorageKey(userId), defaultView);
+      upcomingViewMode = defaultView;
+      liveViewMode = defaultView;
+      myCardsViewMode = defaultView;
     }
 
     function redirectToLogin() {
@@ -3181,22 +3857,30 @@
       }
 
       authAccepted = true;
+      currentUserId = session.user.id;
+      applyDefaultViewPreference(session);
       setAccountIdentity(session, role);
       setOwnerControls(role);
       refreshSupabaseData({ resetPages: true });
       startSupabaseAutoRefresh();
-      consumeOpenHistoricalFromUrl();
+      consumeWorkspaceParamsFromUrl();
     }
 
-    function consumeOpenHistoricalFromUrl() {
+    function consumeWorkspaceParamsFromUrl() {
       try {
         const params = new URLSearchParams(window.location.search);
+        const openMyCards = params.get("openMyCards");
         const pitcher = params.get("openHistorical");
-        if (!pitcher) return;
+        if (!openMyCards && !pitcher) return;
+        params.delete("openMyCards");
         params.delete("openHistorical");
         const qs = params.toString();
         const nextUrl = `${window.location.pathname}${qs ? `?${qs}` : ""}${window.location.hash || ""}`;
         window.history.replaceState({}, "", nextUrl);
+        if (openMyCards) {
+          setActiveWorkspace("my-cards");
+          return;
+        }
         openHistoricalLookup(decodeURIComponent(pitcher));
       } catch (error) {
       }
@@ -3254,6 +3938,24 @@
     const liveTableViewButton = document.getElementById("live-table-view-button");
     const liveCardViewButton = document.getElementById("live-card-view-button");
     const liveSortHeaders = Array.from(document.querySelectorAll("#live-games-panel th.sortable"));
+    const myCardsSearchInput = document.getElementById("my-cards-search-input");
+    const clearMyCardsSearchButton = document.getElementById("clear-my-cards-search");
+    const myCardsMeta = document.getElementById("my-cards-meta");
+    const myCardsPrevButton = document.getElementById("my-cards-prev-button");
+    const myCardsNextButton = document.getElementById("my-cards-next-button");
+    const myCardsPageIndicator = document.getElementById("my-cards-page-indicator");
+    const myCardsTableShell = document.getElementById("my-cards-table-shell");
+    const myCardsCardGrid = document.getElementById("my-cards-card-grid");
+    const myCardsTableViewButton = document.getElementById("my-cards-table-view-button");
+    const myCardsCardViewButton = document.getElementById("my-cards-card-view-button");
+    const myCardsSortHeaders = Array.from(document.querySelectorAll("#my-cards-panel th.sortable"));
+    const walletContextMenu = document.getElementById("wallet-context-menu");
+    const walletMarkWonButton = document.getElementById("wallet-mark-won-button");
+    const walletMarkLostButton = document.getElementById("wallet-mark-lost-button");
+    const walletRemoveCardButton = document.getElementById("wallet-remove-card-button");
+    const walletConfirmOverlay = document.getElementById("wallet-confirm-overlay");
+    const walletConfirmCancel = document.getElementById("wallet-confirm-cancel");
+    const walletConfirmYes = document.getElementById("wallet-confirm-yes");
     const historicalSearchInput = document.getElementById("historical-search-input");
     const clearHistoricalSearchButton = document.getElementById("clear-historical-search");
     const historicalGamesMeta = document.getElementById("historical-games-meta");
@@ -3272,13 +3974,37 @@
     const reportColumnGrid = document.getElementById("report-column-grid");
     const reportDownloadButton = document.getElementById("report-download-button");
     const reportSummary = document.getElementById("report-summary");
+    const ownerAlertText = document.getElementById("owner-alert-text");
+    const ownerAlertStyleSelect = document.getElementById("owner-alert-style-select");
+    const ownerAlertStyleName = document.getElementById("owner-alert-style-name");
+    const ownerAlertStyleLoadButton = document.getElementById("owner-alert-style-load-button");
+    const ownerAlertStyleSaveButton = document.getElementById("owner-alert-style-save-button");
+    const ownerAlertStyleDeleteButton = document.getElementById("owner-alert-style-delete-button");
+    const ownerAlertPrefix = document.getElementById("owner-alert-prefix");
+    const ownerAlertSuffix = document.getElementById("owner-alert-suffix");
+    const ownerAlertEnabled = document.getElementById("owner-alert-enabled");
+    const ownerAlertEnabledLabel = document.getElementById("owner-alert-enabled-label");
+    const ownerAlertSpeed = document.getElementById("owner-alert-speed");
+    const ownerAlertFont = document.getElementById("owner-alert-font");
+    const ownerAlertTransform = document.getElementById("owner-alert-transform");
+    const ownerAlertBackgroundColor = document.getElementById("owner-alert-background-color");
+    const ownerAlertTextColor = document.getElementById("owner-alert-text-color");
+    const ownerAlertAccentColor = document.getElementById("owner-alert-accent-color");
+    const ownerAlertWeight = document.getElementById("owner-alert-weight");
+    const ownerAlertPreview = document.getElementById("owner-alert-preview");
+    const ownerAlertPreviewMessage = document.getElementById("owner-alert-preview-message");
+    const ownerAlertPreviewMessageCopy = document.getElementById("owner-alert-preview-message-copy");
+    const ownerAlertSaveButton = document.getElementById("owner-alert-save-button");
+    const ownerAlertStatus = document.getElementById("owner-alert-status");
+    const myCardsLockedPanel = document.getElementById("my-cards-locked-panel");
+    const myCardsContentPanel = document.getElementById("my-cards-content-panel");
     const workspaceTabs = Array.from(document.querySelectorAll(".workspace-tab"));
     const workspacePanels = {
       "pitcher-lookup": document.getElementById("pitcher-lookup-panel"),
       "upcoming-games": document.getElementById("upcoming-games-panel"),
       "live-games": document.getElementById("live-games-panel"),
+      "my-cards": document.getElementById("my-cards-panel"),
       "historical-games": document.getElementById("historical-games-panel"),
-      "report-builder": document.getElementById("report-builder-panel"),
       "settings": document.getElementById("settings-panel")
     };
     const pitcherInput = document.getElementById("pitcher-input");
@@ -3287,6 +4013,7 @@
 
     let upcomingGames = [];
     let liveGames = [];
+    let myCards = [];
     let gameHistory = [];
     let allPitchers = [];
     let filteredPitchers = [];
@@ -3301,14 +4028,37 @@
     let liveSearchQuery = "";
     let liveSort = { key: "date", direction: "asc" };
     let liveViewMode = "table";
+    let myCardsPage = 1;
+    const myCardsPageSize = 20;
+    let myCardsSearchQuery = "";
+    let myCardsSort = { key: "saved_at", direction: "desc" };
+    let myCardsViewMode = "table";
+    let pendingWalletRemoveId = "";
     let historicalGamesPage = 1;
     const historicalGamesPageSize = 20;
     let historicalSearchQuery = "";
     let historicalSort = { key: "date", direction: "desc" };
     let reportSelectedColumns = [];
     let historicalBetRecordCache = new Map();
+    const DEFAULT_SITE_ALERT_SETTINGS = Object.freeze({
+      enabled: false,
+      text: "DraftKings is currently experiencing issues with the API.",
+      prefix_text: "Alert!",
+      suffix_text: "Alert!",
+      speed_seconds: 24,
+      background_color: "#250814",
+      text_color: "#ffffff",
+      accent_color: "#ff174d",
+      font_family: "Segoe UI, Arial, sans-serif",
+      text_transform: "none",
+      font_weight: "700",
+      saved_styles: []
+    });
+    let siteAlertSettings = { ...DEFAULT_SITE_ALERT_SETTINGS };
     const desktopFlippedCardKeys = new Set();
     const desktopCardFlipDirections = new Map();
+    const LIVE_GAME_MAX_MINUTES = 18 * 60;
+    const GAME_BOARD_CACHE_TTL_MS = 12 * 60 * 60 * 1000;
 
     const REPORT_COLUMNS = [
       { key: "pitcher", label: "Pitcher", value: game => game.pitcher },
@@ -3387,6 +4137,21 @@
       );
     }
 
+    function hasLiveGameSignals(game) {
+      const inning = normalizeText(game?.game_inning || game?.inning || game?.inning_state);
+      const starterStatus = normalizeText(game?.starter_status);
+      const currentPitcher = normalizeText(game?.current_pitcher || game?.current_pitcher_id);
+      const liveKs = game?.live_strikeouts ?? game?.live_ks ?? game?.starter_strikeouts;
+      const liveIp = game?.live_innings_pitched;
+      return Boolean(
+        inning ||
+        currentPitcher ||
+        starterStatus.includes("pitching") ||
+        (liveKs !== null && liveKs !== undefined && String(liveKs).trim() !== "") ||
+        (liveIp !== null && liveIp !== undefined && String(liveIp).trim() !== "")
+      );
+    }
+
     function isClearlyUpcomingGame(game) {
       const status = normalizeText(game?.game_status || game?.status || game?.abstract_game_state);
       return status.includes("pre-game") || status.includes("scheduled") || status.includes("preview");
@@ -3395,13 +4160,14 @@
     function shouldShowAsLiveGame(game, tableType) {
       if (isClearlyCompletedGame(game)) return false;
       if (isClearlyLiveGame(game) || tableType === "live") return true;
+      if (hasLiveGameSignals(game)) return true;
 
       const startDate = parseGameStartDate(game);
       if (!startDate) return false;
 
       const now = new Date();
       const minutesSinceStart = (now.getTime() - startDate.getTime()) / 60000;
-      return minutesSinceStart >= 0 && minutesSinceStart <= 480;
+      return minutesSinceStart >= 0 && minutesSinceStart <= LIVE_GAME_MAX_MINUTES;
     }
 
     function splitSupabaseGameRows(rows) {
@@ -3411,6 +4177,7 @@
         if (!row?.payload) return;
         const tableType = String(row.table_type || "").toLowerCase();
         const game = { ...row.payload };
+        game._pitchiq_source_table = tableType === "live" ? "live" : "upcoming";
         const rowKey = [
           game.event_key,
           game.pitcher,
@@ -3437,6 +4204,42 @@
       };
     }
 
+    function gameBoardCacheKey(userId = currentUserId) {
+      return userId ? `pitchiq.gameBoardCache.${userId}` : "pitchiq.gameBoardCache";
+    }
+
+    function cacheGameBoardSnapshot(splitGames, updatedAt = null) {
+      const upcoming = Array.isArray(splitGames?.upcoming) ? splitGames.upcoming : [];
+      const live = Array.isArray(splitGames?.live) ? splitGames.live : [];
+      if (!upcoming.length && !live.length) return;
+      try {
+        window.localStorage.setItem(gameBoardCacheKey(), JSON.stringify({
+          cachedAt: Date.now(),
+          updatedAt,
+          upcoming,
+          live,
+        }));
+      } catch (error) {
+      }
+    }
+
+    function loadCachedGameBoardSnapshot() {
+      try {
+        const raw = window.localStorage.getItem(gameBoardCacheKey());
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        const cachedAt = Number(parsed?.cachedAt);
+        if (!Number.isFinite(cachedAt) || Date.now() - cachedAt > GAME_BOARD_CACHE_TTL_MS) return null;
+        return {
+          upcoming: Array.isArray(parsed?.upcoming) ? parsed.upcoming : [],
+          live: Array.isArray(parsed?.live) ? parsed.live : [],
+          updatedAt: parsed?.updatedAt || null,
+        };
+      } catch (error) {
+        return null;
+      }
+    }
+
     function maxUpdatedAtFromRows(rows) {
       if (!Array.isArray(rows) || !rows.length) return null;
       let maxMs = 0;
@@ -3446,6 +4249,504 @@
         if (!Number.isNaN(t) && t > maxMs) maxMs = t;
       });
       return maxMs ? new Date(maxMs).toISOString() : null;
+    }
+
+    function walletSourceTable(game) {
+      const source = String(game?._pitchiq_source_table || game?.source_table || "").toLowerCase();
+      return source === "live" ? "live" : "upcoming";
+    }
+
+    function walletCardKey(game) {
+      return [
+        walletSourceTable(game),
+        game?.event_key || game?.source_event_key || game?.game_id || "",
+        game?.pitcher || game?.source_pitcher || "",
+        game?.date || game?.game_date || game?.game_date_raw || "",
+        game?.opponent || "",
+        game?.start_time || "",
+      ].map(value => normalizeText(value)).join("|");
+    }
+
+    function findWalletSourceGame(walletKey) {
+      const key = String(walletKey || "");
+      if (!key) return null;
+      return [...upcomingGames, ...liveGames].find(game => walletCardKey(game) === key) || null;
+    }
+
+    function preferredBookSnapshot(game) {
+      const dkLine = parseValidLine(game?.dk_line);
+      const fdLine = parseValidLine(game?.fd_line);
+      if (dkLine !== null) {
+        return {
+          sportsbook: "DraftKings",
+          sportsbook_line: dkLine,
+          bet_side: String(game?.dk_bet || "").trim() || null,
+          play_tier: String(game?.dk_play_tier || game?.play_tier || "").trim() || null,
+          confidence: String(game?.dk_confidence || game?.confidence || "").trim() || null,
+        };
+      }
+      if (fdLine !== null) {
+        return {
+          sportsbook: "FanDuel",
+          sportsbook_line: fdLine,
+          bet_side: String(game?.fd_bet || "").trim() || null,
+          play_tier: String(game?.fd_play_tier || game?.play_tier || "").trim() || null,
+          confidence: String(game?.fd_confidence || game?.confidence || "").trim() || null,
+        };
+      }
+      return {
+        sportsbook: null,
+        sportsbook_line: null,
+        bet_side: String(game?.bet || game?.lean || "").trim() || null,
+        play_tier: String(game?.play_tier || "").trim() || null,
+        confidence: String(game?.confidence || "").trim() || null,
+      };
+    }
+
+    function buildSavedCardRecord(game) {
+      const sourceTable = walletSourceTable(game);
+      const sourceEventKey = String(game?.event_key || game?.game_id || walletCardKey(game)).trim();
+      const book = preferredBookSnapshot(game);
+      const projection = displayProjectionValue(game);
+      const cardStyleId = ensureCardStyleId(game);
+      return {
+        user_id: currentUserId,
+        source_table: sourceTable,
+        source_event_key: sourceEventKey,
+        source_pitcher: String(game?.pitcher || "").trim(),
+        pitcher: String(game?.pitcher || "").trim() || null,
+        opponent: String(game?.opponent || "").trim() || null,
+        game_date: String(game?.date || game?.game_date || game?.game_date_raw || "").trim() || null,
+        sportsbook: book.sportsbook,
+        sportsbook_line: book.sportsbook_line,
+        bet_side: book.bet_side,
+        play_tier: book.play_tier,
+        confidence: book.confidence,
+        projected_strikeouts: Number.isFinite(Number(projection)) ? Number(projection) : null,
+        snapshot: {
+          ...game,
+          _card_style: cardStyleId,
+          _pitchiq_source_table: sourceTable,
+          _saved_snapshot_at: new Date().toISOString(),
+        },
+      };
+    }
+
+    function savedCardRowToGame(row) {
+      const snapshot = row?.snapshot && typeof row.snapshot === "object" ? { ...row.snapshot } : {};
+      snapshot._saved_card_id = row?.id || "";
+      snapshot._pitchiq_source_table = row?.source_table || snapshot._pitchiq_source_table || "upcoming";
+      snapshot._saved_at = row?.saved_at || "";
+      snapshot._card_style = cardStyleController?.resolveCardStyleId(snapshot._card_style || snapshot.card_style || snapshot.cardStyle) || "base-design";
+      snapshot._wallet_result = normalizeWalletOutcome(snapshot._wallet_result || snapshot.wallet_result || "");
+      snapshot.pitcher = snapshot.pitcher || row?.pitcher || "";
+      snapshot.opponent = snapshot.opponent || row?.opponent || "";
+      snapshot.date = snapshot.date || row?.game_date || "";
+      snapshot.projected_strikeouts = snapshot.projected_strikeouts ?? row?.projected_strikeouts ?? "";
+      return snapshot;
+    }
+
+    function normalizeWalletOutcome(value) {
+      const normalized = normalizeText(value);
+      if (normalized === "won" || normalized === "win") return "won";
+      if (normalized === "lost" || normalized === "loss") return "loss";
+      return "";
+    }
+
+    function findSavedCardById(cardId) {
+      return myCards.find(game => String(game._saved_card_id || "") === String(cardId || "")) || null;
+    }
+
+    function renderWalletOutcomeStamp(game) {
+      const outcome = normalizeWalletOutcome(game?._wallet_result || game?.wallet_result || "");
+      if (!outcome) return "";
+      const label = outcome === "won" ? "Won" : "Lost";
+      return `<div class="wallet-outcome-stamp ${outcome}" aria-hidden="true">${label}</div>`;
+    }
+
+    async function loadMyCards(options = {}) {
+      if (!currentUserId || !canViewMyCards()) {
+        myCards = [];
+        return;
+      }
+      const { data, error } = await supabaseClient
+        .from("pitchiq_saved_cards")
+        .select("id,source_table,pitcher,opponent,game_date,projected_strikeouts,snapshot,saved_at")
+        .eq("is_archived", false)
+        .order("saved_at", { ascending: false });
+      if (error) {
+        myCards = [];
+        return;
+      }
+      myCards = (data || []).map(savedCardRowToGame);
+      if (options.resetPage) myCardsPage = 1;
+    }
+
+    async function saveGameToMyCards(game, button = null) {
+      if (!canViewMyCards()) {
+        setActiveWorkspace("my-cards");
+        return;
+      }
+      if (!currentUserId || !game) return;
+      const originalTitle = button?.getAttribute("title") || "Add to my cards";
+      if (button) {
+        button.disabled = true;
+        button.setAttribute("title", "Saving...");
+      }
+      const { error } = await supabaseClient
+        .from("pitchiq_saved_cards")
+        .insert(buildSavedCardRecord(game));
+      if (error && error.code !== "23505") {
+        if (button) {
+          button.disabled = false;
+          button.setAttribute("title", "Save failed");
+        }
+        return;
+      }
+      await loadMyCards({ resetPage: true });
+      refreshMyCardsView();
+      if (button) {
+        button.disabled = false;
+        button.classList.add("is-saved");
+        button.setAttribute("title", error?.code === "23505" ? "Already saved" : "Saved to my cards");
+        window.setTimeout(() => {
+          button.classList.remove("is-saved");
+          button.setAttribute("title", originalTitle);
+        }, 1600);
+      }
+    }
+
+    function closeWalletContextMenu() {
+      walletContextMenu.classList.add("hidden");
+      walletContextMenu.removeAttribute("data-card-id");
+    }
+
+    function openWalletContextMenu(cardId, clientX, clientY) {
+      if (!cardId) return;
+      walletContextMenu.dataset.cardId = cardId;
+      walletContextMenu.classList.remove("hidden");
+      const rect = walletContextMenu.getBoundingClientRect();
+      const left = Math.min(clientX, window.innerWidth - rect.width - 10);
+      const top = Math.min(clientY, window.innerHeight - rect.height - 10);
+      walletContextMenu.style.left = `${Math.max(10, left)}px`;
+      walletContextMenu.style.top = `${Math.max(10, top)}px`;
+    }
+
+    function openWalletRemoveConfirm(cardId) {
+      if (!cardId) return;
+      pendingWalletRemoveId = cardId;
+      closeWalletContextMenu();
+      walletConfirmOverlay.classList.remove("hidden");
+      walletConfirmCancel.focus();
+    }
+
+    function closeWalletRemoveConfirm() {
+      pendingWalletRemoveId = "";
+      walletConfirmOverlay.classList.add("hidden");
+    }
+
+    async function permanentlyRemoveSavedCard(cardId) {
+      if (!cardId) return;
+      walletConfirmYes.disabled = true;
+      walletConfirmCancel.disabled = true;
+      const { error } = await supabaseClient
+        .from("pitchiq_saved_cards")
+        .delete()
+        .eq("id", cardId);
+      walletConfirmYes.disabled = false;
+      walletConfirmCancel.disabled = false;
+      if (error) return;
+      closeWalletRemoveConfirm();
+      myCards = myCards.filter(game => String(game._saved_card_id || "") !== String(cardId));
+      refreshMyCardsView();
+    }
+
+    async function markSavedCardOutcome(cardId, outcome) {
+      const normalizedOutcome = normalizeWalletOutcome(outcome);
+      const card = findSavedCardById(cardId);
+      if (!cardId || !card || !normalizedOutcome) return;
+      const currentOutcome = normalizeWalletOutcome(card._wallet_result || card.wallet_result || "");
+      const nextOutcome = currentOutcome === normalizedOutcome ? "" : normalizedOutcome;
+      walletMarkWonButton.disabled = true;
+      walletMarkLostButton.disabled = true;
+      const snapshot = {
+        ...card,
+        _wallet_result: nextOutcome,
+        wallet_result: nextOutcome,
+      };
+      const { error } = await supabaseClient
+        .from("pitchiq_saved_cards")
+        .update({ snapshot })
+        .eq("id", cardId);
+      walletMarkWonButton.disabled = false;
+      walletMarkLostButton.disabled = false;
+      if (error) return;
+      card._wallet_result = nextOutcome;
+      card.wallet_result = nextOutcome;
+      closeWalletContextMenu();
+      refreshMyCardsView();
+    }
+
+    function clampAlertSpeed(value) {
+      const speed = Number(value);
+      if (!Number.isFinite(speed)) return DEFAULT_SITE_ALERT_SETTINGS.speed_seconds;
+      return Math.min(90, Math.max(8, Math.round(speed)));
+    }
+
+    function cleanAlertColor(value, fallback) {
+      const text = String(value || "").trim();
+      return /^#[0-9a-f]{6}$/i.test(text) ? text : fallback;
+    }
+
+    function normalizeAlertStyleSettings(payload) {
+      const normalized = normalizeSiteAlertSettings(payload);
+      const { saved_styles, ...styleSettings } = normalized;
+      return styleSettings;
+    }
+
+    function normalizeSavedAlertStyles(styles) {
+      if (!Array.isArray(styles)) return [];
+      return styles
+        .filter(style => style && typeof style === "object" && String(style.name || "").trim())
+        .map(style => ({
+          name: String(style.name || "").trim().slice(0, 48),
+          settings: normalizeAlertStyleSettings(style.settings || {})
+        }))
+        .filter((style, index, all) => all.findIndex(candidate => candidate.name === style.name) === index)
+        .slice(0, 20);
+    }
+
+    function normalizeSiteAlertSettings(payload) {
+      const source = payload && typeof payload === "object" ? payload : {};
+      const fontFamily = [
+        "Segoe UI, Arial, sans-serif",
+        "Georgia, serif",
+        "Consolas, monospace"
+      ].includes(source.font_family) ? source.font_family : DEFAULT_SITE_ALERT_SETTINGS.font_family;
+      const textTransform = source.text_transform === "uppercase" ? "uppercase" : "none";
+      const fontWeight = ["600", "700", "800"].includes(String(source.font_weight))
+        ? String(source.font_weight)
+        : DEFAULT_SITE_ALERT_SETTINGS.font_weight;
+      return {
+        enabled: Boolean(source.enabled),
+        text: String(source.text || DEFAULT_SITE_ALERT_SETTINGS.text).slice(0, 240),
+        prefix_text: String(source.prefix_text ?? DEFAULT_SITE_ALERT_SETTINGS.prefix_text).slice(0, 32),
+        suffix_text: String(source.suffix_text ?? DEFAULT_SITE_ALERT_SETTINGS.suffix_text).slice(0, 32),
+        speed_seconds: clampAlertSpeed(source.speed_seconds),
+        background_color: cleanAlertColor(source.background_color, DEFAULT_SITE_ALERT_SETTINGS.background_color),
+        text_color: cleanAlertColor(source.text_color, DEFAULT_SITE_ALERT_SETTINGS.text_color),
+        accent_color: cleanAlertColor(source.accent_color, DEFAULT_SITE_ALERT_SETTINGS.accent_color),
+        font_family: fontFamily,
+        text_transform: textTransform,
+        font_weight: fontWeight,
+        saved_styles: normalizeSavedAlertStyles(source.saved_styles)
+      };
+    }
+
+    function applyAlertStyles(element, settings) {
+      if (!element) return;
+      element.style.setProperty("--alert-bg", settings.background_color);
+      element.style.setProperty("--alert-text", settings.text_color);
+      element.style.setProperty("--alert-accent", settings.accent_color);
+      element.style.setProperty("--alert-speed", `${settings.speed_seconds}s`);
+      element.style.setProperty("--alert-font-family", settings.font_family);
+      element.style.setProperty("--alert-text-transform", settings.text_transform);
+      element.style.setProperty("--alert-font-weight", settings.font_weight);
+    }
+
+    function updateAlertTravel(container, messageElement) {
+      if (!container || !messageElement) return;
+      window.requestAnimationFrame(() => {
+        const track = container.querySelector(".site-alert-track");
+        const containerWidth = Math.max(1, container.clientWidth);
+        const messageWidth = Math.max(1, messageElement.scrollWidth);
+        container.style.setProperty("--alert-start-x", `${containerWidth}px`);
+        container.style.setProperty("--alert-end-x", `${-messageWidth}px`);
+        if (track) {
+          track.style.animation = "none";
+          void track.offsetWidth;
+          track.style.animation = "";
+        }
+      });
+    }
+
+    function renderSiteAlert(settings = siteAlertSettings) {
+      const normalized = normalizeSiteAlertSettings(settings);
+      siteAlertSettings = normalized;
+      applyAlertStyles(siteAlertTicker, normalized);
+      const message = normalized.text.trim();
+      siteAlertMessage.innerHTML = renderAlertMessageHtml(normalized);
+      siteAlertMessageCopy.innerHTML = renderAlertMessageHtml(normalized);
+      siteAlertTicker.classList.toggle("hidden", !normalized.enabled || !message);
+      if (normalized.enabled && message) {
+        updateAlertTravel(siteAlertTicker, siteAlertMessage);
+      }
+    }
+
+    function renderAlertMessageHtml(settings) {
+      const prefix = settings.prefix_text.trim();
+      const suffix = settings.suffix_text.trim();
+      return `${prefix ? `<span class="site-alert-prefix">${escapeHtml(prefix)}</span>` : ""}${escapeHtml(settings.text.trim())}${suffix ? `<span class="site-alert-suffix">${escapeHtml(suffix)}</span>` : ""}`;
+    }
+
+    function readOwnerAlertForm() {
+      return normalizeSiteAlertSettings({
+        enabled: ownerAlertEnabled.checked,
+        text: ownerAlertText.value,
+        prefix_text: ownerAlertPrefix.value,
+        suffix_text: ownerAlertSuffix.value,
+        speed_seconds: ownerAlertSpeed.value,
+        background_color: ownerAlertBackgroundColor.value,
+        text_color: ownerAlertTextColor.value,
+        accent_color: ownerAlertAccentColor.value,
+        font_family: ownerAlertFont.value,
+        text_transform: ownerAlertTransform.value,
+        font_weight: ownerAlertWeight.value
+      });
+    }
+
+    function renderOwnerAlertPreview(settings = readOwnerAlertForm()) {
+      applyAlertStyles(ownerAlertPreview, settings);
+      ownerAlertPreviewMessage.innerHTML = renderAlertMessageHtml(settings);
+      ownerAlertPreviewMessageCopy.innerHTML = renderAlertMessageHtml(settings);
+      ownerAlertEnabledLabel.textContent = ownerAlertEnabled.checked ? "Alert On" : "Alert Off";
+      updateAlertTravel(ownerAlertPreview, ownerAlertPreviewMessage);
+    }
+
+    function populateOwnerAlertForm(settings = siteAlertSettings) {
+      const normalized = normalizeSiteAlertSettings(settings);
+      ownerAlertEnabled.checked = normalized.enabled;
+      ownerAlertText.value = normalized.text;
+      ownerAlertPrefix.value = normalized.prefix_text;
+      ownerAlertSuffix.value = normalized.suffix_text;
+      ownerAlertSpeed.value = String(normalized.speed_seconds);
+      ownerAlertBackgroundColor.value = normalized.background_color;
+      ownerAlertTextColor.value = normalized.text_color;
+      ownerAlertAccentColor.value = normalized.accent_color;
+      ownerAlertFont.value = normalized.font_family;
+      ownerAlertTransform.value = normalized.text_transform;
+      ownerAlertWeight.value = normalized.font_weight;
+      renderSavedAlertStyleOptions(normalized.saved_styles);
+      renderOwnerAlertPreview(normalized);
+    }
+
+    function renderSavedAlertStyleOptions(styles = siteAlertSettings.saved_styles || []) {
+      const selected = ownerAlertStyleSelect.value;
+      ownerAlertStyleSelect.innerHTML = '<option value="">Select saved style</option>'
+        + styles.map(style => `<option value="${escapeHtml(style.name)}">${escapeHtml(style.name)}</option>`).join("");
+      ownerAlertStyleSelect.value = styles.some(style => style.name === selected) ? selected : "";
+    }
+
+    function currentAlertStyleSettingsFromForm() {
+      return normalizeAlertStyleSettings(readOwnerAlertForm());
+    }
+
+    function selectedAlertStyle() {
+      const name = String(ownerAlertStyleSelect.value || "").trim();
+      return (siteAlertSettings.saved_styles || []).find(style => style.name === name) || null;
+    }
+
+    function loadSelectedAlertStyle() {
+      const style = selectedAlertStyle();
+      if (!style) {
+        ownerAlertStatus.textContent = "Choose a saved style to load.";
+        return;
+      }
+      const merged = normalizeSiteAlertSettings({
+        ...siteAlertSettings,
+        ...style.settings,
+        saved_styles: siteAlertSettings.saved_styles
+      });
+      populateOwnerAlertForm(merged);
+      ownerAlertStyleName.value = style.name;
+      ownerAlertStatus.textContent = `Loaded ${style.name}. Publish Alert to make it live.`;
+    }
+
+    async function saveAlertStylePreset() {
+      const name = ownerAlertStyleName.value.trim();
+      if (!name) {
+        ownerAlertStatus.textContent = "Enter a style name before saving.";
+        return;
+      }
+      const styles = (siteAlertSettings.saved_styles || []).filter(style => style.name !== name);
+      styles.push({ name, settings: currentAlertStyleSettingsFromForm() });
+      siteAlertSettings = normalizeSiteAlertSettings({ ...siteAlertSettings, saved_styles: styles });
+      renderSavedAlertStyleOptions(siteAlertSettings.saved_styles);
+      ownerAlertStyleSelect.value = name;
+      await saveOwnerAlertSettings(`Saved style ${name}.`);
+    }
+
+    async function deleteAlertStylePreset() {
+      const name = String(ownerAlertStyleSelect.value || ownerAlertStyleName.value || "").trim();
+      if (!name) {
+        ownerAlertStatus.textContent = "Choose a saved style to delete.";
+        return;
+      }
+      siteAlertSettings = normalizeSiteAlertSettings({
+        ...siteAlertSettings,
+        saved_styles: (siteAlertSettings.saved_styles || []).filter(style => style.name !== name)
+      });
+      ownerAlertStyleSelect.value = "";
+      ownerAlertStyleName.value = "";
+      renderSavedAlertStyleOptions(siteAlertSettings.saved_styles);
+      await saveOwnerAlertSettings(`Deleted style ${name}.`);
+    }
+
+    async function loadSiteAlertSettings() {
+      const { data, error } = await supabaseClient
+        .from("pitchiq_site_settings")
+        .select("payload")
+        .eq("id", "global_alert")
+        .maybeSingle();
+
+      if (error) {
+        const fallback = normalizeSiteAlertSettings(siteAlertSettings || DEFAULT_SITE_ALERT_SETTINGS);
+        renderSiteAlert(fallback);
+        if (currentUserRole === "owner") {
+          populateOwnerAlertForm(fallback);
+        }
+        if (ownerAlertStatus && currentUserRole === "owner") {
+          ownerAlertStatus.textContent = `Unable to load alert settings: ${error.message || "check Supabase policy"}.`;
+        }
+        return;
+      }
+
+      const settings = normalizeSiteAlertSettings(data?.payload || DEFAULT_SITE_ALERT_SETTINGS);
+      renderSiteAlert(settings);
+      if (currentUserRole === "owner") {
+        populateOwnerAlertForm(settings);
+      }
+    }
+
+    async function saveOwnerAlertSettings(statusText = "") {
+      if (currentUserRole !== "owner") return;
+      const settings = normalizeSiteAlertSettings({
+        ...readOwnerAlertForm(),
+        saved_styles: siteAlertSettings.saved_styles || []
+      });
+      ownerAlertSaveButton.disabled = true;
+      ownerAlertStatus.textContent = "Publishing alert...";
+      try {
+        const { data, error } = await supabaseClient
+          .from("pitchiq_site_settings")
+          .upsert({
+            id: "global_alert",
+            payload: settings,
+            updated_by: currentUserId,
+            updated_at: new Date().toISOString()
+          }, { onConflict: "id" })
+          .select("payload")
+          .single();
+        if (error) throw error;
+        const savedSettings = normalizeSiteAlertSettings(data?.payload || settings);
+        renderSiteAlert(savedSettings);
+        populateOwnerAlertForm(savedSettings);
+        ownerAlertStatus.textContent = statusText || (savedSettings.enabled ? "Alert is live." : "Alert saved and hidden.");
+      } catch (error) {
+        ownerAlertStatus.textContent = `Unable to publish alert: ${error.message || "check the site settings policy"}.`;
+      } finally {
+        ownerAlertSaveButton.disabled = false;
+      }
     }
 
     async function loadSupabaseTables(options = {}) {
@@ -3459,8 +4760,10 @@
 
       if (gameRowsError) {
         refreshPitcherList();
+        await loadMyCards({ resetPage: options.resetPages !== false });
         refreshUpcomingGamesView();
         refreshLiveGamesView();
+        refreshMyCardsView();
         refreshHistoricalGamesView();
         refreshReportBuilderView();
         return;
@@ -3474,9 +4777,25 @@
         .order("updated_at", { ascending: false })
         .limit(2000);
 
-      const splitGames = splitSupabaseGameRows(gameRows || []);
-      upcomingGames = splitGames.upcoming;
-      liveGames = splitGames.live;
+      const fetchedGameRows = gameRows || [];
+      const splitGames = splitSupabaseGameRows(fetchedGameRows);
+      if (fetchedGameRows.length) {
+        upcomingGames = splitGames.upcoming;
+        liveGames = splitGames.live;
+        cacheGameBoardSnapshot(splitGames, latestFetchedGameRowsUpdatedAt);
+      } else {
+        const cachedBoard = loadCachedGameBoardSnapshot();
+        if (cachedBoard && (cachedBoard.upcoming.length || cachedBoard.live.length)) {
+          upcomingGames = cachedBoard.upcoming;
+          liveGames = cachedBoard.live;
+          latestFetchedGameRowsUpdatedAt = latestFetchedGameRowsUpdatedAt || cachedBoard.updatedAt;
+        } else if (upcomingGames.length || liveGames.length) {
+          cacheGameBoardSnapshot({ upcoming: upcomingGames, live: liveGames }, latestFetchedGameRowsUpdatedAt);
+        } else {
+          upcomingGames = [];
+          liveGames = [];
+        }
+      }
       if (!historyRowsError) {
         latestFetchedHistoricalRowsUpdatedAt = maxUpdatedAtFromRows(historyRows || []);
         gameHistory = (historyRows || [])
@@ -3496,10 +4815,13 @@
       if (options.resetPages !== false) {
         upcomingGamesPage = 1;
         liveGamesPage = 1;
+        myCardsPage = 1;
         historicalGamesPage = 1;
       }
+      await loadMyCards({ resetPage: false });
       refreshUpcomingGamesView();
       refreshLiveGamesView();
+      refreshMyCardsView();
       refreshHistoricalGamesView();
       refreshReportBuilderView();
       if (pitcherInput.value.trim()) {
@@ -3527,6 +4849,7 @@
       dataRefreshInFlight = true;
       try {
         await loadSupabaseTables(options);
+        await loadSiteAlertSettings();
       } finally {
         try {
           await loadServerActivity();
@@ -3556,8 +4879,10 @@
         .channel("pitchiq-table-refresh")
         .on("postgres_changes", { event: "*", schema: "public", table: "pitchiq_game_rows" }, queueSupabaseRefresh)
         .on("postgres_changes", { event: "*", schema: "public", table: "pitchiq_historical_rows" }, queueSupabaseRefresh)
+        .on("postgres_changes", { event: "*", schema: "public", table: "pitchiq_saved_cards" }, queueSupabaseRefresh)
         .on("postgres_changes", { event: "*", schema: "public", table: "pitchiq_pitcher_lookup" }, queueSupabaseRefresh)
         .on("postgres_changes", { event: "*", schema: "public", table: "pitchiq_server_activity" }, queueSupabaseRefresh)
+        .on("postgres_changes", { event: "*", schema: "public", table: "pitchiq_site_settings" }, queueSupabaseRefresh)
         .subscribe();
     }
 
@@ -3597,6 +4922,7 @@
     }
 
     function isPastScheduledDate(game) {
+      if (isClearlyLiveGame(game) || hasLiveGameSignals(game)) return false;
       const parsed = Date.parse(game?.sort_datetime || game?.game_date_raw || game?.date || "");
       if (Number.isNaN(parsed)) return false;
       const gameDate = new Date(parsed);
@@ -3923,6 +5249,12 @@
         return rawNotes;
       }
       return [discrepancyNote, rawNotes].filter(Boolean).join(" | ");
+    }
+
+    function displayWalletNotesText(game) {
+      const outcome = normalizeWalletOutcome(game?._wallet_result || game?.wallet_result || "");
+      const outcomeLabel = outcome === "won" ? "Won" : outcome === "loss" ? "Lost" : "";
+      return [outcomeLabel, displayNotesText(game)].filter(Boolean).join(" | ");
     }
 
     function displaySystemNotesText(game) {
@@ -4356,8 +5688,56 @@
       });
     }
 
+    function getFilteredMyCards() {
+      const query = normalizeText(myCardsSearchQuery);
+      const filtered = !query ? myCards.slice() : myCards.filter(game => {
+        const haystack = [
+          game.pitcher,
+          game.pitcher_team,
+          game.opponent,
+          game.game_status,
+          game.date,
+          game.game_date,
+          game.time || formatDisplayTime(game.start_time),
+          game.plate_umpire,
+          game.dk_line,
+          game.fd_line,
+          displayWalletNotesText(game),
+          game._wallet_result,
+          game.wallet_result,
+          formatNumber(displayProjectionValue(game), 2),
+          formatVolatility(game),
+          game.dk_bet,
+          formatEdge(game.dk_edge),
+          game.fd_bet,
+          formatEdge(game.fd_edge),
+          game._saved_at,
+        ].map(normalizeText).join(" ");
+        return haystack.includes(query);
+      });
+      const direction = myCardsSort.direction === "desc" ? -1 : 1;
+      return filtered.sort((left, right) => {
+        let a;
+        let b;
+        if (myCardsSort.key === "saved_at") {
+          a = Date.parse(left._saved_at || "") || 0;
+          b = Date.parse(right._saved_at || "") || 0;
+        } else {
+          a = parseSortableValue(left, myCardsSort.key);
+          b = parseSortableValue(right, myCardsSort.key);
+        }
+        if (a < b) return -1 * direction;
+        if (a > b) return 1 * direction;
+        return normalizeText(left.pitcher).localeCompare(normalizeText(right.pitcher));
+      });
+    }
+
     function canUseProFeatures() {
       return ["pro", "life", "admin", "owner"].includes(String(currentUserRole || "").toLowerCase());
+    }
+
+    function canViewMyCards() {
+      return canUseProFeatures();
     }
 
     function canViewHistoricalGames() {
@@ -4554,7 +5934,7 @@
     }
 
     function refreshReportBuilderView() {
-      const unlocked = canUseProFeatures();
+      const unlocked = String(currentUserRole || "").toLowerCase() === "owner";
       reportLockedPanel.classList.toggle("hidden", unlocked);
       reportBuilderForm.classList.toggle("hidden", !unlocked);
       if (!unlocked) return;
@@ -4566,6 +5946,10 @@
       const columnText = selectedColumns.length === 1 ? "1 column" : `${selectedColumns.length} columns`;
       const rowText = rows.length === 1 ? "1 row" : `${rows.length} rows`;
       reportSummary.textContent = `${sourceLabel} report ready with ${rowText} and ${columnText}.`;
+    }
+
+    function refreshMyCardsView() {
+      renderMyCards(getFilteredMyCards());
     }
 
     function csvEscape(value) {
@@ -4583,7 +5967,7 @@
     function downloadReportCsv() {
       const columns = getSelectedReportColumns();
       const rows = getFilteredReportRows();
-      if (!canUseProFeatures() || !columns.length || !rows.length) return;
+      if (String(currentUserRole || "").toLowerCase() !== "owner" || !columns.length || !rows.length) return;
 
       const csv = buildReportCsv(rows, columns);
       const source = reportSourceSelect.value || "report";
@@ -4629,6 +6013,16 @@
       });
     }
 
+    function updateMyCardsSortIndicators() {
+      myCardsSortHeaders.forEach(header => {
+        const indicator = header.querySelector(".sort-indicator");
+        if (!indicator) return;
+        indicator.innerHTML = header.dataset.sortKey === myCardsSort.key
+          ? (myCardsSort.direction === "asc" ? "&#9650;" : "&#9660;")
+          : "";
+      });
+    }
+
     function animateTableRows(container) {
       container.classList.remove("render-fade");
       const rows = Array.from(container.querySelectorAll("tr"));
@@ -4641,6 +6035,8 @@
 
     function renderRowActions(game, options = {}) {
       const pitcher = escapeHtml(game?.pitcher || "");
+      const addIcon = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>';
+      const walletKey = escapeHtml(walletCardKey(game));
       const historicalUnlocked = canViewHistoricalGames();
       const historicalTitle = historicalUnlocked
         ? "View historical games"
@@ -4652,7 +6048,17 @@
         <div class="row-actions">
           <button class="lookup-icon-btn pitcher-lookup-btn" type="button" data-pitcher="${pitcher}" title="Open pitcher lookup" aria-label="Open pitcher lookup">&#8981;</button>
           ${options.includeHistorical === false ? "" : `<button class="lookup-icon-btn historical-lookup-btn" type="button" data-pitcher="${pitcher}" title="${historicalTitle}" aria-label="${historicalTitle}">${historicalIcon}</button>`}
+          ${options.includeAddToCards === false ? "" : `<button class="lookup-icon-btn add-card-btn" type="button" data-wallet-key="${walletKey}" data-pitcher="${pitcher}" title="Add to my cards" aria-label="Add to my cards">${addIcon}</button>`}
         </div>
+      `;
+    }
+
+    function renderAddToMyCardsAction(game) {
+      const pitcher = escapeHtml(game?.pitcher || "");
+      const walletKey = escapeHtml(walletCardKey(game));
+      const addIcon = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>';
+      return `
+        <button class="lookup-icon-btn add-card-btn desktop-card-add-action" type="button" data-wallet-key="${walletKey}" data-pitcher="${pitcher}" title="Add to my cards" aria-label="Add to my cards">${addIcon}</button>
       `;
     }
 
@@ -4674,6 +6080,11 @@
       if (scope === "live") {
         liveViewMode = mode === "cards" ? "cards" : "table";
         refreshLiveGamesView();
+        return;
+      }
+      if (scope === "my-cards") {
+        myCardsViewMode = mode === "cards" ? "cards" : "table";
+        refreshMyCardsView();
         return;
       }
       upcomingViewMode = mode === "cards" ? "cards" : "table";
@@ -4699,10 +6110,10 @@
       ].map(value => String(value || "").trim()).join("|");
     }
 
-    function desktopLineDiscrepancyShimmerClass(game) {
+    function desktopLineDiscrepancyBook(game) {
       const notes = normalizeText(displayNotesText(game));
-      if (notes.includes("+dk line")) return "dk-shimmer";
-      if (notes.includes("+fd line")) return "fd-shimmer";
+      if (notes.includes("+dk line")) return "dk";
+      if (notes.includes("+fd line")) return "fd";
       return "";
     }
 
@@ -4896,11 +6307,15 @@
       return `calc(${boundarySlot} * (100% - ${(n - 1) * g}px) / ${n} + ${(boundarySlot - 1) * g}px + ${g / 2}px)`;
     }
 
-    function renderDesktopLiveKLineMarkers(game) {
+    function renderDesktopLiveKLineMarkers(game, options = {}) {
       const dkLine = parseValidLine(game?.dk_line);
       const fdLine = parseValidLine(game?.fd_line);
       const dkSlot = liveKLineBoundarySlot(dkLine);
       const fdSlot = liveKLineBoundarySlot(fdLine);
+      const discrepancyBook = desktopLineDiscrepancyBook(game);
+      const pulseEnabled = options.pulse !== false;
+      const dkPulseClass = pulseEnabled && discrepancyBook === "dk" ? " line-pulse-dk" : "";
+      const fdPulseClass = pulseEnabled && discrepancyBook === "fd" ? " line-pulse-fd" : "";
       if (dkSlot === null && fdSlot === null) return "";
 
       const sameBookLine =
@@ -4919,12 +6334,12 @@
       const parts = [];
       if (dkSlot !== null) {
         parts.push(
-          `<span class="desktop-live-line desktop-live-line-dk" style="left:${liveKLineMarkerLeftCalc(dkSlot)};" title="DraftKings line ${escapeHtml(String(dkLine))}"></span>`
+          `<span class="desktop-live-line desktop-live-line-dk${dkPulseClass}" style="left:${liveKLineMarkerLeftCalc(dkSlot)};" title="DraftKings line ${escapeHtml(String(dkLine))}"></span>`
         );
       }
       if (fdSlot !== null) {
         parts.push(
-          `<span class="desktop-live-line desktop-live-line-fd" style="left:${liveKLineMarkerLeftCalc(fdSlot)};" title="FanDuel line ${escapeHtml(String(fdLine))}"></span>`
+          `<span class="desktop-live-line desktop-live-line-fd${fdPulseClass}" style="left:${liveKLineMarkerLeftCalc(fdSlot)};" title="FanDuel line ${escapeHtml(String(fdLine))}"></span>`
         );
       }
       return parts.join("");
@@ -4977,11 +6392,21 @@
       const fdBook = desktopFormatLineOdds(game.fd_line, game.fd_over_payout, game.fd_under_payout);
       const strikeouts = liveStrikeoutValue(game);
       const displayStrikeouts = strikeouts || "0";
+      const savedCardId = escapeHtml(game?._saved_card_id || "");
+      const walletOutcomeStamp = view === "my-cards" ? renderWalletOutcomeStamp(game) : "";
+      const styleId = ensureCardStyleId(game);
+      const styleClass = cardStyleClass(game);
+      const pulseEnabled = view !== "my-cards";
+      const discrepancyBook = desktopLineDiscrepancyBook(game);
+      const dkPulseClass = pulseEnabled && discrepancyBook === "dk" ? " line-pulse-dk" : "";
+      const fdPulseClass = pulseEnabled && discrepancyBook === "fd" ? " line-pulse-fd" : "";
       return `
-        <article class="desktop-card live ${desktopLineDiscrepancyShimmerClass(game)} ${flipDirection} ${isFlipped ? "flipped" : ""}" data-card-key="${escapeHtml(key)}" role="button" tabindex="0" aria-label="${isFlipped ? "Flip card back to projection" : "Flip card to game notes"}" title="${isFlipped ? "Flip back" : "Game notes"}">
+        <article class="desktop-card live ${styleClass} ${flipDirection} ${isFlipped ? "flipped" : ""}" data-card-style="${escapeHtml(styleId)}" data-card-key="${escapeHtml(key)}" data-saved-card-id="${savedCardId}" role="button" tabindex="0" aria-label="${isFlipped ? "Flip card back to projection" : "Flip card to game notes"}" title="${isFlipped ? "Flip back" : "Game notes"}">
           <div class="desktop-card-shell">
             <div class="desktop-card-face desktop-card-front">
               ${renderDesktopHistoricalAction(game)}
+              ${view === "my-cards" ? "" : renderAddToMyCardsAction(game)}
+              ${walletOutcomeStamp}
               <div class="desktop-live-watermark" aria-hidden="true">
                 <img src="images/pitchIQ%20Logo%20v4.png" alt="" />
               </div>
@@ -5042,11 +6467,11 @@
                         <span class="desktop-live-line-chip-label">IQ</span>
                         <span class="desktop-live-line-chip-value">${escapeHtml(projected)}</span>
                       </div>
-                      <div class="desktop-live-line-chip desktop-live-line-chip-dk" title="DraftKings line">
+                      <div class="desktop-live-line-chip desktop-live-line-chip-dk${dkPulseClass}" title="DraftKings line">
                         <span class="desktop-live-line-chip-label">DK</span>
                         <span class="desktop-live-line-chip-value">${escapeHtml(dkBook.line)}</span>
                       </div>
-                      <div class="desktop-live-line-chip desktop-live-line-chip-fd" title="FanDuel line">
+                      <div class="desktop-live-line-chip desktop-live-line-chip-fd${fdPulseClass}" title="FanDuel line">
                         <span class="desktop-live-line-chip-label">FD</span>
                         <span class="desktop-live-line-chip-value">${escapeHtml(fdBook.line)}</span>
                       </div>
@@ -5055,7 +6480,7 @@
                 </div>
                 <div class="desktop-live-kpanel">
                   <div class="desktop-live-line-layer" aria-hidden="true">
-                    ${renderDesktopLiveKLineMarkers(game)}
+                    ${renderDesktopLiveKLineMarkers(game, { pulse: pulseEnabled })}
                   </div>
                   <div class="desktop-live-dot-track">
                     <div class="desktop-live-dot-row">
@@ -5066,6 +6491,7 @@
               </div>
             </div>
             <div class="desktop-card-face desktop-card-back">
+              ${walletOutcomeStamp}
               <div class="desktop-card-inner">
                 <div class="desktop-card-notes-list">
                   ${renderDesktopLookupNotes(game)}
@@ -5224,6 +6650,73 @@
       animateTableRows(container);
     }
 
+    function renderMyCards(games) {
+      const unlocked = canViewMyCards();
+      myCardsLockedPanel.classList.toggle("hidden", unlocked);
+      myCardsContentPanel.classList.toggle("hidden", !unlocked);
+      if (!unlocked) return;
+
+      const container = document.getElementById("my-cards-grid");
+      const totalRows = games ? games.length : 0;
+      const totalPages = Math.max(1, Math.ceil(totalRows / myCardsPageSize));
+      myCardsPage = Math.min(Math.max(1, myCardsPage), totalPages);
+      updateMyCardsSortIndicators();
+      myCardsTableShell.classList.remove("loading");
+      const showingCards = myCardsViewMode === "cards";
+      myCardsTableShell.classList.toggle("hidden", showingCards);
+      myCardsCardGrid.classList.toggle("hidden", !showingCards);
+      myCardsTableViewButton.classList.toggle("active", !showingCards);
+      myCardsCardViewButton.classList.toggle("active", showingCards);
+
+      if (!games || !games.length) {
+        container.innerHTML = `
+          <tr>
+            <td colspan="12">No saved cards yet.</td>
+          </tr>
+        `;
+        renderDesktopCards(myCardsCardGrid, [], "my-cards");
+        myCardsMeta.textContent = "0 saved cards";
+        myCardsPageIndicator.textContent = "Page 1 / 1";
+        myCardsPrevButton.disabled = true;
+        myCardsNextButton.disabled = true;
+        return;
+      }
+
+      const startIndex = (myCardsPage - 1) * myCardsPageSize;
+      const pageRows = games.slice(startIndex, startIndex + myCardsPageSize);
+
+      container.innerHTML = pageRows.map(game => `
+        <tr data-saved-card-id="${escapeHtml(game._saved_card_id || "")}">
+          <td>${renderRowActions(game, { includeAddToCards: false })}</td>
+          <td>
+            <div class="pitcher-cell">
+              <span class="pitcher-name" title="${escapeHtml(game.pitcher)}">${escapeHtml(game.pitcher)}</span>
+              <span class="pitcher-team-sub">${escapeHtml(game.pitcher_team || "")}</span>
+            </div>
+          </td>
+          <td>${escapeHtml(game.opponent)}</td>
+          ${renderDateCell(game)}
+          ${renderUmpCell(game)}
+          ${renderBookLineCell(game.dk_line, game.dk_over_payout, game.dk_under_payout)}
+          ${renderBookLineCell(game.fd_line, game.fd_over_payout, game.fd_under_payout)}
+          ${renderProjectedKsCell(game)}
+          ${renderVolatilityCell(game)}
+          <td class="${edgeTone(game.dk_edge, game.dk_bet)}">${escapeHtml(formatEdge(game.dk_edge))}</td>
+          <td class="${edgeTone(game.fd_edge, game.fd_bet)}">${escapeHtml(formatEdge(game.fd_edge))}</td>
+          <td>${escapeHtml(displayWalletNotesText(game))}</td>
+        </tr>
+      `).join("");
+      renderDesktopCards(myCardsCardGrid, pageRows, "my-cards");
+
+      const startDisplay = startIndex + 1;
+      const endDisplay = startIndex + pageRows.length;
+      myCardsMeta.textContent = `${startDisplay}-${endDisplay} of ${totalRows} saved cards`;
+      myCardsPageIndicator.textContent = `Page ${myCardsPage} / ${totalPages}`;
+      myCardsPrevButton.disabled = myCardsPage <= 1;
+      myCardsNextButton.disabled = myCardsPage >= totalPages;
+      animateTableRows(container);
+    }
+
     function renderHistoricalGames(games) {
       const unlocked = canViewHistoricalGames();
       historicalLockedPanel.classList.toggle("hidden", unlocked);
@@ -5259,7 +6752,7 @@
         const fdCorrect = evaluateBetCorrectness(actual, game.fd_line, game.fd_bet);
         return `
           <tr>
-            <td>${renderRowActions(game, { includeHistorical: false })}</td>
+            <td>${renderRowActions(game, { includeHistorical: false, includeAddToCards: false })}</td>
             <td>
               <div class="pitcher-cell">
                 <span class="pitcher-name" title="${escapeHtml(game.pitcher)}">${escapeHtml(game.pitcher)}</span>
@@ -5445,6 +6938,13 @@
       refreshLiveGamesView();
     }
 
+    function updateMyCardsSearch() {
+      toggleClearButton(myCardsSearchInput, clearMyCardsSearchButton);
+      myCardsSearchQuery = myCardsSearchInput.value || "";
+      myCardsPage = 1;
+      refreshMyCardsView();
+    }
+
     function updateHistoricalSearch() {
       toggleClearButton(historicalSearchInput, clearHistoricalSearchButton);
       historicalSearchQuery = historicalSearchInput.value || "";
@@ -5477,6 +6977,20 @@
         }
         liveGamesPage = 1;
         refreshLiveGamesView();
+      });
+    });
+
+    myCardsSortHeaders.forEach(header => {
+      header.addEventListener("click", () => {
+        const key = header.dataset.sortKey;
+        if (!key) return;
+        if (myCardsSort.key === key) {
+          myCardsSort.direction = myCardsSort.direction === "asc" ? "desc" : "asc";
+        } else {
+          myCardsSort = { key, direction: key === "saved_at" ? "desc" : "asc" };
+        }
+        myCardsPage = 1;
+        refreshMyCardsView();
       });
     });
 
@@ -5520,6 +7034,19 @@
       refreshLiveGamesView();
     });
 
+    myCardsPrevButton.addEventListener("click", () => {
+      if (myCardsPage <= 1) return;
+      myCardsPage -= 1;
+      refreshMyCardsView();
+    });
+
+    myCardsNextButton.addEventListener("click", () => {
+      const totalPages = Math.max(1, Math.ceil(getFilteredMyCards().length / myCardsPageSize));
+      if (myCardsPage >= totalPages) return;
+      myCardsPage += 1;
+      refreshMyCardsView();
+    });
+
     historicalPrevButton.addEventListener("click", () => {
       if (historicalGamesPage <= 1) return;
       historicalGamesPage -= 1;
@@ -5534,6 +7061,12 @@
     });
 
     function handleDesktopCardFlip(event) {
+      const addButton = event.target.closest(".add-card-btn");
+      if (addButton) {
+        event.stopPropagation();
+        saveGameToMyCards(findWalletSourceGame(addButton.dataset.walletKey || ""), addButton);
+        return;
+      }
       const historicalButton = event.target.closest(".historical-lookup-btn");
       if (historicalButton) {
         event.stopPropagation();
@@ -5575,14 +7108,27 @@
 
     upcomingSearchInput.addEventListener("input", updateUpcomingSearch);
     liveSearchInput.addEventListener("input", updateLiveSearch);
+    myCardsSearchInput.addEventListener("input", updateMyCardsSearch);
     upcomingTableViewButton.addEventListener("click", () => setViewMode("upcoming", "table"));
     upcomingCardViewButton.addEventListener("click", () => setViewMode("upcoming", "cards"));
     liveTableViewButton.addEventListener("click", () => setViewMode("live", "table"));
     liveCardViewButton.addEventListener("click", () => setViewMode("live", "cards"));
+    myCardsTableViewButton.addEventListener("click", () => setViewMode("my-cards", "table"));
+    myCardsCardViewButton.addEventListener("click", () => setViewMode("my-cards", "cards"));
     upcomingCardGrid.addEventListener("click", handleDesktopCardFlip);
     liveCardGrid.addEventListener("click", handleDesktopCardFlip);
+    myCardsCardGrid.addEventListener("click", handleDesktopCardFlip);
     upcomingCardGrid.addEventListener("keydown", handleDesktopCardKeyboardFlip);
     liveCardGrid.addEventListener("keydown", handleDesktopCardKeyboardFlip);
+    myCardsCardGrid.addEventListener("keydown", handleDesktopCardKeyboardFlip);
+
+    myCardsCardGrid.addEventListener("contextmenu", event => {
+      const card = event.target.closest(".desktop-card");
+      const cardId = card?.dataset.savedCardId || "";
+      if (!cardId) return;
+      event.preventDefault();
+      openWalletContextMenu(cardId, event.clientX, event.clientY);
+    });
 
     const prefersDesktopCardTiltReduced = window.matchMedia("(prefers-reduced-motion: reduce)");
     let desktopCardTiltActiveCard = null;
@@ -5634,10 +7180,13 @@
     if (!prefersDesktopCardTiltReduced.matches) {
       upcomingCardGrid.addEventListener("pointermove", handleDesktopCardGridPointerMove);
       liveCardGrid.addEventListener("pointermove", handleDesktopCardGridPointerMove);
+      myCardsCardGrid.addEventListener("pointermove", handleDesktopCardGridPointerMove);
       upcomingCardGrid.addEventListener("pointerleave", handleDesktopCardGridPointerLeave);
       liveCardGrid.addEventListener("pointerleave", handleDesktopCardGridPointerLeave);
+      myCardsCardGrid.addEventListener("pointerleave", handleDesktopCardGridPointerLeave);
       upcomingCardGrid.addEventListener("pointercancel", handleDesktopCardGridPointerLeave);
       liveCardGrid.addEventListener("pointercancel", handleDesktopCardGridPointerLeave);
+      myCardsCardGrid.addEventListener("pointercancel", handleDesktopCardGridPointerLeave);
     }
 
     historicalSearchInput.addEventListener("input", updateHistoricalSearch);
@@ -5649,6 +7198,32 @@
       refreshReportBuilderView();
     });
     reportDownloadButton.addEventListener("click", downloadReportCsv);
+    ownerAlertStyleSelect.addEventListener("change", () => {
+      const style = selectedAlertStyle();
+      ownerAlertStyleName.value = style?.name || "";
+    });
+    ownerAlertStyleLoadButton.addEventListener("click", loadSelectedAlertStyle);
+    ownerAlertStyleSaveButton.addEventListener("click", saveAlertStylePreset);
+    ownerAlertStyleDeleteButton.addEventListener("click", deleteAlertStylePreset);
+    [
+      ownerAlertText,
+      ownerAlertPrefix,
+      ownerAlertSuffix,
+      ownerAlertEnabled,
+      ownerAlertSpeed,
+      ownerAlertFont,
+      ownerAlertTransform,
+      ownerAlertBackgroundColor,
+      ownerAlertTextColor,
+      ownerAlertAccentColor,
+      ownerAlertWeight
+    ].forEach(control => {
+      control.addEventListener("input", () => renderOwnerAlertPreview());
+      control.addEventListener("change", () => renderOwnerAlertPreview());
+    });
+    ownerAlertSaveButton.addEventListener("click", saveOwnerAlertSettings);
+    populateOwnerAlertForm(DEFAULT_SITE_ALERT_SETTINGS);
+    renderSiteAlert(DEFAULT_SITE_ALERT_SETTINGS);
 
     clearUpcomingSearchButton.addEventListener("click", () => {
       upcomingSearchInput.value = "";
@@ -5660,6 +7235,12 @@
       liveSearchInput.value = "";
       updateLiveSearch();
       liveSearchInput.focus();
+    });
+
+    clearMyCardsSearchButton.addEventListener("click", () => {
+      myCardsSearchInput.value = "";
+      updateMyCardsSearch();
+      myCardsSearchInput.focus();
     });
 
     clearHistoricalSearchButton.addEventListener("click", () => {
@@ -5713,6 +7294,37 @@
       if (!event.target.closest(".search-shell")) {
         closePitcherDropdown();
       }
+      if (!event.target.closest("#wallet-context-menu")) {
+        closeWalletContextMenu();
+      }
+    });
+
+    document.addEventListener("keydown", event => {
+      if (event.key !== "Escape") return;
+      closeWalletContextMenu();
+      closeWalletRemoveConfirm();
+    });
+
+    walletRemoveCardButton.addEventListener("click", () => {
+      openWalletRemoveConfirm(walletContextMenu.dataset.cardId || "");
+    });
+
+    walletMarkWonButton.addEventListener("click", () => {
+      markSavedCardOutcome(walletContextMenu.dataset.cardId || "", "won");
+    });
+
+    walletMarkLostButton.addEventListener("click", () => {
+      markSavedCardOutcome(walletContextMenu.dataset.cardId || "", "loss");
+    });
+
+    walletConfirmCancel.addEventListener("click", closeWalletRemoveConfirm);
+
+    walletConfirmOverlay.addEventListener("click", event => {
+      if (event.target === walletConfirmOverlay) closeWalletRemoveConfirm();
+    });
+
+    walletConfirmYes.addEventListener("click", () => {
+      permanentlyRemoveSavedCard(pendingWalletRemoveId);
     });
 
     clearPitcherButton.addEventListener("click", () => {
@@ -5724,6 +7336,11 @@
     });
 
     document.getElementById("upcoming-games-grid").addEventListener("click", event => {
+      const addButton = event.target.closest(".add-card-btn");
+      if (addButton) {
+        saveGameToMyCards(findWalletSourceGame(addButton.dataset.walletKey || ""), addButton);
+        return;
+      }
       const historicalButton = event.target.closest(".historical-lookup-btn");
       if (historicalButton) {
         openHistoricalLookup(historicalButton.dataset.pitcher || "");
@@ -5734,6 +7351,11 @@
     });
 
     document.getElementById("live-games-grid").addEventListener("click", event => {
+      const addButton = event.target.closest(".add-card-btn");
+      if (addButton) {
+        saveGameToMyCards(findWalletSourceGame(addButton.dataset.walletKey || ""), addButton);
+        return;
+      }
       const historicalButton = event.target.closest(".historical-lookup-btn");
       if (historicalButton) {
         openHistoricalLookup(historicalButton.dataset.pitcher || "");
@@ -5741,6 +7363,24 @@
       }
       const button = event.target.closest(".pitcher-lookup-btn");
       if (button) openPitcherFromUpcoming(button.dataset.pitcher || "");
+    });
+
+    document.getElementById("my-cards-grid").addEventListener("click", event => {
+      const historicalButton = event.target.closest(".historical-lookup-btn");
+      if (historicalButton) {
+        openHistoricalLookup(historicalButton.dataset.pitcher || "");
+        return;
+      }
+      const button = event.target.closest(".pitcher-lookup-btn");
+      if (button) openPitcherFromUpcoming(button.dataset.pitcher || "");
+    });
+
+    document.getElementById("my-cards-grid").addEventListener("contextmenu", event => {
+      const row = event.target.closest("tr[data-saved-card-id]");
+      const cardId = row?.dataset.savedCardId || "";
+      if (!cardId) return;
+      event.preventDefault();
+      openWalletContextMenu(cardId, event.clientX, event.clientY);
     });
 
     document.getElementById("historical-games-grid").addEventListener("click", event => {

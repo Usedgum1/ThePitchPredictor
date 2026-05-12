@@ -1,0 +1,2386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>pitchIQ | Card Workshop</title>
+  <meta name="description" content="pitchIQ card style workshop." />
+  <meta name="theme-color" content="#07080b" />
+  <link rel="icon" type="image/x-icon" href="./images/favicon/favicon.ico" />
+  <link rel="stylesheet" href="./Card%20Styles/BaseDesign.css" />
+  <style>
+    :root {
+      --page-bg: #07080b;
+      --panel: rgba(18, 20, 28, 0.82);
+      --panel-strong: rgba(24, 27, 38, 0.96);
+      --line: rgba(255, 255, 255, 0.1);
+      --text: #f6f1e8;
+      --muted: #aab2c0;
+      --amber: #ff942e;
+      --blue: #6bb6ff;
+      --green: #39ff6a;
+      --danger: #ff8c7a;
+    }
+
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      background:
+        radial-gradient(circle at 14% 8%, rgba(255, 148, 46, 0.16), transparent 24%),
+        radial-gradient(circle at 86% 10%, rgba(107, 182, 255, 0.16), transparent 22%),
+        linear-gradient(180deg, #07080b 0%, #101219 100%);
+      color: var(--text);
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    .workshop {
+      min-height: 100vh;
+      padding: 16px;
+    }
+
+    .panel-header,
+    .stage-toolbar,
+    .status-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .brand img {
+      width: 34px;
+      height: 34px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 12px rgba(255, 148, 46, 0.28));
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.02rem;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    .subhead {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 650;
+    }
+
+    .stage-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .action-btn {
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      border-radius: 8px;
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.07);
+      min-height: 38px;
+      padding: 0 13px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .action-btn.primary {
+      color: #12100b;
+      background: linear-gradient(180deg, #ffd48b, #ff942e);
+      border-color: rgba(255, 212, 139, 0.58);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(280px, 340px) minmax(360px, 1fr) minmax(280px, 360px);
+      gap: 16px;
+      align-items: start;
+      min-height: calc(100vh - 32px);
+    }
+
+    .preview-panel,
+    .control-stack {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.24);
+      backdrop-filter: blur(18px);
+    }
+
+    .preview-panel {
+      position: sticky;
+      top: 16px;
+      min-width: 0;
+      grid-column: 2;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      min-height: calc(100vh - 32px);
+      overflow: hidden;
+    }
+
+    .preview-stage {
+      display: grid;
+      place-items: center;
+      min-height: 0;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+      background-size: 34px 34px;
+      overflow: hidden;
+      padding: 26px;
+    }
+
+    .preview-scale {
+      width: min(100%, 348px);
+    }
+
+    .controls {
+      display: grid;
+      gap: 14px;
+    }
+
+    .control-stack .controls {
+      gap: 0;
+    }
+
+    .control-stack {
+      display: grid;
+      gap: 0;
+      align-self: start;
+      position: sticky;
+      top: 16px;
+      max-height: calc(100vh - 32px);
+      overflow: auto;
+    }
+
+    .control-stack.left {
+      grid-column: 1;
+    }
+
+    .control-stack.right {
+      grid-column: 3;
+    }
+
+    .control-panel,
+    .export-panel {
+      padding: 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .control-panel:last-child,
+    .export-panel:last-child {
+      border-bottom: 0;
+    }
+
+    .panel-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+      color: var(--text);
+      font-size: 0.95rem;
+      font-weight: 950;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .panel-header .panel-title,
+    .stage-toolbar .panel-title {
+      margin-bottom: 0;
+    }
+
+    .status-bar {
+      border-top: 1px solid var(--line);
+      border-bottom: 0;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .field {
+      display: grid;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    .effect-tile {
+      display: grid;
+      gap: 10px;
+      padding: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.16);
+    }
+
+    .effect-tile + .effect-tile {
+      margin-top: 12px;
+    }
+
+    .effect-tile-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--text);
+      font-size: 0.82rem;
+      font-weight: 950;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .effect-tile-title span {
+      color: var(--muted);
+      font-size: 0.68rem;
+      letter-spacing: 0.06em;
+    }
+
+    .effect-tile .field-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    label {
+      color: var(--muted);
+      font-size: 0.75rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 8px;
+      color: var(--text);
+      background: rgba(0, 0, 0, 0.22);
+      min-height: 38px;
+      padding: 8px 10px;
+      outline: none;
+    }
+
+    input[type="color"] {
+      width: 100%;
+      height: 38px;
+      padding: 3px;
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.22);
+      cursor: pointer;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--amber);
+    }
+
+    .range-row {
+      display: grid;
+      grid-template-columns: 1fr 52px;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .range-value {
+      border-radius: 7px;
+      padding: 6px 7px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text);
+      font-size: 0.76rem;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    textarea {
+      min-height: 220px;
+      resize: vertical;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 0.82rem;
+      line-height: 1.45;
+    }
+
+    .export-panel {
+      margin-top: 14px;
+    }
+
+    .toast {
+      min-height: 20px;
+      color: var(--green);
+      font-size: 0.82rem;
+      font-weight: 850;
+    }
+
+    .workshop-preview .desktop-card {
+      cursor: default;
+    }
+
+    .workshop-preview .desktop-card.live {
+      width: 100%;
+      height: 458px;
+      --card-a: var(--cw-bg-start);
+      --card-b: var(--cw-bg-end);
+      --accent: var(--cw-secondary);
+      --effect: var(--cw-accent);
+      --shine-speed: var(--cw-speed);
+      --glow-strength: var(--cw-glow-decimal);
+    }
+
+    .workshop-preview .desktop-card.custom-surface.live .desktop-card-face {
+      border-width: var(--cw-border-width);
+      border-color: var(--cw-border-color);
+      border-radius: var(--cw-radius);
+      background:
+        radial-gradient(circle at var(--cw-orb-x) var(--cw-orb-y), color-mix(in srgb, var(--cw-accent) var(--cw-orb-strength), transparent), transparent 34%),
+        linear-gradient(var(--cw-sheen-angle), color-mix(in srgb, #ffffff var(--cw-sheen), transparent), transparent 24%),
+        linear-gradient(160deg, var(--cw-bg-start), var(--cw-bg-end));
+      box-shadow:
+        0 0 var(--cw-glow-size) color-mix(in srgb, var(--cw-accent) var(--cw-glow), transparent),
+        0 18px 34px rgba(0, 0, 0, 0.34);
+    }
+
+    .workshop-preview .foil-layer,
+    .workshop-preview .particle-layer,
+    .workshop-preview .texture-layer,
+    .workshop-preview .mark-layer {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .workshop-preview .foil-layer {
+      z-index: 1;
+      opacity: 0;
+      mix-blend-mode: screen;
+    }
+
+    .workshop-preview .particle-layer {
+      z-index: 2;
+      opacity: 0;
+      mix-blend-mode: screen;
+    }
+
+    .workshop-preview .texture-layer {
+      z-index: 2;
+      opacity: 0;
+      mix-blend-mode: overlay;
+    }
+
+    .workshop-preview .mark-layer {
+      z-index: 6;
+    }
+
+    .workshop-preview .desktop-card.custom-surface .desktop-card-face::before {
+      background:
+        linear-gradient(118deg, transparent 0%, color-mix(in srgb, #ffffff var(--cw-highlight), transparent) 44%, transparent 60%),
+        radial-gradient(circle at 12% 14%, color-mix(in srgb, var(--cw-secondary) 18%, transparent), transparent 20%),
+        radial-gradient(circle at 92% 0%, color-mix(in srgb, var(--cw-accent) 18%, transparent), transparent 24%);
+    }
+
+    .workshop-preview .desktop-card.custom-surface .desktop-live-name,
+    .workshop-preview .desktop-card.custom-surface .desktop-live-date,
+    .workshop-preview .desktop-card.custom-surface .desktop-live-stat-value {
+      color: var(--cw-text);
+    }
+
+    .workshop-preview .desktop-card.custom-surface .desktop-live-team,
+    .workshop-preview .desktop-card.custom-surface .desktop-live-status,
+    .workshop-preview .desktop-card.custom-surface .desktop-live-stat-label {
+      color: var(--cw-muted);
+    }
+
+    .workshop-preview .desktop-card.custom-surface .desktop-live-opponent {
+      color: var(--cw-secondary);
+      text-shadow: 0 0 18px color-mix(in srgb, var(--cw-secondary) 36%, transparent);
+    }
+
+    .workshop-preview .desktop-card.custom-surface .desktop-live-kpanel {
+      border-color: color-mix(in srgb, var(--cw-border-color) 72%, #ffffff);
+      background: color-mix(in srgb, var(--cw-bg-end) 76%, #000000);
+    }
+
+    .workshop-preview .desktop-card.custom-surface .desktop-live-stats {
+      background: transparent;
+      border-color: transparent;
+    }
+
+    .workshop-preview .desktop-live-name {
+      color: var(--cw-player-color, #f4f0e8);
+      font-family: var(--cw-player-font, "Segoe UI", Arial, sans-serif);
+    }
+
+    .workshop-preview .desktop-live-team {
+      color: var(--cw-team-color, #ff942e);
+      font-family: var(--cw-team-font, "Segoe UI", Arial, sans-serif);
+    }
+
+    .workshop-preview .desktop-live-opponent,
+    .workshop-preview .desktop-live-date {
+      color: var(--cw-matchup-color, #f4f0e8);
+      font-family: var(--cw-game-font, "Segoe UI", Arial, sans-serif);
+    }
+
+    .workshop-preview .desktop-live-status,
+    .workshop-preview .desktop-live-time {
+      color: var(--cw-meta-color, #5db2ff);
+      font-family: var(--cw-game-font, "Segoe UI", Arial, sans-serif);
+    }
+
+    .workshop-preview .desktop-live-stat-label {
+      color: var(--cw-stat-label-color, #f4f0e8);
+      font-family: var(--cw-stat-font, "Segoe UI", Arial, sans-serif);
+    }
+
+    .workshop-preview .desktop-live-stat-value {
+      font-family: var(--cw-stat-font, "Segoe UI", Arial, sans-serif);
+    }
+
+    .workshop-preview .desktop-live-stat-value.desktop-live-stat-blue {
+      color: var(--cw-stat-under-color, #6bb6ff);
+    }
+
+    .workshop-preview .desktop-live-stat-value.desktop-live-stat-orange {
+      color: var(--cw-stat-over-color, #ff942e);
+    }
+
+    .workshop-preview .desktop-live-stat-value.stat-edge-value {
+      color: var(--cw-stat-edge-color, #6bb6ff);
+    }
+
+    .workshop-preview .desktop-live-line-chip {
+      font-family: var(--cw-chip-font, "Segoe UI", Arial, sans-serif);
+    }
+
+    .workshop-preview .desktop-live-line-chip-pitchiq {
+      color: var(--cw-iq-color, #fff089);
+    }
+
+    .workshop-preview .desktop-live-line-chip-dk {
+      color: var(--cw-dk-color, #5cff77);
+      border-color: color-mix(in srgb, var(--cw-dk-color, #5cff77), transparent 45%);
+      box-shadow: 0 0 18px color-mix(in srgb, var(--cw-dk-color, #5cff77), transparent 58%);
+    }
+
+    .workshop-preview .desktop-live-line-chip-fd {
+      color: var(--cw-fd-color, #6bb6ff);
+      border-color: color-mix(in srgb, var(--cw-fd-color, #6bb6ff), transparent 45%);
+      box-shadow: 0 0 18px color-mix(in srgb, var(--cw-fd-color, #6bb6ff), transparent 58%);
+    }
+
+    .workshop-preview .desktop-live-line-dk {
+      background: linear-gradient(180deg, color-mix(in srgb, var(--cw-dk-color, #5cff77), white 18%), var(--cw-dk-color, #5cff77));
+      box-shadow:
+        0 0 12px color-mix(in srgb, var(--cw-dk-color, #5cff77), transparent 35%),
+        0 0 22px color-mix(in srgb, var(--cw-dk-color, #5cff77), transparent 65%);
+    }
+
+    .workshop-preview .desktop-live-line-fd {
+      background: linear-gradient(180deg, color-mix(in srgb, var(--cw-fd-color, #6bb6ff), white 18%), var(--cw-fd-color, #6bb6ff));
+      box-shadow:
+        0 0 12px color-mix(in srgb, var(--cw-fd-color, #6bb6ff), transparent 35%),
+        0 0 22px color-mix(in srgb, var(--cw-fd-color, #6bb6ff), transparent 65%);
+    }
+
+    .workshop-preview .effect-edge-border .desktop-card-face {
+      border-color: transparent;
+      background:
+        linear-gradient(160deg, var(--cw-bg-start), var(--cw-bg-end)) padding-box,
+        conic-gradient(from var(--spin, 0deg), var(--cw-edge-color), var(--cw-edge-alt-color), #ffffff, var(--cw-edge-color)) border-box;
+      animation: borderSpin var(--cw-edge-speed) linear infinite;
+      animation-direction: var(--cw-edge-direction);
+    }
+
+    .workshop-preview .effect-edge-lava-edge .desktop-card-face {
+      border-color: transparent;
+      background:
+        linear-gradient(160deg, var(--cw-bg-start), var(--cw-bg-end)) padding-box,
+        conic-gradient(from var(--spin, 0deg), #ff3b19, #ffbc62, #ffe38a, #ff3b19) border-box;
+      animation: borderSpin var(--cw-edge-speed) linear infinite, pulseGlow var(--cw-edge-speed) ease-in-out infinite;
+      animation-direction: var(--cw-edge-direction);
+    }
+
+    .workshop-preview .effect-edge-frost-edge .desktop-card-face {
+      border-color: transparent;
+      background:
+        linear-gradient(160deg, var(--cw-bg-start), var(--cw-bg-end)) padding-box,
+        conic-gradient(from var(--spin, 0deg), #dffbff, #64f6ff, #76b9ff, #dffbff) border-box;
+      animation: borderSpin var(--cw-edge-speed) linear infinite;
+      animation-direction: var(--cw-edge-direction);
+    }
+
+    .workshop-preview .effect-edge-neon .desktop-card-face {
+      border-color: transparent;
+      background:
+        linear-gradient(160deg, var(--cw-bg-start), var(--cw-bg-end)) padding-box,
+        conic-gradient(from var(--spin, 0deg), color-mix(in srgb, var(--cw-edge-color), white 10%), color-mix(in srgb, var(--cw-edge-alt-color), white 8%), color-mix(in srgb, var(--cw-edge-color), white 18%), color-mix(in srgb, var(--cw-edge-alt-color), white 12%), color-mix(in srgb, var(--cw-edge-color), white 10%)) border-box;
+      animation: borderSpin var(--cw-edge-speed) linear infinite;
+      animation-direction: var(--cw-edge-direction);
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.08),
+        0 0 22px color-mix(in srgb, var(--cw-edge-color), transparent 62%),
+        0 0 42px color-mix(in srgb, var(--cw-edge-alt-color), transparent 74%);
+    }
+
+    .workshop-preview .effect-edge-bevel .desktop-card-face {
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.16),
+        inset 0 -1px 0 rgba(0,0,0,0.55),
+        inset 0 0 0 2px rgba(0,0,0,0.26),
+        0 0 calc(var(--cw-glow-decimal) * 34px) color-mix(in srgb, var(--cw-edge-color), transparent 30%);
+    }
+
+    .workshop-preview .effect-edge-gold-etch .desktop-card-front::after {
+      content: "";
+      position: absolute;
+      inset: 12px;
+      border: 1px solid color-mix(in srgb, var(--cw-edge-color), white 22%);
+      border-radius: calc(var(--cw-radius) - 6px);
+      background:
+        linear-gradient(90deg, transparent 48%, color-mix(in srgb, var(--cw-edge-color), transparent 58%) 49% 51%, transparent 52%) center 94px / 100% 1px no-repeat,
+        linear-gradient(0deg, transparent 48%, color-mix(in srgb, var(--cw-edge-color), transparent 68%) 49% 51%, transparent 52%) 50% 50% / 1px 100% no-repeat;
+      box-shadow: inset 0 0 18px color-mix(in srgb, var(--cw-edge-color), transparent 80%);
+      pointer-events: none;
+      z-index: 4;
+      opacity: 1;
+      transform: none;
+    }
+
+    .workshop-preview .effect-face-shimmer .desktop-card-face::after {
+      background: linear-gradient(115deg, transparent 38%, color-mix(in srgb, var(--cw-face-color), transparent 62%) 46%, color-mix(in srgb, var(--cw-face-color), white 16%) 50%, color-mix(in srgb, var(--cw-face-color), transparent 62%) 54%, transparent 62%);
+      animation: cardGlowSweep var(--cw-face-speed) ease-in-out infinite;
+      animation-direction: var(--cw-face-direction);
+    }
+
+    .workshop-preview .effect-face-spotlight .desktop-card-face::after {
+      background: linear-gradient(100deg, transparent 35%, rgba(255,255,255,0.32) 48%, color-mix(in srgb, var(--cw-face-color), white 36%) 50%, rgba(255,255,255,0.22) 52%, transparent 65%);
+      animation: cardGlowSweep var(--cw-face-speed) ease-in-out infinite;
+      animation-direction: var(--cw-face-direction);
+    }
+
+    .workshop-preview .effect-face-vignette .desktop-card-face::before {
+      background:
+        radial-gradient(circle at 50% 46%, rgba(255,255,255,0.08), transparent 58%),
+        radial-gradient(circle at 50% 50%, rgba(0,0,0,0.12), rgba(0,0,0,0.42) 68%, rgba(0,0,0,0.62) 100%),
+        linear-gradient(118deg, transparent 0%, rgba(255,255,255,0.08) 42%, transparent 58%),
+        radial-gradient(circle at 12% 14%, color-mix(in srgb, var(--cw-face-alt-color), transparent 70%), transparent 20%),
+        radial-gradient(circle at 92% 0%, color-mix(in srgb, var(--cw-face-color), transparent 72%), transparent 24%);
+    }
+
+    .workshop-preview .effect-face-holo .foil-layer {
+      opacity: 0.45;
+      background:
+        linear-gradient(125deg, rgba(255, 0, 122, 0.22), rgba(255, 221, 87, 0.2), rgba(67, 236, 211, 0.2), rgba(156, 146, 255, 0.26), rgba(255, 0, 122, 0.18)),
+        repeating-linear-gradient(98deg, transparent 0 12px, rgba(255,255,255,0.09) 13px 14px);
+      background-size: 240% 240%, auto;
+      mix-blend-mode: color-dodge;
+      animation: holoShift var(--cw-face-speed) linear infinite;
+      animation-direction: var(--cw-face-direction);
+    }
+
+    .workshop-preview .effect-face-prismatic .foil-layer {
+      opacity: 0.5;
+      background:
+        linear-gradient(128deg, rgba(255,0,120,0.32), rgba(255,235,95,0.22), rgba(63,245,214,0.28), rgba(114,132,255,0.3), rgba(255,0,120,0.24)),
+        repeating-linear-gradient(45deg, rgba(255,255,255,0.08) 0 1px, transparent 1px 8px);
+      background-size: 260% 260%, auto;
+      mix-blend-mode: color-dodge;
+      animation: prismaticDrift var(--cw-face-speed) linear infinite;
+      animation-direction: var(--cw-face-direction);
+    }
+
+    .workshop-preview .effect-face-iridescent .foil-layer {
+      opacity: 0.42;
+      background:
+        radial-gradient(circle at 18% 10%, rgba(255,255,255,0.12), transparent 28%),
+        linear-gradient(120deg, rgba(255,0,120,0.18), rgba(90,255,220,0.14), rgba(120,140,255,0.18), rgba(255,240,160,0.14), rgba(255,0,120,0.16));
+      background-size: auto, 240% 240%;
+      mix-blend-mode: color-dodge;
+      animation: iridescentWash var(--cw-face-speed) ease-in-out infinite;
+      animation-direction: var(--cw-face-direction);
+    }
+
+    .workshop-preview .effect-face-chrome .foil-layer {
+      opacity: 0.58;
+      background:
+        linear-gradient(100deg, rgba(255,255,255,0.08), rgba(255,255,255,0.45), rgba(110,130,150,0.18), rgba(255,255,255,0.32), rgba(0,0,0,0.08)),
+        repeating-linear-gradient(0deg, rgba(255,255,255,0.06) 0 1px, transparent 1px 5px);
+      background-size: 220% 100%, auto;
+      mix-blend-mode: screen;
+      animation: chromeSlide var(--cw-face-speed) ease-in-out infinite;
+      animation-direction: var(--cw-face-direction);
+    }
+
+    .workshop-preview .effect-face-black-diamond .foil-layer {
+      opacity: 0.5;
+      background:
+        linear-gradient(45deg, transparent 0 46%, rgba(255,255,255,0.16) 47% 49%, transparent 50%),
+        linear-gradient(-45deg, transparent 0 46%, rgba(255,255,255,0.1) 47% 49%, transparent 50%),
+        radial-gradient(circle at 50% 42%, color-mix(in srgb, var(--cw-face-color), transparent 70%), transparent 26%);
+      background-size: 38px 38px, 38px 38px, auto;
+      mix-blend-mode: screen;
+      animation: diamondGlint var(--cw-face-speed) ease-in-out infinite;
+      animation-direction: var(--cw-face-direction);
+    }
+
+    .workshop-preview .effect-face-cracked-ice .foil-layer {
+      opacity: 0.46;
+      background:
+        linear-gradient(34deg, transparent 0 38%, rgba(255,255,255,0.22) 39% 40%, transparent 41%),
+        linear-gradient(112deg, transparent 0 44%, color-mix(in srgb, var(--cw-face-color), transparent 55%) 45% 46%, transparent 47%),
+        linear-gradient(152deg, transparent 0 28%, rgba(255,255,255,0.16) 29% 30%, transparent 31%),
+        linear-gradient(74deg, transparent 0 62%, color-mix(in srgb, var(--cw-face-alt-color), transparent 62%) 63% 64%, transparent 65%);
+      mix-blend-mode: screen;
+      animation: iceFlash var(--cw-face-speed) ease-in-out infinite;
+      animation-direction: var(--cw-face-direction);
+    }
+
+    .workshop-preview .effect-face-sparks .particle-layer {
+      opacity: 0.85;
+      background-image:
+        radial-gradient(circle, rgba(255,255,255,0.9) 0 1px, transparent 2px),
+        radial-gradient(circle, color-mix(in srgb, var(--cw-face-alt-color), white 32%) 0 1px, transparent 2px),
+        radial-gradient(circle, color-mix(in srgb, var(--cw-face-color), white 20%) 0 1px, transparent 2px);
+      background-size: 90px 90px, 120px 120px, 160px 160px;
+      background-position: 8px 18px, 34px 56px, 72px 8px;
+      animation: sparkFloat var(--cw-face-speed) linear infinite;
+      animation-direction: var(--cw-face-direction);
+    }
+
+    .workshop-preview .effect-face-nebula .particle-layer {
+      opacity: 0.62;
+      background:
+        radial-gradient(circle at 22% 34%, color-mix(in srgb, var(--cw-face-color), transparent 50%), transparent 18%),
+        radial-gradient(circle at 76% 18%, color-mix(in srgb, var(--cw-face-alt-color), transparent 54%), transparent 22%),
+        radial-gradient(circle at 58% 76%, rgba(255,255,255,0.12), transparent 18%);
+      filter: blur(9px);
+      transform: scale(1.08);
+      animation: nebulaFloat var(--cw-face-speed) ease-in-out infinite alternate;
+      animation-direction: var(--cw-face-direction);
+    }
+
+    .workshop-preview .effect-face-confetti .particle-layer {
+      opacity: 0.9;
+      background-image:
+        linear-gradient(45deg, #ffbc62 0 45%, transparent 46%),
+        linear-gradient(135deg, #84dfa2 0 45%, transparent 46%),
+        linear-gradient(45deg, #76b9ff 0 45%, transparent 46%),
+        linear-gradient(135deg, #ff4fd8 0 45%, transparent 46%);
+      background-size: 24px 24px, 30px 30px, 36px 36px, 42px 42px;
+      background-position: 0 0, 12px 18px, 30px 8px, 48px 40px;
+      animation: confettiFall var(--cw-face-speed) linear infinite;
+      animation-direction: var(--cw-face-direction);
+    }
+
+    .workshop-preview .effect-face-pulse .desktop-card-face {
+      animation: pulseGlow var(--cw-face-speed) ease-in-out infinite;
+      animation-direction: var(--cw-face-direction);
+    }
+
+    .workshop-preview .effect-face-glitch .desktop-card-face {
+      animation: glitchJitter var(--cw-face-speed) steps(2, end) infinite;
+      animation-direction: var(--cw-face-direction);
+    }
+
+    .workshop-preview .effect-face-glitch .particle-layer {
+      opacity: 0.42;
+      background:
+        repeating-linear-gradient(0deg, transparent 0 7px, rgba(255,255,255,0.08) 8px 9px),
+        linear-gradient(90deg, color-mix(in srgb, var(--cw-face-color), transparent 68%), transparent 20%, color-mix(in srgb, var(--cw-face-alt-color), transparent 72%) 80%, transparent);
+      animation: glitchScan var(--cw-face-speed) steps(5, end) infinite;
+      animation-direction: var(--cw-face-direction);
+    }
+
+    .workshop-preview .effect-texture-grain .texture-layer {
+      opacity: 0.68;
+      mix-blend-mode: screen;
+      background:
+        repeating-radial-gradient(circle at 20% 30%, color-mix(in srgb, var(--cw-texture-color), transparent 42%) 0 0.7px, transparent 0.9px 3px),
+        repeating-radial-gradient(circle at 70% 60%, color-mix(in srgb, var(--cw-texture-alt-color), transparent 48%) 0 0.8px, transparent 1px 3.2px),
+        radial-gradient(circle at 12% 18%, color-mix(in srgb, var(--cw-texture-color), transparent 58%) 0 1px, transparent 2px),
+        radial-gradient(circle at 82% 22%, color-mix(in srgb, var(--cw-texture-alt-color), transparent 62%) 0 1px, transparent 2px);
+      background-size: 64px 64px, 72px 72px, 96px 96px, 110px 110px;
+      filter: saturate(150%) contrast(135%) brightness(112%) blur(0.15px);
+      animation: grainDrift var(--cw-texture-speed) steps(2, end) infinite;
+      animation-direction: var(--cw-texture-direction);
+    }
+
+    .workshop-preview .effect-texture-scanlines .texture-layer {
+      opacity: 0.58;
+      mix-blend-mode: screen;
+      background:
+        repeating-linear-gradient(0deg, color-mix(in srgb, var(--cw-texture-color), transparent 48%) 0px, color-mix(in srgb, var(--cw-texture-color), transparent 48%) 1px, transparent 2px, transparent 6px),
+        repeating-linear-gradient(90deg, transparent 0 18px, color-mix(in srgb, var(--cw-texture-alt-color), transparent 72%) 19px 20px, transparent 21px 38px);
+      animation: scanlineShift var(--cw-texture-speed) linear infinite;
+      animation-direction: var(--cw-texture-direction);
+    }
+
+    .workshop-preview .effect-texture-carbon .texture-layer {
+      opacity: 0.48;
+      mix-blend-mode: screen;
+      background:
+        linear-gradient(45deg, color-mix(in srgb, var(--cw-texture-color), transparent 48%) 0 12%, transparent 12% 50%, color-mix(in srgb, var(--cw-texture-alt-color), transparent 68%) 50% 62%, transparent 62% 100%),
+        linear-gradient(-45deg, color-mix(in srgb, var(--cw-texture-alt-color), transparent 56%) 0 12%, transparent 12% 50%, color-mix(in srgb, var(--cw-texture-color), transparent 76%) 50% 62%, transparent 62% 100%);
+      background-size: 18px 18px;
+      filter: saturate(145%) contrast(130%) brightness(105%);
+    }
+
+    .workshop-preview .effect-texture-topo .texture-layer {
+      opacity: 0.56;
+      mix-blend-mode: screen;
+      background:
+        repeating-radial-gradient(circle at 40% 40%, color-mix(in srgb, var(--cw-texture-color), transparent 48%) 0 1px, transparent 2px 11px),
+        repeating-radial-gradient(circle at 68% 56%, color-mix(in srgb, var(--cw-texture-alt-color), transparent 54%) 0 1px, transparent 2px 13px);
+      filter: blur(0.2px);
+      animation: topoDrift var(--cw-texture-speed) linear infinite;
+      animation-direction: var(--cw-texture-direction);
+    }
+
+    .workshop-preview .mark-layer::after {
+      position: absolute;
+      top: auto;
+      right: auto;
+      bottom: auto;
+      left: auto;
+      max-width: calc(100% - 36px);
+      line-height: 1;
+      font-family: var(--cw-mark-font-family);
+      font-weight: var(--cw-mark-font-weight);
+      font-style: var(--cw-mark-font-style);
+      text-transform: var(--cw-mark-text-transform);
+      overflow-wrap: anywhere;
+      z-index: 1;
+    }
+
+    .workshop-preview .mark-pos-top-left .mark-layer::after {
+      top: 18px;
+      left: 18px;
+    }
+
+    .workshop-preview .mark-pos-top-right .mark-layer::after {
+      top: 18px;
+      right: 18px;
+    }
+
+    .workshop-preview .mark-pos-bottom-left .mark-layer::after {
+      bottom: 18px;
+      left: 18px;
+    }
+
+    .workshop-preview .mark-pos-bottom-right .mark-layer::after {
+      right: 18px;
+      bottom: 18px;
+    }
+
+    .workshop-preview .effect-mark-numbered .mark-layer::after {
+      content: "001 / 250";
+      border: 1px solid color-mix(in srgb, var(--cw-mark-color), transparent 35%);
+      border-radius: 999px;
+      background: rgba(0,0,0,0.28);
+      color: color-mix(in srgb, var(--cw-mark-color), white 20%);
+      padding: 6px 10px;
+      font-size: calc(var(--cw-mark-size) * 0.72);
+      font-weight: 850;
+      letter-spacing: 0.08em;
+    }
+
+    .workshop-preview .effect-mark-signed .mark-layer::after {
+      content: "Tolle";
+      color: color-mix(in srgb, var(--cw-mark-color), white 28%);
+      font-family: "Segoe Script", "Brush Script MT", cursive;
+      font-size: calc(var(--cw-mark-size) * 1.65);
+      text-shadow: 0 0 16px color-mix(in srgb, var(--cw-mark-color), transparent 24%);
+      transform: rotate(-5deg);
+    }
+
+    .workshop-preview .effect-mark-red-stamp .mark-layer::after {
+      content: "LOST";
+      border: 4px solid color-mix(in srgb, var(--cw-mark-color), transparent 22%);
+      border-radius: 8px;
+      color: color-mix(in srgb, var(--cw-mark-color), white 12%);
+      padding: 8px 12px;
+      font-size: calc(var(--cw-mark-size) * 1.45);
+      font-weight: 950;
+      letter-spacing: 0.08em;
+      transform: rotate(-13deg);
+      text-shadow: 0 0 12px color-mix(in srgb, var(--cw-mark-color), transparent 45%);
+    }
+
+    .workshop-preview .effect-mark-embossed-logo .mark-layer::after {
+      content: "pitchIQ";
+      color: color-mix(in srgb, var(--cw-mark-color), transparent 90%);
+      font-size: calc(var(--cw-mark-size) * 2.2);
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      text-shadow: 1px 1px 0 rgba(255,255,255,0.07), -1px -1px 0 rgba(0,0,0,0.5);
+      transform: rotate(-18deg);
+    }
+
+    .workshop-preview .effect-mark-custom .mark-layer::after {
+      content: attr(data-mark-text);
+      border: 1px solid color-mix(in srgb, var(--cw-mark-color), transparent 42%);
+      border-radius: 8px;
+      background: rgba(0,0,0,0.24);
+      color: color-mix(in srgb, var(--cw-mark-color), white 18%);
+      padding: 7px 10px;
+      font-size: var(--cw-mark-size);
+      letter-spacing: 0.04em;
+      text-shadow: 0 0 14px color-mix(in srgb, var(--cw-mark-color), transparent 35%);
+      transform: rotate(var(--cw-mark-rotate));
+    }
+
+    .workshop-preview .effect-mark-numbered .mark-layer::after,
+    .workshop-preview .effect-mark-signed .mark-layer::after,
+    .workshop-preview .effect-mark-red-stamp .mark-layer::after,
+    .workshop-preview .effect-mark-embossed-logo .mark-layer::after,
+    .workshop-preview .effect-mark-custom .mark-layer::after {
+      animation: markDrift var(--cw-mark-speed) ease-in-out infinite;
+      animation-direction: var(--cw-mark-direction);
+    }
+
+    .workshop-preview .speed-paused-face .desktop-card-face,
+    .workshop-preview .speed-paused-face .desktop-card-face::after,
+    .workshop-preview .speed-paused-face .foil-layer,
+    .workshop-preview .speed-paused-face .particle-layer,
+    .workshop-preview .speed-paused-edge .desktop-card-face,
+    .workshop-preview .speed-paused-edge .desktop-card-front::after,
+    .workshop-preview .speed-paused-texture .texture-layer,
+    .workshop-preview .speed-paused-mark .mark-layer::after {
+      animation-play-state: paused !important;
+    }
+
+    .mark-custom-fields {
+      display: none;
+    }
+
+    .mark-custom-active .mark-custom-fields {
+      display: grid;
+    }
+
+    .drop-rate-ratio-fields,
+    .drop-rate-percent-field {
+      display: none;
+    }
+
+    .drop-rate-percent-mode .drop-rate-percent-field,
+    .drop-rate-ratio-mode .drop-rate-ratio-fields {
+      display: grid;
+    }
+
+    @property --spin {
+      syntax: "<angle>";
+      inherits: false;
+      initial-value: 0deg;
+    }
+
+    @keyframes cardGlowSweep {
+      0% { transform: translateX(-48%); opacity: 0; }
+      8% { opacity: 1; }
+      22% { opacity: 0.85; }
+      38%, 100% { transform: translateX(48%); opacity: 0; }
+    }
+
+    @keyframes holoShift {
+      from { background-position: 0% 0%, 0 0; }
+      to { background-position: 240% 120%, 90px 0; }
+    }
+
+    @keyframes borderSpin { to { --spin: 360deg; } }
+
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 0 1px rgba(255,255,255,0.1), 0 0 16px color-mix(in srgb, var(--cw-secondary), transparent 52%); }
+      50% { box-shadow: 0 0 0 1px rgba(255,255,255,0.14), 0 0 46px color-mix(in srgb, var(--cw-accent), transparent 18%); }
+    }
+
+    @keyframes sparkFloat { to { background-position: 98px -72px, -84px 176px, 216px 128px; } }
+    @keyframes prismaticDrift { from { background-position: 0% 0%, 0 0; } to { background-position: 260% 160%, 80px 0; } }
+    @keyframes iceFlash { 0%, 100% { filter: brightness(0.9); transform: translateX(0); } 45% { filter: brightness(1.25); transform: translateX(2px); } 52% { filter: brightness(1.5); transform: translateX(-1px); } }
+    @keyframes nebulaFloat { from { transform: scale(1.08) translate3d(-10px, 6px, 0); } to { transform: scale(1.12) translate3d(12px, -10px, 0); } }
+    @keyframes glitchJitter { 0%, 88%, 100% { transform: translate(0, 0); } 90% { transform: translate(1px, -1px); } 92% { transform: translate(-2px, 1px); } 94% { transform: translate(2px, 0); } }
+    @keyframes glitchScan { 0% { transform: translateY(-12%); } 40% { transform: translateY(18%); } 41% { transform: translateY(-8%); } 100% { transform: translateY(32%); } }
+    @keyframes confettiFall { to { background-position: 0 120px, 12px 150px, 30px 128px, 48px 160px; } }
+    @keyframes chromeSlide { 0%, 100% { background-position: 0% 0, 0 0; } 50% { background-position: 120% 0, 0 0; } }
+    @keyframes diamondGlint { 0%, 100% { filter: brightness(0.78); background-position: 0 0, 0 0, center; } 50% { filter: brightness(1.28); background-position: 20px 20px, -20px 20px, center; } }
+    @keyframes grainDrift { 0% { transform: translate3d(-1%, -1%, 0) scale(1.04); } 50% { transform: translate3d(1%, 0.6%, 0) scale(1.04); } 100% { transform: translate3d(-0.4%, 1%, 0) scale(1.04); } }
+    @keyframes scanlineShift { to { transform: translateY(6px); } }
+    @keyframes topoDrift { to { background-position: 120px 0, -90px 0; } }
+    @keyframes iridescentWash { 0%, 100% { background-position: center, 0% 0%; filter: brightness(0.95); } 45% { background-position: center, 110% 55%; filter: brightness(1.15); } 70% { background-position: center, 40% 140%; filter: brightness(1.05); } }
+    @keyframes markDrift { 0%, 100% { filter: brightness(0.92); } 50% { filter: brightness(1.22) drop-shadow(0 0 10px color-mix(in srgb, var(--cw-mark-color), transparent 45%)); } }
+
+    @media (max-width: 1040px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .preview-panel,
+      .control-stack.left,
+      .control-stack.right {
+        position: relative;
+        top: auto;
+        grid-column: auto;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .stage-actions,
+      .controls,
+      .field-grid {
+        grid-template-columns: 1fr;
+        width: 100%;
+      }
+
+      .preview-stage {
+        padding: 14px;
+        min-height: 500px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="workshop">
+    <section class="layout">
+      <aside class="control-stack left">
+        <div class="panel-header">
+          <div class="brand">
+            <img src="./images/pitchIQ%20Logo%20v4.png" alt="" />
+            <div>
+              <h1>Card Workshop</h1>
+              <div class="subhead">BaseDesign builder</div>
+            </div>
+          </div>
+          <button class="action-btn" id="reset-btn" type="button" title="Reset design">Reset</button>
+        </div>
+
+        <div class="control-panel">
+          <div class="panel-title">Player</div>
+          <div class="field-grid">
+            <div class="field full">
+              <label for="card-player-name">Player Name</label>
+              <input id="card-player-name" data-card-setting="playerName" type="text" value="Payton Tolle" autocomplete="off" />
+            </div>
+            <div class="field full">
+              <label for="card-team-name">Team</label>
+              <input id="card-team-name" data-card-setting="teamName" type="text" value="Boston Red Sox" autocomplete="off" />
+            </div>
+            <div class="field">
+              <label for="player-color">Name Color</label>
+              <input id="player-color" data-card-setting="playerColor" type="color" value="#f4f0e8" />
+            </div>
+            <div class="field">
+              <label for="team-color">Team Color</label>
+              <input id="team-color" data-card-setting="teamColor" type="color" value="#ff942e" />
+            </div>
+            <div class="field">
+              <label for="player-font">Name Type</label>
+              <select id="player-font" data-card-setting="playerFont">
+                <option value="block">Block</option>
+                <option value="condensed">Condensed</option>
+                <option value="serif">Serif</option>
+                <option value="mono">Mono</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="team-font">Team Type</label>
+              <select id="team-font" data-card-setting="teamFont">
+                <option value="block">Block</option>
+                <option value="condensed">Condensed</option>
+                <option value="serif">Serif</option>
+                <option value="mono">Mono</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="control-panel">
+          <div class="panel-title">Game</div>
+          <div class="field-grid">
+            <div class="field full">
+              <label for="card-opponent">Opponent</label>
+              <input id="card-opponent" data-card-setting="opponent" type="text" value="Tampa Bay Rays" autocomplete="off" />
+            </div>
+            <div class="field">
+              <label for="card-date">Date</label>
+              <input id="card-date" data-card-setting="gameDate" type="text" value="05/10/2026" autocomplete="off" />
+            </div>
+            <div class="field">
+              <label for="card-time">Time</label>
+              <input id="card-time" data-card-setting="gameTime" type="text" value="1:35 PM" autocomplete="off" />
+            </div>
+            <div class="field full">
+              <label for="card-umpire">Ump</label>
+              <input id="card-umpire" data-card-setting="umpire" type="text" value="John Libka" autocomplete="off" />
+            </div>
+            <div class="field">
+              <label for="matchup-color">Matchup Color</label>
+              <input id="matchup-color" data-card-setting="matchupColor" type="color" value="#f4f0e8" />
+            </div>
+            <div class="field">
+              <label for="meta-color">Meta Color</label>
+              <input id="meta-color" data-card-setting="metaColor" type="color" value="#5db2ff" />
+            </div>
+            <div class="field full">
+              <label for="game-font">Text Type</label>
+              <select id="game-font" data-card-setting="gameFont">
+                <option value="block">Block</option>
+                <option value="condensed">Condensed</option>
+                <option value="serif">Serif</option>
+                <option value="mono">Mono</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="control-panel">
+          <div class="panel-title">Stats</div>
+          <div class="field-grid">
+            <div class="field">
+              <label for="dk-under">DK Under</label>
+              <input id="dk-under" data-card-setting="dkUnder" type="text" value="-112" autocomplete="off" />
+            </div>
+            <div class="field">
+              <label for="dk-over">DK Over</label>
+              <input id="dk-over" data-card-setting="dkOver" type="text" value="-114" autocomplete="off" />
+            </div>
+            <div class="field">
+              <label for="fd-under">FD Under</label>
+              <input id="fd-under" data-card-setting="fdUnder" type="text" value="-132" autocomplete="off" />
+            </div>
+            <div class="field">
+              <label for="fd-over">FD Over</label>
+              <input id="fd-over" data-card-setting="fdOver" type="text" value="+100" autocomplete="off" />
+            </div>
+            <div class="field">
+              <label for="dk-edge">DK Edge</label>
+              <input id="dk-edge" data-card-setting="dkEdge" type="text" value="-0.79" autocomplete="off" />
+            </div>
+            <div class="field">
+              <label for="fd-edge">FD Edge</label>
+              <input id="fd-edge" data-card-setting="fdEdge" type="text" value="-0.79" autocomplete="off" />
+            </div>
+            <div class="field">
+              <label for="stat-label-color">Label Color</label>
+              <input id="stat-label-color" data-card-setting="statLabelColor" type="color" value="#f4f0e8" />
+            </div>
+            <div class="field">
+              <label for="stat-under-color">Under Color</label>
+              <input id="stat-under-color" data-card-setting="statUnderColor" type="color" value="#6bb6ff" />
+            </div>
+            <div class="field">
+              <label for="stat-over-color">Over Color</label>
+              <input id="stat-over-color" data-card-setting="statOverColor" type="color" value="#ff942e" />
+            </div>
+            <div class="field">
+              <label for="stat-edge-color">Edge Color</label>
+              <input id="stat-edge-color" data-card-setting="statEdgeColor" type="color" value="#6bb6ff" />
+            </div>
+            <div class="field full">
+              <label for="stat-font">Text Type</label>
+              <select id="stat-font" data-card-setting="statFont">
+                <option value="block">Block</option>
+                <option value="condensed">Condensed</option>
+                <option value="serif">Serif</option>
+                <option value="mono">Mono</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="control-panel">
+          <div class="panel-title">Line Circles</div>
+          <div class="field-grid">
+            <div class="field">
+              <label for="iq-value">IQ</label>
+              <input id="iq-value" data-card-setting="iqValue" type="text" value="4.71" autocomplete="off" />
+            </div>
+            <div class="field">
+              <label for="dk-line-value">DK</label>
+              <input id="dk-line-value" data-card-setting="dkLine" type="number" min="0" step="0.5" value="5.5" />
+            </div>
+            <div class="field">
+              <label for="fd-line-value">FD</label>
+              <input id="fd-line-value" data-card-setting="fdLine" type="number" min="0" step="0.5" value="6.5" />
+            </div>
+            <div class="field">
+              <label for="chip-font">Text Type</label>
+              <select id="chip-font" data-card-setting="chipFont">
+                <option value="block">Block</option>
+                <option value="condensed">Condensed</option>
+                <option value="serif">Serif</option>
+                <option value="mono">Mono</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="iq-color">IQ Color</label>
+              <input id="iq-color" data-card-setting="iqColor" type="color" value="#fff089" />
+            </div>
+            <div class="field">
+              <label for="dk-color">DK Color</label>
+              <input id="dk-color" data-card-setting="dkColor" type="color" value="#5cff77" />
+            </div>
+            <div class="field">
+              <label for="fd-color">FD Color</label>
+              <input id="fd-color" data-card-setting="fdColor" type="color" value="#6bb6ff" />
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <section class="preview-panel">
+        <div class="stage-toolbar">
+          <div>
+            <div class="panel-title">Live Preview</div>
+            <div class="subhead">Uses the shared BaseDesign card shell.</div>
+          </div>
+          <div class="stage-actions">
+            <button class="action-btn" id="random-btn" type="button">Randomize</button>
+            <button class="action-btn primary" id="copy-btn" type="button">Copy CSS</button>
+          </div>
+        </div>
+        <div class="preview-stage">
+          <div class="preview-scale workshop-preview">
+            <article class="desktop-card live card-style-workshop" id="preview-card" data-card-style="workshop">
+              <div class="desktop-card-shell">
+                <div class="desktop-card-face desktop-card-front">
+                  <div class="foil-layer" aria-hidden="true"></div>
+                  <div class="particle-layer" aria-hidden="true"></div>
+                  <div class="texture-layer" aria-hidden="true"></div>
+                  <div class="mark-layer" aria-hidden="true"></div>
+                  <div class="desktop-live-watermark" aria-hidden="true">
+                    <img src="images/pitchIQ%20Logo%20v4.png" alt="" />
+                  </div>
+                  <div class="desktop-live-layout">
+                    <div class="desktop-live-header">
+                      <h2 class="desktop-live-name" id="preview-player-name">Payton Tolle</h2>
+                      <div class="desktop-live-team" id="preview-team-name">Boston Red Sox</div>
+                    </div>
+                    <div class="desktop-live-matchup">
+                      <div class="desktop-live-opponent"><span class="desktop-live-matchup-vs">vs</span><span id="preview-opponent">Tampa Bay Rays</span></div>
+                      <span class="desktop-live-date" id="preview-date">05/10/2026</span>
+                      <div class="desktop-live-status" id="preview-umpire">Ump: John Libka</div>
+                      <span class="desktop-live-time" id="preview-time">1:35 PM</span>
+                    </div>
+                    <div class="desktop-live-corner-grid">
+                      <div class="desktop-live-stats desktop-live-pitchiq-stats-columns">
+                        <div class="desktop-live-sk-column">
+                          <div class="desktop-live-stat-stack">
+                            <div class="desktop-live-stat">
+                              <span class="desktop-live-stat-label">DK Under</span>
+                              <span class="desktop-live-stat-value desktop-live-stat-blue" id="preview-dk-under">-112</span>
+                            </div>
+                            <div class="desktop-live-stat">
+                              <span class="desktop-live-stat-label">FD Under</span>
+                              <span class="desktop-live-stat-value desktop-live-stat-blue" id="preview-fd-under">-132</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="desktop-live-sk-column">
+                          <div class="desktop-live-stat-stack">
+                            <div class="desktop-live-stat">
+                              <span class="desktop-live-stat-label">DK Over</span>
+                              <span class="desktop-live-stat-value desktop-live-stat-orange" id="preview-dk-over">-114</span>
+                            </div>
+                            <div class="desktop-live-stat">
+                              <span class="desktop-live-stat-label">FD Over</span>
+                              <span class="desktop-live-stat-value desktop-live-stat-orange" id="preview-fd-over">+100</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="desktop-live-sk-column">
+                          <div class="desktop-live-stat-stack">
+                            <div class="desktop-live-stat">
+                              <span class="desktop-live-stat-label">DK Edge</span>
+                              <span class="desktop-live-stat-value desktop-live-stat-blue stat-edge-value" id="preview-dk-edge">-0.79</span>
+                            </div>
+                            <div class="desktop-live-stat">
+                              <span class="desktop-live-stat-label">FD Edge</span>
+                              <span class="desktop-live-stat-value desktop-live-stat-blue stat-edge-value" id="preview-fd-edge">-0.79</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="desktop-live-notes-row">
+                          <div class="desktop-live-notes-copy"></div>
+                        </div>
+                      </div>
+                      <div class="desktop-live-chip-bridge">
+                        <div class="desktop-live-chip-row">
+                          <div class="desktop-live-line-chip desktop-live-line-chip-pitchiq">
+                            <span class="desktop-live-line-chip-label">IQ</span>
+                            <span class="desktop-live-line-chip-value" id="preview-iq-value">4.71</span>
+                          </div>
+                          <div class="desktop-live-line-chip desktop-live-line-chip-dk line-pulse-dk">
+                            <span class="desktop-live-line-chip-label">DK</span>
+                            <span class="desktop-live-line-chip-value" id="preview-dk-line">5.5</span>
+                          </div>
+                          <div class="desktop-live-line-chip desktop-live-line-chip-fd">
+                            <span class="desktop-live-line-chip-label">FD</span>
+                            <span class="desktop-live-line-chip-value" id="preview-fd-line">6.5</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="desktop-live-kpanel">
+                      <div class="desktop-live-line-layer" aria-hidden="true">
+                      </div>
+                      <div class="desktop-live-dot-track">
+                        <div class="desktop-live-dot-row" id="dot-row"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+        <div class="status-bar">
+          <span>BaseDesign source preview</span>
+          <span>Effect changes apply live</span>
+        </div>
+      </section>
+
+      <aside class="control-stack right">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Build Controls</div>
+            <div class="subhead">Tune effects, presets, and export output.</div>
+          </div>
+        </div>
+        <section class="controls">
+          <div class="control-panel">
+            <div class="panel-title">Surface</div>
+            <div class="field-grid">
+              <div class="field full">
+                <label for="style-name">Style Name</label>
+                <input id="style-name" type="text" value="NewStyle" autocomplete="off" />
+              </div>
+              <div class="field">
+                <label for="bg-start">Top Color</label>
+                <input id="bg-start" data-setting="bgStart" type="color" value="#172033" />
+              </div>
+              <div class="field">
+                <label for="bg-end">Bottom Color</label>
+                <input id="bg-end" data-setting="bgEnd" type="color" value="#03070c" />
+              </div>
+              <div class="field">
+                <label for="accent">Accent</label>
+                <input id="accent" data-setting="accent" type="color" value="#6bb6ff" />
+              </div>
+              <div class="field">
+                <label for="secondary">Secondary</label>
+                <input id="secondary" data-setting="secondary" type="color" value="#ff942e" />
+              </div>
+              <div class="field">
+                <label for="text">Text</label>
+                <input id="text" data-setting="text" type="color" value="#f6f1e8" />
+              </div>
+              <div class="field">
+                <label for="muted">Muted</label>
+                <input id="muted" data-setting="muted" type="color" value="#aab2c0" />
+              </div>
+              <div class="field">
+                <label for="border-color">Border</label>
+                <input id="border-color" data-setting="borderColor" type="color" value="#020203" />
+              </div>
+              <div class="field">
+                <label for="border-width">Width</label>
+                <div class="range-row">
+                  <input id="border-width" data-setting="borderWidth" type="range" min="1" max="12" value="6" />
+                  <span class="range-value" data-value-for="border-width">6px</span>
+                </div>
+              </div>
+              <div class="field">
+                <label for="radius">Radius</label>
+                <div class="range-row">
+                  <input id="radius" data-setting="radius" type="range" min="4" max="30" value="18" />
+                  <span class="range-value" data-value-for="radius">18px</span>
+                </div>
+              </div>
+              <div class="field">
+                <label for="glow">Glow</label>
+                <div class="range-row">
+                  <input id="glow" data-setting="glow" type="range" min="0" max="80" value="34" />
+                  <span class="range-value" data-value-for="glow">34%</span>
+                </div>
+              </div>
+              <div class="field">
+                <label for="glow-size">Glow Size</label>
+                <div class="range-row">
+                  <input id="glow-size" data-setting="glowSize" type="range" min="0" max="70" value="26" />
+                  <span class="range-value" data-value-for="glow-size">26px</span>
+                </div>
+              </div>
+              <div class="field">
+                <label for="highlight">Highlight</label>
+                <div class="range-row">
+                  <input id="highlight" data-setting="highlight" type="range" min="0" max="22" value="8" />
+                  <span class="range-value" data-value-for="highlight">8%</span>
+                </div>
+              </div>
+              <div class="field">
+                <label for="orb-x">Orb X</label>
+                <div class="range-row">
+                  <input id="orb-x" data-setting="orbX" type="range" min="0" max="100" value="88" />
+                  <span class="range-value" data-value-for="orb-x">88%</span>
+                </div>
+              </div>
+              <div class="field">
+                <label for="orb-y">Orb Y</label>
+                <div class="range-row">
+                  <input id="orb-y" data-setting="orbY" type="range" min="0" max="100" value="0" />
+                  <span class="range-value" data-value-for="orb-y">0%</span>
+                </div>
+              </div>
+              <div class="field">
+                <label for="orb-strength">Orb Strength</label>
+                <div class="range-row">
+                  <input id="orb-strength" data-setting="orbStrength" type="range" min="0" max="45" value="22" />
+                  <span class="range-value" data-value-for="orb-strength">22%</span>
+                </div>
+              </div>
+              <div class="field">
+                <label for="sheen">Sheen</label>
+                <div class="range-row">
+                  <input id="sheen" data-setting="sheen" type="range" min="0" max="20" value="10" />
+                  <span class="range-value" data-value-for="sheen">10%</span>
+                </div>
+              </div>
+              <div class="field">
+                <label for="sheen-angle">Sheen Angle</label>
+                <div class="range-row">
+                  <input id="sheen-angle" data-setting="sheenAngle" type="range" min="0" max="360" value="135" />
+                  <span class="range-value" data-value-for="sheen-angle">135deg</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="control-panel">
+            <div class="panel-title">Effects</div>
+            <div class="effect-tile">
+              <div class="effect-tile-title">Face <span>surface overlay</span></div>
+              <div class="field-grid">
+                <div class="field full">
+                  <label for="face-effect">Effect</label>
+                <select id="face-effect">
+                  <option value="none">Clean</option>
+                  <option value="shimmer">Shimmer Sweep</option>
+                  <option value="spotlight">Spotlight Sweep</option>
+                  <option value="vignette">Vignette</option>
+                  <option value="holo">Holographic Foil</option>
+                  <option value="prismatic">Prismatic Foil</option>
+                  <option value="iridescent">Iridescent Wash</option>
+                  <option value="chrome">Chrome Plate</option>
+                  <option value="black-diamond">Black Diamond</option>
+                  <option value="cracked-ice">Cracked Ice</option>
+                  <option value="sparks">Spark Field</option>
+                  <option value="nebula">Nebula Dust</option>
+                  <option value="confetti">Confetti Burst</option>
+                  <option value="pulse">Glow Pulse</option>
+                  <option value="glitch">Static Glitch</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="face-color">Primary</label>
+                  <input id="face-color" data-effect-setting="faceColor" type="color" value="#76b9ff" />
+                </div>
+                <div class="field">
+                  <label for="face-alt-color">Alt</label>
+                  <input id="face-alt-color" data-effect-setting="faceAltColor" type="color" value="#ff942e" />
+                </div>
+                <div class="field">
+                  <label for="face-speed">Speed</label>
+                  <div class="range-row">
+                    <input id="face-speed" data-effect-setting="faceSpeed" type="range" min="0" max="18" value="8" />
+                    <span class="range-value" data-value-for="face-speed">8s</span>
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="face-direction">Direction</label>
+                  <select id="face-direction" data-effect-setting="faceDirection">
+                    <option value="normal">Forward</option>
+                    <option value="reverse">Reverse</option>
+                    <option value="alternate">Alternate</option>
+                    <option value="alternate-reverse">Alt Reverse</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="effect-tile">
+              <div class="effect-tile-title">Edge <span>border and rim</span></div>
+              <div class="field-grid">
+                <div class="field full">
+                  <label for="edge-effect">Effect</label>
+                <select id="edge-effect">
+                  <option value="none">None</option>
+                  <option value="border">Animated Border</option>
+                  <option value="lava-edge">Lava Edge</option>
+                  <option value="frost-edge">Frost Edge</option>
+                  <option value="gold-etch">Gold Etching</option>
+                  <option value="neon">Neon Rim</option>
+                  <option value="bevel">Bevel Frame</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="edge-color">Primary</label>
+                  <input id="edge-color" data-effect-setting="edgeColor" type="color" value="#ff942e" />
+                </div>
+                <div class="field">
+                  <label for="edge-alt-color">Alt</label>
+                  <input id="edge-alt-color" data-effect-setting="edgeAltColor" type="color" value="#76b9ff" />
+                </div>
+                <div class="field">
+                  <label for="edge-speed">Speed</label>
+                  <div class="range-row">
+                    <input id="edge-speed" data-effect-setting="edgeSpeed" type="range" min="0" max="18" value="8" />
+                    <span class="range-value" data-value-for="edge-speed">8s</span>
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="edge-direction">Direction</label>
+                  <select id="edge-direction" data-effect-setting="edgeDirection">
+                    <option value="normal">Forward</option>
+                    <option value="reverse">Reverse</option>
+                    <option value="alternate">Alternate</option>
+                    <option value="alternate-reverse">Alt Reverse</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="effect-tile">
+              <div class="effect-tile-title">Texture <span>grain and patterns</span></div>
+              <div class="field-grid">
+                <div class="field full">
+                  <label for="texture-effect">Effect</label>
+                <select id="texture-effect">
+                  <option value="none">None</option>
+                  <option value="grain">Film Grain</option>
+                  <option value="scanlines">Scanlines</option>
+                  <option value="carbon">Carbon Fiber</option>
+                  <option value="topo">Topo Lines</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="texture-color">Primary</label>
+                  <input id="texture-color" data-effect-setting="textureColor" type="color" value="#ffffff" />
+                </div>
+                <div class="field">
+                  <label for="texture-alt-color">Alt</label>
+                  <input id="texture-alt-color" data-effect-setting="textureAltColor" type="color" value="#76b9ff" />
+                </div>
+                <div class="field">
+                  <label for="texture-speed">Speed</label>
+                  <div class="range-row">
+                    <input id="texture-speed" data-effect-setting="textureSpeed" type="range" min="0" max="18" value="8" />
+                    <span class="range-value" data-value-for="texture-speed">8s</span>
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="texture-direction">Direction</label>
+                  <select id="texture-direction" data-effect-setting="textureDirection">
+                    <option value="normal">Forward</option>
+                    <option value="reverse">Reverse</option>
+                    <option value="alternate">Alternate</option>
+                    <option value="alternate-reverse">Alt Reverse</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="effect-tile" id="mark-tile">
+              <div class="effect-tile-title">Mark <span>collectible stamps</span></div>
+              <div class="field-grid">
+                <div class="field full">
+                  <label for="mark-effect">Effect</label>
+                <select id="mark-effect">
+                  <option value="none">None</option>
+                  <option value="embossed-logo">Embossed Logo</option>
+                  <option value="numbered">Numbered Mint</option>
+                  <option value="signed">Signed Card</option>
+                  <option value="red-stamp">Red Stamp</option>
+                  <option value="custom">Custom Text</option>
+                  </select>
+                </div>
+                <div class="field full">
+                  <label for="mark-position">Corner</label>
+                  <select id="mark-position" data-effect-setting="markPosition">
+                    <option value="bottom-left">Bottom Left</option>
+                    <option value="bottom-right">Bottom Right</option>
+                    <option value="top-left">Top Left</option>
+                    <option value="top-right">Top Right</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="mark-color">Primary</label>
+                  <input id="mark-color" data-effect-setting="markColor" type="color" value="#ff942e" />
+                </div>
+                <div class="field">
+                  <label for="mark-size">Size</label>
+                  <div class="range-row">
+                    <input id="mark-size" data-effect-setting="markSize" type="range" min="0.55" max="2.4" step="0.05" value="1" />
+                    <span class="range-value" data-value-for="mark-size">1rem</span>
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="mark-speed">Speed</label>
+                  <div class="range-row">
+                    <input id="mark-speed" data-effect-setting="markSpeed" type="range" min="0" max="18" value="8" />
+                    <span class="range-value" data-value-for="mark-speed">8s</span>
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="mark-direction">Direction</label>
+                  <select id="mark-direction" data-effect-setting="markDirection">
+                    <option value="normal">Forward</option>
+                    <option value="reverse">Reverse</option>
+                    <option value="alternate">Alternate</option>
+                    <option value="alternate-reverse">Alt Reverse</option>
+                  </select>
+                </div>
+                <div class="field full mark-custom-fields">
+                  <label for="mark-text">Custom Text</label>
+                  <input id="mark-text" data-effect-setting="markText" type="text" value="1st Edition" autocomplete="off" />
+                </div>
+                <div class="field mark-custom-fields">
+                  <label for="mark-font">Text Type</label>
+                  <select id="mark-font" data-effect-setting="markFont">
+                    <option value="block">Block</option>
+                    <option value="script">Script</option>
+                    <option value="mono">Mono</option>
+                    <option value="serif">Serif</option>
+                    <option value="stamp">Stamp</option>
+                  </select>
+                </div>
+                <div class="field mark-custom-fields">
+                  <label for="mark-rotate">Tilt</label>
+                  <div class="range-row">
+                    <input id="mark-rotate" data-effect-setting="markRotate" type="range" min="-25" max="25" value="-6" />
+                    <span class="range-value" data-value-for="mark-rotate">-6deg</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="control-panel">
+            <div class="panel-title">Presets</div>
+            <div class="field-grid">
+              <div class="field full">
+                <label for="preset">Preset</label>
+                <select id="preset">
+                  <option value="base">BaseDesign</option>
+                  <option value="midnight">Midnight Chrome</option>
+                  <option value="emerald">Emerald Edge</option>
+                  <option value="sunset">Sunset Heat</option>
+                  <option value="mono">Monochrome Ice</option>
+                </select>
+              </div>
+              <div class="field full" id="drop-rate-tile">
+                <label for="drop-rate-mode">Drop Rate</label>
+                <select id="drop-rate-mode">
+                  <option value="percent">Percent</option>
+                  <option value="ratio">Ratio / Rate</option>
+                </select>
+              </div>
+              <div class="field full drop-rate-percent-field">
+                <label for="drop-rate">Percent Chance</label>
+                <div class="range-row">
+                  <input id="drop-rate" type="range" min="0" max="100" step="0.1" value="5" />
+                  <span class="range-value" data-value-for="drop-rate">5%</span>
+                </div>
+              </div>
+              <div class="field drop-rate-ratio-fields">
+                <label for="drop-rate-ratio-hit">Hits</label>
+                <input id="drop-rate-ratio-hit" type="number" min="1" step="1" value="1" />
+              </div>
+              <div class="field drop-rate-ratio-fields">
+                <label for="drop-rate-ratio-out-of">Out Of</label>
+                <input id="drop-rate-ratio-out-of" type="number" min="1" step="1" value="750" />
+              </div>
+              <div class="field full">
+                <label>Resolved Rate</label>
+                <span class="range-value" id="drop-rate-summary">5%</span>
+              </div>
+              <div class="field full">
+                <label for="style-id">Style ID</label>
+                <input id="style-id" type="text" value="new-style" autocomplete="off" />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="export-panel">
+          <div class="panel-title">
+            <span>Generated CSS</span>
+            <span class="toast" id="toast"></span>
+          </div>
+          <textarea id="css-output" spellcheck="false"></textarea>
+        </section>
+      </aside>
+    </section>
+  </main>
+
+  <script>
+    const defaults = {
+      bgStart: "#172033",
+      bgEnd: "#03070c",
+      accent: "#6bb6ff",
+      secondary: "#ff942e",
+      text: "#f6f1e8",
+      muted: "#aab2c0",
+      borderColor: "#020203",
+      borderWidth: 6,
+      radius: 18,
+      glow: 34,
+      glowSize: 26,
+      highlight: 8,
+      orbX: 88,
+      orbY: 0,
+      orbStrength: 22,
+      sheen: 10,
+      sheenAngle: 135,
+    };
+
+    const effectDefaults = {
+      faceColor: "#76b9ff",
+      faceAltColor: "#ff942e",
+      faceSpeed: 8,
+      faceDirection: "normal",
+      edgeColor: "#ff942e",
+      edgeAltColor: "#76b9ff",
+      edgeSpeed: 8,
+      edgeDirection: "normal",
+      textureColor: "#ffffff",
+      textureAltColor: "#76b9ff",
+      textureSpeed: 8,
+      textureDirection: "normal",
+      markColor: "#ff942e",
+      markPosition: "bottom-left",
+      markSize: 1,
+      markSpeed: 8,
+      markDirection: "normal",
+      markText: "1st Edition",
+      markFont: "block",
+      markRotate: -6,
+    };
+
+    const presets = {
+      base: defaults,
+      midnight: {
+        ...defaults,
+        bgStart: "#101828",
+        bgEnd: "#02030a",
+        accent: "#7cf4ff",
+        secondary: "#c9a7ff",
+        borderColor: "#070b12",
+        glow: 54,
+        highlight: 12,
+        orbStrength: 30,
+      },
+      emerald: {
+        ...defaults,
+        bgStart: "#10241c",
+        bgEnd: "#020806",
+        accent: "#39ff6a",
+        secondary: "#ffd84f",
+        borderColor: "#061109",
+        glow: 48,
+        orbX: 18,
+        orbY: 4,
+      },
+      sunset: {
+        ...defaults,
+        bgStart: "#30171f",
+        bgEnd: "#090307",
+        accent: "#ff4d7d",
+        secondary: "#ffb14a",
+        borderColor: "#17050b",
+        glow: 44,
+        sheenAngle: 115,
+      },
+      mono: {
+        ...defaults,
+        bgStart: "#20242b",
+        bgEnd: "#050607",
+        accent: "#e5f2ff",
+        secondary: "#aab2c0",
+        borderColor: "#11151b",
+        glow: 28,
+        highlight: 14,
+        orbStrength: 18,
+      },
+    };
+
+    const units = {
+      borderWidth: "px",
+      radius: "px",
+      glow: "%",
+      glowSize: "px",
+      highlight: "%",
+      orbX: "%",
+      orbY: "%",
+      orbStrength: "%",
+      sheen: "%",
+      sheenAngle: "deg",
+      faceSpeed: "s",
+      edgeSpeed: "s",
+      textureSpeed: "s",
+      markSize: "rem",
+      markSpeed: "s",
+      markRotate: "deg",
+    };
+
+    const markFontStyles = {
+      block: {
+        family: '"Segoe UI", Arial, sans-serif',
+        weight: "900",
+        style: "normal",
+        transform: "uppercase",
+      },
+      script: {
+        family: '"Segoe Script", "Brush Script MT", cursive',
+        weight: "700",
+        style: "normal",
+        transform: "none",
+      },
+      mono: {
+        family: 'Consolas, "Courier New", monospace',
+        weight: "850",
+        style: "normal",
+        transform: "uppercase",
+      },
+      serif: {
+        family: 'Georgia, "Times New Roman", serif',
+        weight: "800",
+        style: "italic",
+        transform: "none",
+      },
+      stamp: {
+        family: '"Arial Black", Impact, sans-serif',
+        weight: "950",
+        style: "normal",
+        transform: "uppercase",
+      },
+    };
+
+    const cardDefaults = {
+      playerName: "Payton Tolle",
+      teamName: "Boston Red Sox",
+      playerColor: "#f4f0e8",
+      teamColor: "#ff942e",
+      playerFont: "block",
+      teamFont: "block",
+      opponent: "Tampa Bay Rays",
+      gameDate: "05/10/2026",
+      gameTime: "1:35 PM",
+      umpire: "John Libka",
+      matchupColor: "#f4f0e8",
+      metaColor: "#5db2ff",
+      gameFont: "block",
+      dkUnder: "-112",
+      dkOver: "-114",
+      fdUnder: "-132",
+      fdOver: "+100",
+      dkEdge: "-0.79",
+      fdEdge: "-0.79",
+      statLabelColor: "#f4f0e8",
+      statUnderColor: "#6bb6ff",
+      statOverColor: "#ff942e",
+      statEdgeColor: "#6bb6ff",
+      statFont: "block",
+      iqValue: "4.71",
+      dkLine: "5.5",
+      fdLine: "6.5",
+      chipFont: "block",
+      iqColor: "#fff089",
+      dkColor: "#5cff77",
+      fdColor: "#6bb6ff",
+    };
+
+    const textFontStyles = {
+      block: '"Segoe UI", Arial, sans-serif',
+      condensed: '"Arial Narrow", "Segoe UI Condensed", "Segoe UI", Arial, sans-serif',
+      serif: 'Georgia, "Times New Roman", serif',
+      mono: 'Consolas, "Courier New", monospace',
+    };
+
+    const card = document.getElementById("preview-card");
+    const output = document.getElementById("css-output");
+    const toast = document.getElementById("toast");
+    const styleNameInput = document.getElementById("style-name");
+    const styleIdInput = document.getElementById("style-id");
+    const dropRateTile = document.getElementById("drop-rate-tile");
+    const dropRateModeInput = document.getElementById("drop-rate-mode");
+    const dropRateInput = document.getElementById("drop-rate");
+    const dropRateRatioHitInput = document.getElementById("drop-rate-ratio-hit");
+    const dropRateRatioOutOfInput = document.getElementById("drop-rate-ratio-out-of");
+    const dropRateSummary = document.getElementById("drop-rate-summary");
+    const controls = Array.from(document.querySelectorAll("[data-setting]"));
+    const cardControls = Array.from(document.querySelectorAll("[data-card-setting]"));
+    const effectControls = Array.from(document.querySelectorAll("[data-effect-setting]"));
+    const effectSelects = {
+      face: document.getElementById("face-effect"),
+      edge: document.getElementById("edge-effect"),
+      texture: document.getElementById("texture-effect"),
+      mark: document.getElementById("mark-effect"),
+    };
+    const markTile = document.getElementById("mark-tile");
+    const markLayer = card.querySelector(".mark-layer");
+    const liveLineLayer = card.querySelector(".desktop-live-line-layer");
+    const previewFields = {
+      playerName: document.getElementById("preview-player-name"),
+      teamName: document.getElementById("preview-team-name"),
+      opponent: document.getElementById("preview-opponent"),
+      gameDate: document.getElementById("preview-date"),
+      gameTime: document.getElementById("preview-time"),
+      umpire: document.getElementById("preview-umpire"),
+      dkUnder: document.getElementById("preview-dk-under"),
+      dkOver: document.getElementById("preview-dk-over"),
+      fdUnder: document.getElementById("preview-fd-under"),
+      fdOver: document.getElementById("preview-fd-over"),
+      dkEdge: document.getElementById("preview-dk-edge"),
+      fdEdge: document.getElementById("preview-fd-edge"),
+      iqValue: document.getElementById("preview-iq-value"),
+      dkLine: document.getElementById("preview-dk-line"),
+      fdLine: document.getElementById("preview-fd-line"),
+    };
+    const LIVE_K_DOT_COUNT = 10;
+    const LIVE_K_DOT_GAP_PX = 3;
+    const workshopPreviewGame = {
+      dkLine: 5.5,
+      fdLine: 6.5,
+      discrepancyBook: "dk",
+    };
+    let customSurfaceEnabled = false;
+
+    function ballSvg(index) {
+      return `<span class="desktop-live-dot-cell"><span class="desktop-live-dot">
+        <svg class="desktop-live-dot-ball" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+          <circle cx="16" cy="16" r="14.35" fill="#ffffff" stroke="rgba(28,29,34,0.5)" stroke-width="0.75"/>
+          <path d="M5.86 5.86Q12.15 16 5.86 26.14" fill="none" stroke="#b81d25" stroke-width="1" stroke-linecap="round"/>
+          <path d="M26.14 5.86Q19.85 16 26.14 26.14" fill="none" stroke="#b81d25" stroke-width="1" stroke-linecap="round"/>
+        </svg>
+        <span class="desktop-live-dot-label" aria-hidden="true">${index + 1}</span>
+      </span></span>`;
+    }
+
+    document.getElementById("dot-row").innerHTML = Array.from({ length: 10 }, (_, index) => ballSvg(index)).join("");
+
+    function liveKLineBoundarySlot(line) {
+      if (line === null || line === undefined || !Number.isFinite(line) || line <= 0) return null;
+      const gapAfterBall = Math.round(line - 0.5);
+      return Math.min(LIVE_K_DOT_COUNT - 1, Math.max(1, gapAfterBall));
+    }
+
+    function liveKLineMarkerLeftCalc(boundarySlot) {
+      const g = LIVE_K_DOT_GAP_PX;
+      const n = LIVE_K_DOT_COUNT;
+      return `calc(${boundarySlot} * (100% - ${(n - 1) * g}px) / ${n} + ${(boundarySlot - 1) * g}px + ${g / 2}px)`;
+    }
+
+    function renderWorkshopKLineMarkers() {
+      const dkSlot = liveKLineBoundarySlot(workshopPreviewGame.dkLine);
+      const fdSlot = liveKLineBoundarySlot(workshopPreviewGame.fdLine);
+      const parts = [];
+      if (dkSlot !== null) {
+        const pulse = workshopPreviewGame.discrepancyBook === "dk" ? " line-pulse-dk" : "";
+        parts.push(`<span class="desktop-live-line desktop-live-line-dk${pulse}" style="left:${liveKLineMarkerLeftCalc(dkSlot)};" title="DraftKings line ${workshopPreviewGame.dkLine}"></span>`);
+      }
+      if (fdSlot !== null) {
+        const pulse = workshopPreviewGame.discrepancyBook === "fd" ? " line-pulse-fd" : "";
+        parts.push(`<span class="desktop-live-line desktop-live-line-fd${pulse}" style="left:${liveKLineMarkerLeftCalc(fdSlot)};" title="FanDuel line ${workshopPreviewGame.fdLine}"></span>`);
+      }
+      liveLineLayer.innerHTML = parts.join("");
+    }
+
+    renderWorkshopKLineMarkers();
+
+    function slugify(value) {
+      return String(value || "new-style")
+        .trim()
+        .replace(/([a-z0-9])([A-Z])/g, "$1-$2")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "") || "new-style";
+    }
+
+    function getValues() {
+      return controls.reduce((values, input) => {
+        const value = input.type === "range" ? Number(input.value) : input.value;
+        values[input.dataset.setting] = value;
+        return values;
+      }, {});
+    }
+
+    function getCardValues() {
+      return cardControls.reduce((values, input) => {
+        values[input.dataset.cardSetting] = input.value;
+        return values;
+      }, {});
+    }
+
+    function getEffects() {
+      return {
+        face: effectSelects.face.value,
+        edge: effectSelects.edge.value,
+        texture: effectSelects.texture.value,
+        mark: effectSelects.mark.value,
+      };
+    }
+
+    function getEffectValues() {
+      return effectControls.reduce((values, input) => {
+        const value = input.type === "range" ? Number(input.value) : input.value;
+        values[input.dataset.effectSetting] = value;
+        return values;
+      }, {});
+    }
+
+    function setValues(values) {
+      controls.forEach(input => {
+        if (values[input.dataset.setting] !== undefined) {
+          input.value = values[input.dataset.setting];
+        }
+      });
+      update();
+    }
+
+    function setCardValues(values) {
+      cardControls.forEach(input => {
+        if (values[input.dataset.cardSetting] !== undefined) {
+          input.value = values[input.dataset.cardSetting];
+        }
+      });
+      update();
+    }
+
+    function setEffectValues(values) {
+      effectControls.forEach(input => {
+        if (values[input.dataset.effectSetting] !== undefined) {
+          input.value = values[input.dataset.effectSetting];
+        }
+      });
+      update();
+    }
+
+    function setVariable(name, value) {
+      card.style.setProperty(name, value);
+    }
+
+    function setText(element, value, fallback = "-") {
+      if (element) element.textContent = value === undefined || value === null || value === "" ? fallback : value;
+    }
+
+    function updateCardBasics(values) {
+      setText(previewFields.playerName, values.playerName, "Player Name");
+      setText(previewFields.teamName, values.teamName, "Team");
+      setText(previewFields.opponent, values.opponent, "Opponent");
+      setText(previewFields.gameDate, values.gameDate, "Date");
+      setText(previewFields.gameTime, values.gameTime, "Time");
+      setText(previewFields.umpire, values.umpire ? `Ump: ${values.umpire}` : "", "Ump: -");
+      setText(previewFields.dkUnder, values.dkUnder);
+      setText(previewFields.dkOver, values.dkOver);
+      setText(previewFields.fdUnder, values.fdUnder);
+      setText(previewFields.fdOver, values.fdOver);
+      setText(previewFields.dkEdge, values.dkEdge);
+      setText(previewFields.fdEdge, values.fdEdge);
+      setText(previewFields.iqValue, values.iqValue);
+      setText(previewFields.dkLine, values.dkLine);
+      setText(previewFields.fdLine, values.fdLine);
+
+      workshopPreviewGame.dkLine = Number(values.dkLine);
+      workshopPreviewGame.fdLine = Number(values.fdLine);
+      renderWorkshopKLineMarkers();
+
+      setVariable("--cw-player-color", values.playerColor);
+      setVariable("--cw-team-color", values.teamColor);
+      setVariable("--cw-matchup-color", values.matchupColor);
+      setVariable("--cw-meta-color", values.metaColor);
+      setVariable("--cw-stat-label-color", values.statLabelColor);
+      setVariable("--cw-stat-under-color", values.statUnderColor);
+      setVariable("--cw-stat-over-color", values.statOverColor);
+      setVariable("--cw-stat-edge-color", values.statEdgeColor);
+      setVariable("--cw-iq-color", values.iqColor);
+      setVariable("--cw-dk-color", values.dkColor);
+      setVariable("--cw-fd-color", values.fdColor);
+      setVariable("--cw-player-font", textFontStyles[values.playerFont] || textFontStyles.block);
+      setVariable("--cw-team-font", textFontStyles[values.teamFont] || textFontStyles.block);
+      setVariable("--cw-game-font", textFontStyles[values.gameFont] || textFontStyles.block);
+      setVariable("--cw-stat-font", textFontStyles[values.statFont] || textFontStyles.block);
+      setVariable("--cw-chip-font", textFontStyles[values.chipFont] || textFontStyles.block);
+    }
+
+    function clampPositiveInteger(value, fallback = 1) {
+      const number = Math.floor(Number(value));
+      return Number.isFinite(number) && number > 0 ? number : fallback;
+    }
+
+    function getDropRateConfig() {
+      if (dropRateModeInput.value === "ratio") {
+        const hit = clampPositiveInteger(dropRateRatioHitInput.value, 1);
+        const outOf = Math.max(hit, clampPositiveInteger(dropRateRatioOutOfInput.value, 750));
+        return {
+          mode: "ratio",
+          hit,
+          outOf,
+          label: `${hit}:${outOf}`,
+          output: `"${hit}:${outOf}"`,
+          percent: (hit / outOf) * 100,
+        };
+      }
+
+      const percent = Math.max(0, Math.min(100, Number(dropRateInput.value) || 0));
+      return {
+        mode: "percent",
+        label: `${Number(percent.toFixed(2))}%`,
+        output: String(Number(percent.toFixed(2))),
+        percent,
+      };
+    }
+
+    function updateRangeLabels(values) {
+      Object.entries(values).forEach(([key, value]) => {
+        const input = controls.find(control => control.dataset.setting === key) || (key === "dropRate" ? dropRateInput : null);
+        if (!input) return;
+        const label = document.querySelector(`[data-value-for="${input.id}"]`);
+        if (label) label.textContent = `${value}${units[key] || ""}`;
+      });
+      const dropLabel = document.querySelector('[data-value-for="drop-rate"]');
+      const dropConfig = getDropRateConfig();
+      const dropRateGroup = dropRateTile.parentElement;
+      dropRateGroup.classList.toggle("drop-rate-percent-mode", dropConfig.mode === "percent");
+      dropRateGroup.classList.toggle("drop-rate-ratio-mode", dropConfig.mode === "ratio");
+      if (dropLabel) dropLabel.textContent = dropConfig.label;
+      if (dropRateSummary) {
+        dropRateSummary.textContent =
+          dropConfig.mode === "ratio"
+            ? `${dropConfig.label} (${Number(dropConfig.percent.toFixed(3))}%)`
+            : dropConfig.label;
+      }
+    }
+
+    function updateEffectRangeLabels(values) {
+      Object.entries(values).forEach(([key, value]) => {
+        const input = effectControls.find(control => control.dataset.effectSetting === key);
+        if (!input) return;
+        const label = document.querySelector(`[data-value-for="${input.id}"]`);
+        if (label) label.textContent = `${value}${units[key] || ""}`;
+      });
+    }
+
+    function generatedCss(values) {
+      const styleId = slugify(styleIdInput.value || styleNameInput.value);
+      const className = `card-style-${styleId}`;
+      const effects = getEffects();
+      const effectValues = getEffectValues();
+      const cardValues = getCardValues();
+      const markFont = markFontStyles[effectValues.markFont] || markFontStyles.block;
+      const dropConfig = getDropRateConfig();
+      const effectClasses = [
+        effects.face !== "none" ? `effect-face-${effects.face}` : "",
+        effects.edge !== "none" ? `effect-edge-${effects.edge}` : "",
+        effects.texture !== "none" ? `effect-texture-${effects.texture}` : "",
+        effects.mark !== "none" ? `effect-mark-${effects.mark}` : "",
+      ].filter(Boolean).join(" ");
+      return `.desktop-card.${className}.live {
+  --card-a: ${values.bgStart};
+  --card-b: ${values.bgEnd};
+  --accent: ${values.secondary};
+  --effect: ${values.accent};
+  --effect-face-color: ${effectValues.faceColor};
+  --effect-face-alt-color: ${effectValues.faceAltColor};
+  --effect-face-speed: ${effectValues.faceSpeed}s;
+  --effect-face-direction: ${effectValues.faceDirection};
+  --effect-edge-color: ${effectValues.edgeColor};
+  --effect-edge-alt-color: ${effectValues.edgeAltColor};
+  --effect-edge-speed: ${effectValues.edgeSpeed}s;
+  --effect-edge-direction: ${effectValues.edgeDirection};
+  --effect-texture-color: ${effectValues.textureColor};
+  --effect-texture-alt-color: ${effectValues.textureAltColor};
+  --effect-texture-speed: ${effectValues.textureSpeed}s;
+  --effect-texture-direction: ${effectValues.textureDirection};
+  --effect-mark-color: ${effectValues.markColor};
+  --effect-mark-size: ${effectValues.markSize}rem;
+  --effect-mark-font-family: ${markFont.family};
+  --effect-mark-font-weight: ${markFont.weight};
+  --effect-mark-font-style: ${markFont.style};
+  --effect-mark-text-transform: ${markFont.transform};
+  --effect-mark-rotate: ${effectValues.markRotate}deg;
+  --effect-mark-speed: ${effectValues.markSpeed}s;
+  --effect-mark-direction: ${effectValues.markDirection};
+  --card-player-color: ${cardValues.playerColor};
+  --card-team-color: ${cardValues.teamColor};
+  --card-matchup-color: ${cardValues.matchupColor};
+  --card-meta-color: ${cardValues.metaColor};
+  --card-stat-label-color: ${cardValues.statLabelColor};
+  --card-stat-under-color: ${cardValues.statUnderColor};
+  --card-stat-over-color: ${cardValues.statOverColor};
+  --card-stat-edge-color: ${cardValues.statEdgeColor};
+  --card-iq-color: ${cardValues.iqColor};
+  --card-dk-color: ${cardValues.dkColor};
+  --card-fd-color: ${cardValues.fdColor};
+  --shine-speed: ${effectValues.faceSpeed}s;
+  --glow-strength: ${(values.glow / 100).toFixed(2)};
+}
+
+.desktop-card.${className}.live .desktop-card-face {
+  border-width: ${values.borderWidth}px;
+  border-color: ${values.borderColor};
+  border-radius: ${values.radius}px;
+  background:
+    radial-gradient(circle at ${values.orbX}% ${values.orbY}%, color-mix(in srgb, ${values.accent} ${values.orbStrength}%, transparent), transparent 34%),
+    linear-gradient(${values.sheenAngle}deg, color-mix(in srgb, #ffffff ${values.sheen}%, transparent), transparent 24%),
+    linear-gradient(160deg, ${values.bgStart}, ${values.bgEnd});
+  box-shadow:
+    0 0 ${values.glowSize}px color-mix(in srgb, ${values.accent} ${values.glow}%, transparent),
+    0 18px 34px rgba(0, 0, 0, 0.34);
+}
+
+.desktop-card.${className} .desktop-card-face::before {
+  background:
+    linear-gradient(118deg, transparent 0%, color-mix(in srgb, #ffffff ${values.highlight}%, transparent) 44%, transparent 60%),
+    radial-gradient(circle at 12% 14%, color-mix(in srgb, ${values.secondary} 18%, transparent), transparent 20%),
+    radial-gradient(circle at 92% 0%, color-mix(in srgb, ${values.accent} 18%, transparent), transparent 24%);
+}
+
+.desktop-card.${className} .desktop-live-opponent {
+  color: ${values.secondary};
+  text-shadow: 0 0 18px color-mix(in srgb, ${values.secondary} 36%, transparent);
+}
+
+/* Apply these independent effect classes with the style:
+   ${[effectClasses, effects.mark !== "none" ? `mark-pos-${effectValues.markPosition}` : ""].filter(Boolean).join(" ") || "none"}
+*/
+
+/* Custom mark text:
+   ${effectValues.markText || ""}
+*/
+
+/* Preview card basics:
+   Player: ${cardValues.playerName}
+   Team: ${cardValues.teamName}
+   Opponent: ${cardValues.opponent}
+   Ump: ${cardValues.umpire}
+   Lines: IQ ${cardValues.iqValue}, DK ${cardValues.dkLine}, FD ${cardValues.fdLine}
+*/
+
+/* DropRateController.js entry */
+"${styleId}": {
+  id: "${styleId}",
+  label: "${styleNameInput.value.trim() || "NewStyle"}",
+  className: "${className}",
+  dropRate: ${dropConfig.output},
+},`;
+    }
+
+    function update() {
+      const values = getValues();
+      const cardValues = getCardValues();
+      const effectValues = getEffectValues();
+      const markFont = markFontStyles[effectValues.markFont] || markFontStyles.block;
+      card.classList.toggle("custom-surface", customSurfaceEnabled);
+      updateCardBasics(cardValues);
+      markTile.classList.toggle("mark-custom-active", effectSelects.mark.value === "custom");
+      markLayer.dataset.markText = effectValues.markText || "";
+      setVariable("--cw-bg-start", values.bgStart);
+      setVariable("--cw-bg-end", values.bgEnd);
+      setVariable("--cw-accent", values.accent);
+      setVariable("--cw-secondary", values.secondary);
+      setVariable("--cw-text", values.text);
+      setVariable("--cw-muted", values.muted);
+      setVariable("--cw-border-color", values.borderColor);
+      setVariable("--cw-border-width", `${values.borderWidth}px`);
+      setVariable("--cw-radius", `${values.radius}px`);
+      setVariable("--cw-glow", `${values.glow}%`);
+      setVariable("--cw-glow-size", `${values.glowSize}px`);
+      setVariable("--cw-highlight", `${values.highlight}%`);
+      setVariable("--cw-orb-x", `${values.orbX}%`);
+      setVariable("--cw-orb-y", `${values.orbY}%`);
+      setVariable("--cw-orb-strength", `${values.orbStrength}%`);
+      setVariable("--cw-sheen", `${values.sheen}%`);
+      setVariable("--cw-sheen-angle", `${values.sheenAngle}deg`);
+      setVariable("--cw-glow-decimal", String(values.glow / 100));
+      setVariable("--cw-face-color", effectValues.faceColor);
+      setVariable("--cw-face-alt-color", effectValues.faceAltColor);
+      setVariable("--cw-face-speed", `${effectValues.faceSpeed}s`);
+      setVariable("--cw-face-direction", effectValues.faceDirection);
+      setVariable("--cw-edge-color", effectValues.edgeColor);
+      setVariable("--cw-edge-alt-color", effectValues.edgeAltColor);
+      setVariable("--cw-edge-speed", `${effectValues.edgeSpeed}s`);
+      setVariable("--cw-edge-direction", effectValues.edgeDirection);
+      setVariable("--cw-texture-color", effectValues.textureColor);
+      setVariable("--cw-texture-alt-color", effectValues.textureAltColor);
+      setVariable("--cw-texture-speed", `${effectValues.textureSpeed}s`);
+      setVariable("--cw-texture-direction", effectValues.textureDirection);
+      setVariable("--cw-mark-color", effectValues.markColor);
+      setVariable("--cw-mark-size", `${effectValues.markSize}rem`);
+      setVariable("--cw-mark-font-family", markFont.family);
+      setVariable("--cw-mark-font-weight", markFont.weight);
+      setVariable("--cw-mark-font-style", markFont.style);
+      setVariable("--cw-mark-text-transform", markFont.transform);
+      setVariable("--cw-mark-rotate", `${effectValues.markRotate}deg`);
+      setVariable("--cw-mark-speed", `${effectValues.markSpeed}s`);
+      setVariable("--cw-mark-direction", effectValues.markDirection);
+      const effects = getEffects();
+      Array.from(card.classList)
+        .filter(className => className.startsWith("effect-") || className.startsWith("speed-paused-") || className.startsWith("mark-pos-"))
+        .forEach(className => card.classList.remove(className));
+      if (effects.face !== "none") card.classList.add(`effect-face-${effects.face}`);
+      if (effects.edge !== "none") card.classList.add(`effect-edge-${effects.edge}`);
+      if (effects.texture !== "none") card.classList.add(`effect-texture-${effects.texture}`);
+      if (effects.mark !== "none") card.classList.add(`effect-mark-${effects.mark}`);
+      if (effects.mark !== "none") card.classList.add(`mark-pos-${effectValues.markPosition}`);
+      if (Number(effectValues.faceSpeed) === 0) card.classList.add("speed-paused-face");
+      if (Number(effectValues.edgeSpeed) === 0) card.classList.add("speed-paused-edge");
+      if (Number(effectValues.textureSpeed) === 0) card.classList.add("speed-paused-texture");
+      if (Number(effectValues.markSpeed) === 0) card.classList.add("speed-paused-mark");
+      updateRangeLabels(values);
+      updateEffectRangeLabels(effectValues);
+      output.value = generatedCss(values);
+    }
+
+    controls.forEach(input => input.addEventListener("input", () => {
+      customSurfaceEnabled = true;
+      update();
+    }));
+    cardControls.forEach(input => input.addEventListener("input", update));
+    cardControls
+      .filter(input => input.tagName === "SELECT")
+      .forEach(input => input.addEventListener("change", update));
+    Object.values(effectSelects).forEach(input => input.addEventListener("change", update));
+    effectControls.forEach(input => input.addEventListener("input", update));
+    effectControls
+      .filter(input => input.tagName === "SELECT")
+      .forEach(input => input.addEventListener("change", update));
+    [styleNameInput, styleIdInput, dropRateInput, dropRateRatioHitInput, dropRateRatioOutOfInput].forEach(input => input.addEventListener("input", update));
+    dropRateModeInput.addEventListener("change", update);
+
+    styleNameInput.addEventListener("input", () => {
+      styleIdInput.value = slugify(styleNameInput.value);
+      update();
+    });
+
+    document.getElementById("preset").addEventListener("change", event => {
+      customSurfaceEnabled = event.target.value !== "base";
+      setValues(presets[event.target.value] || presets.base);
+    });
+
+    document.getElementById("reset-btn").addEventListener("click", () => {
+      styleNameInput.value = "NewStyle";
+      styleIdInput.value = "new-style";
+      dropRateModeInput.value = "percent";
+      dropRateInput.value = 5;
+      dropRateRatioHitInput.value = 1;
+      dropRateRatioOutOfInput.value = 750;
+      Object.values(effectSelects).forEach(select => { select.value = "none"; });
+      document.getElementById("preset").value = "base";
+      customSurfaceEnabled = false;
+      setCardValues(cardDefaults);
+      setEffectValues(effectDefaults);
+      setValues(defaults);
+    });
+
+    document.getElementById("random-btn").addEventListener("click", () => {
+      customSurfaceEnabled = true;
+      const colors = ["#6bb6ff", "#39ff6a", "#ff942e", "#ff4d7d", "#c9a7ff", "#ffd84f", "#e5f2ff"];
+      setValues({
+        ...defaults,
+        bgStart: colors[Math.floor(Math.random() * colors.length)],
+        bgEnd: ["#02030a", "#03070c", "#090307", "#020806"][Math.floor(Math.random() * 4)],
+        accent: colors[Math.floor(Math.random() * colors.length)],
+        secondary: colors[Math.floor(Math.random() * colors.length)],
+        borderColor: ["#020203", "#070b12", "#11151b", "#17050b"][Math.floor(Math.random() * 4)],
+        radius: 8 + Math.floor(Math.random() * 18),
+        glow: 20 + Math.floor(Math.random() * 48),
+        glowSize: 18 + Math.floor(Math.random() * 42),
+        orbX: Math.floor(Math.random() * 101),
+        orbY: Math.floor(Math.random() * 34),
+        sheenAngle: Math.floor(Math.random() * 361),
+      });
+      const faceOptions = ["none", "shimmer", "spotlight", "holo", "prismatic", "chrome", "black-diamond", "cracked-ice", "sparks", "nebula", "pulse"];
+      const edgeOptions = ["none", "border", "frost-edge", "neon", "bevel", "gold-etch"];
+      const textureOptions = ["none", "grain", "scanlines", "carbon", "topo"];
+      effectSelects.face.value = faceOptions[Math.floor(Math.random() * faceOptions.length)];
+      effectSelects.edge.value = edgeOptions[Math.floor(Math.random() * edgeOptions.length)];
+      effectSelects.texture.value = textureOptions[Math.floor(Math.random() * textureOptions.length)];
+      effectSelects.mark.value = Math.random() > 0.75 ? "numbered" : "none";
+      const markTexts = ["1st Edition", "Prototype", "Hot Drop", "Founders", "Minted"];
+      setEffectValues({
+        faceColor: colors[Math.floor(Math.random() * colors.length)],
+        faceAltColor: colors[Math.floor(Math.random() * colors.length)],
+        faceSpeed: 2 + Math.floor(Math.random() * 14),
+        faceDirection: Math.random() > 0.5 ? "normal" : "reverse",
+        edgeColor: colors[Math.floor(Math.random() * colors.length)],
+        edgeAltColor: colors[Math.floor(Math.random() * colors.length)],
+        edgeSpeed: 2 + Math.floor(Math.random() * 14),
+        edgeDirection: Math.random() > 0.5 ? "normal" : "reverse",
+        textureColor: colors[Math.floor(Math.random() * colors.length)],
+        textureAltColor: colors[Math.floor(Math.random() * colors.length)],
+        textureSpeed: 2 + Math.floor(Math.random() * 14),
+        textureDirection: Math.random() > 0.5 ? "normal" : "reverse",
+        markColor: colors[Math.floor(Math.random() * colors.length)],
+        markPosition: ["top-left", "top-right", "bottom-left", "bottom-right"][Math.floor(Math.random() * 4)],
+        markSize: Number((0.75 + Math.random() * 0.9).toFixed(2)),
+        markSpeed: 2 + Math.floor(Math.random() * 14),
+        markDirection: "normal",
+        markText: markTexts[Math.floor(Math.random() * markTexts.length)],
+        markFont: ["block", "script", "mono", "serif", "stamp"][Math.floor(Math.random() * 5)],
+        markRotate: -14 + Math.floor(Math.random() * 29),
+      });
+      update();
+    });
+
+    document.getElementById("copy-btn").addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(output.value);
+        toast.textContent = "Copied";
+        window.setTimeout(() => { toast.textContent = ""; }, 1400);
+      } catch (error) {
+        output.focus();
+        output.select();
+        toast.textContent = "Select + copy";
+      }
+    });
+
+    update();
+  </script>
+</body>
+</html>

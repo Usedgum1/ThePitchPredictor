@@ -11,7 +11,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="./images/favicon/favicon-16x16.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="./images/favicon/apple-touch-icon.png" />
   <link rel="manifest" href="./images/favicon/site.webmanifest" />
-  <link rel="stylesheet" href="./pitchiq-desktop-card.css" />
+  <link rel="stylesheet" href="./Card%20Styles/BaseDesign.css" />
 
   <style>
     :root {
@@ -62,6 +62,72 @@
       width: min(100%, 460px);
       margin: 0 auto;
       padding: 12px 18px 24px;
+    }
+
+    .site-alert-ticker {
+      --alert-bg: rgba(37, 8, 20, 0.96);
+      --alert-text: #ffffff;
+      --alert-accent: #ff174d;
+      --alert-speed: 24s;
+      --alert-start-x: 100%;
+      --alert-end-x: -100%;
+      border: 1px solid color-mix(in srgb, var(--alert-accent) 58%, transparent);
+      background: var(--alert-bg);
+      border-radius: 12px;
+      box-shadow: 0 0 18px color-mix(in srgb, var(--alert-accent) 24%, transparent);
+      color: var(--alert-text);
+      margin: 0 0 10px;
+      overflow: hidden;
+    }
+
+    .site-alert-ticker.hidden {
+      display: none;
+    }
+
+    .site-alert-track {
+      align-items: center;
+      display: inline-flex;
+      gap: 34px;
+      min-width: max-content;
+      padding: 9px 0;
+      white-space: nowrap;
+      animation: siteAlertScroll var(--alert-speed) linear infinite;
+    }
+
+    .site-alert-message {
+      color: var(--alert-text);
+      flex: 0 0 auto;
+      font-family: var(--alert-font-family, "Segoe UI", Arial, sans-serif);
+      font-size: 0.78rem;
+      font-weight: var(--alert-font-weight, 700);
+      letter-spacing: 0.06em;
+      padding: 0 34px;
+      text-transform: var(--alert-text-transform, none);
+    }
+
+    .site-alert-message[aria-hidden="true"] {
+      display: none;
+    }
+
+    .site-alert-prefix,
+    .site-alert-suffix {
+      color: var(--alert-accent);
+      font-size: 0.68rem;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+    }
+
+    .site-alert-prefix {
+      margin-right: 12px;
+    }
+
+    .site-alert-suffix {
+      margin-left: 12px;
+    }
+
+    @keyframes siteAlertScroll {
+      from { transform: translateX(var(--alert-start-x)); }
+      to { transform: translateX(var(--alert-end-x)); }
     }
 
     .topbar {
@@ -296,14 +362,14 @@
       width: 26px;
       height: 26px;
       border-radius: 999px;
-      border: 1px solid rgba(107, 182, 255, 0.36);
+      border: 2px solid rgba(107, 182, 255, 0.36);
       background: rgba(24, 91, 173, 0.12);
       color: var(--blue);
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.78rem;
+      font-size: 0.9rem;
       line-height: 1;
       padding: 0;
     }
@@ -314,7 +380,14 @@
       box-shadow: 0 0 14px rgba(107, 182, 255, 0.3);
     }
 
-    .historical-lookup-btn {
+    .pitcher-lookup-btn {
+      line-height: 0;
+      padding-bottom: 1px;
+    }
+
+    .historical-lookup-btn,
+    .add-card-btn {
+      border-width: 2px;
       border-color: rgba(255, 148, 46, 0.48);
       background: rgba(255, 148, 46, 0.1);
       color: #ff942e;
@@ -322,7 +395,8 @@
       text-shadow: 0 0 10px rgba(255, 148, 46, 0.5);
     }
 
-    .historical-lookup-btn:hover {
+    .historical-lookup-btn:hover,
+    .add-card-btn:hover {
       border-color: rgba(255, 148, 46, 0.76);
       background: rgba(255, 148, 46, 0.18);
       box-shadow: 0 0 16px rgba(255, 148, 46, 0.32);
@@ -331,6 +405,13 @@
     .historical-lookup-btn svg {
       width: 13px;
       height: 13px;
+      stroke: currentColor;
+      filter: drop-shadow(0 0 4px rgba(255, 148, 46, 0.45));
+    }
+
+    .add-card-btn svg {
+      width: 15px;
+      height: 15px;
       stroke: currentColor;
       filter: drop-shadow(0 0 4px rgba(255, 148, 46, 0.45));
     }
@@ -345,9 +426,20 @@
     .shell .cards .desktop-card-history-action {
       width: 28px;
       height: 28px;
-      top: 7px;
+      top: 9px;
       right: 7px;
       font-size: 0.72rem;
+    }
+
+    .shell .cards .desktop-card-add-action {
+      position: absolute;
+      z-index: 6;
+      width: 28px;
+      height: 28px;
+      top: 36px;
+      right: 7px;
+      font-size: 0.72rem;
+      font-weight: 950;
     }
 
     .shell .cards .desktop-card-history-action svg {
@@ -674,6 +766,12 @@
 <body>
   <audio id="card-flip-audio" src="sounds/cardflip.mp3" preload="auto"></audio>
   <main class="shell">
+    <div class="site-alert-ticker hidden" id="site-alert-ticker" role="status" aria-live="polite">
+      <div class="site-alert-track">
+        <span class="site-alert-message" id="site-alert-message"></span>
+        <span class="site-alert-message" id="site-alert-message-copy" aria-hidden="true"></span>
+      </div>
+    </div>
     <div class="topbar">
       <div class="brand-row">
         <h1 class="brand">pitchIQ</h1>
@@ -709,6 +807,7 @@
     <footer class="footer" id="server-activity-footer">last server activity: pending</footer>
   </main>
 
+  <script src="./Card%20Styles/DropRateController.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     window.PITCHIQ_LIVE_K_RAIL = "2026-05-01-live-k-progress";
@@ -722,6 +821,22 @@
         storage: window.localStorage,
       },
     });
+    const cardStyleController = window.PitchIQCardStyles;
+
+    function ensureCardStyleId(game) {
+      const fallback = cardStyleController?.BASE_STYLE_ID || "base-design";
+      if (!game || typeof game !== "object") return fallback;
+      const existingStyleId = game._card_style || game.card_style || game.cardStyle;
+      game._card_style = existingStyleId
+        ? cardStyleController?.resolveCardStyleId(existingStyleId) || fallback
+        : cardStyleController?.chooseStyleId() || fallback;
+      return game._card_style;
+    }
+
+    function cardStyleClass(game) {
+      const styleId = ensureCardStyleId(game);
+      return cardStyleController?.getStyleClass(styleId) || "card-style-base-design";
+    }
 
     const accountPill = document.getElementById("account-pill");
     const searchInput = document.getElementById("search-input");
@@ -732,6 +847,9 @@
     const resultsMeta = document.getElementById("results-meta");
     const refreshMeta = document.getElementById("refresh-meta");
     const serverActivityFooter = document.getElementById("server-activity-footer");
+    const siteAlertTicker = document.getElementById("site-alert-ticker");
+    const siteAlertMessage = document.getElementById("site-alert-message");
+    const siteAlertMessageCopy = document.getElementById("site-alert-message-copy");
     const topbar = document.querySelector(".topbar");
     const filterToggle = document.getElementById("filter-toggle");
     const tabs = Array.from(document.querySelectorAll(".tab"));
@@ -750,6 +868,20 @@
     let pitcherLookupByName = new Map();
     let historicalBetRecordCache = new Map();
     let currentUserRole = null;
+    let currentUserId = null;
+    const DEFAULT_SITE_ALERT_SETTINGS = Object.freeze({
+      enabled: false,
+      text: "DraftKings is currently experiencing issues with the API.",
+      prefix_text: "Alert!",
+      suffix_text: "Alert!",
+      speed_seconds: 24,
+      background_color: "#250814",
+      text_color: "#ffffff",
+      accent_color: "#ff174d",
+      font_family: "Segoe UI, Arial, sans-serif",
+      text_transform: "none",
+      font_weight: "700"
+    });
     const flippedCardKeys = new Set();
     const cardFlipDirections = new Map();
     let dataRefreshIntervalId = null;
@@ -758,6 +890,8 @@
     let dataRefreshQueued = false;
     let dataRefreshChannel = null;
     const CARD_FLIP_SOUND_URL = new URL("sounds/cardflip.mp3", window.location.href).href;
+    const LIVE_GAME_MAX_MINUTES = 18 * 60;
+    const GAME_BOARD_CACHE_TTL_MS = 12 * 60 * 60 * 1000;
 
     function playCardFlipSound() {
       try {
@@ -781,6 +915,83 @@
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#39;");
+    }
+
+    function clampAlertSpeed(value) {
+      const speed = Number(value);
+      if (!Number.isFinite(speed)) return DEFAULT_SITE_ALERT_SETTINGS.speed_seconds;
+      return Math.min(90, Math.max(8, Math.round(speed)));
+    }
+
+    function cleanAlertColor(value, fallback) {
+      const text = String(value || "").trim();
+      return /^#[0-9a-f]{6}$/i.test(text) ? text : fallback;
+    }
+
+    function normalizeSiteAlertSettings(payload) {
+      const source = payload && typeof payload === "object" ? payload : {};
+      return {
+        enabled: Boolean(source.enabled),
+        text: String(source.text || DEFAULT_SITE_ALERT_SETTINGS.text).slice(0, 240),
+        prefix_text: String(source.prefix_text ?? DEFAULT_SITE_ALERT_SETTINGS.prefix_text).slice(0, 32),
+        suffix_text: String(source.suffix_text ?? DEFAULT_SITE_ALERT_SETTINGS.suffix_text).slice(0, 32),
+        speed_seconds: clampAlertSpeed(source.speed_seconds),
+        background_color: cleanAlertColor(source.background_color, DEFAULT_SITE_ALERT_SETTINGS.background_color),
+        text_color: cleanAlertColor(source.text_color, DEFAULT_SITE_ALERT_SETTINGS.text_color),
+        accent_color: cleanAlertColor(source.accent_color, DEFAULT_SITE_ALERT_SETTINGS.accent_color),
+        font_family: String(source.font_family || DEFAULT_SITE_ALERT_SETTINGS.font_family),
+        text_transform: source.text_transform === "uppercase" ? "uppercase" : "none",
+        font_weight: ["600", "700", "800"].includes(String(source.font_weight)) ? String(source.font_weight) : "700"
+      };
+    }
+
+    function renderSiteAlert(settings) {
+      const normalized = normalizeSiteAlertSettings(settings);
+      siteAlertTicker.style.setProperty("--alert-bg", normalized.background_color);
+      siteAlertTicker.style.setProperty("--alert-text", normalized.text_color);
+      siteAlertTicker.style.setProperty("--alert-accent", normalized.accent_color);
+      siteAlertTicker.style.setProperty("--alert-speed", `${normalized.speed_seconds}s`);
+      siteAlertTicker.style.setProperty("--alert-font-family", normalized.font_family);
+      siteAlertTicker.style.setProperty("--alert-text-transform", normalized.text_transform);
+      siteAlertTicker.style.setProperty("--alert-font-weight", normalized.font_weight);
+      const message = normalized.text.trim();
+      siteAlertMessage.innerHTML = renderAlertMessageHtml(normalized);
+      siteAlertMessageCopy.innerHTML = renderAlertMessageHtml(normalized);
+      siteAlertTicker.classList.toggle("hidden", !normalized.enabled || !message);
+      if (normalized.enabled && message) {
+        updateAlertTravel(siteAlertTicker, siteAlertMessage);
+      }
+    }
+
+    function renderAlertMessageHtml(settings) {
+      const prefix = settings.prefix_text.trim();
+      const suffix = settings.suffix_text.trim();
+      return `${prefix ? `<span class="site-alert-prefix">${escapeHtml(prefix)}</span>` : ""}${escapeHtml(settings.text.trim())}${suffix ? `<span class="site-alert-suffix">${escapeHtml(suffix)}</span>` : ""}`;
+    }
+
+    function updateAlertTravel(container, messageElement) {
+      if (!container || !messageElement) return;
+      window.requestAnimationFrame(() => {
+        const track = container.querySelector(".site-alert-track");
+        const containerWidth = Math.max(1, container.clientWidth);
+        const messageWidth = Math.max(1, messageElement.scrollWidth);
+        container.style.setProperty("--alert-start-x", `${containerWidth}px`);
+        container.style.setProperty("--alert-end-x", `${-messageWidth}px`);
+        if (track) {
+          track.style.animation = "none";
+          void track.offsetWidth;
+          track.style.animation = "";
+        }
+      });
+    }
+
+    async function loadSiteAlertSettings() {
+      const { data, error } = await supabaseClient
+        .from("pitchiq_site_settings")
+        .select("payload")
+        .eq("id", "global_alert")
+        .maybeSingle();
+      renderSiteAlert(error ? DEFAULT_SITE_ALERT_SETTINGS : data?.payload || DEFAULT_SITE_ALERT_SETTINGS);
     }
 
     function normalizeText(value) {
@@ -877,6 +1088,21 @@
       return status.includes("live") || status.includes("in progress") || status.includes("middle") || status.includes("top ") || status.includes("bottom ");
     }
 
+    function hasLiveGameSignals(game) {
+      const inning = normalizeText(game?.game_inning || game?.inning || game?.inning_state);
+      const starterStatus = normalizeText(game?.starter_status);
+      const currentPitcher = normalizeText(game?.current_pitcher || game?.current_pitcher_id);
+      const liveKs = game?.live_strikeouts ?? game?.live_ks ?? game?.starter_strikeouts;
+      const liveIp = game?.live_innings_pitched;
+      return Boolean(
+        inning ||
+        currentPitcher ||
+        starterStatus.includes("pitching") ||
+        (liveKs !== null && liveKs !== undefined && String(liveKs).trim() !== "") ||
+        (liveIp !== null && liveIp !== undefined && String(liveIp).trim() !== "")
+      );
+    }
+
     function isClearlyUpcomingGame(game) {
       const status = normalizeText(game?.game_status || game?.status || game?.abstract_game_state);
       return status.includes("pre-game") || status.includes("scheduled") || status.includes("preview");
@@ -885,10 +1111,11 @@
     function shouldShowAsLiveGame(game, tableType) {
       if (isClearlyCompletedGame(game)) return false;
       if (isClearlyLiveGame(game) || tableType === "live") return true;
+      if (hasLiveGameSignals(game)) return true;
       const startDate = parseGameStartDate(game);
       if (!startDate) return false;
       const minutesSinceStart = (Date.now() - startDate.getTime()) / 60000;
-      return minutesSinceStart >= 0 && minutesSinceStart <= 480;
+      return minutesSinceStart >= 0 && minutesSinceStart <= LIVE_GAME_MAX_MINUTES;
     }
 
     function splitSupabaseGameRows(rows) {
@@ -898,6 +1125,7 @@
         if (!row?.payload) return;
         const tableType = String(row.table_type || "").toLowerCase();
         const game = { ...row.payload };
+        game._pitchiq_source_table = tableType === "live" ? "live" : "upcoming";
         const rowKey = [
           game.event_key,
           game.pitcher,
@@ -920,6 +1148,42 @@
         upcoming: Array.from(upcomingByKey.values()).sort(sortByStartTime),
         live: Array.from(liveByKey.values()).sort(sortByStartTime),
       };
+    }
+
+    function gameBoardCacheKey(userId = currentUserId) {
+      return userId ? `pitchiq.gameBoardCache.${userId}` : "pitchiq.gameBoardCache";
+    }
+
+    function cacheGameBoardSnapshot(splitGames, updatedAt = null) {
+      const upcoming = Array.isArray(splitGames?.upcoming) ? splitGames.upcoming : [];
+      const live = Array.isArray(splitGames?.live) ? splitGames.live : [];
+      if (!upcoming.length && !live.length) return;
+      try {
+        window.localStorage.setItem(gameBoardCacheKey(), JSON.stringify({
+          cachedAt: Date.now(),
+          updatedAt,
+          upcoming,
+          live,
+        }));
+      } catch (error) {
+      }
+    }
+
+    function loadCachedGameBoardSnapshot() {
+      try {
+        const raw = window.localStorage.getItem(gameBoardCacheKey());
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        const cachedAt = Number(parsed?.cachedAt);
+        if (!Number.isFinite(cachedAt) || Date.now() - cachedAt > GAME_BOARD_CACHE_TTL_MS) return null;
+        return {
+          upcoming: Array.isArray(parsed?.upcoming) ? parsed.upcoming : [],
+          live: Array.isArray(parsed?.live) ? parsed.live : [],
+          updatedAt: parsed?.updatedAt || null,
+        };
+      } catch (error) {
+        return null;
+      }
     }
 
     function leanClass(value) {
@@ -1063,10 +1327,10 @@
       return [discrepancyNote, rawNotes].filter(Boolean).join(" | ");
     }
 
-    function lineDiscrepancyShimmerClass(game) {
+    function lineDiscrepancyBook(game) {
       const notes = normalizeText(displayNotes(game));
-      if (notes.includes("+dk line")) return "dk-shimmer";
-      if (notes.includes("+fd line")) return "fd-shimmer";
+      if (notes.includes("+dk line")) return "dk";
+      if (notes.includes("+fd line")) return "fd";
       return "";
     }
 
@@ -1364,6 +1628,127 @@
       return canUseProFeatures();
     }
 
+    function canViewMyCards() {
+      return canUseProFeatures();
+    }
+
+    function walletSourceTable(game) {
+      const source = String(game?._pitchiq_source_table || "").toLowerCase();
+      if (source === "live" || source === "upcoming") return source;
+      return activeView === "live" ? "live" : "upcoming";
+    }
+
+    function walletCardKey(game) {
+      return [
+        walletSourceTable(game),
+        game?.event_key || game?.source_event_key || game?.game_id || "",
+        game?.pitcher || game?.source_pitcher || "",
+        game?.date || game?.game_date || game?.game_date_raw || "",
+        game?.opponent || "",
+        game?.start_time || "",
+      ].map(value => normalizeText(value)).join("|");
+    }
+
+    function findWalletSourceGame(walletKey) {
+      const key = String(walletKey || "");
+      if (!key) return null;
+      return [...upcomingGames, ...liveGames].find(game => walletCardKey(game) === key) || null;
+    }
+
+    function preferredBookSnapshot(game) {
+      const dkLine = parseValidLine(game?.dk_line);
+      const fdLine = parseValidLine(game?.fd_line);
+      if (dkLine !== null) {
+        return {
+          sportsbook: "DraftKings",
+          sportsbook_line: dkLine,
+          bet_side: String(game?.dk_bet || "").trim() || null,
+          play_tier: String(game?.dk_play_tier || game?.play_tier || "").trim() || null,
+          confidence: String(game?.dk_confidence || game?.confidence || "").trim() || null,
+        };
+      }
+      if (fdLine !== null) {
+        return {
+          sportsbook: "FanDuel",
+          sportsbook_line: fdLine,
+          bet_side: String(game?.fd_bet || "").trim() || null,
+          play_tier: String(game?.fd_play_tier || game?.play_tier || "").trim() || null,
+          confidence: String(game?.fd_confidence || game?.confidence || "").trim() || null,
+        };
+      }
+      return {
+        sportsbook: null,
+        sportsbook_line: null,
+        bet_side: String(game?.bet || game?.lean || "").trim() || null,
+        play_tier: String(game?.play_tier || "").trim() || null,
+        confidence: String(game?.confidence || "").trim() || null,
+      };
+    }
+
+    function buildSavedCardRecord(game) {
+      const sourceTable = walletSourceTable(game);
+      const sourceEventKey = String(game?.event_key || game?.game_id || walletCardKey(game)).trim();
+      const book = preferredBookSnapshot(game);
+      const projection = displayProjectionValue(game);
+      const cardStyleId = ensureCardStyleId(game);
+      return {
+        user_id: currentUserId,
+        source_table: sourceTable,
+        source_event_key: sourceEventKey,
+        source_pitcher: String(game?.pitcher || "").trim(),
+        pitcher: String(game?.pitcher || "").trim() || null,
+        opponent: String(game?.opponent || "").trim() || null,
+        game_date: String(game?.date || game?.game_date || game?.game_date_raw || "").trim() || null,
+        sportsbook: book.sportsbook,
+        sportsbook_line: book.sportsbook_line,
+        bet_side: book.bet_side,
+        play_tier: book.play_tier,
+        confidence: book.confidence,
+        projected_strikeouts: Number.isFinite(Number(projection)) ? Number(projection) : null,
+        snapshot: {
+          ...game,
+          _card_style: cardStyleId,
+          _pitchiq_source_table: sourceTable,
+          _saved_snapshot_at: new Date().toISOString(),
+        },
+      };
+    }
+
+    async function saveGameToMyCards(game, button = null) {
+      if (!canViewMyCards()) {
+        const dest = new URL("./app.html", window.location.href);
+        dest.searchParams.set("desktop", "1");
+        dest.searchParams.set("openMyCards", "1");
+        window.location.href = dest.toString();
+        return;
+      }
+      if (!currentUserId || !game) return;
+      const originalTitle = button?.getAttribute("title") || "Add to my cards";
+      if (button) {
+        button.disabled = true;
+        button.setAttribute("title", "Saving...");
+      }
+      const { error } = await supabaseClient
+        .from("pitchiq_saved_cards")
+        .insert(buildSavedCardRecord(game));
+      if (error && error.code !== "23505") {
+        if (button) {
+          button.disabled = false;
+          button.setAttribute("title", "Save failed");
+        }
+        return;
+      }
+      if (button) {
+        button.disabled = false;
+        button.classList.add("is-saved");
+        button.setAttribute("title", error?.code === "23505" ? "Already saved" : "Saved to my cards");
+        window.setTimeout(() => {
+          button.classList.remove("is-saved");
+          button.setAttribute("title", originalTitle);
+        }, 1600);
+      }
+    }
+
     function displayNotesText(game) {
       return displayNotes(game);
     }
@@ -1544,6 +1929,15 @@
       `;
     }
 
+    function renderAddToMyCardsAction(game) {
+      const pitcher = escapeHtml(game?.pitcher || "");
+      const walletKey = escapeHtml(walletCardKey(game));
+      const addIcon = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>';
+      return `
+        <button class="lookup-icon-btn add-card-btn desktop-card-add-action" type="button" data-wallet-key="${walletKey}" data-pitcher="${pitcher}" title="Add to my cards" aria-label="Add to my cards">${addIcon}</button>
+      `;
+    }
+
     function desktopFormatLineOdds(lineValue, overPayout, underPayout) {
       const line = String(lineValue || "").trim();
       const over = String(overPayout || "").trim();
@@ -1557,7 +1951,11 @@
     }
 
     function desktopLineDiscrepancyShimmerClass(game) {
-      return lineDiscrepancyShimmerClass(game);
+      return "";
+    }
+
+    function desktopLineDiscrepancyBook(game) {
+      return lineDiscrepancyBook(game);
     }
 
     const LIVE_K_DOT_COUNT = 10;
@@ -1575,11 +1973,15 @@
       return `calc(${boundarySlot} * (100% - ${(n - 1) * g}px) / ${n} + ${(boundarySlot - 1) * g}px + ${g / 2}px)`;
     }
 
-    function renderDesktopLiveKLineMarkers(game) {
+    function renderDesktopLiveKLineMarkers(game, options = {}) {
       const dkLine = parseValidLine(game?.dk_line);
       const fdLine = parseValidLine(game?.fd_line);
       const dkSlot = liveKLineBoundarySlot(dkLine);
       const fdSlot = liveKLineBoundarySlot(fdLine);
+      const discrepancyBook = desktopLineDiscrepancyBook(game);
+      const pulseEnabled = options.pulse !== false;
+      const dkPulseClass = pulseEnabled && discrepancyBook === "dk" ? " line-pulse-dk" : "";
+      const fdPulseClass = pulseEnabled && discrepancyBook === "fd" ? " line-pulse-fd" : "";
       if (dkSlot === null && fdSlot === null) return "";
 
       const sameBookLine =
@@ -1598,12 +2000,12 @@
       const parts = [];
       if (dkSlot !== null) {
         parts.push(
-          `<span class="desktop-live-line desktop-live-line-dk" style="left:${liveKLineMarkerLeftCalc(dkSlot)};" title="DraftKings line ${escapeHtml(String(dkLine))}"></span>`
+          `<span class="desktop-live-line desktop-live-line-dk${dkPulseClass}" style="left:${liveKLineMarkerLeftCalc(dkSlot)};" title="DraftKings line ${escapeHtml(String(dkLine))}"></span>`
         );
       }
       if (fdSlot !== null) {
         parts.push(
-          `<span class="desktop-live-line desktop-live-line-fd" style="left:${liveKLineMarkerLeftCalc(fdSlot)};" title="FanDuel line ${escapeHtml(String(fdLine))}"></span>`
+          `<span class="desktop-live-line desktop-live-line-fd${fdPulseClass}" style="left:${liveKLineMarkerLeftCalc(fdSlot)};" title="FanDuel line ${escapeHtml(String(fdLine))}"></span>`
         );
       }
       return parts.join("");
@@ -1656,11 +2058,18 @@
       const fdBook = desktopFormatLineOdds(game.fd_line, game.fd_over_payout, game.fd_under_payout);
       const strikeouts = liveStrikeoutValue(game);
       const displayStrikeouts = strikeouts || "0";
+      const styleId = ensureCardStyleId(game);
+      const styleClass = cardStyleClass(game);
+      const pulseEnabled = view !== "my-cards";
+      const discrepancyBook = desktopLineDiscrepancyBook(game);
+      const dkPulseClass = pulseEnabled && discrepancyBook === "dk" ? " line-pulse-dk" : "";
+      const fdPulseClass = pulseEnabled && discrepancyBook === "fd" ? " line-pulse-fd" : "";
       return `
-        <article class="desktop-card live ${desktopLineDiscrepancyShimmerClass(game)} ${flipDirection} ${isFlipped ? "flipped" : ""}" data-card-key="${escapeHtml(key)}" role="button" tabindex="0" aria-label="${isFlipped ? "Flip card back to projection" : "Flip card to game notes"}" title="${isFlipped ? "Flip back" : "Game notes"}">
+        <article class="desktop-card live ${styleClass} ${flipDirection} ${isFlipped ? "flipped" : ""}" data-card-style="${escapeHtml(styleId)}" data-card-key="${escapeHtml(key)}" role="button" tabindex="0" aria-label="${isFlipped ? "Flip card back to projection" : "Flip card to game notes"}" title="${isFlipped ? "Flip back" : "Game notes"}">
           <div class="desktop-card-shell">
             <div class="desktop-card-face desktop-card-front">
               ${renderDesktopHistoricalAction(game)}
+              ${renderAddToMyCardsAction(game)}
               <div class="desktop-live-watermark" aria-hidden="true">
                 <img src="images/pitchIQ%20Logo%20v4.png" alt="" />
               </div>
@@ -1721,11 +2130,11 @@
                         <span class="desktop-live-line-chip-label">IQ</span>
                         <span class="desktop-live-line-chip-value">${escapeHtml(projected)}</span>
                       </div>
-                      <div class="desktop-live-line-chip desktop-live-line-chip-dk" title="DraftKings line">
+                      <div class="desktop-live-line-chip desktop-live-line-chip-dk${dkPulseClass}" title="DraftKings line">
                         <span class="desktop-live-line-chip-label">DK</span>
                         <span class="desktop-live-line-chip-value">${escapeHtml(dkBook.line)}</span>
                       </div>
-                      <div class="desktop-live-line-chip desktop-live-line-chip-fd" title="FanDuel line">
+                      <div class="desktop-live-line-chip desktop-live-line-chip-fd${fdPulseClass}" title="FanDuel line">
                         <span class="desktop-live-line-chip-label">FD</span>
                         <span class="desktop-live-line-chip-value">${escapeHtml(fdBook.line)}</span>
                       </div>
@@ -1734,7 +2143,7 @@
                 </div>
                 <div class="desktop-live-kpanel">
                   <div class="desktop-live-line-layer" aria-hidden="true">
-                    ${renderDesktopLiveKLineMarkers(game)}
+                    ${renderDesktopLiveKLineMarkers(game, { pulse: pulseEnabled })}
                   </div>
                   <div class="desktop-live-dot-track">
                     <div class="desktop-live-dot-row">
@@ -1813,6 +2222,7 @@
       }
       authAccepted = true;
       currentUserRole = role || null;
+      currentUserId = session.user.id;
       setAccountIdentity(session, role);
       refreshSupabaseData();
       startSupabaseAutoRefresh();
@@ -1855,9 +2265,24 @@
           .map(row => row.payload);
         historicalBetRecordCache = new Map();
       }
-      const splitGames = splitSupabaseGameRows(gameRows || []);
-      upcomingGames = splitGames.upcoming;
-      liveGames = splitGames.live;
+      const fetchedGameRows = gameRows || [];
+      const splitGames = splitSupabaseGameRows(fetchedGameRows);
+      if (fetchedGameRows.length) {
+        upcomingGames = splitGames.upcoming;
+        liveGames = splitGames.live;
+        cacheGameBoardSnapshot(splitGames, latestTimestamp(fetchedGameRows.map(row => row.updated_at))?.toISOString() || null);
+      } else {
+        const cachedBoard = loadCachedGameBoardSnapshot();
+        if (cachedBoard && (cachedBoard.upcoming.length || cachedBoard.live.length)) {
+          upcomingGames = cachedBoard.upcoming;
+          liveGames = cachedBoard.live;
+        } else if (upcomingGames.length || liveGames.length) {
+          cacheGameBoardSnapshot({ upcoming: upcomingGames, live: liveGames });
+        } else {
+          upcomingGames = [];
+          liveGames = [];
+        }
+      }
       renderCards();
     }
 
@@ -1917,6 +2342,7 @@
       dataRefreshInFlight = true;
       try {
         await loadSupabaseTables();
+        await loadSiteAlertSettings();
         await loadServerActivity();
       } finally {
         dataRefreshInFlight = false;
@@ -1942,8 +2368,10 @@
         .channel("pitchiq-mobile-card-refresh")
         .on("postgres_changes", { event: "*", schema: "public", table: "pitchiq_game_rows" }, queueSupabaseRefresh)
         .on("postgres_changes", { event: "*", schema: "public", table: "pitchiq_historical_rows" }, queueSupabaseRefresh)
+        .on("postgres_changes", { event: "*", schema: "public", table: "pitchiq_saved_cards" }, queueSupabaseRefresh)
         .on("postgres_changes", { event: "*", schema: "public", table: "pitchiq_pitcher_lookup" }, queueSupabaseRefresh)
         .on("postgres_changes", { event: "*", schema: "public", table: "pitchiq_server_activity" }, queueSupabaseRefresh)
+        .on("postgres_changes", { event: "*", schema: "public", table: "pitchiq_site_settings" }, queueSupabaseRefresh)
         .subscribe();
     }
 
@@ -1983,6 +2411,7 @@
 
     cardsContainer.addEventListener("pointerdown", event => {
       if (!event.target.closest(".desktop-card")) return;
+      if (event.target.closest("button, a, input, select, textarea")) return;
       playCardFlipSound();
     });
 
@@ -2007,6 +2436,12 @@
     }
 
     cardsContainer.addEventListener("click", event => {
+      const addButton = event.target.closest(".add-card-btn");
+      if (addButton) {
+        event.stopPropagation();
+        saveGameToMyCards(findWalletSourceGame(addButton.dataset.walletKey || ""), addButton);
+        return;
+      }
       const historicalButton = event.target.closest(".historical-lookup-btn");
       if (historicalButton) {
         event.stopPropagation();

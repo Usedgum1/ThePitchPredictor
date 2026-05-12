@@ -60,12 +60,12 @@
     }
 
     .shell {
-      background: linear-gradient(180deg, rgba(15, 17, 24, 0.54), rgba(10, 11, 17, 0.42));
+      background: linear-gradient(180deg, rgba(15, 17, 24, 0.38), rgba(10, 11, 17, 0.2));
       backdrop-filter: blur(18px);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.24);
-      padding: 20px;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 18px;
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.18);
+      padding: 22px;
     }
 
     .topbar {
@@ -121,24 +121,80 @@
 
     .layout {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(260px, 0.72fr);
-      gap: 16px;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 0.52fr);
+      gap: 22px;
       align-items: start;
     }
 
     .section {
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.025);
-      border-radius: 14px;
-      padding: 16px;
-      margin-bottom: 16px;
+      margin: 0;
     }
 
-    .section h2 {
+    .section h2,
+    .settings-row-title h2,
+    .account-sidebar-section h2 {
       margin: 0 0 12px;
       font-size: 0.86rem;
       letter-spacing: 0.1em;
       text-transform: uppercase;
+    }
+
+    .settings-surface,
+    .account-sidebar {
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      background: rgba(255,255,255,0.026);
+    }
+
+    .settings-surface {
+      overflow: hidden;
+    }
+
+    .settings-row {
+      display: grid;
+      grid-template-columns: minmax(150px, 0.36fr) minmax(0, 1fr);
+      gap: 22px;
+      padding: 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+
+    .settings-row:last-child {
+      border-bottom: 0;
+    }
+
+    .settings-row-title {
+      min-width: 0;
+    }
+
+    .settings-row-title h2 {
+      margin-bottom: 7px;
+    }
+
+    .settings-row-title p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.45;
+    }
+
+    .settings-row-body {
+      min-width: 0;
+    }
+
+    .settings-row-body form {
+      max-width: 560px;
+    }
+
+    .account-sidebar {
+      padding: 18px;
+      position: sticky;
+      top: 18px;
+    }
+
+    .account-sidebar-section + .account-sidebar-section {
+      margin-top: 20px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(255,255,255,0.07);
     }
 
     .field {
@@ -168,6 +224,37 @@
     .field input:focus {
       border-color: rgba(141, 138, 255, 0.55);
       box-shadow: 0 0 0 3px rgba(141, 138, 255, 0.12);
+    }
+
+    .default-view-toggle {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      padding: 4px 0;
+    }
+
+    .default-view-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.78rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.18s ease;
+    }
+
+    .default-view-option input {
+      width: 15px;
+      height: 15px;
+      margin: 0;
+      accent-color: var(--amber);
+    }
+
+    .default-view-option:has(input:checked) {
+      color: var(--text);
     }
 
     .button {
@@ -244,54 +331,41 @@
     }
 
     .tier {
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 12px;
-      padding: 12px;
-      background: rgba(0,0,0,0.18);
+      border: 0;
+      border-left: 3px solid rgba(255,255,255,0.12);
+      border-radius: 0;
+      padding: 2px 0 2px 12px;
+      background: transparent;
     }
 
     .tier.current {
       border-color: rgba(255, 148, 46, 0.34);
-      background: rgba(255, 148, 46, 0.08);
-      box-shadow:
-        0 0 0 1px rgba(255, 148, 46, 0.12) inset,
-        0 0 26px rgba(255, 148, 46, 0.18);
+      background: transparent;
+      box-shadow: none;
     }
 
     .tier.current.tier-current-basic {
       border-color: rgba(47, 155, 255, 0.56);
-      background: rgba(47, 155, 255, 0.1);
-      box-shadow:
-        0 0 0 1px rgba(47, 155, 255, 0.16) inset,
-        0 0 18px rgba(47, 155, 255, 0.28),
-        0 0 34px rgba(47, 155, 255, 0.16);
+      background: transparent;
+      box-shadow: none;
     }
 
     .tier.current.tier-current-pro {
       border-color: rgba(255, 148, 46, 0.58);
-      background: rgba(255, 148, 46, 0.1);
-      box-shadow:
-        0 0 0 1px rgba(255, 148, 46, 0.18) inset,
-        0 0 18px rgba(255, 148, 46, 0.28),
-        0 0 34px rgba(255, 148, 46, 0.18);
+      background: transparent;
+      box-shadow: none;
     }
 
     .tier.current.tier-current-life {
       border-color: rgba(255, 216, 79, 0.58);
-      background: rgba(255, 216, 79, 0.1);
-      box-shadow:
-        0 0 0 1px rgba(255, 216, 79, 0.18) inset,
-        0 0 18px rgba(255, 216, 79, 0.28),
-        0 0 34px rgba(255, 216, 79, 0.18);
+      background: transparent;
+      box-shadow: none;
     }
 
     .tier.current.tier-current-owner {
       border-color: rgba(255, 23, 77, 0.58);
-      background: rgba(255, 23, 77, 0.1);
-      box-shadow:
-        0 0 0 1px rgba(255, 23, 77, 0.18) inset,
-        0 0 18px rgba(255, 23, 77, 0.28),
-        0 0 34px rgba(255, 23, 77, 0.18);
+      background: transparent;
+      box-shadow: none;
     }
 
     .tier-title {
@@ -525,6 +599,15 @@
       .top-actions {
         flex-wrap: wrap;
       }
+
+      .settings-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .account-sidebar {
+        position: static;
+      }
     }
   </style>
 </head>
@@ -544,58 +627,96 @@
       </div>
 
       <div class="layout">
-        <div>
-          <section class="section">
-            <h2>Profile</h2>
-            <form id="username-form">
-              <div class="field">
-                <label for="username-input">Username</label>
-                <input id="username-input" name="username" type="text" autocomplete="username" maxlength="32" />
-              </div>
-              <button class="button" type="submit">Save Username</button>
-              <p class="status" id="username-status"></p>
-            </form>
-          </section>
+        <section class="settings-surface" aria-label="Account controls">
+          <div class="settings-row">
+            <div class="settings-row-title">
+              <h2>Profile</h2>
+              <p>Set the name shown across pitchIQ.</p>
+            </div>
+            <div class="settings-row-body">
+              <form id="username-form">
+                <div class="field">
+                  <label for="username-input">Username</label>
+                  <input id="username-input" name="username" type="text" autocomplete="username" maxlength="32" />
+                </div>
+                <button class="button" type="submit">Save Username</button>
+                <p class="status" id="username-status"></p>
+              </form>
+            </div>
+          </div>
 
-          <section class="section">
-            <h2>Email</h2>
-            <form id="email-form">
+          <div class="settings-row">
+            <div class="settings-row-title">
+              <h2>Default View</h2>
+              <p>Choose how board pages open after login.</p>
+            </div>
+            <div class="settings-row-body">
               <div class="field">
-                <label for="email-input">New Email</label>
-                <input id="email-input" name="email" type="email" autocomplete="email" />
+                <label>Board View</label>
+                <div class="default-view-toggle" role="radiogroup" aria-label="Default board view">
+                  <label class="default-view-option">
+                    <input type="radio" name="default-view" value="table" />
+                    <span>Table</span>
+                  </label>
+                  <label class="default-view-option">
+                    <input type="radio" name="default-view" value="cards" />
+                    <span>Cards</span>
+                  </label>
+                </div>
               </div>
-              <div class="field">
-                <label for="email-current-password">Current Password</label>
-                <input id="email-current-password" name="current_password" type="password" autocomplete="current-password" />
-              </div>
-              <button class="button" type="submit">Update Email</button>
-              <p class="status" id="email-status"></p>
-            </form>
-          </section>
+              <p class="status" id="default-view-status"></p>
+            </div>
+          </div>
 
-          <section class="section">
-            <h2>Password</h2>
-            <form id="password-form">
-              <div class="field">
-                <label for="current-password-input">Current Password</label>
-                <input id="current-password-input" name="current_password" type="password" autocomplete="current-password" />
-              </div>
-              <div class="field">
-                <label for="new-password-input">New Password</label>
-                <input id="new-password-input" name="new_password" type="password" autocomplete="new-password" minlength="8" />
-              </div>
-              <div class="field">
-                <label for="confirm-password-input">Confirm New Password</label>
-                <input id="confirm-password-input" name="confirm_password" type="password" autocomplete="new-password" minlength="8" />
-              </div>
-              <button class="button" type="submit">Update Password</button>
-              <p class="status" id="password-status"></p>
-            </form>
-          </section>
-        </div>
+          <div class="settings-row">
+            <div class="settings-row-title">
+              <h2>Email</h2>
+              <p>Change the email used to sign in.</p>
+            </div>
+            <div class="settings-row-body">
+              <form id="email-form">
+                <div class="field">
+                  <label for="email-input">New Email</label>
+                  <input id="email-input" name="email" type="email" autocomplete="email" />
+                </div>
+                <div class="field">
+                  <label for="email-current-password">Current Password</label>
+                  <input id="email-current-password" name="current_password" type="password" autocomplete="current-password" />
+                </div>
+                <button class="button" type="submit">Update Email</button>
+                <p class="status" id="email-status"></p>
+              </form>
+            </div>
+          </div>
 
-        <aside>
-          <section class="section">
+          <div class="settings-row">
+            <div class="settings-row-title">
+              <h2>Password</h2>
+              <p>Update your password with current-password confirmation.</p>
+            </div>
+            <div class="settings-row-body">
+              <form id="password-form">
+                <div class="field">
+                  <label for="current-password-input">Current Password</label>
+                  <input id="current-password-input" name="current_password" type="password" autocomplete="current-password" />
+                </div>
+                <div class="field">
+                  <label for="new-password-input">New Password</label>
+                  <input id="new-password-input" name="new_password" type="password" autocomplete="new-password" minlength="8" />
+                </div>
+                <div class="field">
+                  <label for="confirm-password-input">Confirm New Password</label>
+                  <input id="confirm-password-input" name="confirm_password" type="password" autocomplete="new-password" minlength="8" />
+                </div>
+                <button class="button" type="submit">Update Password</button>
+                <p class="status" id="password-status"></p>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <aside class="account-sidebar">
+          <section class="account-sidebar-section">
             <h2>Current Account</h2>
             <div class="account-meta">
               <div class="meta-row">
@@ -613,7 +734,7 @@
             </div>
           </section>
 
-          <section class="section">
+          <section class="account-sidebar-section">
             <h2>Tier</h2>
             <div class="tier-list" id="tier-list"></div>
           </section>
@@ -665,9 +786,11 @@
     const currentTier = document.getElementById("current-tier");
     const tierList = document.getElementById("tier-list");
     const logoutButton = document.getElementById("logout-button");
+    const defaultViewInputs = Array.from(document.querySelectorAll("input[name='default-view']"));
 
     let activeSession = null;
     let activeRole = null;
+    let activeDefaultView = "table";
 
     function setStatus(id, message, tone) {
       const element = document.getElementById(id);
@@ -689,6 +812,21 @@
       return { role: data?.role || null, error: null };
     }
 
+    function normalizeDefaultView(value) {
+      return String(value || "").trim().toLowerCase() === "cards" ? "cards" : "table";
+    }
+
+    function defaultViewStorageKey(userId = activeSession?.user?.id) {
+      return userId ? `pitchiq.defaultView.${userId}` : "pitchiq.defaultView";
+    }
+
+    function setDefaultViewControls(mode) {
+      const normalized = normalizeDefaultView(mode);
+      defaultViewInputs.forEach(input => {
+        input.checked = input.value === normalized;
+      });
+    }
+
     function renderAccount() {
       const user = activeSession?.user;
       const username = String(user?.user_metadata?.username || "").trim();
@@ -700,6 +838,7 @@
       currentTier.className = `meta-value tier-value-${activeRole || ""}`;
       usernameInput.value = username;
       emailInput.value = email;
+      setDefaultViewControls(activeDefaultView);
 
       const visibleTiers = activeRole === "owner" ? [...DISPLAY_TIERS, "owner"] : DISPLAY_TIERS;
       tierList.innerHTML = visibleTiers.map(role => {
@@ -762,7 +901,34 @@
 
       activeSession = data.session;
       activeRole = role;
+      activeDefaultView = normalizeDefaultView(
+        data.session.user?.user_metadata?.default_view
+        || window.localStorage.getItem(defaultViewStorageKey(data.session.user.id))
+      );
+      window.localStorage.setItem(defaultViewStorageKey(data.session.user.id), activeDefaultView);
       renderAccount();
+    }
+
+    async function saveDefaultViewPreference(mode) {
+      if (!activeSession?.user) return;
+      const nextMode = normalizeDefaultView(mode);
+      activeDefaultView = nextMode;
+      setDefaultViewControls(nextMode);
+      window.localStorage.setItem(defaultViewStorageKey(activeSession.user.id), nextMode);
+      setStatus("default-view-status", "Saving...", "");
+
+      const metadata = {
+        ...(activeSession.user.user_metadata || {}),
+        default_view: nextMode,
+      };
+      const { data, error } = await supabaseClient.auth.updateUser({ data: metadata });
+      if (error) {
+        setStatus("default-view-status", "Saved on this device. Cloud save failed.", "error");
+        return;
+      }
+
+      activeSession = { ...activeSession, user: data.user };
+      setStatus("default-view-status", "Default view saved.", "success");
     }
 
     usernameForm.addEventListener("submit", async (event) => {
@@ -776,7 +942,10 @@
       }
 
       const { data, error } = await supabaseClient.auth.updateUser({
-        data: { username }
+        data: {
+          ...(activeSession?.user?.user_metadata || {}),
+          username,
+        }
       });
 
       if (error) {
@@ -856,6 +1025,13 @@
 
       passwordForm.reset();
       setStatus("password-status", "Password updated.", "success");
+    });
+
+    defaultViewInputs.forEach(input => {
+      input.addEventListener("change", () => {
+        if (!input.checked) return;
+        saveDefaultViewPreference(input.value);
+      });
     });
 
     logoutButton.addEventListener("click", async () => {
