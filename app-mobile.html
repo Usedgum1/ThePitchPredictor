@@ -319,10 +319,65 @@
 
     /* Narrower than a wide-desktop column so the card does not dominate the phone */
     .cards .desktop-card {
+      position: relative;
       width: 100%;
       max-width: min(304px, 100%);
+      perspective: 820px;
+      transform-style: preserve-3d;
       touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
+    }
+
+    .cards .desktop-card-shell {
+      position: absolute;
+      inset: 0;
+      transform-style: preserve-3d;
+    }
+
+    .cards .desktop-card-face {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      transform-style: preserve-3d;
+    }
+
+    .cards .desktop-card-front {
+      opacity: 1;
+      transform: rotateY(0deg);
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .cards .desktop-card.flipped .desktop-card-front {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .cards .desktop-card-back {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transform: rotateY(180deg);
+    }
+
+    .cards .desktop-card.flip-left .desktop-card-back {
+      transform: rotateY(-180deg);
+    }
+
+    .cards .desktop-card.flipped .desktop-card-back {
+      opacity: 1;
+      transform: rotateY(0deg);
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .cards .desktop-card-inner {
+      position: relative;
+      height: 100%;
+      overflow: hidden;
     }
 
     /* Content-sized height; flip shell still needs a definite box (see .desktop-card-shell) */
