@@ -23,11 +23,11 @@
       --panel: rgba(12, 14, 20, 0.64);
       --panel-soft: rgba(255, 255, 255, 0.03);
       --line: rgba(255, 255, 255, 0.08);
-      --line-strong: rgba(141, 138, 255, 0.28);
+      --line-strong: rgba(47, 155, 255, 0.34);
       --text: #f4f0e8;
       --muted: #a7afbc;
-      --accent: #8d8aff;
-      --accent-soft: rgba(141, 138, 255, 0.1);
+      --accent: #2f9bff;
+      --accent-soft: rgba(47, 155, 255, 0.12);
       --dk-green: #8ddf9f;
       --dk-green-soft: rgba(141, 223, 159, 0.12);
       --fd-blue: #5698ff;
@@ -369,8 +369,8 @@
     }
 
     .stat.edge {
-      background: rgba(141, 138, 255, 0.1);
-      border-color: rgba(141, 138, 255, 0.24);
+      background: rgba(47, 155, 255, 0.1);
+      border-color: rgba(47, 155, 255, 0.28);
     }
 
     .stat.dk-line {
@@ -474,17 +474,11 @@
       text-align: center;
     }
 
-    .showcase-card-smart {
-      align-items: center;
-      text-align: center;
-    }
-
     .showcase-card-smart .showcase-kicker {
       font-size: clamp(1.25rem, 2.5vw, 1.8rem);
       letter-spacing: 0.03em;
       text-transform: none;
       color: var(--accent);
-      text-align: center;
     }
 
     .showcase-card-smart p {
@@ -494,15 +488,13 @@
       line-height: 1.35;
       color: var(--text);
       opacity: 0.92;
-      text-align: center;
-    }
-
-    .showcase-card-upcoming {
-      text-align: center;
     }
 
     .showcase-card-upcoming .showcase-kicker {
-      text-align: center;
+      font-size: clamp(1.25rem, 2.5vw, 1.8rem);
+      letter-spacing: 0.03em;
+      text-transform: none;
+      color: var(--accent);
     }
 
     .showcase-card-upcoming p {
@@ -511,7 +503,11 @@
       margin: 0;
       color: var(--text);
       opacity: 0.92;
-      text-align: center;
+    }
+
+    .showcase-card-my-cards .showcase-kicker,
+    .showcase-card-historical .showcase-kicker {
+      color: var(--over-orange);
     }
 
     .showcase-card-primary strong {
@@ -668,7 +664,7 @@
       outline: none;
       border-color: var(--line-strong);
       box-shadow:
-        0 0 0 4px rgba(141, 138, 255, 0.16),
+        0 0 0 4px rgba(47, 155, 255, 0.16),
         inset 0 1px 0 rgba(255, 255, 255, 0.06);
     }
 
@@ -913,18 +909,18 @@
         </div>
 
         <div class="panel showcase-card showcase-card-upcoming">
-          <div class="showcase-kicker"><h2><strong>Upcoming Games List</strong></h2></div>
+          <div class="showcase-kicker"><h2><strong>Upcoming Games List (Basic Feature)</strong></h2></div>
           <p style="color: white;">Scan the slate, compare the lines, and spot edge fast. Get the best odds. Search for a team, player, umpire, anything.</p>
           <div class="showcase-frame">
             <button
               type="button"
               class="lightbox-trigger"
-              data-lightbox-src="./images/TableExample.png"
+              data-lightbox-src="./images/Upcoming%20Games.png"
               data-lightbox-caption="Upcoming Board: scan the slate, compare lines, and spot edge fast."
               aria-label="Expand upcoming board preview"
             >
               <img
-                src="./images/TableExample.png"
+                src="./images/Upcoming%20Games.png"
                 alt="Preview of The Pitch Predictor upcoming strikeout board"
                 loading="lazy"
               />
@@ -933,19 +929,127 @@
         </div>
 
         <div class="panel showcase-card showcase-card-smart">
-          <div class="showcase-kicker"><h2><strong>Smart Lookup</strong></h2></div>
+          <div class="showcase-kicker"><h2><strong>Smart Lookup (Basic Feature)</strong></h2></div>
           <p style="color: white;">Drill into a single pitcher matchup without losing the bigger picture. Be informed.</p>
           <div class="showcase-frame">
             <button
               type="button"
               class="lightbox-trigger"
-              data-lightbox-src="./images/PitcherLookUp.png"
+              data-lightbox-src="./images/Pitcher%20Lookup.png"
               data-lightbox-caption="Pitcher Lookup: a tighter view into one pitcher's calibrated metrics and context."
               aria-label="Expand pitcher lookup preview"
             >
               <img
-                src="./images/PitcherLookUp.png"
+                src="./images/Pitcher%20Lookup.png"
                 alt="Preview of The Pitch Predictor pitcher lookup interface"
+                loading="lazy"
+              />
+            </button>
+          </div>
+        </div>
+
+        <div class="panel showcase-card showcase-card-live">
+          <div class="showcase-kicker"><h2><strong>Live View (Basic Feature)</strong></h2></div>
+          <p style="color: white;">Follow active games, live strikeout progress, current lines, and changing matchup context while the slate is in motion.</p>
+          <div class="showcase-frame">
+            <button
+              type="button"
+              class="lightbox-trigger"
+              data-lightbox-src="./images/Live%20View.png"
+              data-lightbox-caption="Live View: track active games, live strikeout progress, and in-game context."
+              aria-label="Expand live view preview"
+            >
+              <img
+                src="./images/Live%20View.png"
+                alt="Preview of The Pitch Predictor live games view"
+                loading="lazy"
+              />
+            </button>
+          </div>
+        </div>
+
+        <div class="panel showcase-card showcase-card-my-cards">
+          <div class="showcase-kicker"><h2><strong>My Cards (Pro Feature)</strong></h2></div>
+          <p style="color: white;">Save the projections you care about, search them later, and track wins and losses in one organized betting workspace.</p>
+          <div class="showcase-frame">
+            <button
+              type="button"
+              class="lightbox-trigger"
+              data-lightbox-src="./images/My%20Cards%20Example.png"
+              data-lightbox-caption="My Cards: save projections, search your saved board, and track outcomes."
+              aria-label="Expand my cards preview"
+            >
+              <img
+                src="./images/My%20Cards%20Example.png"
+                alt="Preview of The Pitch Predictor My Cards saved projection view"
+                loading="lazy"
+              />
+            </button>
+          </div>
+          <p style="color: white;">Cards can also flip like a baseball card to reveal matchup notes, model context, and key signals. That same card behavior is used across the site wherever projection cards appear.</p>
+          <div class="showcase-frame">
+            <button
+              type="button"
+              class="lightbox-trigger"
+              data-lightbox-src="./images/My%20Cards%20Flipped%20Example.png"
+              data-lightbox-caption="Flipped Cards: turn a projection card over to read matchup notes and model context."
+              aria-label="Expand flipped my cards preview"
+            >
+              <img
+                src="./images/My%20Cards%20Flipped%20Example.png"
+                alt="Preview of a flipped My Cards projection card with notes"
+                loading="lazy"
+              />
+            </button>
+          </div>
+          <p style="color: white;">Card view is optional. For more analytical users, My Cards also includes a table view built for scanning, sorting, and comparing saved plays quickly.</p>
+          <div class="showcase-frame">
+            <button
+              type="button"
+              class="lightbox-trigger"
+              data-lightbox-src="./images/My%20Cards%20Table%20View.png"
+              data-lightbox-caption="My Cards Table View: sort, scan, and compare saved plays in a denser analytical layout."
+              aria-label="Expand my cards table view preview"
+            >
+              <img
+                src="./images/My%20Cards%20Table%20View.png"
+                alt="Preview of The Pitch Predictor My Cards table view"
+                loading="lazy"
+              />
+            </button>
+          </div>
+        </div>
+
+        <div class="panel showcase-card showcase-card-historical">
+          <div class="showcase-kicker"><h2><strong>Historical Table (Pro Feature)</strong></h2></div>
+          <p style="color: white;">Search past projections, compare closing lines, review results, and see how the model performed across previous slates.</p>
+          <div class="showcase-frame">
+            <button
+              type="button"
+              class="lightbox-trigger"
+              data-lightbox-src="./images/Historical%20Example.png"
+              data-lightbox-caption="Historical Table: search past projections, closing lines, results, and model correctness."
+              aria-label="Expand historical table preview"
+            >
+              <img
+                src="./images/Historical%20Example.png"
+                alt="Preview of The Pitch Predictor historical table"
+                loading="lazy"
+              />
+            </button>
+          </div>
+          <p style="color: white;">From the historical table, users can open a pitcher view to review that pitcher's past matchups and see our current streaks against them.</p>
+          <div class="showcase-frame">
+            <button
+              type="button"
+              class="lightbox-trigger"
+              data-lightbox-src="./images/Historical%20Pitcher.png"
+              data-lightbox-caption="Historical Pitcher View: review a pitcher's past games and current streaks."
+              aria-label="Expand historical pitcher preview"
+            >
+              <img
+                src="./images/Historical%20Pitcher.png"
+                alt="Preview of The Pitch Predictor historical pitcher view"
                 loading="lazy"
               />
             </button>
@@ -963,10 +1067,13 @@
       </div>
 
       <div class="panel">
-		<h2>Built for workflow</h2>
+		<h2>Interested?</h2>
 		<p>
-		  No bouncing between tabs. Scan the slate, compare lines, and find edge fast. Drill into a matchup when you need more detail.
+		  Try the demo to click through the board, lookup tools, live view, saved cards, and historical table before launch.
 		</p>
+        <div class="hero-actions">
+          <a class="demo-button" href="./demo.html">Try the Demo</a>
+        </div>
       </div>
 
       <div class="panel">

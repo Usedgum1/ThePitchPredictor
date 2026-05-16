@@ -1995,9 +1995,15 @@
     function renderAddToMyCardsAction(game) {
       const pitcher = escapeHtml(game?.pitcher || "");
       const walletKey = escapeHtml(walletCardKey(game));
-      const addIcon = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>';
+      const myCardsUnlocked = canViewMyCards();
+      const addTitle = myCardsUnlocked
+        ? "Add to my cards"
+        : "My Cards is a Pro feature";
+      const addIcon = myCardsUnlocked
+        ? '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>'
+        : "&#128274;";
       return `
-        <button class="lookup-icon-btn add-card-btn desktop-card-add-action" type="button" data-wallet-key="${walletKey}" data-pitcher="${pitcher}" title="Add to my cards" aria-label="Add to my cards">${addIcon}</button>
+        <button class="lookup-icon-btn add-card-btn desktop-card-add-action" type="button" data-wallet-key="${walletKey}" data-pitcher="${pitcher}" title="${addTitle}" aria-label="${addTitle}">${addIcon}</button>
       `;
     }
 

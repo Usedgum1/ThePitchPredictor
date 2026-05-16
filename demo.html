@@ -28,6 +28,7 @@
       --danger: #ff8c7a;
       --neon-red: #ff174d;
       --vol-medium: #fff159;
+      --workspace-stage-min-height: 560px;
     }
 
     * { box-sizing: border-box; }
@@ -180,6 +181,10 @@
     }
 
     .settings-tab.hidden {
+      display: none;
+    }
+
+    .report-tab.hidden {
       display: none;
     }
 
@@ -352,19 +357,22 @@
       text-shadow: 0 0 12px rgba(255, 23, 77, 0.95);
     }
 
-    .historical-tab {
+    .historical-tab,
+    .my-cards-tab {
       border-color: rgba(255, 148, 46, 0.38);
       background: rgba(255, 148, 46, 0.1);
       color: var(--muted);
     }
 
-    .historical-tab.is-unlocked {
+    .historical-tab.is-unlocked,
+    .my-cards-tab.is-unlocked {
       border-color: rgba(255, 148, 46, 0.62);
       background: rgba(255, 148, 46, 0.16);
       color: #ff942e;
     }
 
-    .historical-tab.active {
+    .historical-tab.active,
+    .my-cards-tab.active {
       border-color: rgba(255, 148, 46, 0.94);
       background: rgba(255, 148, 46, 0.26);
       color: var(--text);
@@ -375,7 +383,8 @@
       text-shadow: 0 0 10px rgba(255, 148, 46, 0.78);
     }
 
-    .historical-tab-icon {
+    .historical-tab-icon,
+    .my-cards-tab-icon {
       display: inline-block;
       margin-right: 7px;
       transform: translateY(-1px);
@@ -966,6 +975,7 @@
     .table-shell {
       border: 1px solid rgba(167, 175, 188, 0.34);
       border-radius: 14px;
+      min-height: var(--workspace-stage-min-height);
       overflow: hidden;
       background: rgba(9, 9, 13, 0.92);
     }
@@ -2222,6 +2232,7 @@
     }
 
     .table-scroll {
+      min-height: var(--workspace-stage-min-height);
       overflow-x: auto;
     }
 
@@ -2232,7 +2243,8 @@
     }
 
     #upcoming-table-shell table,
-    #live-table-shell table {
+    #live-table-shell table,
+    #my-cards-table-shell table {
       table-layout: fixed;
       min-width: 1120px;
     }
@@ -2240,7 +2252,9 @@
     #upcoming-table-shell th,
     #upcoming-table-shell td,
     #live-table-shell th,
-    #live-table-shell td {
+    #live-table-shell td,
+    #my-cards-table-shell th,
+    #my-cards-table-shell td {
       padding-left: 8px;
       padding-right: 8px;
     }
@@ -2248,27 +2262,37 @@
     #upcoming-table-shell th:nth-child(1),
     #upcoming-table-shell td:nth-child(1),
     #live-table-shell th:nth-child(1),
-    #live-table-shell td:nth-child(1) { width: 84px; }
+    #live-table-shell td:nth-child(1),
+    #my-cards-table-shell th:nth-child(1),
+    #my-cards-table-shell td:nth-child(1) { width: 84px; }
 
     #upcoming-table-shell th:nth-child(2),
     #upcoming-table-shell td:nth-child(2),
     #live-table-shell th:nth-child(2),
-    #live-table-shell td:nth-child(2) { width: 168px; }
+    #live-table-shell td:nth-child(2),
+    #my-cards-table-shell th:nth-child(2),
+    #my-cards-table-shell td:nth-child(2) { width: 168px; }
 
     #upcoming-table-shell th:nth-child(3),
     #upcoming-table-shell td:nth-child(3),
     #live-table-shell th:nth-child(3),
-    #live-table-shell td:nth-child(3) { width: 150px; }
+    #live-table-shell td:nth-child(3),
+    #my-cards-table-shell th:nth-child(3),
+    #my-cards-table-shell td:nth-child(3) { width: 150px; }
 
     #upcoming-table-shell th:nth-child(4),
     #upcoming-table-shell td:nth-child(4),
     #live-table-shell th:nth-child(4),
-    #live-table-shell td:nth-child(4) { width: 106px; }
+    #live-table-shell td:nth-child(4),
+    #my-cards-table-shell th:nth-child(4),
+    #my-cards-table-shell td:nth-child(4) { width: 106px; }
 
     #upcoming-table-shell th:nth-child(5),
     #upcoming-table-shell td:nth-child(5),
     #live-table-shell th:nth-child(5),
-    #live-table-shell td:nth-child(5) { width: 48px; }
+    #live-table-shell td:nth-child(5),
+    #my-cards-table-shell th:nth-child(5),
+    #my-cards-table-shell td:nth-child(5) { width: 48px; }
 
     #upcoming-table-shell th:nth-child(6),
     #upcoming-table-shell td:nth-child(6),
@@ -2277,17 +2301,25 @@
     #live-table-shell th:nth-child(6),
     #live-table-shell td:nth-child(6),
     #live-table-shell th:nth-child(7),
-    #live-table-shell td:nth-child(7) { width: 90px; }
+    #live-table-shell td:nth-child(7),
+    #my-cards-table-shell th:nth-child(6),
+    #my-cards-table-shell td:nth-child(6),
+    #my-cards-table-shell th:nth-child(7),
+    #my-cards-table-shell td:nth-child(7) { width: 90px; }
 
     #upcoming-table-shell th:nth-child(8),
     #upcoming-table-shell td:nth-child(8),
     #live-table-shell th:nth-child(8),
-    #live-table-shell td:nth-child(8) { width: 88px; }
+    #live-table-shell td:nth-child(8),
+    #my-cards-table-shell th:nth-child(8),
+    #my-cards-table-shell td:nth-child(8) { width: 88px; }
 
     #upcoming-table-shell th:nth-child(9),
     #upcoming-table-shell td:nth-child(9),
     #live-table-shell th:nth-child(9),
-    #live-table-shell td:nth-child(9) { width: 92px; }
+    #live-table-shell td:nth-child(9),
+    #my-cards-table-shell th:nth-child(9),
+    #my-cards-table-shell td:nth-child(9) { width: 92px; }
 
     #upcoming-table-shell th:nth-child(10),
     #upcoming-table-shell td:nth-child(10),
@@ -2296,12 +2328,18 @@
     #live-table-shell th:nth-child(10),
     #live-table-shell td:nth-child(10),
     #live-table-shell th:nth-child(11),
-    #live-table-shell td:nth-child(11) { width: 72px; }
+    #live-table-shell td:nth-child(11),
+    #my-cards-table-shell th:nth-child(10),
+    #my-cards-table-shell td:nth-child(10),
+    #my-cards-table-shell th:nth-child(11),
+    #my-cards-table-shell td:nth-child(11) { width: 72px; }
 
     #upcoming-table-shell th:nth-child(12),
     #upcoming-table-shell td:nth-child(12),
     #live-table-shell th:nth-child(12),
-    #live-table-shell td:nth-child(12) {
+    #live-table-shell td:nth-child(12),
+    #my-cards-table-shell th:nth-child(12),
+    #my-cards-table-shell td:nth-child(12) {
       width: auto;
       min-width: 118px;
       overflow: hidden;
@@ -2713,6 +2751,7 @@
           <button class="workspace-tab" data-view="pitcher-lookup">DEMO Pitcher Lookup</button>
           <button class="workspace-tab active" data-view="upcoming-games">DEMO Upcoming Games</button>
           <button class="workspace-tab" data-view="live-games">DEMO Live Games</button>
+          <button class="workspace-tab my-cards-tab" id="my-cards-tab" data-view="my-cards"><span class="my-cards-tab-icon" id="my-cards-tab-icon" aria-hidden="true">&#128274;</span>DEMO My Cards</button>
           <button class="workspace-tab historical-tab" id="historical-tab" data-view="historical-games"><span class="historical-tab-icon" id="historical-tab-icon" aria-hidden="true">&#128274;</span>DEMO Historical</button>
           <button class="workspace-tab report-tab" id="report-tab" data-view="report-builder"><span class="report-tab-icon" id="report-tab-icon" aria-hidden="true">&#128274;</span>DEMO Report Builder</button>
         </div>
@@ -2872,6 +2911,70 @@
         </div>
       </div>
 
+      <div id="my-cards-panel" class="workspace-panel">
+        <div id="my-cards-locked-panel" class="subtile glass-subtile locked-feature hidden">
+          <div class="locked-badge">Pro Feature</div>
+          <div class="locked-title">My Cards locked</div>
+          <div class="locked-copy">Save projection cards with Pro, then search your saved pitchers, track wins and losses, and keep your favorite betting spots organized in one view.</div>
+          <a class="nav-pill" href="./account-settings.html">View Account</a>
+        </div>
+
+        <div id="my-cards-content-panel">
+          <div class="table-toolbar">
+            <div class="field table-search">
+              <label for="my-cards-search-input">Search My Cards</label>
+              <div class="search-row">
+                <input id="my-cards-search-input" type="text" placeholder="Search saved pitcher, team, opponent, line, bet, edge..." />
+                <button id="clear-my-cards-search" class="clear-btn hidden" type="button" aria-label="Clear my cards search">x</button>
+              </div>
+            </div>
+            <div class="view-toggle" aria-label="My cards view">
+              <button class="view-toggle-button active" id="my-cards-table-view-button" type="button" title="Table View" aria-label="Table View">
+                <span class="view-icon-lines" aria-hidden="true"><span></span><span></span><span></span></span>
+              </button>
+              <button class="view-toggle-button" id="my-cards-card-view-button" type="button" title="Card View" aria-label="Card View">
+                <span class="view-icon-grid" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+              </button>
+            </div>
+          </div>
+
+          <div class="table-shell" id="my-cards-table-shell">
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th class="sortable my-cards-sortable" data-sort-key="pitcher"><span class="th-inner">Pitcher <span class="sort-indicator"></span></span></th>
+                    <th class="sortable my-cards-sortable" data-sort-key="opponent"><span class="th-inner">Opponent <span class="sort-indicator"></span></span></th>
+                    <th class="sortable my-cards-sortable" data-sort-key="date"><span class="th-inner">Date <span class="sort-indicator"></span></span></th>
+                    <th class="sortable my-cards-sortable" data-sort-key="plate_umpire"><span class="th-inner">Ump <span class="sort-indicator"></span></span></th>
+                    <th class="sortable my-cards-sortable" data-sort-key="dk_line"><span class="th-inner">DK Line <span class="sort-indicator"></span></span></th>
+                    <th class="sortable my-cards-sortable" data-sort-key="fd_line"><span class="th-inner">FD Line <span class="sort-indicator"></span></span></th>
+                    <th class="sortable my-cards-sortable" data-sort-key="projected_strikeouts"><span class="th-inner">Projected Ks <span class="sort-indicator"></span></span></th>
+                    <th class="sortable my-cards-sortable" data-sort-key="volatility_score"><span class="th-inner">Volatility <span class="sort-indicator"></span></span></th>
+                    <th class="sortable my-cards-sortable" data-sort-key="dk_edge"><span class="th-inner">DK Edge <span class="sort-indicator"></span></span></th>
+                    <th class="sortable my-cards-sortable" data-sort-key="fd_edge"><span class="th-inner">FD Edge <span class="sort-indicator"></span></span></th>
+                    <th class="sortable my-cards-sortable" data-sort-key="notes"><span class="th-inner">Notes <span class="sort-indicator"></span></span></th>
+                  </tr>
+                </thead>
+                <tbody id="my-cards-grid"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="desktop-card-grid hidden" id="my-cards-card-grid"></div>
+
+          <div class="pager">
+            <div class="pager-meta" id="my-cards-meta"></div>
+            <div class="pager-controls">
+              <button class="pager-button" id="my-cards-prev-button" type="button">Previous</button>
+              <div class="pager-page" id="my-cards-page-indicator"></div>
+              <button class="pager-button" id="my-cards-next-button" type="button">Next</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div id="historical-games-panel" class="workspace-panel">
         <div id="historical-locked-panel" class="subtile glass-subtile locked-feature hidden">
           <div class="locked-badge">Pro Feature</div>
@@ -2988,6 +3091,8 @@
     const accountPill = document.getElementById("account-pill");
     const serverActivityFooter = document.getElementById("server-activity-footer");
     const settingsTab = document.getElementById("settings-tab");
+    const myCardsTab = document.getElementById("my-cards-tab");
+    const myCardsTabIcon = document.getElementById("my-cards-tab-icon");
     const historicalTab = document.getElementById("historical-tab");
     const historicalTabIcon = document.getElementById("historical-tab-icon");
     const reportTab = document.getElementById("report-tab");
@@ -3012,12 +3117,17 @@
     function setOwnerControls(role) {
       currentUserRole = role || null;
       const proUnlocked = canUseProFeatures();
+      myCardsTab.classList.toggle("is-unlocked", proUnlocked);
+      myCardsTabIcon.innerHTML = proUnlocked ? "&#128275;" : "&#128274;";
       const historicalUnlocked = canViewHistoricalGames();
       historicalTab.classList.toggle("is-unlocked", historicalUnlocked);
       historicalTabIcon.innerHTML = historicalUnlocked ? "&#128275;" : "&#128274;";
-      reportTab.classList.toggle("is-unlocked", proUnlocked);
-      reportTabIcon.innerHTML = proUnlocked ? "&#128275;" : "&#128274;";
+      const reportUnlocked = String(currentUserRole || "").toLowerCase() === "owner";
+      reportTab.classList.toggle("hidden", !reportUnlocked);
+      reportTab.classList.toggle("is-unlocked", reportUnlocked);
+      reportTabIcon.innerHTML = reportUnlocked ? "&#128275;" : "&#128274;";
       settingsTab.classList.toggle("hidden", currentUserRole !== "owner");
+      refreshMyCardsView();
       refreshHistoricalGamesView();
       refreshReportBuilderView();
       if (pitcherInput?.value?.trim()) {
@@ -3047,6 +3157,17 @@
     const liveTableViewButton = document.getElementById("live-table-view-button");
     const liveCardViewButton = document.getElementById("live-card-view-button");
     const liveSortHeaders = Array.from(document.querySelectorAll("#live-games-panel th.sortable"));
+    const myCardsSearchInput = document.getElementById("my-cards-search-input");
+    const clearMyCardsSearchButton = document.getElementById("clear-my-cards-search");
+    const myCardsMeta = document.getElementById("my-cards-meta");
+    const myCardsPrevButton = document.getElementById("my-cards-prev-button");
+    const myCardsNextButton = document.getElementById("my-cards-next-button");
+    const myCardsPageIndicator = document.getElementById("my-cards-page-indicator");
+    const myCardsTableShell = document.getElementById("my-cards-table-shell");
+    const myCardsCardGrid = document.getElementById("my-cards-card-grid");
+    const myCardsTableViewButton = document.getElementById("my-cards-table-view-button");
+    const myCardsCardViewButton = document.getElementById("my-cards-card-view-button");
+    const myCardsSortHeaders = Array.from(document.querySelectorAll("#my-cards-panel th.sortable"));
     const historicalSearchInput = document.getElementById("historical-search-input");
     const clearHistoricalSearchButton = document.getElementById("clear-historical-search");
     const historicalGamesMeta = document.getElementById("historical-games-meta");
@@ -3065,11 +3186,14 @@
     const reportColumnGrid = document.getElementById("report-column-grid");
     const reportDownloadButton = document.getElementById("report-download-button");
     const reportSummary = document.getElementById("report-summary");
+    const myCardsLockedPanel = document.getElementById("my-cards-locked-panel");
+    const myCardsContentPanel = document.getElementById("my-cards-content-panel");
     const workspaceTabs = Array.from(document.querySelectorAll(".workspace-tab"));
     const workspacePanels = {
       "pitcher-lookup": document.getElementById("pitcher-lookup-panel"),
       "upcoming-games": document.getElementById("upcoming-games-panel"),
       "live-games": document.getElementById("live-games-panel"),
+      "my-cards": document.getElementById("my-cards-panel"),
       "historical-games": document.getElementById("historical-games-panel"),
       "report-builder": document.getElementById("report-builder-panel"),
       "settings": document.getElementById("settings-panel")
@@ -3080,6 +3204,7 @@
 
     let upcomingGames = [];
     let liveGames = [];
+    let myCards = [];
     let gameHistory = [];
     let allPitchers = [];
     let filteredPitchers = [];
@@ -3094,6 +3219,11 @@
     let liveSearchQuery = "";
     let liveSort = { key: "date", direction: "asc" };
     let liveViewMode = "table";
+    let myCardsPage = 1;
+    const myCardsPageSize = 20;
+    let myCardsSearchQuery = "";
+    let myCardsSort = { key: "saved_at", direction: "desc" };
+    let myCardsViewMode = "table";
     let historicalGamesPage = 1;
     const historicalGamesPageSize = 20;
     let historicalSearchQuery = "";
@@ -3407,9 +3537,16 @@
       { ...DEMO_LIVE_GAMES[0], date: "07/10/2025", game_date_raw: "2025-07-10", sort_datetime: "2025-07-10T14:20:00-04:00", game_status: "Final", opponent: "Cincinnati Reds", plate_umpire: "Grant Hill", actual_k: 6, dk_line: 5.5, dk_bet: "OVER", fd_line: 5.5, fd_bet: "OVER", notes: "No Major Flags" }
     ];
 
+    const DEMO_MY_CARDS = [
+      { ...DEMO_UPCOMING_GAMES[0], _saved_card_id: "demo-card-1", _saved_at: "2025-07-18T09:22:00-04:00" },
+      { ...DEMO_UPCOMING_GAMES[2], _saved_card_id: "demo-card-2", _saved_at: "2025-07-18T09:35:00-04:00" },
+      { ...DEMO_LIVE_GAMES[0], _saved_card_id: "demo-card-3", _saved_at: "2025-07-18T10:04:00-04:00" }
+    ];
+
     function loadDemoData() {
       upcomingGames = DEMO_UPCOMING_GAMES.map(game => ({ ...game }));
       liveGames = DEMO_LIVE_GAMES.map(game => ({ ...game }));
+      myCards = DEMO_MY_CARDS.map(game => ({ ...game }));
       gameHistory = DEMO_HISTORICAL_GAMES.map(game => ({ ...game })).sort((left, right) => sortableGameDate(right) - sortableGameDate(left));
       historicalBetRecordCache = new Map();
       setOwnerControls("pro");
@@ -3530,6 +3667,7 @@
         refreshPitcherList();
         refreshUpcomingGamesView();
         refreshLiveGamesView();
+        refreshMyCardsView();
         refreshHistoricalGamesView();
         refreshReportBuilderView();
         return;
@@ -3546,6 +3684,7 @@
       const splitGames = splitSupabaseGameRows(gameRows || []);
       upcomingGames = splitGames.upcoming;
       liveGames = splitGames.live;
+      myCards = DEMO_MY_CARDS.map(game => ({ ...game }));
       if (!historyRowsError) {
         latestFetchedHistoricalRowsUpdatedAt = maxUpdatedAtFromRows(historyRows || []);
         gameHistory = (historyRows || [])
@@ -3565,10 +3704,12 @@
       if (options.resetPages !== false) {
         upcomingGamesPage = 1;
         liveGamesPage = 1;
+        myCardsPage = 1;
         historicalGamesPage = 1;
       }
       refreshUpcomingGamesView();
       refreshLiveGamesView();
+      refreshMyCardsView();
       refreshHistoricalGamesView();
       refreshReportBuilderView();
       if (pitcherInput.value.trim()) {
@@ -4316,6 +4457,10 @@
         const parsed = Date.parse(game.sort_datetime || game.date || "");
         return Number.isNaN(parsed) ? Number.POSITIVE_INFINITY : parsed;
       }
+      if (key === "saved_at") {
+        const parsed = Date.parse(game._saved_at || "");
+        return Number.isNaN(parsed) ? Number.NEGATIVE_INFINITY : parsed;
+      }
       return normalizeText(game[key]);
     }
 
@@ -4384,8 +4529,45 @@
       });
     }
 
+    function getFilteredMyCards() {
+      const query = normalizeText(myCardsSearchQuery);
+      const filtered = !query ? myCards.slice() : myCards.filter(game => {
+        const haystack = [
+          game.pitcher,
+          game.pitcher_team,
+          game.opponent,
+          game.date,
+          game.time || formatDisplayTime(game.start_time),
+          game.plate_umpire,
+          game.dk_line,
+          game.fd_line,
+          displayNotesText(game),
+          formatNumber(displayProjectionValue(game), 2),
+          formatVolatility(game),
+          game.dk_bet,
+          formatEdge(game.dk_edge),
+          game.fd_bet,
+          formatEdge(game.fd_edge),
+          game._saved_at
+        ].map(normalizeText).join(" ");
+        return haystack.includes(query);
+      });
+      const direction = myCardsSort.direction === "desc" ? -1 : 1;
+      return filtered.sort((left, right) => {
+        const a = parseSortableValue(left, myCardsSort.key);
+        const b = parseSortableValue(right, myCardsSort.key);
+        if (a < b) return -1 * direction;
+        if (a > b) return 1 * direction;
+        return normalizeText(left.pitcher).localeCompare(normalizeText(right.pitcher));
+      });
+    }
+
     function canUseProFeatures() {
       return ["pro", "life", "admin", "owner"].includes(String(currentUserRole || "").toLowerCase());
+    }
+
+    function canViewMyCards() {
+      return canUseProFeatures();
     }
 
     function canViewHistoricalGames() {
@@ -4626,6 +4808,16 @@
       });
     }
 
+    function updateMyCardsSortIndicators() {
+      myCardsSortHeaders.forEach(header => {
+        const indicator = header.querySelector(".sort-indicator");
+        if (!indicator) return;
+        indicator.innerHTML = header.dataset.sortKey === myCardsSort.key
+          ? (myCardsSort.direction === "asc" ? "&#9650;" : "&#9660;")
+          : "";
+      });
+    }
+
     function animateTableRows(container) {
       container.classList.remove("render-fade");
       const rows = Array.from(container.querySelectorAll("tr"));
@@ -4671,6 +4863,11 @@
       if (scope === "live") {
         liveViewMode = mode === "cards" ? "cards" : "table";
         refreshLiveGamesView();
+        return;
+      }
+      if (scope === "my-cards") {
+        myCardsViewMode = mode === "cards" ? "cards" : "table";
+        refreshMyCardsView();
         return;
       }
       upcomingViewMode = mode === "cards" ? "cards" : "table";
@@ -5174,6 +5371,73 @@
       animateTableRows(container);
     }
 
+    function renderMyCards(games) {
+      const unlocked = canViewMyCards();
+      myCardsLockedPanel.classList.toggle("hidden", unlocked);
+      myCardsContentPanel.classList.toggle("hidden", !unlocked);
+      if (!unlocked) return;
+
+      const container = document.getElementById("my-cards-grid");
+      const totalRows = games ? games.length : 0;
+      const totalPages = Math.max(1, Math.ceil(totalRows / myCardsPageSize));
+      myCardsPage = Math.min(Math.max(1, myCardsPage), totalPages);
+      updateMyCardsSortIndicators();
+      myCardsTableShell.classList.remove("loading");
+      const showingCards = myCardsViewMode === "cards";
+      myCardsTableShell.classList.toggle("hidden", showingCards);
+      myCardsCardGrid.classList.toggle("hidden", !showingCards);
+      myCardsTableViewButton.classList.toggle("active", !showingCards);
+      myCardsCardViewButton.classList.toggle("active", showingCards);
+
+      if (!games || !games.length) {
+        container.innerHTML = `
+          <tr>
+            <td colspan="12">No saved cards yet.</td>
+          </tr>
+        `;
+        renderDesktopCards(myCardsCardGrid, [], "my-cards");
+        myCardsMeta.textContent = "0 saved cards";
+        myCardsPageIndicator.textContent = "Page 1 / 1";
+        myCardsPrevButton.disabled = true;
+        myCardsNextButton.disabled = true;
+        return;
+      }
+
+      const startIndex = (myCardsPage - 1) * myCardsPageSize;
+      const pageRows = games.slice(startIndex, startIndex + myCardsPageSize);
+
+      container.innerHTML = pageRows.map(game => `
+        <tr data-saved-card-id="${escapeHtml(game._saved_card_id || "")}">
+          <td>${renderRowActions(game, { includeAddToCards: false })}</td>
+          <td>
+            <div class="pitcher-cell">
+              <span class="pitcher-name" title="${escapeHtml(game.pitcher)}">${escapeHtml(game.pitcher)}</span>
+              <span class="pitcher-team-sub">${escapeHtml(game.pitcher_team || "")}</span>
+            </div>
+          </td>
+          <td>${escapeHtml(game.opponent)}</td>
+          ${renderDateCell(game)}
+          ${renderUmpCell(game)}
+          ${renderBookLineCell(game.dk_line, game.dk_over_payout, game.dk_under_payout)}
+          ${renderBookLineCell(game.fd_line, game.fd_over_payout, game.fd_under_payout)}
+          <td class="projected-ks-value">${formatNumber(displayProjectionValue(game), 2)}</td>
+          ${renderVolatilityCell(game)}
+          <td class="${edgeTone(game.dk_edge, game.dk_bet)}">${escapeHtml(formatEdge(game.dk_edge))}</td>
+          <td class="${edgeTone(game.fd_edge, game.fd_bet)}">${escapeHtml(formatEdge(game.fd_edge))}</td>
+          <td>${escapeHtml(displayNotesText(game))}</td>
+        </tr>
+      `).join("");
+      renderDesktopCards(myCardsCardGrid, pageRows, "my-cards");
+
+      const startDisplay = startIndex + 1;
+      const endDisplay = startIndex + pageRows.length;
+      myCardsMeta.textContent = `${startDisplay}-${endDisplay} of ${totalRows} saved cards`;
+      myCardsPageIndicator.textContent = `Page ${myCardsPage} / ${totalPages}`;
+      myCardsPrevButton.disabled = myCardsPage <= 1;
+      myCardsNextButton.disabled = myCardsPage >= totalPages;
+      animateTableRows(container);
+    }
+
     function renderHistoricalGames(games) {
       const unlocked = canViewHistoricalGames();
       historicalLockedPanel.classList.toggle("hidden", unlocked);
@@ -5248,6 +5512,10 @@
 
     function refreshLiveGamesView() {
       renderLiveGames(getFilteredLiveGames());
+    }
+
+    function refreshMyCardsView() {
+      renderMyCards(getFilteredMyCards());
     }
 
     function refreshHistoricalGamesView() {
@@ -5395,6 +5663,13 @@
       refreshLiveGamesView();
     }
 
+    function updateMyCardsSearch() {
+      toggleClearButton(myCardsSearchInput, clearMyCardsSearchButton);
+      myCardsSearchQuery = myCardsSearchInput.value || "";
+      myCardsPage = 1;
+      refreshMyCardsView();
+    }
+
     function updateHistoricalSearch() {
       toggleClearButton(historicalSearchInput, clearHistoricalSearchButton);
       historicalSearchQuery = historicalSearchInput.value || "";
@@ -5427,6 +5702,20 @@
         }
         liveGamesPage = 1;
         refreshLiveGamesView();
+      });
+    });
+
+    myCardsSortHeaders.forEach(header => {
+      header.addEventListener("click", () => {
+        const key = header.dataset.sortKey;
+        if (!key) return;
+        if (myCardsSort.key === key) {
+          myCardsSort.direction = myCardsSort.direction === "asc" ? "desc" : "asc";
+        } else {
+          myCardsSort = { key, direction: key === "saved_at" ? "desc" : "asc" };
+        }
+        myCardsPage = 1;
+        refreshMyCardsView();
       });
     });
 
@@ -5468,6 +5757,19 @@
       if (liveGamesPage >= totalPages) return;
       liveGamesPage += 1;
       refreshLiveGamesView();
+    });
+
+    myCardsPrevButton.addEventListener("click", () => {
+      if (myCardsPage <= 1) return;
+      myCardsPage -= 1;
+      refreshMyCardsView();
+    });
+
+    myCardsNextButton.addEventListener("click", () => {
+      const totalPages = Math.max(1, Math.ceil(getFilteredMyCards().length / myCardsPageSize));
+      if (myCardsPage >= totalPages) return;
+      myCardsPage += 1;
+      refreshMyCardsView();
     });
 
     historicalPrevButton.addEventListener("click", () => {
@@ -5526,14 +5828,19 @@
 
     upcomingSearchInput.addEventListener("input", updateUpcomingSearch);
     liveSearchInput.addEventListener("input", updateLiveSearch);
+    myCardsSearchInput.addEventListener("input", updateMyCardsSearch);
     upcomingTableViewButton.addEventListener("click", () => setViewMode("upcoming", "table"));
     upcomingCardViewButton.addEventListener("click", () => setViewMode("upcoming", "cards"));
     liveTableViewButton.addEventListener("click", () => setViewMode("live", "table"));
     liveCardViewButton.addEventListener("click", () => setViewMode("live", "cards"));
+    myCardsTableViewButton.addEventListener("click", () => setViewMode("my-cards", "table"));
+    myCardsCardViewButton.addEventListener("click", () => setViewMode("my-cards", "cards"));
     upcomingCardGrid.addEventListener("click", handleDesktopCardFlip);
     liveCardGrid.addEventListener("click", handleDesktopCardFlip);
+    myCardsCardGrid.addEventListener("click", handleDesktopCardFlip);
     upcomingCardGrid.addEventListener("keydown", handleDesktopCardKeyboardFlip);
     liveCardGrid.addEventListener("keydown", handleDesktopCardKeyboardFlip);
+    myCardsCardGrid.addEventListener("keydown", handleDesktopCardKeyboardFlip);
     historicalSearchInput.addEventListener("input", updateHistoricalSearch);
     reportSourceSelect.addEventListener("change", refreshReportBuilderView);
     reportStartDateInput.addEventListener("change", refreshReportBuilderView);
@@ -5554,6 +5861,12 @@
       liveSearchInput.value = "";
       updateLiveSearch();
       liveSearchInput.focus();
+    });
+
+    clearMyCardsSearchButton.addEventListener("click", () => {
+      myCardsSearchInput.value = "";
+      updateMyCardsSearch();
+      myCardsSearchInput.focus();
     });
 
     clearHistoricalSearchButton.addEventListener("click", () => {
@@ -5637,6 +5950,16 @@
       if (button) openPitcherFromUpcoming(button.dataset.pitcher || "");
     });
 
+    document.getElementById("my-cards-grid").addEventListener("click", event => {
+      const historicalButton = event.target.closest(".historical-lookup-btn");
+      if (historicalButton) {
+        openHistoricalLookup(historicalButton.dataset.pitcher || "");
+        return;
+      }
+      const button = event.target.closest(".pitcher-lookup-btn");
+      if (button) openPitcherFromUpcoming(button.dataset.pitcher || "");
+    });
+
     document.getElementById("historical-games-grid").addEventListener("click", event => {
       const button = event.target.closest(".pitcher-lookup-btn");
       if (!button) return;
@@ -5653,6 +5976,7 @@
     renderReportColumns();
     refreshUpcomingGamesView();
     refreshLiveGamesView();
+    refreshMyCardsView();
     refreshHistoricalGamesView();
     refreshReportBuilderView();
   </script>

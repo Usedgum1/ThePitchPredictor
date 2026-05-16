@@ -38,6 +38,7 @@
       --danger: #ff8c7a;
       --neon-red: #ff174d;
       --vol-medium: #fff159;
+      --workspace-stage-min-height: 560px;
     }
 
     * { box-sizing: border-box; }
@@ -457,10 +458,10 @@
       align-items: center;
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      justify-content: center;
-      min-height: 260px;
-      padding: 34px 18px;
+      gap: 18px;
+      justify-content: flex-start;
+      min-height: var(--workspace-stage-min-height);
+      padding: 42px 28px;
       text-align: center;
     }
 
@@ -487,7 +488,32 @@
       max-width: 620px;
     }
 
-    .workspace-panel { display: none; animation: panelFade 0.18s ease; }
+    .locked-preview {
+      border: 1px solid rgba(255, 148, 46, 0.2);
+      border-radius: 14px;
+      box-shadow:
+        0 0 0 1px rgba(255, 148, 46, 0.08) inset,
+        0 16px 38px rgba(0, 0, 0, 0.28);
+      margin: 2px 0 0;
+      max-width: 1080px;
+      overflow: hidden;
+      width: min(100%, 1080px);
+    }
+
+    .locked-preview img {
+      aspect-ratio: 16 / 6.4;
+      display: block;
+      height: auto;
+      object-fit: cover;
+      object-position: top center;
+      width: 100%;
+    }
+
+    .workspace-panel {
+      animation: panelFade 0.18s ease;
+      display: none;
+      min-height: calc(var(--workspace-stage-min-height) + 112px);
+    }
     .workspace-panel.active { display: block; }
 
     @keyframes panelFade {
@@ -1073,8 +1099,15 @@
     .table-shell {
       border: 1px solid rgba(167, 175, 188, 0.34);
       border-radius: 14px;
+      min-height: var(--workspace-stage-min-height);
       overflow: hidden;
       background: rgba(9, 9, 13, 0.92);
+    }
+
+    .table-shell tbody tr:only-child td[colspan] {
+      height: calc(var(--workspace-stage-min-height) - 54px);
+      text-align: center;
+      vertical-align: middle;
     }
 
     .table-toolbar {
@@ -1153,6 +1186,7 @@
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 22px;
+      min-height: var(--workspace-stage-min-height);
     }
 
     .desktop-card-grid .empty-state {
@@ -2501,6 +2535,7 @@
     }
 
     .table-scroll {
+      min-height: var(--workspace-stage-min-height);
       overflow-x: auto;
     }
 
@@ -3436,7 +3471,10 @@
         <div id="my-cards-locked-panel" class="subtile glass-subtile locked-feature hidden">
           <div class="locked-badge">Pro Feature</div>
           <div class="locked-title">My Cards locked</div>
-          <div class="locked-copy">Saved projection cards are available to Pro, Life, Admin, and Owner accounts.</div>
+          <figure class="locked-preview">
+            <img src="./images/My%20Cards%20Example.png" alt="Preview of the My Cards saved projection card view" loading="lazy" />
+          </figure>
+          <div class="locked-copy">Save projection cards with Pro, then search your saved pitchers, track wins and losses, and keep your favorite betting spots organized in one view.</div>
           <a class="nav-pill" href="./account-settings.html">View Account</a>
         </div>
 
@@ -3500,7 +3538,10 @@
         <div id="historical-locked-panel" class="subtile glass-subtile locked-feature hidden">
           <div class="locked-badge">Pro Feature</div>
           <div class="locked-title">Historical table locked</div>
-          <div class="locked-copy">Historical projections, closing lines, results, and correctness tracking are available to Pro, Life, Admin, and Owner accounts.</div>
+          <figure class="locked-preview">
+            <img src="./images/Historical%20Example.png" alt="Preview of the Historical games table" loading="lazy" />
+          </figure>
+          <div class="locked-copy">Unlock the historical table with Pro to search past pitcher projections, compare closing lines, review results, and audit which sides were right or wrong.</div>
           <a class="nav-pill" href="./account-settings.html">View Account</a>
         </div>
 
@@ -6043,7 +6084,6 @@
 
     function renderRowActions(game, options = {}) {
       const pitcher = escapeHtml(game?.pitcher || "");
-      const addIcon = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>';
       const walletKey = escapeHtml(walletCardKey(game));
       const historicalUnlocked = canViewHistoricalGames();
       const historicalTitle = historicalUnlocked
@@ -6052,11 +6092,18 @@
       const historicalIcon = historicalUnlocked
         ? '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/><path d="M12 7v5l3 2"/></svg>'
         : "&#128274;";
+      const myCardsUnlocked = canViewMyCards();
+      const addTitle = myCardsUnlocked
+        ? "Add to my cards"
+        : "My Cards is a Pro feature";
+      const addIcon = myCardsUnlocked
+        ? '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>'
+        : "&#128274;";
       return `
         <div class="row-actions">
           <button class="lookup-icon-btn pitcher-lookup-btn" type="button" data-pitcher="${pitcher}" title="Open pitcher lookup" aria-label="Open pitcher lookup">&#8981;</button>
           ${options.includeHistorical === false ? "" : `<button class="lookup-icon-btn historical-lookup-btn" type="button" data-pitcher="${pitcher}" title="${historicalTitle}" aria-label="${historicalTitle}">${historicalIcon}</button>`}
-          ${options.includeAddToCards === false ? "" : `<button class="lookup-icon-btn add-card-btn" type="button" data-wallet-key="${walletKey}" data-pitcher="${pitcher}" title="Add to my cards" aria-label="Add to my cards">${addIcon}</button>`}
+          ${options.includeAddToCards === false ? "" : `<button class="lookup-icon-btn add-card-btn" type="button" data-wallet-key="${walletKey}" data-pitcher="${pitcher}" title="${addTitle}" aria-label="${addTitle}">${addIcon}</button>`}
         </div>
       `;
     }
@@ -6064,9 +6111,15 @@
     function renderAddToMyCardsAction(game) {
       const pitcher = escapeHtml(game?.pitcher || "");
       const walletKey = escapeHtml(walletCardKey(game));
-      const addIcon = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>';
+      const myCardsUnlocked = canViewMyCards();
+      const addTitle = myCardsUnlocked
+        ? "Add to my cards"
+        : "My Cards is a Pro feature";
+      const addIcon = myCardsUnlocked
+        ? '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>'
+        : "&#128274;";
       return `
-        <button class="lookup-icon-btn add-card-btn desktop-card-add-action" type="button" data-wallet-key="${walletKey}" data-pitcher="${pitcher}" title="Add to my cards" aria-label="Add to my cards">${addIcon}</button>
+        <button class="lookup-icon-btn add-card-btn desktop-card-add-action" type="button" data-wallet-key="${walletKey}" data-pitcher="${pitcher}" title="${addTitle}" aria-label="${addTitle}">${addIcon}</button>
       `;
     }
 
