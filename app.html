@@ -4375,10 +4375,101 @@
       };
     }
 
+    function identityDateValue(game) {
+      const raw = String(game?.game_date_raw || game?.game_date || game?.date || "").trim();
+      const isoMatch = raw.match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if (isoMatch) return `${isoMatch[1]}-${isoMatch[2]}-${isoMatch[3]}`;
+      const displayMatch = raw.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+      if (displayMatch) {
+        return [
+          displayMatch[3],
+          displayMatch[1].padStart(2, "0"),
+          displayMatch[2].padStart(2, "0"),
+        ].join("-");
+      }
+      return normalizeText(raw);
+    }
+
+    function gameIdentityParts(game) {
+      return [
+        game?.event_key || game?.source_event_key || game?.game_id || "",
+        game?.pitcher || game?.source_pitcher || "",
+        identityDateValue(game),
+        game?.opponent || "",
+      ].map(value => normalizeText(value));
+    }
+
+    function sameGameIdentity(left, right) {
+      const [leftEvent, leftPitcher, leftDate, leftOpponent] = gameIdentityParts(left);
+      const [rightEvent, rightPitcher, rightDate, rightOpponent] = gameIdentityParts(right);
+      if (leftEvent && rightEvent && leftEvent === rightEvent && (!leftPitcher || !rightPitcher || leftPitcher === rightPitcher)) {
+        return true;
+      }
+      return Boolean(
+        leftPitcher &&
+        rightPitcher &&
+        leftPitcher === rightPitcher &&
+        leftDate &&
+        rightDate &&
+        leftDate === rightDate &&
+        (!leftOpponent || !rightOpponent || leftOpponent === rightOpponent)
+      );
+    }
+
+    function firstPresentValue(...values) {
+      return values.find(value => value !== null && value !== undefined && String(value).trim() !== "");
+    }
+
+    function currentGameForSavedCard(game) {
+      const source = walletSourceTable(game);
+      const liveMatch = liveGames.find(candidate => sameGameIdentity(game, candidate));
+      if (source === "live" && liveMatch) return liveMatch;
+      return liveMatch || upcomingGames.find(candidate => sameGameIdentity(game, candidate)) || null;
+    }
+
+    function finalHistoryForSavedCard(game) {
+      return gameHistory.find(candidate => sameGameIdentity(game, candidate)) || null;
+    }
+
+    function hydrateSavedCardLiveK(game) {
+      const current = currentGameForSavedCard(game);
+      const finalHistory = finalHistoryForSavedCard(game);
+      const merged = current ? { ...game, ...current } : { ...game };
+      const finalKs = firstPresentValue(finalHistory?.actual_k, finalHistory?.strikeouts);
+      const liveKs = firstPresentValue(current?.live_strikeouts, current?.live_ks, current?.starter_strikeouts);
+      const resolvedKs = firstPresentValue(finalKs, liveKs, game?.actual_k, game?.strikeouts, game?.live_strikeouts, game?.live_ks, game?.starter_strikeouts);
+
+      if (finalHistory) {
+        Object.assign(merged, {
+          ...finalHistory,
+          ...merged,
+          actual_k: finalKs,
+          strikeouts: finalKs,
+          live_strikeouts: finalKs,
+          starter_strikeouts: finalKs,
+          game_status: "Final",
+          starter_status: "Finished",
+        });
+      } else if (resolvedKs !== undefined) {
+        merged.live_strikeouts = resolvedKs;
+        merged.starter_strikeouts = resolvedKs;
+      }
+
+      merged._saved_card_id = game._saved_card_id || "";
+      merged._saved_at = game._saved_at || "";
+      merged._wallet_result = normalizeWalletOutcome(game._wallet_result || game.wallet_result || "");
+      merged.wallet_result = merged._wallet_result;
+      merged._card_style = game._card_style || merged._card_style || "base-design";
+      merged._pitchiq_source_table = game._pitchiq_source_table || merged._pitchiq_source_table || "upcoming";
+      return merged;
+    }
+
     function savedCardRowToGame(row) {
       const snapshot = row?.snapshot && typeof row.snapshot === "object" ? { ...row.snapshot } : {};
       snapshot._saved_card_id = row?.id || "";
       snapshot._pitchiq_source_table = row?.source_table || snapshot._pitchiq_source_table || "upcoming";
+      snapshot.source_event_key = row?.source_event_key || snapshot.source_event_key || snapshot.event_key || "";
+      snapshot.source_pitcher = row?.source_pitcher || snapshot.source_pitcher || row?.pitcher || snapshot.pitcher || "";
       snapshot._saved_at = row?.saved_at || "";
       snapshot._card_style = cardStyleController?.resolveCardStyleId(snapshot._card_style || snapshot.card_style || snapshot.cardStyle) || "base-design";
       snapshot._wallet_result = normalizeWalletOutcome(snapshot._wallet_result || snapshot.wallet_result || "");
@@ -4386,7 +4477,7 @@
       snapshot.opponent = snapshot.opponent || row?.opponent || "";
       snapshot.date = snapshot.date || row?.game_date || "";
       snapshot.projected_strikeouts = snapshot.projected_strikeouts ?? row?.projected_strikeouts ?? "";
-      return snapshot;
+      return hydrateSavedCardLiveK(snapshot);
     }
 
     function normalizeWalletOutcome(value) {
@@ -4414,7 +4505,7 @@
       }
       const { data, error } = await supabaseClient
         .from("pitchiq_saved_cards")
-        .select("id,source_table,pitcher,opponent,game_date,projected_strikeouts,snapshot,saved_at")
+        .select("id,source_table,source_event_key,source_pitcher,pitcher,opponent,game_date,projected_strikeouts,snapshot,saved_at")
         .eq("is_archived", false)
         .order("saved_at", { ascending: false });
       if (error) {
