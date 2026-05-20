@@ -599,7 +599,7 @@
 
     .report-controls {
       display: grid;
-      grid-template-columns: 1.2fr 1fr 1fr;
+      grid-template-columns: 1.2fr 1fr 1fr 1fr;
       gap: 14px;
       align-items: end;
     }
@@ -3706,8 +3706,16 @@
                 <label for="report-source">Data Source</label>
                 <select id="report-source">
                   <option value="upcoming">Upcoming</option>
+                  <option value="assigned">Assigned Upcoming</option>
                   <option value="live">Live</option>
                   <option value="historical">Historical</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="report-export-type">Export Type</label>
+                <select id="report-export-type">
+                  <option value="styled">Styled XLSX</option>
+                  <option value="csv">CSV</option>
                 </select>
               </div>
               <div class="field">
@@ -3723,7 +3731,7 @@
             <div class="section-title">Columns</div>
             <div class="report-column-grid" id="report-column-grid"></div>
             <div class="report-actions">
-              <button class="button" id="report-download-button" type="button">Download CSV</button>
+              <button class="button" id="report-download-button" type="button">Download Styled XLSX</button>
               <div class="report-summary" id="report-summary"></div>
             </div>
           </div>
@@ -3755,6 +3763,7 @@
 
   <script src="./Card%20Styles/DropRateController.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   <script>
     window.PITCHIQ_LIVE_K_RAIL = "2026-05-01-live-k-progress";
     const SUPABASE_URL = "https://odvopvoqssamjquinhft.supabase.co";
@@ -4011,6 +4020,7 @@
     const reportLockedPanel = document.getElementById("report-locked-panel");
     const reportBuilderForm = document.getElementById("report-builder-form");
     const reportSourceSelect = document.getElementById("report-source");
+    const reportExportTypeSelect = document.getElementById("report-export-type");
     const reportStartDateInput = document.getElementById("report-start-date");
     const reportEndDateInput = document.getElementById("report-end-date");
     const reportColumnGrid = document.getElementById("report-column-grid");
@@ -4140,6 +4150,79 @@
       "fd_edge",
       "notes",
     ];
+
+    const HISTORICAL_XLSX_COLUMNS = [
+      { label: "Pitcher", value: game => game.pitcher || "" },
+      { label: "Pitcher's Team", value: game => game.pitcher_team || "" },
+      { label: "Opponent", value: game => game.opponent || "" },
+      { label: "Date", value: game => game.date || "" },
+      { label: "Start Time", value: game => game.start_time ? formatDisplayTime(game.start_time) : "" },
+      { label: "Venue", value: game => game.venue || "" },
+      { label: "Home/Away", value: game => game.home_or_away || "" },
+      { label: "Plate Ump", value: game => game.plate_umpire || "" },
+      { label: "Weather", value: game => game.weather || "" },
+      { label: "Temperature", value: game => game.temperature || "" },
+      { label: "Wind", value: game => game.wind || "" },
+      { label: "DK Line", value: game => game.dk_line || "" },
+      { label: "FD Line", value: game => game.fd_line || "" },
+      { label: "Poisson Ks", value: game => exportDecimal(game.poisson_prediction) },
+      { label: "Linear Ks", value: game => exportDecimal(game.linear_prediction) },
+      { label: "Nonlinear Ks", value: game => exportDecimal(game.nonlinear_prediction) },
+      { label: "Ensemble Ks", value: game => exportDecimal(displayProjectionValue(game)) },
+      { label: "Vix Level", value: game => exportVixScore(game) === null ? "" : String(game.volatility_label || "").trim() },
+      { label: "Vix Amount", value: game => exportDecimal(exportVixScore(game)) },
+      { label: "DK Edge", value: game => exportDecimal(game.dk_edge) },
+      { label: "DK Over", value: game => exportProbability(game.dk_over_probability) },
+      { label: "DK Under", value: game => exportProbability(game.dk_under_probability) },
+      { label: "DK Bet", value: game => game.dk_bet || "" },
+      { label: "DK Confidence", value: game => game.dk_confidence || "" },
+      { label: "FD Edge", value: game => exportDecimal(game.fd_edge) },
+      { label: "FD Over", value: game => exportProbability(game.fd_over_probability) },
+      { label: "FD Under", value: game => exportProbability(game.fd_under_probability) },
+      { label: "FD Bet", value: game => game.fd_bet || "" },
+      { label: "FD Confidence", value: game => game.fd_confidence || "" },
+      { label: "Notes", value: game => game.notes || "" },
+      { label: "Actual Ks", value: game => exportActualStrikeouts(game.actual_k ?? game.strikeouts) },
+      { label: "DK Correct?", value: game => exportBetCorrectness(game.actual_k ?? game.strikeouts, game.dk_line, game.dk_bet, displayProjectionValue(game)) },
+      { label: "FD Correct?", value: game => exportBetCorrectness(game.actual_k ?? game.strikeouts, game.fd_line, game.fd_bet, displayProjectionValue(game)) },
+    ];
+
+    const HISTORICAL_XLSX_HEADER_LABELS = HISTORICAL_XLSX_COLUMNS.map(column => column.label);
+
+    const BUILDER_XLSX_REPORTS = {
+      upcoming: {
+        rows: () => upcomingGames.slice(),
+        filenamePrefix: "upcoming_games_export",
+        emptyText: "Upcoming report is empty. Refresh the table data first.",
+        label: "Upcoming Games Report",
+        sheetName: "Upcoming Games",
+        statusName: "Upcoming XLSX",
+      },
+      assigned: {
+        rows: () => filterAssignedUpcomingReportRows(upcomingGames),
+        filenamePrefix: "assigned_upcoming_games_export",
+        emptyText: "Assigned Upcoming report is empty. It only includes current/future rows with no Pending fields.",
+        label: "Assigned Upcoming Report",
+        sheetName: "Assigned Upcoming",
+        statusName: "Assigned Upcoming XLSX",
+      },
+      live: {
+        rows: () => liveGames.slice(),
+        filenamePrefix: "live_games_export",
+        emptyText: "Live report is empty. Refresh the table data first.",
+        label: "Live Games Report",
+        sheetName: "Live Games",
+        statusName: "Live XLSX",
+      },
+      historical: {
+        rows: () => gameHistory.slice(),
+        filenamePrefix: "historical_games_export",
+        emptyText: "Historical report is empty. Refresh the table data first.",
+        label: "Historical Report",
+        sheetName: "Game History",
+        statusName: "Historical XLSX",
+      },
+    };
 
     function refreshPitcherList() {
       allPitchers = Array.from(new Set(
@@ -6016,6 +6099,7 @@
 
     function getReportDataset() {
       const source = reportSourceSelect.value;
+      if (source === "assigned") return filterAssignedUpcomingReportRows(upcomingGames);
       if (source === "live") return liveGames.slice();
       if (source === "historical") return gameHistory.slice();
       return upcomingGames.slice();
@@ -6083,9 +6167,11 @@
       const selectedColumns = getSelectedReportColumns();
       reportDownloadButton.disabled = !rows.length || !selectedColumns.length;
       const sourceLabel = reportSourceSelect.options[reportSourceSelect.selectedIndex]?.text || "Selected";
+      const exportLabel = reportExportTypeSelect.options[reportExportTypeSelect.selectedIndex]?.text || "Selected";
       const columnText = selectedColumns.length === 1 ? "1 column" : `${selectedColumns.length} columns`;
       const rowText = rows.length === 1 ? "1 row" : `${rows.length} rows`;
-      reportSummary.textContent = `${sourceLabel} report ready with ${rowText} and ${columnText}.`;
+      reportDownloadButton.textContent = reportExportTypeSelect.value === "csv" ? "Download CSV" : "Download Styled XLSX";
+      reportSummary.textContent = `${sourceLabel} ${exportLabel} report ready with ${rowText} and ${columnText}.`;
     }
 
     function refreshMyCardsView() {
@@ -6121,6 +6207,327 @@
       link.click();
       link.remove();
       URL.revokeObjectURL(url);
+    }
+
+    async function downloadReportStyledXlsx() {
+      const columns = getSelectedReportColumns();
+      const rows = getFilteredReportRows();
+      if (String(currentUserRole || "").toLowerCase() !== "owner" || !columns.length || !rows.length) return;
+
+      const source = reportSourceSelect.value || "upcoming";
+      const config = BUILDER_XLSX_REPORTS[source] || BUILDER_XLSX_REPORTS.upcoming;
+      reportDownloadButton.disabled = true;
+      reportSummary.textContent = `Building ${config.statusName} with ${rows.length === 1 ? "1 row" : `${rows.length} rows`}...`;
+      try {
+        const blob = await buildBuilderWorkbookBlob(rows, columns, config);
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `${config.filenamePrefix}_${appReportTimestamp()}.xlsx`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+        reportSummary.textContent = `${config.statusName} downloaded with ${rows.length === 1 ? "1 row" : `${rows.length} rows`}.`;
+      } catch (error) {
+        reportSummary.textContent = `Unable to build ${config.statusName}: ${error.message || "check browser console"}.`;
+      } finally {
+        refreshReportBuilderView();
+      }
+    }
+
+    function downloadReport() {
+      if (reportExportTypeSelect.value === "csv") {
+        downloadReportCsv();
+        return;
+      }
+      downloadReportStyledXlsx();
+    }
+
+    function exportDecimal(value, digits = 2) {
+      if (value === null || value === undefined || value === "" || String(value).trim().toUpperCase() === "N/A") return "";
+      if (Number.isNaN(Number(value))) return "";
+      return Number(value).toFixed(digits);
+    }
+
+    function exportProbability(value) {
+      if (value === null || value === undefined || value === "" || String(value).trim().toUpperCase() === "N/A") return "";
+      if (Number.isNaN(Number(value))) return "";
+      return `${(Number(value) * 100).toFixed(1)}%`;
+    }
+
+    function exportVixScore(game) {
+      const value = game?.volatility_score;
+      if (value === null || value === undefined || value === "" || String(value).trim().toUpperCase() === "N/A") return null;
+      const numericValue = Number(value);
+      return Number.isFinite(numericValue) && numericValue > 0 ? numericValue : null;
+    }
+
+    function exportActualStrikeouts(value) {
+      if (value === null || value === undefined || value === "" || Number.isNaN(Number(value))) return "";
+      return Number(value).toFixed(0);
+    }
+
+    function exportProjectionSideForLine(projectedStrikeouts, lineValue) {
+      if (projectedStrikeouts === null || projectedStrikeouts === undefined || Number.isNaN(Number(projectedStrikeouts))) return "";
+      if (lineValue === null || lineValue === undefined || lineValue === "" || String(lineValue).trim().toUpperCase() === "N/A") return "";
+      const line = Number(lineValue);
+      const projected = Number(projectedStrikeouts);
+      if (!Number.isFinite(line) || !Number.isFinite(projected) || projected === line) return "";
+      return projected > line ? "OVER" : "UNDER";
+    }
+
+    function exportBetCorrectness(actualValue, lineValue, betValue, projectedStrikeouts = null) {
+      if (actualValue === null || actualValue === undefined || actualValue === "" || Number.isNaN(Number(actualValue))) return "";
+      if (lineValue === null || lineValue === undefined || lineValue === "" || String(lineValue).trim().toUpperCase() === "N/A") return "";
+      let bet = String(betValue || "").trim().toUpperCase();
+      if (!bet || bet === "PASS" || bet === "N/A") {
+        bet = exportProjectionSideForLine(projectedStrikeouts, lineValue);
+      }
+      if (!bet) return "";
+      const actual = Number(actualValue);
+      const line = Number(lineValue);
+      if (!Number.isFinite(actual) || !Number.isFinite(line)) return "";
+      if (actual === line) return "Push";
+      if (bet === "OVER") return actual > line ? "Yes" : "No";
+      if (bet === "UNDER") return actual < line ? "Yes" : "No";
+      return "";
+    }
+
+    function excelColumnName(index) {
+      let name = "";
+      let value = index;
+      while (value > 0) {
+        const modulo = (value - 1) % 26;
+        name = String.fromCharCode(65 + modulo) + name;
+        value = Math.floor((value - modulo) / 26);
+      }
+      return name;
+    }
+
+    function escapeXml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function workbookFooterText(reportLabel) {
+      const now = new Date();
+      const dateText = `${now.getMonth() + 1}/${now.getDate()}/${now.getFullYear()}`;
+      const timeText = now.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }).toLowerCase();
+      return `pitchIQ ${reportLabel} generated ${dateText} (${timeText})`;
+    }
+
+    function reportRowHasPendingFields(row) {
+      return row.some(value => typeof value === "string" && value.trim().toLowerCase() === "pending");
+    }
+
+    function reportGameDay(game) {
+      const parsed = Date.parse(game?.game_date_raw || game?.game_date || game?.date || "");
+      if (Number.isNaN(parsed)) return null;
+      const date = new Date(parsed);
+      date.setHours(0, 0, 0, 0);
+      return date;
+    }
+
+    function filterAssignedUpcomingReportRows(games) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return games.filter(game => {
+        const gameDay = reportGameDay(game);
+        if (gameDay && gameDay < today) return false;
+        const exportRow = HISTORICAL_XLSX_COLUMNS.map(column => column.value(game));
+        return !reportRowHasPendingFields(exportRow);
+      });
+    }
+
+    function historicalWorkbookStyleId(rowNumber, columnLabel, cellText) {
+      if (rowNumber === 1) return 1;
+      if (columnLabel === "DK Confidence" || columnLabel === "FD Confidence") {
+        if (cellText === "High") return 4;
+        if (cellText === "Medium") return 5;
+        if (cellText === "Low") return 6;
+      }
+      if (columnLabel === "Vix Level") {
+        if (cellText.startsWith("Low")) return 4;
+        if (cellText.startsWith("Medium")) return 5;
+        if (cellText.startsWith("High")) return 6;
+      }
+      if (columnLabel === "DK Bet" || columnLabel === "FD Bet") {
+        if (cellText === "OVER") return 7;
+        if (cellText === "UNDER") return 8;
+      }
+      if (columnLabel === "Pitcher") return rowNumber % 2 === 1 ? 9 : 10;
+      return rowNumber % 2 === 1 ? 2 : 3;
+    }
+
+    function worksheetColumnWidths(rows, columns) {
+      return columns.map((column, index) => {
+        const maxLength = Math.max(
+          column.label.length,
+          ...rows.map(row => String(row[index] ?? "").length)
+        );
+        return { min: index + 1, max: index + 1, width: maxLength + 2 };
+      });
+    }
+
+    function buildWorksheetXml(rows, config, columns = HISTORICAL_XLSX_COLUMNS) {
+      const maxDataRow = Math.max(rows.length + 1, 1);
+      const footerRow = maxDataRow + 1;
+      const maxColumn = columns.length;
+      const lastColumnName = excelColumnName(maxColumn);
+      const headerLabels = columns.map(column => column.label);
+      const dataRows = [
+        headerLabels,
+        ...rows,
+      ];
+      const sheetRows = dataRows.map((row, rowIndex) => {
+        const rowNumber = rowIndex + 1;
+        const cells = row.map((value, columnIndex) => {
+          const columnName = excelColumnName(columnIndex + 1);
+          const columnLabel = headerLabels[columnIndex] || "";
+          const text = String(value ?? "");
+          const styleId = historicalWorkbookStyleId(rowNumber, columnLabel, text);
+          return `<c r="${columnName}${rowNumber}" s="${styleId}" t="inlineStr"><is><t>${escapeXml(text)}</t></is></c>`;
+        }).join("");
+        return `<row r="${rowNumber}">${cells}</row>`;
+      });
+      const footerCells = Array.from({ length: maxColumn }, (_, index) => {
+        const columnName = excelColumnName(index + 1);
+        const value = index === 0 ? `<is><t>${escapeXml(workbookFooterText(config.label))}</t></is>` : "";
+        return `<c r="${columnName}${footerRow}" s="11" t="inlineStr">${value}</c>`;
+      }).join("");
+      sheetRows.push(`<row r="${footerRow}" ht="18" customHeight="1">${footerCells}</row>`);
+
+      const cols = worksheetColumnWidths(rows, columns)
+        .map(column => `<col min="${column.min}" max="${column.max}" width="${column.width}" customWidth="1"/>`)
+        .join("");
+      return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+  <dimension ref="A1:${lastColumnName}${footerRow}"/>
+  <sheetViews><sheetView workbookViewId="0"><pane xSplit="0" ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>
+  <sheetFormatPr defaultRowHeight="15"/>
+  <cols>${cols}</cols>
+  <sheetData>${sheetRows.join("")}</sheetData>
+  <autoFilter ref="A1:${lastColumnName}${maxDataRow}"/>
+  <mergeCells count="1"><mergeCell ref="A${footerRow}:${lastColumnName}${footerRow}"/></mergeCells>
+  <pageMargins left="0.7" right="0.7" top="0.75" bottom="0.75" header="0.3" footer="0.3"/>
+</worksheet>`;
+    }
+
+    function workbookStylesXml() {
+      return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+  <fonts count="4">
+    <font><sz val="11"/><color rgb="FF000000"/><name val="Calibri"/></font>
+    <font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font>
+    <font><b/><sz val="11"/><color rgb="FF000000"/><name val="Calibri"/></font>
+    <font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font>
+  </fonts>
+  <fills count="11">
+    <fill><patternFill patternType="none"/></fill>
+    <fill><patternFill patternType="gray125"/></fill>
+    <fill><patternFill patternType="solid"><fgColor rgb="FF185074"/><bgColor indexed="64"/></patternFill></fill>
+    <fill><patternFill patternType="solid"><fgColor rgb="FFFFFFFF"/><bgColor indexed="64"/></patternFill></fill>
+    <fill><patternFill patternType="solid"><fgColor rgb="FFD9D9D9"/><bgColor indexed="64"/></patternFill></fill>
+    <fill><patternFill patternType="solid"><fgColor rgb="FF92D050"/><bgColor indexed="64"/></patternFill></fill>
+    <fill><patternFill patternType="solid"><fgColor rgb="FFFFD966"/><bgColor indexed="64"/></patternFill></fill>
+    <fill><patternFill patternType="solid"><fgColor rgb="FFFF6666"/><bgColor indexed="64"/></patternFill></fill>
+    <fill><patternFill patternType="solid"><fgColor rgb="FFF4B183"/><bgColor indexed="64"/></patternFill></fill>
+    <fill><patternFill patternType="solid"><fgColor rgb="FF5B9BD5"/><bgColor indexed="64"/></patternFill></fill>
+    <fill><patternFill patternType="solid"><fgColor rgb="FF000000"/><bgColor indexed="64"/></patternFill></fill>
+  </fills>
+  <borders count="2">
+    <border><left/><right/><top/><bottom/><diagonal/></border>
+    <border><left style="thin"><color rgb="FF000000"/></left><right style="thin"><color rgb="FF000000"/></right><top style="thin"><color rgb="FF000000"/></top><bottom style="thin"><color rgb="FF000000"/></bottom><diagonal/></border>
+  </borders>
+  <cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>
+  <cellXfs count="12">
+    <xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>
+    <xf numFmtId="0" fontId="1" fillId="2" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>
+    <xf numFmtId="0" fontId="0" fillId="3" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>
+    <xf numFmtId="0" fontId="0" fillId="4" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>
+    <xf numFmtId="0" fontId="0" fillId="5" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>
+    <xf numFmtId="0" fontId="0" fillId="6" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>
+    <xf numFmtId="0" fontId="0" fillId="7" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>
+    <xf numFmtId="0" fontId="0" fillId="8" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>
+    <xf numFmtId="0" fontId="0" fillId="9" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>
+    <xf numFmtId="0" fontId="2" fillId="3" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>
+    <xf numFmtId="0" fontId="2" fillId="4" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>
+    <xf numFmtId="0" fontId="3" fillId="10" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>
+  </cellXfs>
+  <cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>
+</styleSheet>`;
+    }
+
+    function addWorkbookFile(zip, path, content) {
+      zip.file(path, content.replace(/\n\s*/g, ""));
+    }
+
+    async function buildWorkbookBlob(rows, columns, config) {
+      if (!window.JSZip) throw new Error("Workbook library is still loading. Try again in a moment.");
+      const zip = new window.JSZip();
+      addWorkbookFile(zip, "[Content_Types].xml", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+  <Default Extension="xml" ContentType="application/xml"/>
+  <Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>
+  <Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>
+  <Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>
+  <Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>
+  <Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/>
+</Types>`);
+      addWorkbookFile(zip, "_rels/.rels", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>
+  <Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/>
+  <Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/>
+</Relationships>`);
+      addWorkbookFile(zip, "xl/workbook.xml", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+  <sheets><sheet name="${escapeXml(config.sheetName)}" sheetId="1" r:id="rId1"/></sheets>
+</workbook>`);
+      addWorkbookFile(zip, "xl/_rels/workbook.xml.rels", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>
+  <Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>
+</Relationships>`);
+      addWorkbookFile(zip, "xl/worksheets/sheet1.xml", buildWorksheetXml(rows, config, columns));
+      addWorkbookFile(zip, "xl/styles.xml", workbookStylesXml());
+      const nowIso = new Date().toISOString();
+      addWorkbookFile(zip, "docProps/core.xml", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:dcmitype="http://purl.org/dc/dcmitype/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <dc:creator>pitchIQ</dc:creator>
+  <cp:lastModifiedBy>pitchIQ</cp:lastModifiedBy>
+  <dcterms:created xsi:type="dcterms:W3CDTF">${nowIso}</dcterms:created>
+  <dcterms:modified xsi:type="dcterms:W3CDTF">${nowIso}</dcterms:modified>
+</cp:coreProperties>`);
+      addWorkbookFile(zip, "docProps/app.xml", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">
+  <Application>pitchIQ Web</Application>
+  <DocSecurity>0</DocSecurity>
+  <ScaleCrop>false</ScaleCrop>
+  <HeadingPairs><vt:vector size="2" baseType="variant"><vt:variant><vt:lpstr>Worksheets</vt:lpstr></vt:variant><vt:variant><vt:i4>1</vt:i4></vt:variant></vt:vector></HeadingPairs>
+  <TitlesOfParts><vt:vector size="1" baseType="lpstr"><vt:lpstr>${escapeXml(config.sheetName)}</vt:lpstr></vt:vector></TitlesOfParts>
+</Properties>`);
+      return zip.generateAsync({
+        type: "blob",
+        mimeType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        compression: "DEFLATE",
+      });
+    }
+
+    async function buildBuilderWorkbookBlob(games, columns, config) {
+      const rows = games.map(game => columns.map(column => column.value(game)));
+      return buildWorkbookBlob(rows, columns, config);
+    }
+
+    function appReportTimestamp() {
+      const now = new Date();
+      const part = value => String(value).padStart(2, "0");
+      return `${now.getFullYear()}${part(now.getMonth() + 1)}${part(now.getDate())}_${part(now.getHours())}${part(now.getMinutes())}${part(now.getSeconds())}`;
     }
 
     function updateUpcomingSortIndicators() {
@@ -7343,13 +7750,14 @@
 
     historicalSearchInput.addEventListener("input", updateHistoricalSearch);
     reportSourceSelect.addEventListener("change", refreshReportBuilderView);
+    reportExportTypeSelect.addEventListener("change", refreshReportBuilderView);
     reportStartDateInput.addEventListener("change", refreshReportBuilderView);
     reportEndDateInput.addEventListener("change", refreshReportBuilderView);
     reportColumnGrid.addEventListener("change", () => {
       reportSelectedColumns = getSelectedReportColumns().map(column => column.key);
       refreshReportBuilderView();
     });
-    reportDownloadButton.addEventListener("click", downloadReportCsv);
+    reportDownloadButton.addEventListener("click", downloadReport);
     ownerAlertStyleSelect.addEventListener("change", () => {
       const style = selectedAlertStyle();
       ownerAlertStyleName.value = style?.name || "";
