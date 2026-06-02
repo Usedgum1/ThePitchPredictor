@@ -39,6 +39,18 @@
       --neon-red: #ff174d;
       --vol-medium: #fff159;
       --workspace-stage-min-height: 560px;
+      --text-trim-shadow:
+        1px 0 0 #000,
+        -1px 0 0 #000,
+        0 1px 0 #000,
+        0 -1px 0 #000,
+        1px 1px 0 #000,
+        -1px -1px 0 #000,
+        1px -1px 0 #000,
+        -1px 1px 0 #000;
+      --text-trim-stroke: 0.5px rgba(0, 0, 0, 0.92);
+      --text-trim-stroke-strong: 0.75px rgba(0, 0, 0, 0.95);
+      --text-trim-stroke-brand: 1.25px rgba(0, 0, 0, 0.95);
     }
 
     * { box-sizing: border-box; }
@@ -71,6 +83,13 @@
       font: inherit;
     }
 
+    /* Global black text trim */
+    .app *:not(input):not(textarea):not(select):not(option) {
+      -webkit-text-stroke: var(--text-trim-stroke);
+      paint-order: stroke fill;
+      text-shadow: var(--text-trim-shadow);
+    }
+
     .app {
       max-width: 1380px;
       margin: 0 auto;
@@ -80,15 +99,12 @@
     }
 
     .server-activity-footer {
-      max-width: 1380px;
-      margin: 0 auto;
-      padding: 0 18px 22px;
       color: var(--connected-neon);
       font-size: 0.76rem;
       letter-spacing: 0.04em;
-      text-align: center;
       text-transform: uppercase;
       text-shadow:
+        var(--text-trim-shadow),
         0 0 6px rgba(57, 255, 20, 0.92),
         0 0 14px rgba(57, 255, 20, 0.62),
         0 0 26px rgba(57, 255, 20, 0.36);
@@ -152,7 +168,9 @@
       font-size: 0.74rem;
       font-weight: 900;
       letter-spacing: 0.14em;
-      text-shadow: 0 0 10px color-mix(in srgb, var(--alert-accent) 80%, transparent);
+      text-shadow:
+        var(--text-trim-shadow),
+        0 0 10px color-mix(in srgb, var(--alert-accent) 80%, transparent);
     }
 
     .site-alert-prefix {
@@ -216,36 +234,68 @@
 
     .page-head-meta {
       display: flex;
-      flex-direction: row;
-      justify-content: flex-end;
+      flex-direction: column;
+      justify-content: flex-start;
       align-items: flex-end;
-      gap: 18px;
+      gap: 10px;
       min-width: 260px;
       padding-top: 2px;
       text-align: right;
     }
 
+    .brand-lockup {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      display: block;
+      flex: 0 0 auto;
+      width: auto;
+      height: 4.875rem;
+      object-fit: contain;
+    }
+
+    .brand-copy {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 14px 18px;
+      min-width: 0;
+    }
+
     .brand {
-      font-size: 2rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
+      font-size: 1.72rem;
+      letter-spacing: 0.04em;
       margin: 0;
+      color: var(--amber);
+      font-weight: 800;
+      -webkit-text-stroke: var(--text-trim-stroke-brand);
+      text-shadow:
+        var(--text-trim-shadow),
+        0 0 10px rgba(255, 148, 46, 0.5),
+        0 0 22px rgba(255, 148, 46, 0.2);
     }
 
     .sub {
-      margin: 8px 0 0;
-      color: var(--muted);
-      max-width: 760px;
-      line-height: 1.6;
+      margin: 0;
+      color: var(--text);
+      font-size: 1.2rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      line-height: 1.2;
+      white-space: nowrap;
     }
 
     .workspace-nav {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-end;
       gap: 10px;
-      margin: 18px 0 16px;
-      padding-bottom: 14px;
+      margin: 10px 0 16px;
+      padding-bottom: 0;
       border-bottom: 1px solid rgba(255,255,255,0.06);
     }
 
@@ -254,6 +304,14 @@
       align-items: center;
       gap: 10px;
       min-width: 0;
+      flex: 1;
+      padding-bottom: 14px;
+    }
+
+    .workspace-nav .account-summary {
+      flex: 0 0 auto;
+      margin-left: auto;
+      padding-bottom: 10px;
     }
 
     .workspace-actions {
@@ -281,6 +339,7 @@
       text-transform: uppercase;
       text-decoration: none;
       cursor: pointer;
+      -webkit-text-stroke: var(--text-trim-stroke-strong);
     }
 
     .nav-pill {
@@ -300,9 +359,9 @@
     .account-line {
       color: var(--text);
       cursor: default;
-      font-size: 0.84rem;
+      font-size: 1.05rem;
       font-weight: 600;
-      line-height: 1.25;
+      line-height: 1.3;
       max-width: min(42vw, 420px);
       overflow: hidden;
       text-overflow: ellipsis;
@@ -310,12 +369,14 @@
     }
 
     .account-username {
+      font-size: 1.12em;
       font-weight: 800;
     }
 
     .account-username.tier-value-basic {
       color: var(--neon-blue);
       text-shadow:
+        var(--text-trim-shadow),
         0 0 8px rgba(47, 155, 255, 0.72),
         0 0 18px rgba(47, 155, 255, 0.38);
     }
@@ -323,6 +384,7 @@
     .account-username.tier-value-pro {
       color: var(--amber);
       text-shadow:
+        var(--text-trim-shadow),
         0 0 8px rgba(255, 148, 46, 0.72),
         0 0 18px rgba(255, 148, 46, 0.38);
     }
@@ -330,6 +392,7 @@
     .account-username.tier-value-life {
       color: var(--neon-gold);
       text-shadow:
+        var(--text-trim-shadow),
         0 0 8px rgba(255, 216, 79, 0.72),
         0 0 18px rgba(255, 216, 79, 0.38);
     }
@@ -337,6 +400,7 @@
     .account-username.tier-value-owner {
       color: var(--neon-red);
       text-shadow:
+        var(--text-trim-shadow),
         0 0 8px rgba(255, 23, 77, 0.72),
         0 0 18px rgba(255, 23, 77, 0.38);
     }
@@ -381,7 +445,9 @@
         0 0 0 1px rgba(107, 182, 255, 0.16) inset,
         0 0 16px rgba(107, 182, 255, 0.42),
         0 0 32px rgba(107, 182, 255, 0.26);
-      text-shadow: 0 0 10px rgba(107, 182, 255, 0.72);
+      text-shadow:
+        var(--text-trim-shadow),
+        0 0 10px rgba(107, 182, 255, 0.72);
     }
 
     .settings-tab {
@@ -391,7 +457,9 @@
       box-shadow:
         0 0 0 1px rgba(255, 23, 77, 0.12) inset,
         0 0 16px rgba(255, 23, 77, 0.28);
-      text-shadow: 0 0 10px rgba(255, 23, 77, 0.68);
+      text-shadow:
+        var(--text-trim-shadow),
+        0 0 10px rgba(255, 23, 77, 0.68);
     }
 
     .settings-tab.active {
@@ -402,7 +470,9 @@
         0 0 0 1px rgba(255, 23, 77, 0.24) inset,
         0 0 18px rgba(255, 23, 77, 0.62),
         0 0 36px rgba(255, 23, 77, 0.36);
-      text-shadow: 0 0 12px rgba(255, 23, 77, 0.95);
+      text-shadow:
+        var(--text-trim-shadow),
+        0 0 12px rgba(255, 23, 77, 0.95);
     }
 
     .historical-tab,
@@ -428,7 +498,9 @@
         0 0 0 1px rgba(255, 148, 46, 0.18) inset,
         0 0 16px rgba(255, 148, 46, 0.5),
         0 0 34px rgba(255, 148, 46, 0.3);
-      text-shadow: 0 0 10px rgba(255, 148, 46, 0.78);
+      text-shadow:
+        var(--text-trim-shadow),
+        0 0 10px rgba(255, 148, 46, 0.78);
     }
 
     .historical-tab-icon,
@@ -642,9 +714,34 @@
       line-height: 1.5;
     }
 
-    .owner-alert-form {
+    .owner-alert-studio {
       display: grid;
-      gap: 14px;
+      gap: 18px;
+    }
+
+    .owner-alert-section {
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      background: rgba(8, 10, 16, 0.42);
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .owner-alert-section-title {
+      margin: 0;
+      font-size: 0.92rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text);
+    }
+
+    .owner-alert-section-hint {
+      margin: -4px 0 0;
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.45;
     }
 
     .owner-alert-controls {
@@ -654,34 +751,70 @@
       align-items: end;
     }
 
-    .owner-alert-actions {
+    .owner-alert-preset-row {
       display: grid;
-      grid-template-columns: minmax(160px, 220px) 1fr;
-      gap: 14px;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) auto auto auto;
+      gap: 10px;
+      align-items: end;
+    }
+
+    .owner-alert-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
       align-items: center;
     }
 
     .owner-alert-status {
       color: var(--muted);
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       line-height: 1.5;
-      min-height: 1.5em;
+      min-height: 1.4em;
+      flex: 1 1 220px;
     }
 
-    .owner-alert-toggle {
+    .owner-alert-current-row {
       align-items: center;
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 12px;
       display: flex;
-      gap: 10px;
-      min-height: 48px;
-      padding: 0 14px;
+      gap: 12px;
+      min-width: 0;
     }
 
-    .owner-alert-toggle input {
-      accent-color: var(--neon-red);
-      height: 18px;
-      width: 18px;
+    .owner-alert-current-line {
+      color: var(--text);
+      flex: 0 0 auto;
+      font-size: 0.95rem;
+      font-weight: 700;
+      line-height: 1.4;
+      margin: 0;
+      white-space: nowrap;
+    }
+
+    .owner-alert-current-line.is-none {
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .owner-alert-current-section .site-alert-ticker {
+      flex: 1 1 auto;
+      margin: 0;
+      min-width: 0;
+    }
+
+    .owner-alert-current-section .site-alert-track {
+      padding: 6px 0;
+    }
+
+    #owner-alert-turn-off-button {
+      justify-self: start;
+      width: auto;
+    }
+
+    .owner-alert-publish-note {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.45;
     }
 
     textarea {
@@ -2061,6 +2194,7 @@
 
     .desktop-live-line-chip-pitchiq .desktop-live-line-chip-value {
       text-shadow:
+        var(--text-trim-shadow),
         0 0 12px rgba(255, 236, 140, 0.5),
         0 0 22px rgba(255, 200, 80, 0.3);
     }
@@ -2073,7 +2207,9 @@
     }
 
     .desktop-live-line-chip-dk .desktop-live-line-chip-value {
-      text-shadow: 0 0 12px rgba(92, 255, 119, 0.45);
+      text-shadow:
+        var(--text-trim-shadow),
+        0 0 12px rgba(92, 255, 119, 0.45);
     }
 
     .desktop-live-line-chip-fd {
@@ -2084,7 +2220,9 @@
     }
 
     .desktop-live-line-chip-fd .desktop-live-line-chip-value {
-      text-shadow: 0 0 12px rgba(107, 182, 255, 0.45);
+      text-shadow:
+        var(--text-trim-shadow),
+        0 0 12px rgba(107, 182, 255, 0.45);
     }
 
     @keyframes desktop-line-chip-pulse-dk {
@@ -2416,6 +2554,7 @@
       letter-spacing: -0.02em;
       user-select: none;
       text-shadow:
+        var(--text-trim-shadow),
         0 0 3px rgba(255, 252, 246, 0.95),
         0 0 5px rgba(255, 252, 246, 0.75);
     }
@@ -2839,7 +2978,9 @@
       background: rgba(255, 148, 46, 0.1);
       color: #ff942e;
       font-weight: 950;
-      text-shadow: 0 0 10px rgba(255, 148, 46, 0.5);
+      text-shadow:
+        var(--text-trim-shadow),
+        0 0 10px rgba(255, 148, 46, 0.5);
     }
 
     .historical-lookup-btn:hover,
@@ -2853,7 +2994,18 @@
       border-color: rgba(79, 255, 146, 0.72);
       background: rgba(79, 255, 146, 0.16);
       color: var(--success);
-      text-shadow: 0 0 10px rgba(79, 255, 146, 0.5);
+      text-shadow:
+        var(--text-trim-shadow),
+        0 0 10px rgba(79, 255, 146, 0.5);
+    }
+
+    .add-card-btn.is-failed {
+      border-color: rgba(255, 104, 104, 0.78);
+      background: rgba(255, 104, 104, 0.16);
+      color: #ff6868;
+      text-shadow:
+        var(--text-trim-shadow),
+        0 0 10px rgba(255, 104, 104, 0.5);
     }
 
     .historical-lookup-btn svg {
@@ -3171,8 +3323,8 @@
     }
 
     .pager {
-      display: flex;
-      justify-content: space-between;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
       align-items: center;
       gap: 12px;
       margin-top: 12px;
@@ -3187,6 +3339,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      justify-self: end;
     }
 
     .pager-button {
@@ -3225,6 +3378,11 @@
         flex-wrap: wrap;
       }
 
+      .workspace-nav .account-summary {
+        align-self: flex-end;
+        margin-left: 0;
+      }
+
       .workspace-actions {
         justify-content: flex-start;
         margin-left: 0;
@@ -3252,7 +3410,16 @@
       }
 
       .brand {
-        font-size: 1.45rem;
+        font-size: 1.28rem;
+        -webkit-text-stroke: 1px rgba(0, 0, 0, 0.95);
+      }
+
+      .brand-mark {
+        height: 3.9rem;
+      }
+
+      .brand-lockup {
+        gap: 10px;
       }
 
       .workspace-nav {
@@ -3262,7 +3429,7 @@
       .controls,
       .report-actions,
       .report-controls,
-      .owner-alert-actions,
+      .owner-alert-preset-row,
       .owner-alert-controls,
       .info-grid,
       .info-grid.two,
@@ -3277,6 +3444,10 @@
         flex-direction: column;
         align-items: stretch;
       }
+
+      .pager .server-activity-footer {
+        justify-self: start;
+      }
     }
   </style>
 </head>
@@ -3285,18 +3456,22 @@
   <div class="app">
     <section class="tile">
       <div class="page-head">
-        <div>
-          <h1 class="brand">pitchIQ</h1>
-          <p class="sub">Advanced MLB strikeout projections with live sportsbook market comparison.</p>
+        <div class="brand-lockup">
+          <img
+            class="brand-mark"
+            src="./images/tagsplashpng.png"
+            alt="thePitchIQ"
+            width="78"
+            height="78"
+            decoding="async"
+          />
+          <div class="brand-copy">
+            <h1 class="brand">PitchIQ</h1>
+            <p class="sub">Bet Statistically</p>
+          </div>
         </div>
         <div class="page-head-meta">
-          <div class="account-summary">
-            <div id="account-pill" class="account-line">Welcome, ...</div>
-            <div class="account-links">
-              <a class="signout-link" href="./account-settings.html">account settings</a>
-              <button id="logout-button" class="signout-link" type="button">sign out</button>
-            </div>
-          </div>
+          <button class="workspace-tab settings-tab hidden" id="settings-tab" data-view="settings" type="button">Owner's Settings</button>
         </div>
       </div>
 
@@ -3315,8 +3490,13 @@
           <button class="workspace-tab my-cards-tab" id="my-cards-tab" data-view="my-cards"><span class="my-cards-tab-icon" id="my-cards-tab-icon" aria-hidden="true">&#128274;</span>My Cards</button>
           <button class="workspace-tab historical-tab" id="historical-tab" data-view="historical-games"><span class="historical-tab-icon" id="historical-tab-icon" aria-hidden="true">&#128274;</span>Historical</button>
         </div>
-        <div class="workspace-actions">
-          <button class="workspace-tab settings-tab hidden" id="settings-tab" data-view="settings" type="button">Owner's Settings</button>
+        <div class="account-summary">
+          <div id="account-pill" class="account-line">Welcome, ...</div>
+          <div class="account-links">
+            <a class="signout-link" href="./faqs-knowledge.html">faqs / knowledge</a>
+            <a class="signout-link" href="./account-settings.html">account settings</a>
+            <button id="logout-button" class="signout-link" type="button">sign out</button>
+          </div>
         </div>
       </div>
 
@@ -3404,6 +3584,7 @@
 
         <div class="pager">
           <div class="pager-meta" id="upcoming-games-meta"></div>
+          <div class="server-activity-footer">last server activity: pending</div>
           <div class="pager-controls">
             <button class="pager-button" id="upcoming-prev-button" type="button">Previous</button>
             <div class="pager-page" id="upcoming-page-indicator"></div>
@@ -3459,6 +3640,7 @@
 
         <div class="pager">
           <div class="pager-meta" id="live-games-meta"></div>
+          <div class="server-activity-footer">last server activity: pending</div>
           <div class="pager-controls">
             <button class="pager-button" id="live-prev-button" type="button">Previous</button>
             <div class="pager-page" id="live-page-indicator"></div>
@@ -3603,25 +3785,87 @@
         <div class="owner-settings-divider" aria-hidden="true"></div>
         <div class="subtile glass-subtile">
           <div class="section-title center-title">Site Alert</div>
-          <div class="owner-alert-form" id="owner-alert-form">
-              <div class="field">
-                <label for="owner-alert-text">Alert Text</label>
-                <textarea id="owner-alert-text" maxlength="240" placeholder="DraftKings is currently experiencing issues with the API."></textarea>
+          <div class="owner-alert-studio" id="owner-alert-studio">
+            <section class="owner-alert-section owner-alert-current-section" aria-labelledby="owner-alert-current-line">
+              <div class="owner-alert-current-row">
+                <p class="owner-alert-current-line is-none" id="owner-alert-current-line">Current Alert: None</p>
+                <div class="site-alert-ticker hidden" id="owner-alert-current-ticker" aria-hidden="true">
+                  <div class="site-alert-track" id="owner-alert-current-track">
+                    <span class="site-alert-message" id="owner-alert-current-message"></span>
+                    <span class="site-alert-message" id="owner-alert-current-message-copy" aria-hidden="true"></span>
+                  </div>
+                </div>
               </div>
+              <button class="button hidden" id="owner-alert-turn-off-button" type="button">Turn Off</button>
+            </section>
+
+            <section class="owner-alert-section" aria-labelledby="owner-alert-appearance-title">
+              <h3 class="owner-alert-section-title" id="owner-alert-appearance-title">Appearance Settings</h3>
+              <p class="owner-alert-section-hint">Colors, font, and scroll speed. Saving a preset does not affect the live site.</p>
               <div class="owner-alert-controls">
                 <div class="field">
-                  <label for="owner-alert-style-select">Saved Alert Styles</label>
-                  <select id="owner-alert-style-select">
-                    <option value="">Select saved style</option>
+                  <label for="owner-alert-speed">Speed Seconds</label>
+                  <input id="owner-alert-speed" type="number" min="8" max="90" step="1" />
+                </div>
+                <div class="field">
+                  <label for="owner-alert-font">Text Type</label>
+                  <select id="owner-alert-font">
+                    <option value="Segoe UI, Arial, sans-serif">Clean Sans</option>
+                    <option value="Georgia, serif">Editorial Serif</option>
+                    <option value="Consolas, monospace">Data Mono</option>
                   </select>
                 </div>
                 <div class="field">
-                  <label for="owner-alert-style-name">Style Name</label>
-                  <input id="owner-alert-style-name" type="text" maxlength="48" placeholder="API Issue" />
+                  <label for="owner-alert-transform">Text Style</label>
+                  <select id="owner-alert-transform">
+                    <option value="none">Normal</option>
+                    <option value="uppercase">Uppercase</option>
+                  </select>
                 </div>
-                <button class="button" id="owner-alert-style-load-button" type="button">Load Style</button>
-                <button class="button" id="owner-alert-style-save-button" type="button">Save Style</button>
-                <button class="button" id="owner-alert-style-delete-button" type="button">Delete Style</button>
+                <div class="field">
+                  <label for="owner-alert-weight">Text Weight</label>
+                  <select id="owner-alert-weight">
+                    <option value="600">Regular</option>
+                    <option value="700">Bold</option>
+                    <option value="800">Heavy</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="owner-alert-background-color">Background</label>
+                  <input id="owner-alert-background-color" type="color" />
+                </div>
+                <div class="field">
+                  <label for="owner-alert-text-color">Text Color</label>
+                  <input id="owner-alert-text-color" type="color" />
+                </div>
+                <div class="field">
+                  <label for="owner-alert-accent-color">Accent Color</label>
+                  <input id="owner-alert-accent-color" type="color" />
+                </div>
+              </div>
+              <div class="owner-alert-preset-row">
+                <div class="field">
+                  <label for="owner-alert-appearance-preset-select">Appearance Presets</label>
+                  <select id="owner-alert-appearance-preset-select">
+                    <option value="">Select appearance preset</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="owner-alert-appearance-preset-name">Preset Name</label>
+                  <input id="owner-alert-appearance-preset-name" type="text" maxlength="48" placeholder="API Issue Red" />
+                </div>
+                <button class="button" id="owner-alert-appearance-load-button" type="button">Load</button>
+                <button class="button" id="owner-alert-appearance-save-button" type="button">Save</button>
+                <button class="button" id="owner-alert-appearance-delete-button" type="button">Delete</button>
+              </div>
+            </section>
+
+            <section class="owner-alert-section" aria-labelledby="owner-alert-text-title">
+              <h3 class="owner-alert-section-title" id="owner-alert-text-title">Text Settings</h3>
+              <p class="owner-alert-section-hint">Message wording only. Saving a text preset does not affect the live site.</p>
+              <div class="field">
+                <label for="owner-alert-text">Alert Text</label>
+                <textarea id="owner-alert-text" maxlength="240" placeholder="Our Odds API is currently undergoing maintenance and may experience degraded performance."></textarea>
               </div>
               <div class="owner-alert-controls">
                 <div class="field">
@@ -3633,62 +3877,37 @@
                   <input id="owner-alert-suffix" type="text" maxlength="32" />
                 </div>
               </div>
-            <div class="owner-alert-controls">
-              <label class="owner-alert-toggle" for="owner-alert-enabled">
-                <input id="owner-alert-enabled" type="checkbox" />
-                <span id="owner-alert-enabled-label">Alert Off</span>
-              </label>
-              <div class="field">
-                <label for="owner-alert-speed">Speed Seconds</label>
-                <input id="owner-alert-speed" type="number" min="8" max="90" step="1" />
+              <div class="owner-alert-preset-row">
+                <div class="field">
+                  <label for="owner-alert-text-preset-select">Text Presets</label>
+                  <select id="owner-alert-text-preset-select">
+                    <option value="">Select text preset</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="owner-alert-text-preset-name">Preset Name</label>
+                  <input id="owner-alert-text-preset-name" type="text" maxlength="48" placeholder="Odds API maintenance" />
+                </div>
+                <button class="button" id="owner-alert-text-load-button" type="button">Load</button>
+                <button class="button" id="owner-alert-text-save-button" type="button">Save</button>
+                <button class="button" id="owner-alert-text-delete-button" type="button">Delete</button>
               </div>
-              <div class="field">
-                <label for="owner-alert-font">Text Type</label>
-                <select id="owner-alert-font">
-                  <option value="Segoe UI, Arial, sans-serif">Clean Sans</option>
-                  <option value="Georgia, serif">Editorial Serif</option>
-                  <option value="Consolas, monospace">Data Mono</option>
-                </select>
+            </section>
+
+            <section class="owner-alert-section" aria-labelledby="owner-alert-publish-title">
+              <h3 class="owner-alert-section-title" id="owner-alert-publish-title">Publish</h3>
+              <p class="owner-alert-publish-note">Preview shows your draft appearance and text combined. Publishing replaces the live alert and turns it on for all users.</p>
+              <div class="site-alert-ticker" id="owner-alert-preview" aria-hidden="true">
+                <div class="site-alert-track" id="owner-alert-preview-track">
+                  <span class="site-alert-message" id="owner-alert-preview-message"></span>
+                  <span class="site-alert-message" id="owner-alert-preview-message-copy" aria-hidden="true"></span>
+                </div>
               </div>
-              <div class="field">
-                <label for="owner-alert-transform">Text Style</label>
-                <select id="owner-alert-transform">
-                  <option value="none">Normal</option>
-                  <option value="uppercase">Uppercase</option>
-                </select>
+              <div class="owner-alert-actions">
+                <button class="button" id="owner-alert-publish-button" type="button">Publish Alert</button>
+                <div class="owner-alert-status" id="owner-alert-status"></div>
               </div>
-              <div class="field">
-                <label for="owner-alert-background-color">Background</label>
-                <input id="owner-alert-background-color" type="color" />
-              </div>
-              <div class="field">
-                <label for="owner-alert-text-color">Text Color</label>
-                <input id="owner-alert-text-color" type="color" />
-              </div>
-              <div class="field">
-                <label for="owner-alert-accent-color">Accent Color</label>
-                <input id="owner-alert-accent-color" type="color" />
-              </div>
-              <div class="field">
-                <label for="owner-alert-weight">Text Weight</label>
-                <select id="owner-alert-weight">
-                  <option value="600">Regular</option>
-                  <option value="700">Bold</option>
-                  <option value="800">Heavy</option>
-                </select>
-              </div>
-            </div>
-            <div class="site-alert-preview-label">Preview</div>
-            <div class="site-alert-ticker" id="owner-alert-preview" aria-hidden="true">
-              <div class="site-alert-track" id="owner-alert-preview-track">
-                <span class="site-alert-message" id="owner-alert-preview-message"></span>
-                <span class="site-alert-message" id="owner-alert-preview-message-copy"></span>
-              </div>
-            </div>
-            <div class="owner-alert-actions">
-              <button class="button" id="owner-alert-save-button" type="button">Publish Alert</button>
-              <div class="owner-alert-status" id="owner-alert-status"></div>
-            </div>
+            </section>
           </div>
         </div>
         <div class="owner-settings-divider" aria-hidden="true"></div>
@@ -3740,10 +3959,6 @@
 
     </section>
   </div>
-  <footer class="server-activity-footer" id="server-activity-footer">
-    last server activity: pending
-  </footer>
-
   <div class="wallet-context-menu hidden" id="wallet-context-menu" role="menu" aria-label="Saved card actions">
     <button class="wallet-mark-won" id="wallet-mark-won-button" type="button" role="menuitem">Mark Won</button>
     <button class="wallet-mark-lost" id="wallet-mark-lost-button" type="button" role="menuitem">Mark Lost</button>
@@ -3794,7 +4009,7 @@
     }
 
     const accountPill = document.getElementById("account-pill");
-    const serverActivityFooter = document.getElementById("server-activity-footer");
+    const serverActivityFooters = Array.from(document.querySelectorAll(".server-activity-footer"));
     const siteAlertTicker = document.getElementById("site-alert-ticker");
     const siteAlertMessage = document.getElementById("site-alert-message");
     const siteAlertMessageCopy = document.getElementById("site-alert-message-copy");
@@ -4026,16 +4241,24 @@
     const reportColumnGrid = document.getElementById("report-column-grid");
     const reportDownloadButton = document.getElementById("report-download-button");
     const reportSummary = document.getElementById("report-summary");
+    const ownerAlertCurrentLine = document.getElementById("owner-alert-current-line");
+    const ownerAlertCurrentTicker = document.getElementById("owner-alert-current-ticker");
+    const ownerAlertCurrentMessage = document.getElementById("owner-alert-current-message");
+    const ownerAlertCurrentMessageCopy = document.getElementById("owner-alert-current-message-copy");
+    const ownerAlertTurnOffButton = document.getElementById("owner-alert-turn-off-button");
     const ownerAlertText = document.getElementById("owner-alert-text");
-    const ownerAlertStyleSelect = document.getElementById("owner-alert-style-select");
-    const ownerAlertStyleName = document.getElementById("owner-alert-style-name");
-    const ownerAlertStyleLoadButton = document.getElementById("owner-alert-style-load-button");
-    const ownerAlertStyleSaveButton = document.getElementById("owner-alert-style-save-button");
-    const ownerAlertStyleDeleteButton = document.getElementById("owner-alert-style-delete-button");
     const ownerAlertPrefix = document.getElementById("owner-alert-prefix");
     const ownerAlertSuffix = document.getElementById("owner-alert-suffix");
-    const ownerAlertEnabled = document.getElementById("owner-alert-enabled");
-    const ownerAlertEnabledLabel = document.getElementById("owner-alert-enabled-label");
+    const ownerAlertAppearancePresetSelect = document.getElementById("owner-alert-appearance-preset-select");
+    const ownerAlertAppearancePresetName = document.getElementById("owner-alert-appearance-preset-name");
+    const ownerAlertAppearanceLoadButton = document.getElementById("owner-alert-appearance-load-button");
+    const ownerAlertAppearanceSaveButton = document.getElementById("owner-alert-appearance-save-button");
+    const ownerAlertAppearanceDeleteButton = document.getElementById("owner-alert-appearance-delete-button");
+    const ownerAlertTextPresetSelect = document.getElementById("owner-alert-text-preset-select");
+    const ownerAlertTextPresetName = document.getElementById("owner-alert-text-preset-name");
+    const ownerAlertTextLoadButton = document.getElementById("owner-alert-text-load-button");
+    const ownerAlertTextSaveButton = document.getElementById("owner-alert-text-save-button");
+    const ownerAlertTextDeleteButton = document.getElementById("owner-alert-text-delete-button");
     const ownerAlertSpeed = document.getElementById("owner-alert-speed");
     const ownerAlertFont = document.getElementById("owner-alert-font");
     const ownerAlertTransform = document.getElementById("owner-alert-transform");
@@ -4046,7 +4269,7 @@
     const ownerAlertPreview = document.getElementById("owner-alert-preview");
     const ownerAlertPreviewMessage = document.getElementById("owner-alert-preview-message");
     const ownerAlertPreviewMessageCopy = document.getElementById("owner-alert-preview-message-copy");
-    const ownerAlertSaveButton = document.getElementById("owner-alert-save-button");
+    const ownerAlertPublishButton = document.getElementById("owner-alert-publish-button");
     const ownerAlertStatus = document.getElementById("owner-alert-status");
     const myCardsLockedPanel = document.getElementById("my-cards-locked-panel");
     const myCardsContentPanel = document.getElementById("my-cards-content-panel");
@@ -4094,9 +4317,10 @@
     let historicalBetRecordCache = new Map();
     const DEFAULT_SITE_ALERT_SETTINGS = Object.freeze({
       enabled: false,
+      alert_published: false,
       text: "DraftKings is currently experiencing issues with the API.",
       prefix_text: "Alert!",
-      suffix_text: "Alert!",
+      suffix_text: "",
       speed_seconds: 24,
       background_color: "#250814",
       text_color: "#ffffff",
@@ -4104,7 +4328,8 @@
       font_family: "Segoe UI, Arial, sans-serif",
       text_transform: "none",
       font_weight: "700",
-      saved_styles: []
+      appearance_presets: [],
+      text_presets: []
     });
     let siteAlertSettings = { ...DEFAULT_SITE_ALERT_SETTINGS };
     let siteAlertSettingsSignature = "";
@@ -4379,7 +4604,8 @@
 
     function walletSourceTable(game) {
       const source = String(game?._pitchiq_source_table || game?.source_table || "").toLowerCase();
-      return source === "live" ? "live" : "upcoming";
+      if (source === "live" || source === "historical") return source;
+      return "upcoming";
     }
 
     function walletCardKey(game) {
@@ -4396,7 +4622,7 @@
     function findWalletSourceGame(walletKey) {
       const key = String(walletKey || "");
       if (!key) return null;
-      return [...upcomingGames, ...liveGames].find(game => walletCardKey(game) === key) || null;
+      return [...upcomingGames, ...liveGames, ...gameHistory].find(game => walletCardKey(game) === key) || null;
     }
 
     function preferredBookSnapshot(game) {
@@ -4550,7 +4776,7 @@
     function savedCardRowToGame(row) {
       const snapshot = row?.snapshot && typeof row.snapshot === "object" ? { ...row.snapshot } : {};
       snapshot._saved_card_id = row?.id || "";
-      snapshot._pitchiq_source_table = row?.source_table || snapshot._pitchiq_source_table || "upcoming";
+      snapshot._pitchiq_source_table = snapshot._pitchiq_source_table || row?.source_table || "upcoming";
       snapshot.source_event_key = row?.source_event_key || snapshot.source_event_key || snapshot.event_key || "";
       snapshot.source_pitcher = row?.source_pitcher || snapshot.source_pitcher || row?.pitcher || snapshot.pitcher || "";
       snapshot._saved_at = row?.saved_at || "";
@@ -4604,32 +4830,64 @@
         setActiveWorkspace("my-cards");
         return;
       }
-      if (!currentUserId || !game) return;
+      const showButtonFeedback = (state, title, icon = null, duration = 1600) => {
+        if (!button) return;
+        const originalHtml = button.dataset.originalHtml || button.innerHTML;
+        button.dataset.originalHtml = originalHtml;
+        button.disabled = false;
+        button.classList.toggle("is-saved", state === "saved");
+        button.classList.toggle("is-failed", state === "failed");
+        button.setAttribute("title", title);
+        if (icon !== null) button.innerHTML = icon;
+        window.setTimeout(() => {
+          button.classList.remove("is-saved", "is-failed");
+          button.setAttribute("title", button.dataset.originalTitle || "Add to my cards");
+          button.innerHTML = button.dataset.originalHtml || originalHtml;
+        }, duration);
+      };
+      if (!currentUserId || !game) {
+        showButtonFeedback("failed", "Could not find card", "!");
+        return;
+      }
       const originalTitle = button?.getAttribute("title") || "Add to my cards";
       if (button) {
+        button.dataset.originalTitle = originalTitle;
+        button.dataset.originalHtml = button.innerHTML;
         button.disabled = true;
         button.setAttribute("title", "Saving...");
       }
-      const { error } = await supabaseClient
+      const record = buildSavedCardRecord(game);
+      let { error } = await supabaseClient
         .from("pitchiq_saved_cards")
-        .insert(buildSavedCardRecord(game));
+        .insert(record);
+      const isHistoricalSourceRejected = error
+        && record.source_table === "historical"
+        && (error.code === "23514" || /source_table|check constraint/i.test(`${error.message || ""} ${error.details || ""}`));
+      if (isHistoricalSourceRejected) {
+        const fallbackRecord = {
+          ...record,
+          source_table: "upcoming",
+          snapshot: {
+            ...record.snapshot,
+            _pitchiq_source_table: "historical",
+            _pitchiq_storage_source_table: "upcoming",
+          },
+        };
+        ({ error } = await supabaseClient
+          .from("pitchiq_saved_cards")
+          .insert(fallbackRecord));
+      }
       if (error && error.code !== "23505") {
+        console.warn("PitchIQ saved card insert failed", error);
         if (button) {
-          button.disabled = false;
-          button.setAttribute("title", "Save failed");
+          showButtonFeedback("failed", "Save failed", "!");
         }
         return;
       }
       await loadMyCards({ resetPage: true });
       refreshMyCardsView();
       if (button) {
-        button.disabled = false;
-        button.classList.add("is-saved");
-        button.setAttribute("title", error?.code === "23505" ? "Already saved" : "Saved to my cards");
-        window.setTimeout(() => {
-          button.classList.remove("is-saved");
-          button.setAttribute("title", originalTitle);
-        }, 1600);
+        showButtonFeedback("saved", error?.code === "23505" ? "Already saved" : "Saved to my cards", "✓");
       }
     }
 
@@ -4715,25 +4973,7 @@
       return /^#[0-9a-f]{6}$/i.test(text) ? text : fallback;
     }
 
-    function normalizeAlertStyleSettings(payload) {
-      const normalized = normalizeSiteAlertSettings(payload);
-      const { saved_styles, ...styleSettings } = normalized;
-      return styleSettings;
-    }
-
-    function normalizeSavedAlertStyles(styles) {
-      if (!Array.isArray(styles)) return [];
-      return styles
-        .filter(style => style && typeof style === "object" && String(style.name || "").trim())
-        .map(style => ({
-          name: String(style.name || "").trim().slice(0, 48),
-          settings: normalizeAlertStyleSettings(style.settings || {})
-        }))
-        .filter((style, index, all) => all.findIndex(candidate => candidate.name === style.name) === index)
-        .slice(0, 20);
-    }
-
-    function normalizeSiteAlertSettings(payload) {
+    function normalizeAppearanceSettings(payload = {}) {
       const source = payload && typeof payload === "object" ? payload : {};
       const fontFamily = [
         "Segoe UI, Arial, sans-serif",
@@ -4745,18 +4985,77 @@
         ? String(source.font_weight)
         : DEFAULT_SITE_ALERT_SETTINGS.font_weight;
       return {
-        enabled: Boolean(source.enabled),
-        text: String(source.text || DEFAULT_SITE_ALERT_SETTINGS.text).slice(0, 240),
-        prefix_text: String(source.prefix_text ?? DEFAULT_SITE_ALERT_SETTINGS.prefix_text).slice(0, 32),
-        suffix_text: String(source.suffix_text ?? DEFAULT_SITE_ALERT_SETTINGS.suffix_text).slice(0, 32),
         speed_seconds: clampAlertSpeed(source.speed_seconds),
         background_color: cleanAlertColor(source.background_color, DEFAULT_SITE_ALERT_SETTINGS.background_color),
         text_color: cleanAlertColor(source.text_color, DEFAULT_SITE_ALERT_SETTINGS.text_color),
         accent_color: cleanAlertColor(source.accent_color, DEFAULT_SITE_ALERT_SETTINGS.accent_color),
         font_family: fontFamily,
         text_transform: textTransform,
-        font_weight: fontWeight,
-        saved_styles: normalizeSavedAlertStyles(source.saved_styles)
+        font_weight: fontWeight
+      };
+    }
+
+    function normalizeTextSettings(payload = {}) {
+      const source = payload && typeof payload === "object" ? payload : {};
+      return {
+        text: String(source.text ?? DEFAULT_SITE_ALERT_SETTINGS.text).slice(0, 240),
+        prefix_text: String(source.prefix_text ?? DEFAULT_SITE_ALERT_SETTINGS.prefix_text).slice(0, 32),
+        suffix_text: String(source.suffix_text ?? DEFAULT_SITE_ALERT_SETTINGS.suffix_text).slice(0, 32)
+      };
+    }
+
+    function normalizeAlertPresetList(presets, normalizeSettings) {
+      if (!Array.isArray(presets)) return [];
+      return presets
+        .filter(preset => preset && typeof preset === "object" && String(preset.name || "").trim())
+        .map(preset => ({
+          name: String(preset.name || "").trim().slice(0, 48),
+          settings: normalizeSettings(preset.settings || {})
+        }))
+        .filter((preset, index, all) => all.findIndex(candidate => candidate.name === preset.name) === index)
+        .slice(0, 20);
+    }
+
+    function migrateLegacyAlertPresets(source) {
+      const appearancePresets = normalizeAlertPresetList(source.appearance_presets, normalizeAppearanceSettings);
+      const textPresets = normalizeAlertPresetList(source.text_presets, normalizeTextSettings);
+      const hasLegacyStyles = Array.isArray(source.saved_styles) && source.saved_styles.length > 0;
+      const hasNewPresets = appearancePresets.length > 0 || textPresets.length > 0;
+      if (!hasLegacyStyles || hasNewPresets) {
+        return { appearance_presets: appearancePresets, text_presets: textPresets };
+      }
+      source.saved_styles.forEach(style => {
+        const name = String(style?.name || "").trim();
+        if (!name) return;
+        const legacy = { ...DEFAULT_SITE_ALERT_SETTINGS, ...(style.settings || {}) };
+        if (!appearancePresets.some(preset => preset.name === name)) {
+          appearancePresets.push({ name, settings: normalizeAppearanceSettings(legacy) });
+        }
+        const textName = `${name} copy`;
+        if (!textPresets.some(preset => preset.name === textName)) {
+          textPresets.push({ name: textName, settings: normalizeTextSettings(legacy) });
+        }
+      });
+      return {
+        appearance_presets: appearancePresets.slice(0, 20),
+        text_presets: textPresets.slice(0, 20)
+      };
+    }
+
+    function normalizeSiteAlertSettings(payload) {
+      const source = payload && typeof payload === "object" ? payload : {};
+      const migratedPresets = migrateLegacyAlertPresets(source);
+      const text = String(source.text ?? DEFAULT_SITE_ALERT_SETTINGS.text).slice(0, 240);
+      const alertPublished = source.alert_published === undefined
+        ? Boolean(source.enabled && text.trim())
+        : Boolean(source.alert_published);
+      return {
+        ...normalizeAppearanceSettings(source),
+        ...normalizeTextSettings(source),
+        enabled: Boolean(source.enabled),
+        alert_published: alertPublished,
+        appearance_presets: migratedPresets.appearance_presets,
+        text_presets: migratedPresets.text_presets
       };
     }
 
@@ -4809,12 +5108,8 @@
       return `${prefix ? `<span class="site-alert-prefix">${escapeHtml(prefix)}</span>` : ""}${escapeHtml(settings.text.trim())}${suffix ? `<span class="site-alert-suffix">${escapeHtml(suffix)}</span>` : ""}`;
     }
 
-    function readOwnerAlertForm() {
-      return normalizeSiteAlertSettings({
-        enabled: ownerAlertEnabled.checked,
-        text: ownerAlertText.value,
-        prefix_text: ownerAlertPrefix.value,
-        suffix_text: ownerAlertSuffix.value,
+    function readDraftAppearance() {
+      return normalizeAppearanceSettings({
         speed_seconds: ownerAlertSpeed.value,
         background_color: ownerAlertBackgroundColor.value,
         text_color: ownerAlertTextColor.value,
@@ -4825,17 +5120,74 @@
       });
     }
 
-    function renderOwnerAlertPreview(settings = readOwnerAlertForm()) {
-      applyAlertStyles(ownerAlertPreview, settings);
-      ownerAlertPreviewMessage.innerHTML = renderAlertMessageHtml(settings);
-      ownerAlertPreviewMessageCopy.innerHTML = renderAlertMessageHtml(settings);
-      ownerAlertEnabledLabel.textContent = ownerAlertEnabled.checked ? "Alert On" : "Alert Off";
-      updateAlertTravel(ownerAlertPreview, ownerAlertPreviewMessage);
+    function readDraftText() {
+      return normalizeTextSettings({
+        text: ownerAlertText.value,
+        prefix_text: ownerAlertPrefix.value,
+        suffix_text: ownerAlertSuffix.value
+      });
     }
 
-    function populateOwnerAlertForm(settings = siteAlertSettings) {
+    function readDraftAlertSettings() {
+      return normalizeSiteAlertSettings({
+        ...siteAlertSettings,
+        ...readDraftAppearance(),
+        ...readDraftText(),
+        enabled: true
+      });
+    }
+
+    function renderAlertTickerPreview(ticker, messageElement, messageCopyElement, settings, { muted = false } = {}) {
+      if (!ticker || !messageElement || !messageCopyElement) return;
+      applyAlertStyles(ticker, settings);
+      const html = renderAlertMessageHtml(settings);
+      messageElement.innerHTML = html;
+      messageCopyElement.innerHTML = html;
+      ticker.classList.toggle("is-muted", muted);
+      const hasMessage = Boolean(settings.text.trim());
+      ticker.classList.toggle("hidden", !hasMessage);
+      if (hasMessage) {
+        updateAlertTravel(ticker, messageElement);
+      }
+    }
+
+    function renderPublishPreview(settings = readDraftAlertSettings()) {
+      renderAlertTickerPreview(
+        ownerAlertPreview,
+        ownerAlertPreviewMessage,
+        ownerAlertPreviewMessageCopy,
+        settings
+      );
+    }
+
+    function isLiveSiteAlert(settings = siteAlertSettings) {
+      return Boolean(settings?.enabled && String(settings.text || "").trim());
+    }
+
+    function renderCurrentAlertPanel(settings = siteAlertSettings) {
+      const isLive = isLiveSiteAlert(settings);
+      ownerAlertCurrentLine.textContent = isLive ? "Current Alert:" : "Current Alert: None";
+      ownerAlertCurrentLine.classList.toggle("is-none", !isLive);
+      ownerAlertCurrentTicker.classList.toggle("hidden", !isLive);
+      ownerAlertCurrentTicker.setAttribute("aria-hidden", isLive ? "false" : "true");
+      ownerAlertTurnOffButton.classList.toggle("hidden", !isLive);
+
+      if (isLive) {
+        renderAlertTickerPreview(
+          ownerAlertCurrentTicker,
+          ownerAlertCurrentMessage,
+          ownerAlertCurrentMessageCopy,
+          settings
+        );
+        return;
+      }
+
+      ownerAlertCurrentMessage.innerHTML = "";
+      ownerAlertCurrentMessageCopy.innerHTML = "";
+    }
+
+    function populateOwnerAlertDraft(settings = siteAlertSettings) {
       const normalized = normalizeSiteAlertSettings(settings);
-      ownerAlertEnabled.checked = normalized.enabled;
       ownerAlertText.value = normalized.text;
       ownerAlertPrefix.value = normalized.prefix_text;
       ownerAlertSuffix.value = normalized.suffix_text;
@@ -4846,70 +5198,231 @@
       ownerAlertFont.value = normalized.font_family;
       ownerAlertTransform.value = normalized.text_transform;
       ownerAlertWeight.value = normalized.font_weight;
-      renderSavedAlertStyleOptions(normalized.saved_styles);
-      renderOwnerAlertPreview(normalized);
+      renderAppearancePresetOptions();
+      renderTextPresetOptions();
+      renderPublishPreview();
     }
 
-    function renderSavedAlertStyleOptions(styles = siteAlertSettings.saved_styles || []) {
-      const selected = ownerAlertStyleSelect.value;
-      ownerAlertStyleSelect.innerHTML = '<option value="">Select saved style</option>'
-        + styles.map(style => `<option value="${escapeHtml(style.name)}">${escapeHtml(style.name)}</option>`).join("");
-      ownerAlertStyleSelect.value = styles.some(style => style.name === selected) ? selected : "";
+    function renderPresetOptions(selectElement, presets, placeholder) {
+      if (!selectElement) return;
+      const selected = selectElement.value;
+      selectElement.innerHTML = `<option value="">${escapeHtml(placeholder)}</option>`
+        + presets.map(preset => `<option value="${escapeHtml(preset.name)}">${escapeHtml(preset.name)}</option>`).join("");
+      selectElement.value = presets.some(preset => preset.name === selected) ? selected : "";
     }
 
-    function currentAlertStyleSettingsFromForm() {
-      return normalizeAlertStyleSettings(readOwnerAlertForm());
+    function renderAppearancePresetOptions() {
+      renderPresetOptions(
+        ownerAlertAppearancePresetSelect,
+        siteAlertSettings.appearance_presets || [],
+        "Select appearance preset"
+      );
     }
 
-    function selectedAlertStyle() {
-      const name = String(ownerAlertStyleSelect.value || "").trim();
-      return (siteAlertSettings.saved_styles || []).find(style => style.name === name) || null;
+    function renderTextPresetOptions() {
+      renderPresetOptions(
+        ownerAlertTextPresetSelect,
+        siteAlertSettings.text_presets || [],
+        "Select text preset"
+      );
     }
 
-    function loadSelectedAlertStyle() {
-      const style = selectedAlertStyle();
-      if (!style) {
-        ownerAlertStatus.textContent = "Choose a saved style to load.";
+    function selectedAppearancePreset() {
+      const name = String(ownerAlertAppearancePresetSelect.value || "").trim();
+      return (siteAlertSettings.appearance_presets || []).find(preset => preset.name === name) || null;
+    }
+
+    function selectedTextPreset() {
+      const name = String(ownerAlertTextPresetSelect.value || "").trim();
+      return (siteAlertSettings.text_presets || []).find(preset => preset.name === name) || null;
+    }
+
+    function applyDraftAppearance(settings) {
+      ownerAlertSpeed.value = String(settings.speed_seconds);
+      ownerAlertBackgroundColor.value = settings.background_color;
+      ownerAlertTextColor.value = settings.text_color;
+      ownerAlertAccentColor.value = settings.accent_color;
+      ownerAlertFont.value = settings.font_family;
+      ownerAlertTransform.value = settings.text_transform;
+      ownerAlertWeight.value = settings.font_weight;
+      renderPublishPreview();
+    }
+
+    function applyDraftText(settings) {
+      ownerAlertText.value = settings.text;
+      ownerAlertPrefix.value = settings.prefix_text;
+      ownerAlertSuffix.value = settings.suffix_text;
+      renderPublishPreview();
+    }
+
+    function applySelectedAppearancePreset({ requireSelection = false } = {}) {
+      const preset = selectedAppearancePreset();
+      ownerAlertAppearancePresetName.value = preset?.name || "";
+      if (!preset) {
+        if (requireSelection) ownerAlertStatus.textContent = "Choose an appearance preset to load.";
         return;
       }
-      const merged = normalizeSiteAlertSettings({
-        ...siteAlertSettings,
-        ...style.settings,
-        saved_styles: siteAlertSettings.saved_styles
-      });
-      populateOwnerAlertForm(merged);
-      ownerAlertStyleName.value = style.name;
-      ownerAlertStatus.textContent = `Loaded ${style.name}. Publish Alert to make it live.`;
+      applyDraftAppearance(preset.settings);
+      ownerAlertStatus.textContent = `Applied appearance preset "${preset.name}".`;
     }
 
-    async function saveAlertStylePreset() {
-      const name = ownerAlertStyleName.value.trim();
+    function applySelectedTextPreset({ requireSelection = false } = {}) {
+      const preset = selectedTextPreset();
+      ownerAlertTextPresetName.value = preset?.name || "";
+      if (!preset) {
+        if (requireSelection) ownerAlertStatus.textContent = "Choose a text preset to load.";
+        return;
+      }
+      applyDraftText(preset.settings);
+      ownerAlertStatus.textContent = `Applied text preset "${preset.name}".`;
+    }
+
+    function loadSelectedAppearancePreset() {
+      applySelectedAppearancePreset({ requireSelection: true });
+    }
+
+    function loadSelectedTextPreset() {
+      applySelectedTextPreset({ requireSelection: true });
+    }
+
+    async function persistSiteAlertPayload(patch, statusText = "") {
+      if (currentUserRole !== "owner") return false;
+      const settings = normalizeSiteAlertSettings({ ...siteAlertSettings, ...patch });
+      ownerAlertPublishButton.disabled = true;
+      ownerAlertTurnOffButton.disabled = true;
+      ownerAlertAppearanceSaveButton.disabled = true;
+      ownerAlertTextSaveButton.disabled = true;
+      if (statusText) ownerAlertStatus.textContent = statusText;
+      try {
+        const { data, error } = await supabaseClient
+          .from("pitchiq_site_settings")
+          .upsert({
+            id: "global_alert",
+            payload: settings,
+            updated_by: currentUserId,
+            updated_at: new Date().toISOString()
+          }, { onConflict: "id" })
+          .select("payload")
+          .single();
+        if (error) throw error;
+        const savedSettings = normalizeSiteAlertSettings(data?.payload || settings);
+        siteAlertSettings = savedSettings;
+        siteAlertSettingsSignature = "";
+        renderSiteAlert(savedSettings);
+        renderCurrentAlertPanel(savedSettings);
+        renderAppearancePresetOptions();
+        renderTextPresetOptions();
+        if (statusText) ownerAlertStatus.textContent = statusText;
+        return true;
+      } catch (error) {
+        ownerAlertStatus.textContent = `Unable to save alert settings: ${error.message || "check the site settings policy"}.`;
+        return false;
+      } finally {
+        ownerAlertPublishButton.disabled = false;
+        ownerAlertTurnOffButton.disabled = false;
+        ownerAlertAppearanceSaveButton.disabled = false;
+        ownerAlertTextSaveButton.disabled = false;
+      }
+    }
+
+    async function turnOffLiveAlert() {
+      if (!isLiveSiteAlert(siteAlertSettings)) return;
+      ownerAlertStatus.textContent = "Turning off alert...";
+      const ok = await persistSiteAlertPayload({ enabled: false }, "Alert turned off.");
+      if (ok) {
+        ownerAlertStatus.textContent = "Alert turned off.";
+      }
+    }
+
+    async function saveAppearancePreset() {
+      const name = ownerAlertAppearancePresetName.value.trim();
       if (!name) {
-        ownerAlertStatus.textContent = "Enter a style name before saving.";
+        ownerAlertStatus.textContent = "Enter an appearance preset name before saving.";
         return;
       }
-      const styles = (siteAlertSettings.saved_styles || []).filter(style => style.name !== name);
-      styles.push({ name, settings: currentAlertStyleSettingsFromForm() });
-      siteAlertSettings = normalizeSiteAlertSettings({ ...siteAlertSettings, saved_styles: styles });
-      renderSavedAlertStyleOptions(siteAlertSettings.saved_styles);
-      ownerAlertStyleSelect.value = name;
-      await saveOwnerAlertSettings(`Saved style ${name}.`);
+      const presets = (siteAlertSettings.appearance_presets || []).filter(preset => preset.name !== name);
+      presets.push({ name, settings: readDraftAppearance() });
+      const ok = await persistSiteAlertPayload(
+        { appearance_presets: presets },
+        `Saved appearance preset "${name}".`
+      );
+      if (ok) {
+        ownerAlertAppearancePresetSelect.value = name;
+      }
     }
 
-    async function deleteAlertStylePreset() {
-      const name = String(ownerAlertStyleSelect.value || ownerAlertStyleName.value || "").trim();
+    async function deleteAppearancePreset() {
+      const name = String(ownerAlertAppearancePresetSelect.value || ownerAlertAppearancePresetName.value || "").trim();
       if (!name) {
-        ownerAlertStatus.textContent = "Choose a saved style to delete.";
+        ownerAlertStatus.textContent = "Choose an appearance preset to delete.";
         return;
       }
-      siteAlertSettings = normalizeSiteAlertSettings({
-        ...siteAlertSettings,
-        saved_styles: (siteAlertSettings.saved_styles || []).filter(style => style.name !== name)
-      });
-      ownerAlertStyleSelect.value = "";
-      ownerAlertStyleName.value = "";
-      renderSavedAlertStyleOptions(siteAlertSettings.saved_styles);
-      await saveOwnerAlertSettings(`Deleted style ${name}.`);
+      const presets = (siteAlertSettings.appearance_presets || []).filter(preset => preset.name !== name);
+      const ok = await persistSiteAlertPayload(
+        { appearance_presets: presets },
+        `Deleted appearance preset "${name}".`
+      );
+      if (ok) {
+        ownerAlertAppearancePresetSelect.value = "";
+        ownerAlertAppearancePresetName.value = "";
+      }
+    }
+
+    async function saveTextPreset() {
+      const name = ownerAlertTextPresetName.value.trim();
+      if (!name) {
+        ownerAlertStatus.textContent = "Enter a text preset name before saving.";
+        return;
+      }
+      if (!ownerAlertText.value.trim()) {
+        ownerAlertStatus.textContent = "Add alert text before saving a text preset.";
+        return;
+      }
+      const presets = (siteAlertSettings.text_presets || []).filter(preset => preset.name !== name);
+      presets.push({ name, settings: readDraftText() });
+      const ok = await persistSiteAlertPayload(
+        { text_presets: presets },
+        `Saved text preset "${name}".`
+      );
+      if (ok) {
+        ownerAlertTextPresetSelect.value = name;
+      }
+    }
+
+    async function deleteTextPreset() {
+      const name = String(ownerAlertTextPresetSelect.value || ownerAlertTextPresetName.value || "").trim();
+      if (!name) {
+        ownerAlertStatus.textContent = "Choose a text preset to delete.";
+        return;
+      }
+      const presets = (siteAlertSettings.text_presets || []).filter(preset => preset.name !== name);
+      const ok = await persistSiteAlertPayload(
+        { text_presets: presets },
+        `Deleted text preset "${name}".`
+      );
+      if (ok) {
+        ownerAlertTextPresetSelect.value = "";
+        ownerAlertTextPresetName.value = "";
+      }
+    }
+
+    async function publishDraftAlert() {
+      if (!ownerAlertText.value.trim()) {
+        ownerAlertStatus.textContent = "Add alert text before publishing.";
+        return;
+      }
+      ownerAlertStatus.textContent = "Publishing alert...";
+      ownerAlertPublishButton.disabled = true;
+      const draft = readDraftAlertSettings();
+      const ok = await persistSiteAlertPayload({
+        ...draft,
+        enabled: true,
+        alert_published: true
+      }, "");
+      ownerAlertPublishButton.disabled = false;
+      if (!ok) return;
+      populateOwnerAlertDraft(siteAlertSettings);
+      ownerAlertStatus.textContent = "Alert published and live for all users.";
     }
 
     async function loadSiteAlertSettings() {
@@ -4924,7 +5437,8 @@
           const fallback = normalizeSiteAlertSettings(siteAlertSettings || DEFAULT_SITE_ALERT_SETTINGS);
           renderSiteAlert(fallback);
           if (currentUserRole === "owner") {
-            populateOwnerAlertForm(fallback);
+            populateOwnerAlertDraft(fallback);
+            renderCurrentAlertPanel(fallback);
           }
           if (ownerAlertStatus && currentUserRole === "owner") {
             ownerAlertStatus.textContent = `Unable to load alert settings: ${error.message || "check Supabase policy"}.`;
@@ -4932,44 +5446,25 @@
           return;
         }
 
-        const settings = normalizeSiteAlertSettings(data?.payload || DEFAULT_SITE_ALERT_SETTINGS);
+        const rawPayload = data?.payload || {};
+        const settings = normalizeSiteAlertSettings(rawPayload);
+        const shouldPersistLegacyMigration = currentUserRole === "owner"
+          && Array.isArray(rawPayload.saved_styles)
+          && rawPayload.saved_styles.length > 0
+          && !Array.isArray(rawPayload.appearance_presets);
         renderSiteAlert(settings);
         if (currentUserRole === "owner") {
-          populateOwnerAlertForm(settings);
+          populateOwnerAlertDraft(settings);
+          renderCurrentAlertPanel(settings);
+          if (shouldPersistLegacyMigration) {
+            await persistSiteAlertPayload({
+              appearance_presets: settings.appearance_presets,
+              text_presets: settings.text_presets
+            }, "Migrated legacy alert presets.");
+          }
         }
       } catch (error) {
         renderSiteAlert(DEFAULT_SITE_ALERT_SETTINGS);
-      }
-    }
-
-    async function saveOwnerAlertSettings(statusText = "") {
-      if (currentUserRole !== "owner") return;
-      const settings = normalizeSiteAlertSettings({
-        ...readOwnerAlertForm(),
-        saved_styles: siteAlertSettings.saved_styles || []
-      });
-      ownerAlertSaveButton.disabled = true;
-      ownerAlertStatus.textContent = "Publishing alert...";
-      try {
-        const { data, error } = await supabaseClient
-          .from("pitchiq_site_settings")
-          .upsert({
-            id: "global_alert",
-            payload: settings,
-            updated_by: currentUserId,
-            updated_at: new Date().toISOString()
-          }, { onConflict: "id" })
-          .select("payload")
-          .single();
-        if (error) throw error;
-        const savedSettings = normalizeSiteAlertSettings(data?.payload || settings);
-        renderSiteAlert(savedSettings);
-        populateOwnerAlertForm(savedSettings);
-        ownerAlertStatus.textContent = statusText || (savedSettings.enabled ? "Alert is live." : "Alert saved and hidden.");
-      } catch (error) {
-        ownerAlertStatus.textContent = `Unable to publish alert: ${error.message || "check the site settings policy"}.`;
-      } finally {
-        ownerAlertSaveButton.disabled = false;
       }
     }
 
@@ -4997,7 +5492,7 @@
 
       const { data: historyRows, error: historyRowsError } = await supabaseClient
         .from("pitchiq_historical_rows")
-        .select("payload,updated_at")
+        .select("event_key,pitcher,game_date,payload,updated_at")
         .order("updated_at", { ascending: false })
         .limit(2000);
 
@@ -5024,7 +5519,13 @@
         latestFetchedHistoricalRowsUpdatedAt = maxUpdatedAtFromRows(historyRows || []);
         gameHistory = (historyRows || [])
           .filter(row => row.payload)
-          .map(row => row.payload);
+          .map(row => ({
+            ...row.payload,
+            event_key: row.payload.event_key || row.event_key || "",
+            pitcher: row.payload.pitcher || row.pitcher || "",
+            game_date: row.payload.game_date || row.payload.date || row.game_date || "",
+            _pitchiq_source_table: "historical",
+          }));
         gameHistory.sort((left, right) => {
           const leftDate = sortableGameDate(left);
           const rightDate = sortableGameDate(right);
@@ -5203,9 +5704,10 @@
     }
 
     function setServerActivity(value) {
-      if (!serverActivityFooter) return;
       const formatted = formatServerActivity(value);
-      serverActivityFooter.textContent = `last server activity: ${formatted || "pending"}`;
+      serverActivityFooters.forEach(footer => {
+        footer.textContent = `last server activity: ${formatted || "pending"}`;
+      });
     }
 
     function latestTimestamp(values) {
@@ -7311,7 +7813,7 @@
         const fdCorrect = evaluateBetCorrectness(actual, game.fd_line, game.fd_bet);
         return `
           <tr>
-            <td>${renderRowActions(game, { includeHistorical: false, includeAddToCards: false })}</td>
+            <td>${renderRowActions(game, { includeHistorical: false })}</td>
             <td>
               <div class="pitcher-cell">
                 <span class="pitcher-name" title="${escapeHtml(game.pitcher)}">${escapeHtml(game.pitcher)}</span>
@@ -7758,18 +8260,20 @@
       refreshReportBuilderView();
     });
     reportDownloadButton.addEventListener("click", downloadReport);
-    ownerAlertStyleSelect.addEventListener("change", () => {
-      const style = selectedAlertStyle();
-      ownerAlertStyleName.value = style?.name || "";
-    });
-    ownerAlertStyleLoadButton.addEventListener("click", loadSelectedAlertStyle);
-    ownerAlertStyleSaveButton.addEventListener("click", saveAlertStylePreset);
-    ownerAlertStyleDeleteButton.addEventListener("click", deleteAlertStylePreset);
+    ownerAlertAppearancePresetSelect.addEventListener("change", () => applySelectedAppearancePreset());
+    ownerAlertTextPresetSelect.addEventListener("change", () => applySelectedTextPreset());
+    ownerAlertAppearanceLoadButton.addEventListener("click", loadSelectedAppearancePreset);
+    ownerAlertAppearanceSaveButton.addEventListener("click", saveAppearancePreset);
+    ownerAlertAppearanceDeleteButton.addEventListener("click", deleteAppearancePreset);
+    ownerAlertTextLoadButton.addEventListener("click", loadSelectedTextPreset);
+    ownerAlertTextSaveButton.addEventListener("click", saveTextPreset);
+    ownerAlertTextDeleteButton.addEventListener("click", deleteTextPreset);
+    ownerAlertPublishButton.addEventListener("click", publishDraftAlert);
+    ownerAlertTurnOffButton.addEventListener("click", turnOffLiveAlert);
     [
       ownerAlertText,
       ownerAlertPrefix,
       ownerAlertSuffix,
-      ownerAlertEnabled,
       ownerAlertSpeed,
       ownerAlertFont,
       ownerAlertTransform,
@@ -7778,11 +8282,11 @@
       ownerAlertAccentColor,
       ownerAlertWeight
     ].forEach(control => {
-      control.addEventListener("input", () => renderOwnerAlertPreview());
-      control.addEventListener("change", () => renderOwnerAlertPreview());
+      control.addEventListener("input", () => renderPublishPreview());
+      control.addEventListener("change", () => renderPublishPreview());
     });
-    ownerAlertSaveButton.addEventListener("click", saveOwnerAlertSettings);
-    populateOwnerAlertForm(DEFAULT_SITE_ALERT_SETTINGS);
+    populateOwnerAlertDraft(DEFAULT_SITE_ALERT_SETTINGS);
+    renderCurrentAlertPanel(DEFAULT_SITE_ALERT_SETTINGS);
     renderSiteAlert(DEFAULT_SITE_ALERT_SETTINGS);
 
     clearUpcomingSearchButton.addEventListener("click", () => {
@@ -7944,6 +8448,11 @@
     });
 
     document.getElementById("historical-games-grid").addEventListener("click", event => {
+      const addButton = event.target.closest(".add-card-btn");
+      if (addButton) {
+        saveGameToMyCards(findWalletSourceGame(addButton.dataset.walletKey || ""), addButton);
+        return;
+      }
       const button = event.target.closest(".pitcher-lookup-btn");
       if (!button) return;
       openPitcherFromUpcoming(button.dataset.pitcher || "");

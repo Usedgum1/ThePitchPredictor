@@ -33,6 +33,18 @@
       --red: #ff8978;
       --success: #8ddf9f;
       --danger: #ff8c7a;
+      --text-trim-shadow:
+        1px 0 0 #000,
+        -1px 0 0 #000,
+        0 1px 0 #000,
+        0 -1px 0 #000,
+        1px 1px 0 #000,
+        -1px -1px 0 #000,
+        1px -1px 0 #000,
+        -1px 1px 0 #000;
+      --text-trim-stroke: 0.5px rgba(0, 0, 0, 0.92);
+      --text-trim-stroke-strong: 0.75px rgba(0, 0, 0, 0.95);
+      --text-trim-stroke-brand: 1.25px rgba(0, 0, 0, 0.95);
     }
 
     * {
@@ -56,6 +68,13 @@
     input,
     select {
       font: inherit;
+    }
+
+    /* Global black text trim */
+    .shell *:not(input):not(textarea):not(select):not(option) {
+      -webkit-text-stroke: var(--text-trim-stroke);
+      paint-order: stroke fill;
+      text-shadow: var(--text-trim-shadow);
     }
 
     .shell {
@@ -149,11 +168,43 @@
       margin-bottom: 10px;
     }
 
+    .brand-heading {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 8px 10px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      display: block;
+      flex: 0 0 auto;
+      width: auto;
+      height: 3.225rem;
+      object-fit: contain;
+    }
+
     .brand {
       margin: 0;
-      font-size: 1.03rem;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
+      font-size: 0.96rem;
+      letter-spacing: 0.04em;
+      color: var(--amber);
+      font-weight: 800;
+      -webkit-text-stroke: var(--text-trim-stroke-brand);
+      text-shadow:
+        var(--text-trim-shadow),
+        0 0 8px rgba(255, 148, 46, 0.45),
+        0 0 16px rgba(255, 148, 46, 0.18);
+    }
+
+    .brand-tagline {
+      margin: 0;
+      color: var(--text);
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      line-height: 1.2;
+      white-space: nowrap;
     }
 
     .top-actions {
@@ -210,6 +261,7 @@
     .account-username.tier-value-basic {
       color: var(--neon-blue);
       text-shadow:
+        var(--text-trim-shadow),
         0 0 8px rgba(47, 155, 255, 0.72),
         0 0 18px rgba(47, 155, 255, 0.38);
     }
@@ -217,6 +269,7 @@
     .account-username.tier-value-pro {
       color: var(--amber);
       text-shadow:
+        var(--text-trim-shadow),
         0 0 8px rgba(255, 148, 46, 0.72),
         0 0 18px rgba(255, 148, 46, 0.38);
     }
@@ -224,6 +277,7 @@
     .account-username.tier-value-life {
       color: var(--neon-gold);
       text-shadow:
+        var(--text-trim-shadow),
         0 0 8px rgba(255, 216, 79, 0.72),
         0 0 18px rgba(255, 216, 79, 0.38);
     }
@@ -231,6 +285,7 @@
     .account-username.tier-value-owner {
       color: var(--neon-red);
       text-shadow:
+        var(--text-trim-shadow),
         0 0 8px rgba(255, 23, 77, 0.72),
         0 0 18px rgba(255, 23, 77, 0.38);
     }
@@ -447,7 +502,9 @@
       background: rgba(255, 148, 46, 0.1);
       color: #ff942e;
       font-weight: 950;
-      text-shadow: 0 0 10px rgba(255, 148, 46, 0.5);
+      text-shadow:
+        var(--text-trim-shadow),
+        0 0 10px rgba(255, 148, 46, 0.5);
     }
 
     .historical-lookup-btn:hover,
@@ -455,6 +512,24 @@
       border-color: rgba(255, 148, 46, 0.76);
       background: rgba(255, 148, 46, 0.18);
       box-shadow: 0 0 16px rgba(255, 148, 46, 0.32);
+    }
+
+    .add-card-btn.is-saved {
+      border-color: rgba(79, 255, 146, 0.72);
+      background: rgba(79, 255, 146, 0.16);
+      color: var(--success);
+      text-shadow:
+        var(--text-trim-shadow),
+        0 0 10px rgba(79, 255, 146, 0.5);
+    }
+
+    .add-card-btn.is-failed {
+      border-color: rgba(255, 104, 104, 0.78);
+      background: rgba(255, 104, 104, 0.16);
+      color: #ff6868;
+      text-shadow:
+        var(--text-trim-shadow),
+        0 0 10px rgba(255, 104, 104, 0.5);
     }
 
     .historical-lookup-btn svg {
@@ -829,7 +904,20 @@
     </div>
     <div class="topbar">
       <div class="brand-row">
-        <h1 class="brand">pitchIQ</h1>
+        <div>
+          <div class="brand-heading">
+            <img
+              class="brand-mark"
+              src="./images/tagsplashpng.png"
+              alt="thePitchIQ"
+              width="51"
+              height="51"
+              decoding="async"
+            />
+            <h1 class="brand">PitchIQ</h1>
+            <p class="brand-tagline">Bet Statistically</p>
+          </div>
+        </div>
         <div class="top-actions">
           <button class="filter-toggle" id="filter-toggle" type="button" aria-expanded="true">Hide</button>
           <a class="desktop-link" href="./app.html?desktop=1">Desktop</a>
@@ -1697,7 +1785,7 @@
 
     function walletSourceTable(game) {
       const source = String(game?._pitchiq_source_table || "").toLowerCase();
-      if (source === "live" || source === "upcoming") return source;
+      if (source === "live" || source === "upcoming" || source === "historical") return source;
       return activeView === "live" ? "live" : "upcoming";
     }
 
@@ -1715,7 +1803,7 @@
     function findWalletSourceGame(walletKey) {
       const key = String(walletKey || "");
       if (!key) return null;
-      return [...upcomingGames, ...liveGames].find(game => walletCardKey(game) === key) || null;
+      return [...upcomingGames, ...liveGames, ...gameHistory].find(game => walletCardKey(game) === key) || null;
     }
 
     function preferredBookSnapshot(game) {
@@ -1785,30 +1873,62 @@
         window.location.href = dest.toString();
         return;
       }
-      if (!currentUserId || !game) return;
+      const showButtonFeedback = (state, title, icon = null, duration = 1600) => {
+        if (!button) return;
+        const originalHtml = button.dataset.originalHtml || button.innerHTML;
+        button.dataset.originalHtml = originalHtml;
+        button.disabled = false;
+        button.classList.toggle("is-saved", state === "saved");
+        button.classList.toggle("is-failed", state === "failed");
+        button.setAttribute("title", title);
+        if (icon !== null) button.innerHTML = icon;
+        window.setTimeout(() => {
+          button.classList.remove("is-saved", "is-failed");
+          button.setAttribute("title", button.dataset.originalTitle || "Add to my cards");
+          button.innerHTML = button.dataset.originalHtml || originalHtml;
+        }, duration);
+      };
+      if (!currentUserId || !game) {
+        showButtonFeedback("failed", "Could not find card", "!");
+        return;
+      }
       const originalTitle = button?.getAttribute("title") || "Add to my cards";
       if (button) {
+        button.dataset.originalTitle = originalTitle;
+        button.dataset.originalHtml = button.innerHTML;
         button.disabled = true;
         button.setAttribute("title", "Saving...");
       }
-      const { error } = await supabaseClient
+      const record = buildSavedCardRecord(game);
+      let { error } = await supabaseClient
         .from("pitchiq_saved_cards")
-        .insert(buildSavedCardRecord(game));
+        .insert(record);
+      const isHistoricalSourceRejected = error
+        && record.source_table === "historical"
+        && (error.code === "23514" || /source_table|check constraint/i.test(`${error.message || ""} ${error.details || ""}`));
+      if (isHistoricalSourceRejected) {
+        const fallbackRecord = {
+          ...record,
+          source_table: "upcoming",
+          snapshot: {
+            ...record.snapshot,
+            _pitchiq_source_table: "historical",
+            _pitchiq_storage_source_table: "upcoming",
+          },
+        };
+        ({ error } = await supabaseClient
+          .from("pitchiq_saved_cards")
+          .insert(fallbackRecord));
+      }
       if (error && error.code !== "23505") {
+        console.warn("PitchIQ saved card insert failed", error);
         if (button) {
-          button.disabled = false;
-          button.setAttribute("title", "Save failed");
+          showButtonFeedback("failed", "Save failed", "!");
         }
         return;
       }
       if (button) {
-        button.disabled = false;
-        button.classList.add("is-saved");
-        button.setAttribute("title", error?.code === "23505" ? "Already saved" : "Saved to my cards");
-        window.setTimeout(() => {
-          button.classList.remove("is-saved");
-          button.setAttribute("title", originalTitle);
-        }, 1600);
+        showButtonFeedback("saved", error?.code === "23505" ? "Already saved" : "Saved to my cards", "✓");
       }
     }
 
@@ -2314,7 +2434,7 @@
           .order("updated_at", { ascending: false }),
         supabaseClient
           .from("pitchiq_historical_rows")
-          .select("payload,updated_at")
+          .select("event_key,pitcher,game_date,payload,updated_at")
           .order("updated_at", { ascending: false })
           .limit(2000)
       ]);
@@ -2332,7 +2452,13 @@
       if (!historyError) {
         gameHistory = (historyRows || [])
           .filter(row => row.payload)
-          .map(row => row.payload);
+          .map(row => ({
+            ...row.payload,
+            event_key: row.payload.event_key || row.event_key || "",
+            pitcher: row.payload.pitcher || row.pitcher || "",
+            game_date: row.payload.game_date || row.payload.date || row.game_date || "",
+            _pitchiq_source_table: "historical",
+          }));
         historicalBetRecordCache = new Map();
       }
       const fetchedGameRows = gameRows || [];

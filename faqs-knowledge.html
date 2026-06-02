@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>pitchIQ | FAQs &amp; Knowledge</title>
+  <meta name="description" content="FAQs and product knowledge for pitchIQ strikeout prop research." />
+  <meta name="theme-color" content="#050505" />
+  <link rel="icon" type="image/x-icon" href="./images/favicon/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="./images/favicon/favicon-16x16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="./images/favicon/apple-touch-icon.png" />
+  <link rel="manifest" href="./images/favicon/site.webmanifest" />
+
+  <style>
+    :root {
+      --bg: #050505;
+      --text: #f4f0e8;
+      --muted: #a7afbc;
+      --violet: #8d8aff;
+      --amber: #ff942e;
+      --blue: #2f9bff;
+      --success: #8ddf9f;
+    }
+
+    * { box-sizing: border-box; }
+
+    .hidden {
+      display: none !important;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 12% 14%, rgba(141, 138, 255, 0.2), transparent 22%),
+        radial-gradient(circle at 86% 10%, rgba(255, 148, 46, 0.18), transparent 20%),
+        radial-gradient(circle at 62% 28%, rgba(86, 152, 255, 0.14), transparent 18%),
+        linear-gradient(180deg, #050505 0%, #090a10 100%);
+    }
+
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 22px 18px 34px;
+    }
+
+    .shell {
+      background: linear-gradient(180deg, rgba(15, 17, 24, 0.38), rgba(10, 11, 17, 0.2));
+      backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 18px;
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.18);
+      padding: 22px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 22px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.6rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .sub {
+      margin: 7px 0 0;
+      color: var(--muted);
+      line-height: 1.5;
+      max-width: 52ch;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      white-space: nowrap;
+    }
+
+    .text-link,
+    .text-button {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.78rem;
+      line-height: 1.25;
+      padding: 0;
+      text-decoration: none;
+      text-transform: lowercase;
+    }
+
+    .text-link:hover,
+    .text-button:hover {
+      color: var(--text);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(220px, 0.34fr);
+      gap: 22px;
+      align-items: start;
+    }
+
+    .knowledge-main {
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.026);
+      overflow: hidden;
+    }
+
+    .knowledge-section {
+      padding: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+      scroll-margin-top: 18px;
+    }
+
+    .knowledge-section:last-child {
+      border-bottom: 0;
+    }
+
+    .knowledge-section h2 {
+      margin: 0 0 6px;
+      font-size: 0.86rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .knowledge-section > p {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.5;
+    }
+
+    .faq-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .faq-item {
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      background: rgba(0, 0, 0, 0.18);
+      overflow: hidden;
+    }
+
+    .faq-item summary {
+      cursor: pointer;
+      list-style: none;
+      padding: 14px 16px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .faq-item summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .faq-item summary::after {
+      color: var(--amber);
+      content: "+";
+      float: right;
+      font-size: 1.1rem;
+      font-weight: 800;
+      margin-left: 12px;
+    }
+
+    .faq-item[open] summary::after {
+      content: "−";
+    }
+
+    .faq-item summary:hover {
+      color: #fff;
+    }
+
+    .faq-answer {
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      color: var(--muted);
+      font-size: 0.86rem;
+      line-height: 1.55;
+      padding: 0 16px 14px;
+    }
+
+    .faq-answer p {
+      margin: 12px 0 0;
+    }
+
+    .faq-answer ul {
+      margin: 10px 0 0;
+      padding-left: 18px;
+    }
+
+    .faq-answer li + li {
+      margin-top: 6px;
+    }
+
+    .faq-answer strong {
+      color: var(--text);
+    }
+
+    .term-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .term-card {
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      background: rgba(0, 0, 0, 0.18);
+      padding: 14px 16px;
+      scroll-margin-top: 18px;
+    }
+
+    .term-card h3 {
+      margin: 0 0 8px;
+      color: var(--amber);
+      font-size: 0.92rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .term-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.86rem;
+      line-height: 1.55;
+    }
+
+    .term-card p + p {
+      margin-top: 10px;
+    }
+
+    .term-card ul {
+      color: var(--muted);
+      font-size: 0.86rem;
+      line-height: 1.55;
+      margin: 8px 0 0;
+      padding-left: 18px;
+    }
+
+    .term-card li + li {
+      margin-top: 8px;
+    }
+
+    .term-note {
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-style: italic;
+      line-height: 1.45;
+    }
+
+    .knowledge-sidebar {
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.026);
+      padding: 18px;
+      position: sticky;
+      top: 18px;
+    }
+
+    .knowledge-sidebar h2 {
+      margin: 0 0 12px;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .toc {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .toc a {
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.35;
+      text-decoration: none;
+    }
+
+    .toc a:hover,
+    .toc a:focus-visible {
+      color: var(--blue);
+      outline: none;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .sidebar-note {
+      margin: 18px 0 0;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.07);
+      color: var(--muted);
+      font-size: 0.8rem;
+      line-height: 1.45;
+    }
+
+    .sidebar-note a {
+      color: var(--amber);
+    }
+
+    @media (max-width: 860px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .knowledge-sidebar {
+        position: static;
+      }
+
+      .topbar {
+        flex-direction: column;
+      }
+
+      .top-actions {
+        flex-wrap: wrap;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="shell">
+      <div class="topbar">
+        <div>
+          <h1>FAQs / Knowledge</h1>
+          <p class="sub">How pitchIQ works, what the boards mean, and how account tiers unlock tools.</p>
+        </div>
+        <div class="top-actions">
+          <a class="text-link" href="./app.html">back to app</a>
+          <a class="text-link hidden" id="login-link" href="./login.html">log in</a>
+          <button class="text-button hidden" id="logout-button" type="button">sign out</button>
+        </div>
+      </div>
+
+      <div class="layout">
+        <div class="knowledge-main">
+          <section class="knowledge-section" id="getting-started">
+            <h2>Getting Started</h2>
+            <p>Core concepts for using pitchIQ as a strikeout prop research workspace.</p>
+            <div class="faq-list">
+              <details class="faq-item">
+                <summary>What is pitchIQ?</summary>
+                <div class="faq-answer">
+                  <p><strong>pitchIQ</strong> is a pitching-first MLB strikeout prop workspace. It combines projected strikeouts, sportsbook lines, and <strong>Edge/Confidence</strong> reads so you can research matchups in one place instead of bouncing between spreadsheets and odds screens.</p>
+                </div>
+              </details>
+              <details class="faq-item">
+                <summary>What does “Bet Statistically” mean here?</summary>
+                <div class="faq-answer">
+                  <p>The site is built around modeled projections and transparent comparison to market lines. Boards highlight where the model leans relative to DraftKings and FanDuel numbers—not guaranteed picks.</p>
+                </div>
+              </details>
+              <details class="faq-item">
+                <summary>Which view should I open first?</summary>
+                <div class="faq-answer">
+                  <p>Most members start on <strong>Upcoming Games</strong> for the daily slate, then use <strong>Pitcher Lookup</strong> when they want deeper context on one arm. <strong>Live Games</strong> is for in-progress tracking once games start.</p>
+                </div>
+              </details>
+              <details class="faq-item">
+                <summary>How are you getting your projected Ks?</summary>
+                <div class="faq-answer">
+                  <p><strong>Projected Ks</strong> are built pitching-first: starter profile, opponent context, park and matchup signals, and other game-day factors the model treats as relevant to strikeout volume—not a single back-of-the-napkin average.</p>
+                  <p>Behind the headline number, pitchIQ runs several independent projection passes and reconciles them into one published estimate (see <a href="#what-does-vix-mean">What does Vix mean?</a> below). When a plate umpire is assigned, umpire context can factor into the read as well.</p>
+                  <p>We do not publish the full feature list, weights, or pass-by-pass recipe. The projection is the output of that stack—meant to be compared to the market, not copied blindly.</p>
+                </div>
+              </details>
+              <details class="faq-item" id="what-does-vix-mean">
+                <summary>What does Vix mean?</summary>
+                <div class="faq-answer">
+                  <p>Short answer: it tells you whether our <strong>multiple tests</strong> on a pitcher agree. Full write-up is in <a href="#term-vix">Vix</a> under <a href="#terminology">Terminology</a> at the bottom of this page.</p>
+                </div>
+              </details>
+              <details class="faq-item">
+                <summary>What past data are you using?</summary>
+                <div class="faq-answer">
+                  <p>The modeling stack is trained on roughly <strong>four years of MLB game history</strong>—starters, matchups, lines where we have them, and outcomes—so the reads are grounded in recent seasons, not a single hot week or a decade-old cheat sheet.</p>
+                  <p>That library is not frozen in amber. <strong>Each week</strong>, new games are folded in as they finish so pitcher form, park effects, and league trends stay current through the season.</p>
+                  <p>On that same rhythm, the model goes through <strong>retraining</strong> so the weights learn from the latest batch of results—not just yesterday’s slate pasted on top of old code. You get a living system that moves with the year, while still respecting a deep enough back window to avoid overreacting to one noisy start.</p>
+                  <p>We do not publish every column in the training set or the exact retrain calendar. The takeaway: <strong>four years in the vault, updated weekly, refreshed on a retrain cycle</strong>—built to stay sharp without chasing only last night’s box score.</p>
+                </div>
+              </details>
+              <details class="faq-item">
+                <summary>Is there value in the site if I do not fully trust the projection?</summary>
+                <div class="faq-answer">
+                  <p>Yes. pitchIQ is a research desk, not a single number you have to swear by. Many members use it to organize the slate even when they form their own opinion.</p>
+                  <ul>
+                    <li><strong>Historical games</strong> (Pro and above) let you review past outings with lines, results, and model context side by side.</li>
+                    <li><strong>Pitcher Lookup</strong> surfaces matchup notes—including umpire context when it is available—so you can study trends around a specific arm.</li>
+                    <li>Boards show <strong>DraftKings and FanDuel</strong> lines on the same row, making it easy to spot book-to-book discrepancies without flipping between apps.</li>
+                    <li>The <strong>Ump</strong> column and card context flag who is behind the plate when assignments are in.</li>
+                  </ul>
+                  <p>You can lean on structure, history, and market comparison—and treat <strong>Projected Ks</strong> as one input among several, not the whole story.</p>
+                </div>
+              </details>
+            </div>
+          </section>
+
+          <section class="knowledge-section" id="boards">
+            <h2>Upcoming &amp; Live Games</h2>
+            <p>How to read the main slate boards and sorting tools.</p>
+            <div class="faq-list">
+              <details class="faq-item">
+                <summary>What is PitchIQ projected Ks?</summary>
+                <div class="faq-answer">
+                  <p>See <a href="#term-projected-ks">Projected Ks</a> in <a href="#terminology">Terminology</a> (bottom of page). On the board, it is the anchor column used when comparing to sportsbook lines and <a href="#term-edge-confidence">Edge/Confidence</a>.</p>
+                </div>
+              </details>
+              <details class="faq-item">
+                <summary>How should I read Edge/Confidence?</summary>
+                <div class="faq-answer">
+                  <p>See <a href="#term-edge-confidence">Edge / Confidence</a> in <a href="#terminology">Terminology</a> (bottom of page). Two columns, one numeric story—sort by either, but treat them as the same read from the model, not separate “math vs vibe” scores.</p>
+                </div>
+              </details>
+              <details class="faq-item">
+                <summary>What do bet side and the book columns show?</summary>
+                <div class="faq-answer">
+                  <p>DraftKings and FanDuel columns show the posted strikeout line and price where available. <strong>Bet side</strong> is Over, Under, or Pass/Avoid—see <a href="#term-bet-side">Bet Side</a> in <a href="#terminology">Terminology</a> (bottom of page).</p>
+                </div>
+              </details>
+              <details class="faq-item">
+                <summary>What is the checkmark under the ump for?</summary>
+                <div class="faq-answer">
+                  <p>In the <strong>Ump</strong> column, the small box is an assignment indicator—not a pick grade. Hover it (or focus it on keyboard) to see the umpire name or a pending message.</p>
+                  <ul>
+                    <li><strong>No checkmark</strong> — home plate umpire is not confirmed yet (<em>Pending</em>, <em>Unknown</em>, or similar). The row is still playable for lines and projections, but umpire context is not locked in.</li>
+                    <li><strong>Orange checkmark</strong> — a real plate umpire is assigned for that game. The site has a named crew chief behind the dish for that matchup.</li>
+                  </ul>
+                  <p><strong>When do assignments usually show up?</strong> MLB crews are typically announced on game day, often in the hours leading up to first pitch. Earlier in the morning you may see empty indicators on that night’s slate; as official assignments land in the feed, the checkmark appears and the row refreshes. Time varies by day—afternoon games can firm up sooner than night caps.</p>
+                  <p><strong>What the model does:</strong></p>
+                  <ul>
+                    <li><strong>Without an assignment</strong> — <strong>Projected Ks</strong> still run on pitcher, opponent, park, and the rest of the stack, but <em>without</em> an umpire-specific adjustment. Card and lookup notes may call out <strong>Umpire Pending</strong> so you know that layer is still missing.</li>
+                    <li><strong>With an assignment</strong> — the model can fold that umpire’s historical strike-zone and strikeout environment into the read. The projection may shift once the name is known; that is expected when the last pregame input drops in.</li>
+                  </ul>
+                  <p>Historical rows keep the ump who worked the game. Live and upcoming rows reflect whatever is known right now—check back if you are prepping early and the box is still empty.</p>
+                </div>
+              </details>
+              <details class="faq-item">
+                <summary>Can I change table layout or default view?</summary>
+                <div class="faq-answer">
+                  <p>Yes. Boards support search, column sorting, and switching between table and card views. Your default board view preference is saved from <a href="./account-settings.html">account settings</a>.</p>
+                </div>
+              </details>
+              <details class="faq-item">
+                <summary>What is Live Games for?</summary>
+                <div class="faq-answer">
+                  <p>Live Games tracks starters already on the mound and shows in-game strikeout progress against the pregame projection and line context. Use it once the slate moves from prep to monitoring.</p>
+                </div>
+              </details>
+            </div>
+          </section>
+
+          <section class="knowledge-section" id="pitcher-lookup">
+            <h2>Pitcher Lookup</h2>
+            <p>Single-pitcher research and matchup notes.</p>
+            <div class="faq-list">
+              <details class="faq-item">
+                <summary>How do I use Pitcher Lookup?</summary>
+                <div class="faq-answer">
+                  <p>Start typing a pitcher name, pick the correct player from the dropdown, and the panel loads matchup context, model notes, and related game information for that arm.</p>
+                </div>
+              </details>
+              <details class="faq-item">
+                <summary>Is Pitcher Lookup available on every tier?</summary>
+                <div class="faq-answer">
+                  <p>Yes. Pitcher Lookup is part of the core Basic toolkit alongside the upcoming and live boards.</p>
+                </div>
+              </details>
+            </div>
+          </section>
+
+          <section class="knowledge-section" id="my-cards">
+            <h2>My Cards</h2>
+            <p>Saved projection workflow for Pro members and above.</p>
+            <div class="faq-list">
+              <details class="faq-item">
+                <summary>Who can use My Cards?</summary>
+                <div class="faq-answer">
+                  <p><strong>My Cards</strong> unlocks on Pro, Life, and owner accounts. Basic users will see the tab locked until their tier includes saved-card access.</p>
+                </div>
+              </details>
+              <details class="faq-item">
+                <summary>What does saving a card do?</summary>
+                <div class="faq-answer">
+                  <p>Saving stores the projection snapshot, line context, and board details you were reviewing so you can track plays over time, search your wallet, and mark results manually after games finish.</p>
+                </div>
+              </details>
+            </div>
+          </section>
+
+          <section class="knowledge-section" id="historical">
+            <h2>Historical</h2>
+            <p>Reviewing past games and model performance.</p>
+            <div class="faq-list">
+              <details class="faq-item">
+                <summary>What is in Historical Games?</summary>
+                <div class="faq-answer">
+                  <p>Historical is a Pro-and-above archive of past slates with projections, lines, results, and sorting tools. Use it to review how rows played out and to study past matchups.</p>
+                </div>
+              </details>
+              <details class="faq-item">
+                <summary>Can I look up old pitcher matchups?</summary>
+                <div class="faq-answer">
+                  <p>Yes. Historical includes pitcher lookup for past games so you can revisit prior outings in the same research flow as the live workspace.</p>
+                </div>
+              </details>
+            </div>
+          </section>
+
+          <section class="knowledge-section" id="account-tiers">
+            <h2>Account &amp; Tiers</h2>
+            <p>Access levels and where to manage your login.</p>
+            <div class="faq-list">
+              <details class="faq-item">
+                <summary>What is included in Basic?</summary>
+                <div class="faq-answer">
+                  <ul>
+                    <li>Upcoming games board with PitchIQ projected Ks</li>
+                    <li>DraftKings and FanDuel lines, odds, Edge/Confidence, and bet side</li>
+                    <li>Pitcher lookup with matchup context and model notes</li>
+                    <li>Live games view with in-game strikeout progress</li>
+                    <li>Table search, sorting, and default board view preference</li>
+                  </ul>
+                </div>
+              </details>
+              <details class="faq-item">
+                <summary>What does Pro add?</summary>
+                <div class="faq-answer">
+                  <ul>
+                    <li>Everything in Basic</li>
+                    <li>My Cards wallet for saved projections</li>
+                    <li>Historical games and past-matchup review</li>
+                    <li>Manual win/loss tracking on saved cards</li>
+                  </ul>
+                </div>
+              </details>
+              <details class="faq-item">
+                <summary>What is Life tier?</summary>
+                <div class="faq-answer">
+                  <p>Life includes everything in Pro with permanent access and future premium views as they ship. It is invite-only on the account side.</p>
+                </div>
+              </details>
+              <details class="faq-item">
+                <summary>Where do I change username, email, or password?</summary>
+                <div class="faq-answer">
+                  <p>Open <a href="./account-settings.html">account settings</a> from the app footer links. Tier details and your current account metadata are shown there as well.</p>
+                </div>
+              </details>
+            </div>
+          </section>
+
+          <section class="knowledge-section" id="terminology">
+            <h2>Terminology</h2>
+            <p>Plain-language definitions for labels on the boards and cards. These describe what you are looking at—not the full modeling recipe behind the numbers.</p>
+            <div class="term-grid">
+              <article class="term-card" id="term-vix">
+                <h3>Vix</h3>
+                <p>We run <strong>multiple tests</strong> on each pitcher—not just one guess. <strong>Vix</strong> tells you whether those tests are on the same page.</p>
+                <p>When the tests <strong>agree</strong>, Vix is <strong>low</strong> (you will often see a lower level on the board). When they <strong>don’t agree</strong>, Vix is <strong>higher</strong>—our own numbers are spread out, so take the projection with a little extra caution.</p>
+                <p>It is not about the stock market or “volatility” in the Wall Street sense. It is simply: <em>do our tests line up on this guy?</em></p>
+              </article>
+              <article class="term-card" id="term-projected-ks">
+                <h3>Projected Ks</h3>
+                <p>The site’s current strikeout estimate for the listed starter—the number every comparison on the row is built around. It is the published output of the modeling stack, not a single raw stat line from a box score.</p>
+              </article>
+              <article class="term-card" id="term-edge-confidence">
+                <h3>Edge / Confidence</h3>
+                <p>The boards list two columns—<strong>Edge</strong> (a signed number vs the book line) and <strong>Confidence</strong> (<strong>High</strong>, <strong>Medium</strong>, or <strong>Low</strong>)—but on pitchIQ they are the same idea in two formats.</p>
+                <p><strong>Edge</strong> is the straight math: how many strikeouts sit between <strong>Projected Ks</strong> and the posted DraftKings or FanDuel line. The sign tells you which side of the line the model is on; the size is the distance.</p>
+                <p><strong>Confidence</strong> is that distance translated into a quick tier so you can sort the slate without staring at decimals all morning. We are all about the numbers, not feelings—there is no separate “gut” score hiding behind the label.</p>
+                <p>High confidence means the numeric gap is worth your attention on that book; low confidence means the model and market are hugging each other. They should point the same direction. When the margin is thin, pair the read with <a href="#term-vix">Vix</a> or check whether the ump is still pending—not a second opinion, just more context.</p>
+              </article>
+              <article class="term-card" id="term-bet-side">
+                <h3>Bet Side</h3>
+                <p>The model’s lean on that book’s strikeout line:</p>
+                <ul>
+                  <li><strong>Over</strong> or <strong>Under</strong> — our numbers favor that side of the line.</li>
+                  <li><strong>Pass</strong> (shown as <strong>Avoid</strong> on the board) — as far as our numbers go, this one is basically a coin flip. We do not see enough separation from the line to call it a clear play. That is not an insult to the pitcher; it just means the math is not giving you a strong edge on that book.</li>
+                </ul>
+              </article>
+              <article class="term-card">
+                <h3>Line &amp; Odds</h3>
+                <p><strong>Line</strong> is the sportsbook strikeout total (for example, 5.5 Ks). <strong>Odds</strong> are the price on the over or under at that book. pitchIQ lines these up next to the projection so you can compare model vs market in one glance.</p>
+              </article>
+            </div>
+            <p class="term-note">pitchIQ does not publish its full weighting, features, or pass-by-pass logic. The terms above are meant to help you read the product—not reverse-engineer it.</p>
+          </section>
+        </div>
+
+        <aside class="knowledge-sidebar">
+          <h2>On this page</h2>
+          <ul class="toc">
+            <li><a href="#getting-started">Getting Started</a></li>
+            <li><a href="#boards">Upcoming &amp; Live Games</a></li>
+            <li><a href="#pitcher-lookup">Pitcher Lookup</a></li>
+            <li><a href="#my-cards">My Cards</a></li>
+            <li><a href="#historical">Historical</a></li>
+            <li><a href="#account-tiers">Account &amp; Tiers</a></li>
+            <li><a href="#terminology">Terminology</a></li>
+          </ul>
+          <p class="sidebar-note">
+            Need to change login details? Visit <a href="./account-settings.html">account settings</a>.
+            New here? Try the <a href="./demo.html">demo</a> before signing in.
+          </p>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = "https://odvopvoqssamjquinhft.supabase.co";
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_7g1yX__kNzT-6tj8Tr4SIg_T4BX9BlV";
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+      auth: {
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
+        persistSession: true,
+        storage: window.localStorage,
+      },
+    });
+
+    const loginLink = document.getElementById("login-link");
+    const logoutButton = document.getElementById("logout-button");
+
+    async function refreshSessionActions() {
+      const { data } = await supabaseClient.auth.getSession();
+      const hasSession = Boolean(data?.session);
+      loginLink.classList.toggle("hidden", hasSession);
+      logoutButton.classList.toggle("hidden", !hasSession);
+    }
+
+    logoutButton.addEventListener("click", async () => {
+      await supabaseClient.auth.signOut();
+      window.location.replace("./login.html");
+    });
+
+    refreshSessionActions();
+  </script>
+</body>
+</html>
