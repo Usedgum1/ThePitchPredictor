@@ -4255,12 +4255,11 @@
   </div>
 
   <script src="./Card%20Styles/DropRateController.js"></script>
-  <script
-    src="./vendor/supabase.js"
-    onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js'"
-  ></script>
+  <script src="./vendor/load-supabase.js"></script>
   <script src="./vendor/jszip.min.js" defer></script>
   <script>
+    (async () => {
+    await window.pitchiqLoadSupabase();
     window.PITCHIQ_LIVE_K_RAIL = "2026-05-01-live-k-progress";
     const SUPABASE_URL = "https://odvopvoqssamjquinhft.supabase.co";
     const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_7g1yX__kNzT-6tj8Tr4SIg_T4BX9BlV";
@@ -9285,6 +9284,7 @@
     refreshMyPitchersView();
     refreshHistoricalGamesView();
     refreshReportBuilderView();
+    })();
   </script>
 </body>
 </html>
