@@ -506,6 +506,7 @@
     }
 
     .showcase-card-my-cards .showcase-kicker,
+    .showcase-card-my-pitchers .showcase-kicker,
     .showcase-card-historical .showcase-kicker {
       color: var(--over-orange);
     }
@@ -860,7 +861,7 @@
 
 		<div class="stat-grid">
 		  <div class="stat highlight">
-			<span>Projected Ks</span>
+			<span>PitchIQ Ks</span>
 			<strong>6.87</strong>
 		  </div>
 		  <div class="stat over">
@@ -868,7 +869,7 @@
 			<strong>OVER</strong>
 		  </div>
 		  <div class="stat dk-line">
-			<span>DK Line</span>
+			<span>DK O/U Line</span>
 			<strong>5.0</strong>
 		  </div>
 		  <div class="stat edge">
@@ -876,7 +877,7 @@
 			<strong>+1.87</strong>
 		  </div>
 		  <div class="stat fd-line">
-			<span>FD Line</span>
+			<span>FD O/U Line</span>
 			<strong>5.5</strong>
 		  </div>
 		  <div class="stat edge">
@@ -899,12 +900,12 @@
       <div class="showcase-grid">
         <div class="panel showcase-card showcase-card-primary">
           <h2 class="showcase-kicker">How The Projection Works</h2>
-          <p style="color: white;">Projected Ks are a matchup-aware estimate, <b>not</b> a blind guess.</p>
+          <p style="color: white;">PitchIQ Ks are a matchup-aware estimate, <b>not</b> a blind guess.</p>
           <p style="color: white;">
             We study how a pitcher has performed in similar spots before, then layer in the context around tonight's game: the expected lineup, how often those hitters swing and miss, the umpire behind the plate, the weather, the park, and the pitcher's recent form and workload. It’s a lot, and it matters.
           </p>
           <p style="color: white;">
-            We don't stop there. We also run multiple statistical models so one outlier or strange outing doesn’t distort the projection. That helps us balance different signals, account for variation, and turn a messy pile of baseball context into one clear projected Ks number. The goal is to be informed.
+            We don't stop there. We also run multiple statistical models so one outlier or strange outing doesn’t distort the projection. That helps us balance different signals, account for variation, and turn a messy pile of baseball context into one clear PitchIQ Ks number. The goal is to be informed.
           </p>
         </div>
 
@@ -1020,6 +1021,27 @@
           </div>
         </div>
 
+        <div class="panel showcase-card showcase-card-my-pitchers">
+          <div class="showcase-kicker"><h2><strong>My Pitchers (Pro Feature)</strong></h2></div>
+          <p style="color: white;">Star pitchers from any board or lookup to build a personal watchlist. Track next opponent, start time, and game status in one sortable table.</p>
+          <div class="showcase-frame">
+            <button
+              type="button"
+              class="lightbox-trigger"
+              data-lightbox-src="./images/My%20Pitchers%20Example.png"
+              data-lightbox-caption="My Pitchers: star pitchers, build a watchlist, and track upcoming starts."
+              aria-label="Expand my pitchers preview"
+            >
+              <img
+                src="./images/My%20Pitchers%20Example.png"
+                alt="Preview of The Pitch Predictor My Pitchers watchlist table"
+                loading="lazy"
+              />
+            </button>
+          </div>
+          <p style="color: white;">Favorite buttons appear across the site, so you can add pitchers while scanning upcoming games, live boards, or historical results without leaving your flow.</p>
+        </div>
+
         <div class="panel showcase-card showcase-card-historical">
           <div class="showcase-kicker"><h2><strong>Historical Table (Pro Feature)</strong></h2></div>
           <p style="color: white;">Search past projections, compare closing lines, review results, and see how the model performed across previous slates.</p>
@@ -1069,7 +1091,7 @@
       <div class="panel">
 		<h2>Interested?</h2>
 		<p>
-		  Try the demo to click through the board, lookup tools, live view, saved cards, and historical table before launch.
+		  Try the demo to click through the board, lookup tools, live view, saved cards, pitcher watchlists, and historical table before launch.
 		</p>
         <div class="hero-actions">
           <a class="demo-button" href="./demo.html">Try the Demo</a>

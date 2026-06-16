@@ -71,7 +71,7 @@
     }
 
     /* Global black text trim */
-    .shell *:not(input):not(textarea):not(select):not(option) {
+    .shell *:not(input):not(textarea):not(select):not(option):not(.desktop-live-dot-label):not(.desktop-live-line-chip-label):not(.desktop-live-line-chip-value) {
       -webkit-text-stroke: var(--text-trim-stroke);
       paint-order: stroke fill;
       text-shadow: var(--text-trim-shadow);
@@ -769,8 +769,32 @@
       max-height: 15px;
     }
 
+    .shell .cards .desktop-live-line-chip-label,
+    .shell .cards .desktop-live-line-chip-value {
+      -webkit-text-stroke: 0 transparent;
+      paint-order: normal;
+      text-shadow: none;
+    }
+
+    .shell .cards .desktop-live-line-chip-pitchiq .desktop-live-line-chip-value {
+      text-shadow:
+        0 0 10px rgba(255, 236, 140, 0.45),
+        0 0 18px rgba(255, 200, 80, 0.25);
+    }
+
+    .shell .cards .desktop-live-line-chip-dk .desktop-live-line-chip-value {
+      text-shadow: 0 0 10px rgba(92, 255, 119, 0.4);
+    }
+
+    .shell .cards .desktop-live-line-chip-fd .desktop-live-line-chip-value {
+      text-shadow: 0 0 10px rgba(107, 182, 255, 0.4);
+    }
+
     .shell .cards .desktop-live-dot-label {
       font-size: 0.4rem;
+      -webkit-text-stroke: 0 transparent;
+      paint-order: normal;
+      text-shadow: none;
     }
 
     .shell .cards .desktop-card-note-title {
@@ -933,7 +957,7 @@
           </div>
           <select class="sort" id="sort-select" aria-label="Sort cards">
             <option value="date-asc">Soonest</option>
-            <option value="projected-desc">Proj K High</option>
+            <option value="projected-desc">PitchIQ K High</option>
             <option value="dk_edge-desc">DK Edge</option>
             <option value="fd_edge-desc">FD Edge</option>
             <option value="pitcher-asc">Pitcher A-Z</option>
@@ -951,7 +975,10 @@
   </main>
 
   <script src="./Card%20Styles/DropRateController.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script
+    src="./vendor/supabase.js"
+    onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js'"
+  ></script>
   <script>
     window.PITCHIQ_LIVE_K_RAIL = "2026-05-01-live-k-progress";
     const SUPABASE_URL = "https://odvopvoqssamjquinhft.supabase.co";
@@ -1440,10 +1467,10 @@
       if (!Number.isFinite(Number(projected))) return "";
 
       if (Number(projected) < Math.min(dkLine, fdLine)) {
-        return dkLine > fdLine ? "+DK Line" : "+FD Line";
+        return dkLine > fdLine ? "+DK O/U Line" : "+FD O/U Line";
       }
       if (Number(projected) > Math.max(dkLine, fdLine)) {
-        return dkLine < fdLine ? "+DK Line" : "+FD Line";
+        return dkLine < fdLine ? "+DK O/U Line" : "+FD O/U Line";
       }
       return "";
     }
@@ -1455,24 +1482,41 @@
       return Number.isFinite(line) && line > 0 ? line : null;
     }
 
+    function normalizeLineNoteKey(value) {
+      const normalized = normalizeText(value);
+      if (normalized === "+dk line" || normalized === "+dk o/u line") return "+dk o/u line";
+      if (normalized === "+fd line" || normalized === "+fd o/u line") return "+fd o/u line";
+      return normalized;
+    }
+
+    function upgradeLineNoteLabels(notesText) {
+      return String(notesText || "")
+        .replace(/\+DK Line\b/g, "+DK O/U Line")
+        .replace(/\+FD Line\b/g, "+FD O/U Line");
+    }
+
     function cleanLineNotes(game, notes) {
-      const validLineNote = normalizeText(lineDiscrepancyNote(game));
-      return String(notes || "")
+      const validLineNote = normalizeLineNoteKey(lineDiscrepancyNote(game));
+      return upgradeLineNoteLabels(String(notes || "")
         .split(/\s*(?:,|\|)\s*/)
         .map(note => note.trim())
         .filter(Boolean)
         .filter(note => {
-          const normalized = normalizeText(note);
-          if (normalized === "+dk line" || normalized === "+fd line") return normalized === validLineNote;
+          const normalized = normalizeLineNoteKey(note);
+          if (normalized === "+dk o/u line" || normalized === "+fd o/u line") return normalized === validLineNote;
           return true;
         })
-        .join(", ");
+        .join(", "));
     }
 
     function displayNotes(game) {
       const rawNotes = cleanLineNotes(game, game?.notes);
       const discrepancyNote = lineDiscrepancyNote(game);
-      if (!discrepancyNote || normalizeText(rawNotes).includes(normalizeText(discrepancyNote))) {
+      const hasDiscrepancyNote = String(rawNotes || "")
+        .split(/\s*(?:,|\|)\s*/)
+        .map(note => normalizeLineNoteKey(note.trim()))
+        .includes(normalizeLineNoteKey(discrepancyNote));
+      if (!discrepancyNote || hasDiscrepancyNote) {
         return rawNotes;
       }
       return [discrepancyNote, rawNotes].filter(Boolean).join(" | ");
@@ -1480,8 +1524,8 @@
 
     function lineDiscrepancyBook(game) {
       const notes = normalizeText(displayNotes(game));
-      if (notes.includes("+dk line")) return "dk";
-      if (notes.includes("+fd line")) return "fd";
+      if (notes.includes("+dk line") || notes.includes("+dk o/u line")) return "dk";
+      if (notes.includes("+fd line") || notes.includes("+fd o/u line")) return "fd";
       return "";
     }
 
@@ -2315,7 +2359,7 @@
                   </div>
                   <div class="desktop-live-chip-bridge">
                     <div class="desktop-live-chip-row">
-                      <div class="desktop-live-line-chip desktop-live-line-chip-pitchiq" title="pitchIQ projected K">
+                      <div class="desktop-live-line-chip desktop-live-line-chip-pitchiq" title="PitchIQ K">
                         <span class="desktop-live-line-chip-label">IQ</span>
                         <span class="desktop-live-line-chip-value">${escapeHtml(projected)}</span>
                       </div>

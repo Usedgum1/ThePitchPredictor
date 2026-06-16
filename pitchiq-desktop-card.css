@@ -854,6 +854,13 @@
         0 0 28px rgba(255, 200, 70, 0.22);
     }
 
+    .desktop-live-line-chip-label,
+    .desktop-live-line-chip-value {
+      -webkit-text-stroke: 0 transparent;
+      paint-order: normal;
+      text-shadow: none;
+    }
+
     .desktop-live-line-chip-pitchiq .desktop-live-line-chip-value {
       text-shadow:
         0 0 12px rgba(255, 236, 140, 0.5),
@@ -1140,9 +1147,9 @@
       line-height: 1;
       letter-spacing: -0.02em;
       user-select: none;
-      text-shadow:
-        0 0 3px rgba(255, 252, 246, 0.95),
-        0 0 5px rgba(255, 252, 246, 0.75);
+      -webkit-text-stroke: 0 transparent;
+      paint-order: normal;
+      text-shadow: none;
     }
 
     .desktop-live-dot.filled .desktop-live-dot-ball {

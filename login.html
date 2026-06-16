@@ -444,7 +444,7 @@
       <div class="eyebrow">PitchIQ Access</div>
       <h1 id="login-title">Log in</h1>
 
-      <form class="login-form" action="#" method="post" id="login-form">
+      <form class="login-form" id="login-form" novalidate>
         <div class="field">
           <label for="email">Email</label>
           <input
@@ -534,7 +534,7 @@
     <div class="modal-card">
       <div class="modal-kicker">Create Account</div>
       <h2 class="modal-title" id="create-account-title">Set up your PitchIQ access</h2>
-      <form class="create-form" id="create-account-form" action="#" method="post">
+      <form class="create-form" id="create-account-form" novalidate>
         <div class="field">
           <label for="create-email">Email</label>
           <input
@@ -606,7 +606,7 @@
       <p class="modal-copy">
         Enter your email and we will send you a secure link to create a new password.
       </p>
-      <form class="create-form" id="forgot-password-form" action="#" method="post">
+      <form class="create-form" id="forgot-password-form" novalidate>
         <div class="field">
           <label for="forgot-email">Email</label>
           <input
@@ -628,18 +628,13 @@
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script
+    src="./vendor/supabase.js"
+    onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js'"
+  ></script>
   <script>
     const SUPABASE_URL = "https://odvopvoqssamjquinhft.supabase.co";
     const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_7g1yX__kNzT-6tj8Tr4SIg_T4BX9BlV";
-    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
-      auth: {
-        autoRefreshToken: true,
-        detectSessionInUrl: true,
-        persistSession: true,
-        storage: window.localStorage,
-      },
-    });
 
     const loginForm = document.getElementById("login-form");
     const loginStatus = document.getElementById("login-status");
@@ -659,6 +654,22 @@
     const ALLOWED_ACCOUNT_ROLES = ["basic", "pro", "life", "admin", "owner"];
     let lastModalFocus = null;
     let responsibilityAcceptedAt = null;
+
+    if (!window.supabase?.createClient) {
+      loginStatus.textContent = "Sign-in is unavailable because the authentication library failed to load. Please refresh and try again.";
+      loginStatus.style.color = "var(--danger)";
+      loginForm.querySelector("button[type='submit']")?.setAttribute("disabled", "disabled");
+      throw new Error("Supabase client unavailable");
+    }
+
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+      auth: {
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
+        persistSession: true,
+        storage: window.localStorage,
+      },
+    });
 
     async function getUserRole(userId) {
       const { data, error } = await supabaseClient

@@ -383,9 +383,9 @@
                 </div>
               </details>
               <details class="faq-item">
-                <summary>How are you getting your projected Ks?</summary>
+                <summary>How are you getting your PitchIQ Ks?</summary>
                 <div class="faq-answer">
-                  <p><strong>Projected Ks</strong> are built pitching-first: starter profile, opponent context, park and matchup signals, and other game-day factors the model treats as relevant to strikeout volume—not a single back-of-the-napkin average.</p>
+                  <p><strong>PitchIQ Ks</strong> are built pitching-first: starter profile, opponent context, park and matchup signals, and other game-day factors the model treats as relevant to strikeout volume—not a single back-of-the-napkin average.</p>
                   <p>Behind the headline number, pitchIQ runs several independent projection passes and reconciles them into one published estimate (see <a href="#what-does-vix-mean">What does Vix mean?</a> below). When a plate umpire is assigned, umpire context can factor into the read as well.</p>
                   <p>We do not publish the full feature list, weights, or pass-by-pass recipe. The projection is the output of that stack—meant to be compared to the market, not copied blindly.</p>
                 </div>
@@ -415,7 +415,7 @@
                     <li>Boards show <strong>DraftKings and FanDuel</strong> lines on the same row, making it easy to spot book-to-book discrepancies without flipping between apps.</li>
                     <li>The <strong>Ump</strong> column and card context flag who is behind the plate when assignments are in.</li>
                   </ul>
-                  <p>You can lean on structure, history, and market comparison—and treat <strong>Projected Ks</strong> as one input among several, not the whole story.</p>
+                  <p>You can lean on structure, history, and market comparison—and treat <strong>PitchIQ Ks</strong> as one input among several, not the whole story.</p>
                 </div>
               </details>
             </div>
@@ -426,9 +426,9 @@
             <p>How to read the main slate boards and sorting tools.</p>
             <div class="faq-list">
               <details class="faq-item">
-                <summary>What is PitchIQ projected Ks?</summary>
+                <summary>What are PitchIQ Ks?</summary>
                 <div class="faq-answer">
-                  <p>See <a href="#term-projected-ks">Projected Ks</a> in <a href="#terminology">Terminology</a> (bottom of page). On the board, it is the anchor column used when comparing to sportsbook lines and <a href="#term-edge-confidence">Edge/Confidence</a>.</p>
+                  <p>See <a href="#term-projected-ks">PitchIQ Ks</a> in <a href="#terminology">Terminology</a> (bottom of page). On the board, it is the anchor column used when comparing to sportsbook lines and <a href="#term-edge-confidence">Edge/Confidence</a>.</p>
                 </div>
               </details>
               <details class="faq-item">
@@ -454,7 +454,7 @@
                   <p><strong>When do assignments usually show up?</strong> MLB crews are typically announced on game day, often in the hours leading up to first pitch. Earlier in the morning you may see empty indicators on that night’s slate; as official assignments land in the feed, the checkmark appears and the row refreshes. Time varies by day—afternoon games can firm up sooner than night caps.</p>
                   <p><strong>What the model does:</strong></p>
                   <ul>
-                    <li><strong>Without an assignment</strong> — <strong>Projected Ks</strong> still run on pitcher, opponent, park, and the rest of the stack, but <em>without</em> an umpire-specific adjustment. Card and lookup notes may call out <strong>Umpire Pending</strong> so you know that layer is still missing.</li>
+                    <li><strong>Without an assignment</strong> — <strong>PitchIQ Ks</strong> still run on pitcher, opponent, park, and the rest of the stack, but <em>without</em> an umpire-specific adjustment. Card and lookup notes may call out <strong>Umpire Pending</strong> so you know that layer is still missing.</li>
                     <li><strong>With an assignment</strong> — the model can fold that umpire’s historical strike-zone and strikeout environment into the read. The projection may shift once the name is known; that is expected when the last pregame input drops in.</li>
                   </ul>
                   <p>Historical rows keep the ump who worked the game. Live and upcoming rows reflect whatever is known right now—check back if you are prepping early and the box is still empty.</p>
@@ -540,7 +540,7 @@
                 <summary>What is included in Basic?</summary>
                 <div class="faq-answer">
                   <ul>
-                    <li>Upcoming games board with PitchIQ projected Ks</li>
+                    <li>Upcoming games board with PitchIQ Ks</li>
                     <li>DraftKings and FanDuel lines, odds, Edge/Confidence, and bet side</li>
                     <li>Pitcher lookup with matchup context and model notes</li>
                     <li>Live games view with in-game strikeout progress</li>
@@ -585,13 +585,13 @@
                 <p>It is not about the stock market or “volatility” in the Wall Street sense. It is simply: <em>do our tests line up on this guy?</em></p>
               </article>
               <article class="term-card" id="term-projected-ks">
-                <h3>Projected Ks</h3>
+                <h3>PitchIQ Ks</h3>
                 <p>The site’s current strikeout estimate for the listed starter—the number every comparison on the row is built around. It is the published output of the modeling stack, not a single raw stat line from a box score.</p>
               </article>
               <article class="term-card" id="term-edge-confidence">
                 <h3>Edge / Confidence</h3>
                 <p>The boards list two columns—<strong>Edge</strong> (a signed number vs the book line) and <strong>Confidence</strong> (<strong>High</strong>, <strong>Medium</strong>, or <strong>Low</strong>)—but on pitchIQ they are the same idea in two formats.</p>
-                <p><strong>Edge</strong> is the straight math: how many strikeouts sit between <strong>Projected Ks</strong> and the posted DraftKings or FanDuel line. The sign tells you which side of the line the model is on; the size is the distance.</p>
+                <p><strong>Edge</strong> is the straight math: how many strikeouts sit between <strong>PitchIQ Ks</strong> and the posted DraftKings or FanDuel line. The sign tells you which side of the line the model is on; the size is the distance.</p>
                 <p><strong>Confidence</strong> is that distance translated into a quick tier so you can sort the slate without staring at decimals all morning. We are all about the numbers, not feelings—there is no separate “gut” score hiding behind the label.</p>
                 <p>High confidence means the numeric gap is worth your attention on that book; low confidence means the model and market are hugging each other. They should point the same direction. When the margin is thin, pair the read with <a href="#term-vix">Vix</a> or check whether the ump is still pending—not a second opinion, just more context.</p>
               </article>
@@ -632,7 +632,10 @@
     </section>
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script
+    src="./vendor/supabase.js"
+    onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js'"
+  ></script>
   <script>
     const SUPABASE_URL = "https://odvopvoqssamjquinhft.supabase.co";
     const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_7g1yX__kNzT-6tj8Tr4SIg_T4BX9BlV";
