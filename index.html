@@ -1114,7 +1114,7 @@
 			  <div class="signup-controls">
 				<input
 				  type="email"
-				  name="email"
+				  name="waitlist_email"
 				  class="signup-input"
 				  id="signup-email"
 				  placeholder="Enter your email"
@@ -1237,15 +1237,18 @@
         signupButton.disabled = true;
 
         try {
-          const payload = Object.fromEntries(new FormData(signupForm).entries());
+          const formData = new FormData(signupForm);
+          const waitlistEmail = String(formData.get("waitlist_email") || "").trim();
+          if (waitlistEmail) {
+            formData.set("_replyto", waitlistEmail);
+          }
 
           const response = await fetch(signupForm.action, {
             method: "POST",
             headers: {
-              "Content-Type": "application/json",
               Accept: "application/json"
             },
-            body: JSON.stringify(payload)
+            body: formData
           });
 
           const responsePayload = await response.json().catch(() => null);
