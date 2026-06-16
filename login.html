@@ -628,7 +628,52 @@
     </div>
   </div>
 
-  <script src="./vendor/load-supabase.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" crossorigin="anonymous"></script>
+  <script>
+    (function () {
+      const CDN = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js";
+      const LOCAL = "./vendor/supabase.js";
+      function getLib() {
+        if (window.supabase?.createClient) return window.supabase;
+        try {
+          if (typeof supabase !== "undefined" && supabase?.createClient) {
+            window.supabase = supabase;
+            return supabase;
+          }
+        } catch {}
+        return null;
+      }
+      function loadScript(src) {
+        return new Promise((resolve, reject) => {
+          const script = document.createElement("script");
+          script.src = src;
+          script.async = false;
+          script.onload = () => resolve();
+          script.onerror = () => reject(new Error(`Failed to load ${src}`));
+          document.head.appendChild(script);
+        });
+      }
+      window.pitchiqLoadSupabase = function pitchiqLoadSupabase() {
+        const ready = getLib();
+        if (ready) return Promise.resolve(ready);
+        if (!window.__pitchiqSupabaseLoadPromise) {
+          window.__pitchiqSupabaseLoadPromise = (async () => {
+            for (const src of [CDN, LOCAL]) {
+              try {
+                await loadScript(src);
+              } catch {
+                continue;
+              }
+              const lib = getLib();
+              if (lib) return lib;
+            }
+            throw new Error("Supabase library failed to load");
+          })();
+        }
+        return window.__pitchiqSupabaseLoadPromise;
+      };
+    })();
+  </script>
   <script>
     (async () => {
     const loginForm = document.getElementById("login-form");
