@@ -481,7 +481,7 @@
 
       <div class="create-account">
         Need an account?
-        <button class="create-account-button" type="button" disabled aria-disabled="true">Coming Soon</button>
+        <button class="create-account-button" type="button" id="create-account-open">Create Account</button>
       </div>
 
       <nav class="site-header" aria-label="Site navigation">
@@ -722,18 +722,36 @@
       },
     });
 
-    async function getUserRole(userId) {
+    async function getUserProfile(userId) {
       const { data, error } = await supabaseClient
         .from("profiles")
-        .select("role")
+        .select("role, stripe_customer_id, stripe_subscription_id, subscription_status, subscription_current_period_end")
         .eq("user_id", userId)
         .single();
 
       if (error) {
-        return { role: null, error };
+        return { profile: null, error };
       }
 
-      return { role: data?.role || null, error: null };
+      return { profile: data, error: null };
+    }
+
+    function hasActiveMembership(profile) {
+      if (!profile) return false;
+
+      const role = String(profile.role || "").toLowerCase();
+      if (["life", "admin", "owner"].includes(role)) return true;
+      if (!["basic", "pro"].includes(role)) return false;
+
+      const status = String(profile.subscription_status || "").toLowerCase();
+      if (status === "active" || status === "trialing") return true;
+
+      if (profile.subscription_current_period_end) {
+        return new Date(profile.subscription_current_period_end).getTime() > Date.now();
+      }
+
+      if (!profile.stripe_subscription_id) return true;
+      return false;
     }
 
     function openModal(modal, focusTarget) {
@@ -749,6 +767,40 @@
       if (lastModalFocus instanceof HTMLElement) {
         lastModalFocus.focus();
       }
+    }
+
+    function formatAuthError(error) {
+      if (!error) return "Signup failed. Please try again.";
+
+      const code = String(error.code || error.error_code || "").toLowerCase();
+      const message = String(error.message || error.msg || "").trim();
+
+      if (code === "weak_password" || /weak_password/i.test(message)) {
+        return "Password must include uppercase, lowercase, a number, and a special character (for example: PitchIQ2026!).";
+      }
+
+      if (code === "23502" || /profiles.*role|null value in column \"role\"/i.test(message)) {
+        return "Account setup failed in Supabase. Run supabase/migrations/20260617120000_fix_profiles_role_nullable.sql, then try again.";
+      }
+
+      if (code === "user_already_exists" || /already registered|already exists/i.test(message)) {
+        return "An account with this email already exists. Try signing in instead.";
+      }
+
+      if (/captcha/i.test(message)) {
+        return "Signup is blocked by CAPTCHA in Supabase. Turn off CAPTCHA under Authentication → Bot and Abuse Protection.";
+      }
+
+      if (message) return message;
+      if (code) return `Signup failed (${code}).`;
+      return "Signup failed. Please try again.";
+    }
+
+    function passwordMeetsPolicy(password) {
+      return /[a-z]/.test(password)
+        && /[A-Z]/.test(password)
+        && /\d/.test(password)
+        && /[^A-Za-z0-9]/.test(password);
     }
 
     function openResponsibilityModal() {
@@ -795,17 +847,22 @@
         return;
       }
 
-      const { role, error: roleError } = await getUserRole(data.session.user.id);
-      if (roleError || !ALLOWED_ACCOUNT_ROLES.includes(role)) {
-        await supabaseClient.auth.signOut();
-        loginStatus.textContent = "This site is currently limited to approved accounts.";
+      const { profile, error: profileError } = await getUserProfile(data.session.user.id);
+      if (profileError) {
+        loginStatus.textContent = "Unable to load your account status. Please try again.";
         loginStatus.style.color = "var(--danger)";
+        return;
+      }
+
+      if (!hasActiveMembership(profile)) {
+        window.location.href = "./subscribe.html";
         return;
       }
 
       window.location.href = "./app.html";
     });
 
+    document.getElementById("create-account-open").addEventListener("click", openResponsibilityModal);
     forgotPasswordOpen.addEventListener("click", openForgotPasswordModal);
 
     termsAgree.addEventListener("change", () => {
@@ -841,8 +898,78 @@
 
     createAccountForm.addEventListener("submit", async (event) => {
       event.preventDefault();
-      createStatus.textContent = "Account creation is disabled while the site is private. Contact an admin for access.";
-      createStatus.style.color = "var(--danger)";
+      createStatus.textContent = "";
+      createStatus.style.color = "var(--muted)";
+
+      const formData = new FormData(createAccountForm);
+      const email = String(formData.get("email") || "").trim();
+      const username = String(formData.get("username") || "").trim();
+      const password = String(formData.get("password") || "");
+      const confirmPassword = String(formData.get("password_confirm") || "");
+
+      if (username.length < 3) {
+        createStatus.textContent = "Username must be at least 3 characters.";
+        createStatus.style.color = "var(--danger)";
+        return;
+      }
+
+      if (password.length < 8) {
+        createStatus.textContent = "Password must be at least 8 characters.";
+        createStatus.style.color = "var(--danger)";
+        return;
+      }
+
+      if (!passwordMeetsPolicy(password)) {
+        createStatus.textContent = "Password must include uppercase, lowercase, a number, and a special character (for example: PitchIQ2026!).";
+        createStatus.style.color = "var(--danger)";
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        createStatus.textContent = "Passwords do not match.";
+        createStatus.style.color = "var(--danger)";
+        return;
+      }
+
+      createStatus.textContent = "Creating account...";
+      createStatus.style.color = "var(--muted)";
+
+      let data = null;
+      let error = null;
+      try {
+        const result = await supabaseClient.auth.signUp({
+          email,
+          password,
+          options: {
+            data: { username },
+            emailRedirectTo: `${window.location.origin}/subscribe.html`,
+          },
+        });
+        data = result.data;
+        error = result.error;
+      } catch (signupError) {
+        error = signupError;
+      }
+
+      if (error) {
+        createStatus.textContent = formatAuthError(error);
+        createStatus.style.color = "var(--danger)";
+        return;
+      }
+
+      if (data?.user?.identities?.length === 0) {
+        createStatus.textContent = "An account with this email may already exist. Try signing in instead.";
+        createStatus.style.color = "var(--danger)";
+        return;
+      }
+
+      if (data.session) {
+        window.location.href = "./subscribe.html";
+        return;
+      }
+
+      createStatus.textContent = "Account created. Check your email to confirm, then sign in and choose your plan.";
+      createStatus.style.color = "var(--success)";
     });
 
     forgotPasswordForm.addEventListener("submit", async (event) => {

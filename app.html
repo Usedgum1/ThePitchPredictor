@@ -4302,6 +4302,7 @@
     })();
   </script>
   <script src="./vendor/jszip.min.js" defer></script>
+  <script src="./pitchiq-billing.js"></script>
   <script>
     (async () => {
     await window.pitchiqLoadSupabase();
@@ -4367,18 +4368,8 @@
     let latestFetchedGameRowsUpdatedAt = null;
     let latestFetchedHistoricalRowsUpdatedAt = null;
 
-    async function getUserRole(userId) {
-      const { data, error } = await supabaseClient
-        .from("profiles")
-        .select("role")
-        .eq("user_id", userId)
-        .single();
-
-      if (error) {
-        return { role: null, error };
-      }
-
-      return { role: data?.role || null, error: null };
+    async function getUserProfile(userId) {
+      return window.PitchIQBilling.fetchBillingProfile(supabaseClient, userId);
     }
 
     function setAccountIdentity(session, role = currentUserRole) {
@@ -4442,11 +4433,18 @@
       if (!session || authAccepted || authRedirected) return;
 
       const checkId = ++authCheckId;
-      const { role, error } = await getUserRole(session.user.id);
+      const { profile, error } = await getUserProfile(session.user.id);
       if (checkId !== authCheckId || authAccepted || authRedirected) return;
 
       if (error) {
         window.clearTimeout(authTimeout);
+        return;
+      }
+
+      const role = profile?.role || null;
+      if (!window.PitchIQBilling.hasActiveMembership(profile)) {
+        window.clearTimeout(authTimeout);
+        window.location.replace("./subscribe.html");
         return;
       }
 
@@ -4837,15 +4835,52 @@
       return null;
     }
 
+    function gameStatusText(game) {
+      return normalizeText(
+        game?.game_status ||
+        game?.status ||
+        game?.game_detailed_state ||
+        game?.detailed_state ||
+        game?.game_abstract_state ||
+        game?.abstract_game_state
+      );
+    }
+
+    function isWithinLiveGameWindow(game) {
+      const startDate = parseGameStartDate(game);
+      if (!startDate) return false;
+      const minutesSinceStart = (Date.now() - startDate.getTime()) / 60000;
+      return minutesSinceStart >= 0 && minutesSinceStart <= LIVE_GAME_MAX_MINUTES;
+    }
+
+    function isPriorCalendarDayGame(game) {
+      const startDate = parseGameStartDate(game);
+      if (!startDate) return false;
+      const gameDay = new Date(startDate);
+      const today = new Date();
+      gameDay.setHours(0, 0, 0, 0);
+      today.setHours(0, 0, 0, 0);
+      return gameDay < today;
+    }
+
+    function isSuspendedOrPostponedGame(game) {
+      const status = gameStatusText(game);
+      return (
+        status.includes("suspended") ||
+        status.includes("postponed") ||
+        status.includes("cancelled") ||
+        status.includes("canceled")
+      );
+    }
+
     function isClearlyCompletedGame(game) {
-      const status = normalizeText(game?.game_status || game?.status || game?.abstract_game_state);
+      const status = gameStatusText(game);
       return status.includes("final") || status.includes("completed") || status.includes("game over");
     }
 
     function isClearlyLiveGame(game) {
-      const status = normalizeText(game?.game_status || game?.status || game?.abstract_game_state);
+      const status = gameStatusText(game);
       return (
-        status.includes("live") ||
         status.includes("in progress") ||
         status.includes("middle") ||
         status.includes("top ") ||
@@ -4853,7 +4888,19 @@
       );
     }
 
+    function isActivelyInProgressGame(game) {
+      if (isSuspendedOrPostponedGame(game) || isClearlyCompletedGame(game)) return false;
+      if (isClearlyLiveGame(game)) return true;
+      const inning = normalizeText(game?.game_inning || game?.inning || game?.inning_state);
+      return (
+        inning.includes("top") ||
+        inning.includes("bottom") ||
+        inning.includes("middle")
+      );
+    }
+
     function hasLiveGameSignals(game) {
+      if (!isWithinLiveGameWindow(game)) return false;
       const inning = normalizeText(game?.game_inning || game?.inning || game?.inning_state);
       const starterStatus = normalizeText(game?.starter_status);
       const currentPitcher = normalizeText(game?.current_pitcher || game?.current_pitcher_id);
@@ -4869,21 +4916,20 @@
     }
 
     function isClearlyUpcomingGame(game) {
-      const status = normalizeText(game?.game_status || game?.status || game?.abstract_game_state);
+      const status = gameStatusText(game);
       return status.includes("pre-game") || status.includes("scheduled") || status.includes("preview");
     }
 
     function shouldShowAsLiveGame(game, tableType) {
       if (isClearlyCompletedGame(game)) return false;
-      if (isClearlyLiveGame(game) || tableType === "live") return true;
+      if (isSuspendedOrPostponedGame(game)) return false;
+      if (isPriorCalendarDayGame(game)) {
+        return isActivelyInProgressGame(game);
+      }
+      if (isClearlyLiveGame(game) || isActivelyInProgressGame(game)) return true;
       if (hasLiveGameSignals(game)) return true;
-
-      const startDate = parseGameStartDate(game);
-      if (!startDate) return false;
-
-      const now = new Date();
-      const minutesSinceStart = (now.getTime() - startDate.getTime()) / 60000;
-      return minutesSinceStart >= 0 && minutesSinceStart <= LIVE_GAME_MAX_MINUTES;
+      if (tableType === "live" && isWithinLiveGameWindow(game)) return true;
+      return isWithinLiveGameWindow(game);
     }
 
     function splitSupabaseGameRows(rows) {
@@ -4909,7 +4955,11 @@
           upcomingByKey.delete(rowKey);
           return;
         }
-        if ((tableType === "upcoming" || !isClearlyCompletedGame(game)) && !liveByKey.has(rowKey)) {
+        if (
+          (tableType === "upcoming" || !isClearlyCompletedGame(game)) &&
+          !liveByKey.has(rowKey) &&
+          !isPastScheduledDate(game)
+        ) {
           upcomingByKey.set(rowKey, game);
         }
       });
@@ -6232,7 +6282,7 @@
     }
 
     function isPastScheduledDate(game) {
-      if (isClearlyLiveGame(game) || hasLiveGameSignals(game)) return false;
+      if (shouldShowAsLiveGame(game, game?._pitchiq_source_table || "")) return false;
       const parsed = Date.parse(game?.sort_datetime || game?.game_date_raw || game?.date || "");
       if (Number.isNaN(parsed)) return false;
       const gameDate = new Date(parsed);
@@ -7003,7 +7053,8 @@
 
     function getFilteredLiveGames() {
       const query = normalizeText(liveSearchQuery);
-      const filtered = !query ? liveGames.slice() : liveGames.filter(game => {
+      const activeLiveGames = liveGames.filter(game => shouldShowAsLiveGame(game, "live"));
+      const filtered = !query ? activeLiveGames.slice() : activeLiveGames.filter(game => {
         const haystack = [
           game.pitcher,
           game.pitcher_team,
@@ -7300,11 +7351,30 @@
 
     function currentGameForFavoritePitcher(pitcherName) {
       const normalizedPitcher = normalizeText(pitcherName);
-      const live = liveGames.find(game => normalizeText(game.pitcher) === normalizedPitcher);
+      const live = liveGames.find(
+        game => normalizeText(game.pitcher) === normalizedPitcher && shouldShowAsLiveGame(game, "live")
+      );
       if (live) return { ...live };
       const upcoming = upcomingGames.find(game => normalizeText(game.pitcher) === normalizedPitcher && !isPastScheduledDate(game));
       if (upcoming) return { ...upcoming };
       return null;
+    }
+
+    function favoritePitcherStatusLabel(pitcherName) {
+      const normalizedPitcher = normalizeText(pitcherName);
+      const live = liveGames.find(
+        game => normalizeText(game.pitcher) === normalizedPitcher && shouldShowAsLiveGame(game, "live")
+      );
+      if (live) return "Live";
+      const tracked = [...liveGames, ...upcomingGames].find(
+        game => normalizeText(game.pitcher) === normalizedPitcher
+      );
+      if (tracked) {
+        if (isSuspendedOrPostponedGame(tracked)) return "Suspended";
+        if (isClearlyCompletedGame(tracked)) return "Final";
+      }
+      if (currentPitcherGame(pitcherName)) return "Scheduled";
+      return "Not Scheduled";
     }
 
     function gameForFavoritePitcher(pitcherName) {
@@ -7312,6 +7382,17 @@
       if (current) {
         return {
           ...current,
+          pitcher: pitcherName,
+          _favorite_status: favoritePitcherStatusLabel(pitcherName),
+        };
+      }
+      const normalizedPitcher = normalizeText(pitcherName);
+      const tracked = [...liveGames, ...upcomingGames].find(
+        game => normalizeText(game.pitcher) === normalizedPitcher
+      );
+      if (tracked) {
+        return {
+          ...tracked,
           pitcher: pitcherName,
           _favorite_status: favoritePitcherStatusLabel(pitcherName),
         };
@@ -7328,14 +7409,6 @@
         start_time: "",
         _favorite_status: "Not Scheduled",
       };
-    }
-
-    function favoritePitcherStatusLabel(pitcherName) {
-      const normalizedPitcher = normalizeText(pitcherName);
-      const live = liveGames.find(game => normalizeText(game.pitcher) === normalizedPitcher);
-      if (live && (isClearlyLiveGame(live) || hasLiveGameSignals(live))) return "Live";
-      if (currentPitcherGame(pitcherName)) return "Scheduled";
-      return "Not Scheduled";
     }
 
     function getMyPitcherRows() {

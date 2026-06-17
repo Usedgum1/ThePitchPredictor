@@ -274,6 +274,17 @@
       border-color: rgba(141, 138, 255, 0.52);
     }
 
+    .button.secondary {
+      border-color: rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--muted);
+    }
+
+    .button.secondary:hover {
+      border-color: rgba(255, 255, 255, 0.22);
+      color: var(--text);
+    }
+
     .button:disabled {
       cursor: not-allowed;
       opacity: 0.58;
@@ -600,21 +611,26 @@
       margin: 9px 0 0;
     }
 
-    .tier-cta {
-      align-items: center;
-      border: 1px solid rgba(255, 148, 46, 0.42);
-      background: rgba(255, 148, 46, 0.14);
-      color: var(--text);
-      border-radius: 999px;
-      cursor: not-allowed;
-      display: inline-flex;
-      font-size: 0.68rem;
-      font-weight: 900;
-      gap: 7px;
-      letter-spacing: 0.08em;
-      margin-top: 12px;
-      padding: 8px 12px;
-      text-transform: uppercase;
+    .tier-cta:disabled {
+      opacity: 0.72;
+      cursor: default;
+    }
+
+    .billing-actions {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .billing-actions .button {
+      width: 100%;
+    }
+
+    .billing-note {
+      color: var(--muted);
+      font-size: 0.72rem;
+      line-height: 1.45;
+      margin: 0;
     }
 
     .tier-title .tier-cta {
@@ -928,6 +944,8 @@
           <section class="account-sidebar-section">
             <h2>Tier</h2>
             <div class="tier-list" id="tier-list"></div>
+            <div class="billing-actions" id="billing-actions"></div>
+            <p class="status" id="billing-status"></p>
           </section>
         </aside>
       </div>
@@ -935,6 +953,7 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" crossorigin="anonymous"></script>
+  <script src="./pitchiq-billing.js"></script>
   <script>
     (function () {
       const CDN = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js";
@@ -1032,6 +1051,7 @@
       ]
     };
     const tierActions = {
+      basic: "Subscribe",
       pro: "Upgrade",
       life: "Invite Only"
     };
@@ -1052,12 +1072,17 @@
     const currentUsername = document.getElementById("current-username");
     const currentTier = document.getElementById("current-tier");
     const tierList = document.getElementById("tier-list");
+    const billingActions = document.getElementById("billing-actions");
     const logoutButton = document.getElementById("logout-button");
     const defaultViewInputs = Array.from(document.querySelectorAll("input[name='default-view']"));
 
     let activeSession = null;
     let activeRole = null;
+    let activeProfile = null;
     let activeDefaultView = "table";
+    let billingBusy = false;
+
+    const SUPABASE_FUNCTIONS_URL = SUPABASE_URL;
 
     function setStatus(id, message, tone) {
       const element = document.getElementById(id);
@@ -1065,18 +1090,8 @@
       element.className = `status${tone ? ` ${tone}` : ""}`;
     }
 
-    async function getUserRole(userId) {
-      const { data, error } = await supabaseClient
-        .from("profiles")
-        .select("role")
-        .eq("user_id", userId)
-        .single();
-
-      if (error) {
-        return { role: null, error };
-      }
-
-      return { role: data?.role || null, error: null };
+    async function getUserProfile(userId) {
+      return window.PitchIQBilling.fetchBillingProfile(supabaseClient, userId);
     }
 
     function normalizeDefaultView(value) {
@@ -1091,6 +1106,141 @@
       const normalized = normalizeDefaultView(mode);
       defaultViewInputs.forEach(input => {
         input.checked = input.value === normalized;
+      });
+    }
+
+    function tierButtonState(role) {
+      const current = String(activeRole || "").toLowerCase();
+      const tier = String(role || "").toLowerCase();
+
+      if (current === tier) {
+        return { label: "Current", action: null, disabled: true, unlocked: true };
+      }
+      if (current === "basic" && tier === "pro") {
+        return { label: "Upgrade to Pro", action: "pro", disabled: false, unlocked: false };
+      }
+      if (current === "pro" && tier === "basic") {
+        return { label: "Downgrade to Basic", action: "basic", disabled: false, unlocked: false };
+      }
+
+      const isUnlocked = (tierRanks[current] || 0) >= (tierRanks[tier] || 0);
+      if (isUnlocked) {
+        return { label: "Included", action: null, disabled: true, unlocked: true };
+      }
+
+      return {
+        label: tierActions[tier] || "Choose",
+        action: ["basic", "pro"].includes(tier) ? tier : null,
+        disabled: false,
+        unlocked: false,
+      };
+    }
+
+    async function startTierCheckout(priceTier) {
+      if (billingBusy) return;
+      billingBusy = true;
+      const hasSubscription = Boolean(activeProfile?.stripe_subscription_id);
+      setStatus(
+        "billing-status",
+        hasSubscription ? "Updating your plan..." : "Redirecting to secure checkout...",
+        "",
+      );
+      try {
+        if (hasSubscription) {
+          await window.PitchIQBilling.changeSubscription(
+            supabaseClient,
+            SUPABASE_FUNCTIONS_URL,
+            SUPABASE_PUBLISHABLE_KEY,
+            priceTier,
+          );
+          const { profile, error: profileError } = await getUserProfile(activeSession.user.id);
+          if (profileError || !profile) {
+            throw new Error("Plan updated in Stripe, but your account could not be refreshed.");
+          }
+          activeProfile = profile;
+          activeRole = profile.role || activeRole;
+          renderAccount();
+          setStatus(
+            "billing-status",
+            priceTier === "pro"
+              ? "Upgraded to Pro. Changes apply immediately."
+              : "Downgraded to Basic. Changes apply immediately.",
+            "success",
+          );
+          billingBusy = false;
+          return;
+        }
+
+        await window.PitchIQBilling.startCheckout(
+          supabaseClient,
+          SUPABASE_FUNCTIONS_URL,
+          SUPABASE_PUBLISHABLE_KEY,
+          priceTier,
+        );
+      } catch (error) {
+        setStatus("billing-status", error.message || "Unable to update your plan.", "error");
+        billingBusy = false;
+      }
+    }
+
+    async function openBillingPortal(flow) {
+      if (billingBusy) return;
+      billingBusy = true;
+      setStatus("billing-status", "Opening billing portal...", "");
+      try {
+        await window.PitchIQBilling.openBillingPortal(
+          supabaseClient,
+          SUPABASE_FUNCTIONS_URL,
+          SUPABASE_PUBLISHABLE_KEY,
+          flow ? { flow } : undefined,
+        );
+      } catch (error) {
+        setStatus("billing-status", error.message || "Unable to open billing portal.", "error");
+        billingBusy = false;
+      }
+    }
+
+    function bindTierActions() {
+      tierList.querySelectorAll("[data-tier-action]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const tier = button.getAttribute("data-tier-action");
+          if (tier === "basic" || tier === "pro") {
+            startTierCheckout(tier);
+          }
+        });
+      });
+    }
+
+    function renderBillingActions() {
+      const role = String(activeRole || "").toLowerCase();
+      const hasStripeCustomer = Boolean(activeProfile?.stripe_customer_id);
+      const hasSubscription = Boolean(activeProfile?.stripe_subscription_id);
+      const canManageBilling = hasStripeCustomer && ["basic", "pro"].includes(role);
+      const needsPlan = !window.PitchIQBilling.hasActiveMembership(activeProfile);
+
+      billingActions.innerHTML = `
+        ${canManageBilling && role === "basic" ? `<button class="button" type="button" id="upgrade-plan-button">Upgrade to Pro</button>` : ""}
+        ${canManageBilling && role === "pro" ? `<button class="button" type="button" id="downgrade-plan-button">Downgrade to Basic</button>` : ""}
+        ${canManageBilling ? `<button class="button secondary" type="button" id="manage-billing-button">Payment method & invoices</button>` : ""}
+        ${canManageBilling && hasSubscription ? `<button class="button secondary" type="button" id="cancel-billing-button">Cancel subscription</button>` : ""}
+        ${needsPlan ? `<button class="button" type="button" id="choose-plan-button">Choose a Plan</button>` : ""}
+        ${canManageBilling ? `<p class="billing-note">Upgrades and downgrades happen instantly with prorated billing. Cancel keeps access until the period ends.</p>` : ""}
+      `;
+
+      billingActions.querySelector("#upgrade-plan-button")?.addEventListener("click", () => {
+        startTierCheckout("pro");
+      });
+      billingActions.querySelector("#downgrade-plan-button")?.addEventListener("click", () => {
+        startTierCheckout("basic");
+      });
+      billingActions.querySelector("#manage-billing-button")?.addEventListener("click", () => {
+        openBillingPortal();
+      });
+      billingActions.querySelector("#cancel-billing-button")?.addEventListener("click", () => {
+        openBillingPortal("cancel");
+      });
+      billingActions.querySelector("#choose-plan-button")?.addEventListener("click", () => {
+        window.location.href = "./subscribe.html";
       });
     }
 
@@ -1110,17 +1260,20 @@
       const visibleTiers = activeRole === "owner" ? [...DISPLAY_TIERS, "owner"] : DISPLAY_TIERS;
       tierList.innerHTML = visibleTiers.map(role => {
         const isCurrent = role === activeRole;
-        const isUnlocked = (tierRanks[activeRole] || 0) >= (tierRanks[role] || 0);
-        const buttonLabel = isCurrent ? "Current" : isUnlocked ? "Unlocked" : tierActions[role];
+        const buttonState = tierButtonState(role);
         const features = tierFeatures[role] || [];
         return `
         <div class="tier ${isCurrent ? `current tier-current-${role}` : ""}">
           <div class="tier-title">
             <span class="tier-name-${role}">${formatRoleLabel(role)}</span>
-            ${buttonLabel ? `
-              <button class="tier-cta ${isUnlocked ? `tier-cta-current tier-cta-current-${role}` : `tier-cta-${role}`}" type="button" disabled>
-                <span class="tier-lock" aria-hidden="true">${isUnlocked ? "&#128275;" : "&#128274;"}</span>
-                <span>${buttonLabel}</span>
+            ${buttonState.label ? `
+              <button
+                class="tier-cta ${buttonState.unlocked ? `tier-cta-current tier-cta-current-${role}` : `tier-cta-${role}`}"
+                type="button"
+                ${buttonState.action ? `data-tier-action="${buttonState.action}"` : "disabled"}
+              >
+                <span class="tier-lock" aria-hidden="true">${buttonState.unlocked ? "&#128275;" : "&#128274;"}</span>
+                <span>${buttonState.label}</span>
               </button>
             ` : ""}
             ${isCurrent ? '<span class="badge">current</span>' : ""}
@@ -1137,6 +1290,9 @@
         </div>
       `;
       }).join("");
+
+      bindTierActions();
+      renderBillingActions();
     }
 
     function formatRoleLabel(role) {
@@ -1168,8 +1324,20 @@
         return;
       }
 
-      const { role, error: roleError } = await getUserRole(data.session.user.id);
-      if (roleError || !ALLOWED_ACCOUNT_ROLES.includes(role)) {
+      const { profile, error: profileError } = await getUserProfile(data.session.user.id);
+      if (profileError || !profile) {
+        await supabaseClient.auth.signOut();
+        window.location.replace("./login.html");
+        return;
+      }
+
+      const role = profile.role || null;
+      if (!window.PitchIQBilling.hasActiveMembership(profile) && !["life", "admin", "owner"].includes(String(role || ""))) {
+        window.location.replace("./subscribe.html");
+        return;
+      }
+
+      if (!ALLOWED_ACCOUNT_ROLES.includes(role)) {
         await supabaseClient.auth.signOut();
         window.location.replace("./login.html");
         return;
@@ -1177,6 +1345,7 @@
 
       activeSession = data.session;
       activeRole = role;
+      activeProfile = profile;
       activeDefaultView = normalizeDefaultView(
         data.session.user?.user_metadata?.default_view
         || window.localStorage.getItem(defaultViewStorageKey(data.session.user.id))
@@ -1313,6 +1482,14 @@
       await supabaseClient.auth.signOut();
       window.location.replace("./login.html");
     });
+
+    const billingParams = new URLSearchParams(window.location.search);
+    if (billingParams.get("billing") === "success") {
+      setStatus("billing-status", "Payment received. Your membership will update in a few seconds.", "success");
+      billingParams.delete("billing");
+      const nextQuery = billingParams.toString();
+      window.history.replaceState({}, "", `${window.location.pathname}${nextQuery ? `?${nextQuery}` : ""}`);
+    }
 
     requireAccount();
     })();
