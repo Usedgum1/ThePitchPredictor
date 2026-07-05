@@ -219,6 +219,16 @@
       color: var(--text);
     }
 
+    .faq-answer a {
+      color: var(--blue);
+      text-decoration: none;
+    }
+
+    .faq-answer a:hover {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
     .term-grid {
       display: grid;
       gap: 12px;
@@ -250,6 +260,16 @@
 
     .term-card p + p {
       margin-top: 10px;
+    }
+
+    .term-card a {
+      color: var(--blue);
+      text-decoration: none;
+    }
+
+    .term-card a:hover {
+      text-decoration: underline;
+      text-underline-offset: 3px;
     }
 
     .term-card ul {
@@ -382,12 +402,13 @@
                   <p>Most members start on <strong>Upcoming Games</strong> for the daily slate, then use <strong>Pitcher Lookup</strong> when they want deeper context on one arm. <strong>Live Games</strong> is for in-progress tracking once games start.</p>
                 </div>
               </details>
-              <details class="faq-item">
+              <details class="faq-item" id="how-pitchiq-ks-are-built">
                 <summary>How are you getting your PitchIQ Ks?</summary>
                 <div class="faq-answer">
                   <p><strong>PitchIQ Ks</strong> are built pitching-first: starter profile, opponent context, park and matchup signals, and other game-day factors the model treats as relevant to strikeout volume—not a single back-of-the-napkin average.</p>
                   <p>Behind the headline number, pitchIQ runs several independent projection passes and reconciles them into one published estimate (see <a href="#what-does-vix-mean">What does Vix mean?</a> below). When a plate umpire is assigned, umpire context can factor into the read as well.</p>
                   <p>We do not publish the full feature list, weights, or pass-by-pass recipe. The projection is the output of that stack—meant to be compared to the market, not copied blindly.</p>
+                  <p>For what the number means on the board and how you could read it, see <a href="#term-projected-ks">PitchIQ Ks</a> in <a href="#terminology">Terminology</a>.</p>
                 </div>
               </details>
               <details class="faq-item" id="what-does-vix-mean">
@@ -428,7 +449,8 @@
               <details class="faq-item">
                 <summary>What are PitchIQ Ks?</summary>
                 <div class="faq-answer">
-                  <p>See <a href="#term-projected-ks">PitchIQ Ks</a> in <a href="#terminology">Terminology</a> (bottom of page). On the board, it is the anchor column used when comparing to sportsbook lines and <a href="#term-edge-confidence">Edge/Confidence</a>.</p>
+                  <p><strong>PitchIQ Ks</strong> is the strikeout estimate on each board row—the anchor column used when comparing to sportsbook lines and <a href="#term-edge-confidence">Edge/Confidence</a>.</p>
+                  <p>Everything about what the number represents, how it is built from history and similar scenarios, and how you could use it is in one place: <a href="#term-projected-ks">PitchIQ Ks</a> under <a href="#terminology">Terminology</a>. For the modeling stack behind it, see <a href="#how-pitchiq-ks-are-built">How are you getting your PitchIQ Ks?</a> in Getting Started.</p>
                 </div>
               </details>
               <details class="faq-item">
@@ -441,6 +463,14 @@
                 <summary>What do bet side and the book columns show?</summary>
                 <div class="faq-answer">
                   <p>DraftKings and FanDuel columns show the posted strikeout line and price where available. <strong>Bet side</strong> is Over, Under, or Pass/Avoid—see <a href="#term-bet-side">Bet Side</a> in <a href="#terminology">Terminology</a> (bottom of page).</p>
+                </div>
+              </details>
+              <details class="faq-item">
+                <summary>Why is line data sometimes missing?</summary>
+                <div class="faq-answer">
+                  <p>Sportsbook lines and odds on pitchIQ come from an external API. We are at the mercy of that provider—if they do not return a line, price, or market for a pitcher, we cannot display it.</p>
+                  <p>That can show up as blank cells, <em>Pending</em> placeholders, or missing edge reads on a row even when <strong>PitchIQ Ks</strong> and game context are still there. It is usually temporary: books post props on their own schedule, markets get pulled, or the feed hiccups.</p>
+                  <p>We refresh when new data lands, but we cannot invent lines pitchIQ was never sent. If a book has the prop live and our board is still empty after a refresh, the gap is on the feed side—not something we can force from here.</p>
                 </div>
               </details>
               <details class="faq-item">
@@ -553,9 +583,10 @@
                 <div class="faq-answer">
                   <ul>
                     <li>Everything in Basic</li>
-                    <li>My Cards wallet for saved projections</li>
-                    <li>Historical games and past-matchup review</li>
+                    <li>My Cards wallet with table and card views, search, and sorting</li>
                     <li>Manual win/loss tracking on saved cards</li>
+                    <li>My Pitchers watchlist with favorited arms and upcoming starts</li>
+                    <li>Historical games table and past-matchup pitcher lookup</li>
                   </ul>
                 </div>
               </details>
@@ -580,13 +611,22 @@
             <div class="term-grid">
               <article class="term-card" id="term-vix">
                 <h3>Vix</h3>
-                <p>We run <strong>multiple tests</strong> on each pitcher—not just one guess. <strong>Vix</strong> tells you whether those tests are on the same page.</p>
+                <p>We run <strong>multiple tests</strong> on each pitcher—not just one guess. <strong>Vix</strong> tells you whether those tests are on the same page. On the board this may appear as <strong>Volatility</strong>; it is the same read.</p>
                 <p>When the tests <strong>agree</strong>, Vix is <strong>low</strong> (you will often see a lower level on the board). When they <strong>don’t agree</strong>, Vix is <strong>higher</strong>—our own numbers are spread out, so take the projection with a little extra caution.</p>
                 <p>It is not about the stock market or “volatility” in the Wall Street sense. It is simply: <em>do our tests line up on this guy?</em></p>
               </article>
               <article class="term-card" id="term-projected-ks">
                 <h3>PitchIQ Ks</h3>
                 <p>The site’s current strikeout estimate for the listed starter—the number every comparison on the row is built around. It is the published output of the modeling stack, not a single raw stat line from a box score.</p>
+                <p>At its core, we are just providing a number—calculated from historical outcomes and similar matchup scenarios (pitcher profile, opponent, park, umpire when assigned, and the rest of the stack). We are not telling you what will happen; we are surfacing one estimate built from what has happened before in like spots. It is not a guarantee about tonight. Predicting the future is hard.</p>
+                <p><strong>How you could use this number:</strong></p>
+                <ul>
+                  <li><strong>Over / Under</strong> — compare <strong>PitchIQ Ks</strong> to the posted line (for example, 5.5). If the projection sits above the line, the model leans <strong>Over</strong>; below the line, <strong>Under</strong>. <a href="#term-bet-side">Bet Side</a> and <a href="#term-edge-confidence">Edge / Confidence</a> spell out that lean on each book.</li>
+                  <li><strong>K+</strong> — some books list milestone strikeout props (6+, 7+, and so on) instead of a half-point total. Treat the plus sign as the floor: <strong>6+</strong> means six strikeouts or more. If <strong>PitchIQ Ks</strong> is well above that whole number, the milestone is more in play; if it sits below, the model is less enthusiastic about clearing it.</li>
+                </ul>
+                <p>The projection is one input—pair it with line shopping, <a href="#term-vix">Vix</a>, and umpire status before you decide.</p>
+                <p>Over, Under, and K+ are framing concepts—not instructions. pitchIQ organizes the slate; what you do with it is your call, and your responsibility.</p>
+                <p>For how the modeling stack produces this number, see <a href="#how-pitchiq-ks-are-built">How are you getting your PitchIQ Ks?</a> in Getting Started.</p>
               </article>
               <article class="term-card" id="term-edge-confidence">
                 <h3>Edge / Confidence</h3>

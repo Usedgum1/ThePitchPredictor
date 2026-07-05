@@ -181,6 +181,24 @@
       min-width: 0;
     }
 
+    .support-copy {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.6;
+    }
+
+    .support-email {
+      color: var(--neon-blue);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .support-email:hover {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
     .settings-row-body form {
       max-width: 560px;
     }
@@ -285,6 +303,30 @@
       color: var(--text);
     }
 
+    .button.tier-basic {
+      border-color: rgba(47, 155, 255, 0.58);
+      background: rgba(47, 155, 255, 0.14);
+      color: var(--neon-blue);
+      box-shadow: 0 0 0 1px rgba(47, 155, 255, 0.12) inset;
+    }
+
+    .button.tier-basic:hover {
+      border-color: rgba(47, 155, 255, 0.78);
+      background: rgba(47, 155, 255, 0.2);
+    }
+
+    .button.tier-pro {
+      border-color: rgba(255, 148, 46, 0.58);
+      background: rgba(255, 148, 46, 0.14);
+      color: var(--amber);
+      box-shadow: 0 0 0 1px rgba(255, 148, 46, 0.12) inset;
+    }
+
+    .button.tier-pro:hover {
+      border-color: rgba(255, 148, 46, 0.78);
+      background: rgba(255, 148, 46, 0.2);
+    }
+
     .button:disabled {
       cursor: not-allowed;
       opacity: 0.58;
@@ -300,6 +342,13 @@
 
     .status.success { color: var(--success); }
     .status.error { color: var(--danger); }
+
+    .status.pending {
+      color: #5ce08a;
+      font-size: 0.92rem;
+      font-weight: 700;
+      text-align: center;
+    }
 
     .account-meta {
       display: grid;
@@ -413,13 +462,17 @@
     }
 
     .tier-title {
-      align-items: center;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 9px;
       font-size: 0.9rem;
       font-weight: 800;
       text-transform: capitalize;
+    }
+
+    .tier-row-header {
+      align-items: center;
+      column-gap: 10px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 7rem 3.5rem 20px;
+      width: 100%;
     }
 
     .tier-name-basic,
@@ -631,6 +684,230 @@
       font-size: 0.72rem;
       line-height: 1.45;
       margin: 0;
+      text-align: center;
+    }
+
+    .billing-expectations {
+      display: grid;
+      gap: 12px;
+      margin: 0;
+      text-align: left;
+    }
+
+    .billing-expect-item {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.74rem;
+      line-height: 1.55;
+    }
+
+    .billing-expect-item strong {
+      color: var(--text);
+      display: block;
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+
+    .billing-expect-upgrade strong {
+      color: var(--amber);
+    }
+
+    .billing-expect-downgrade strong {
+      color: var(--neon-blue);
+    }
+
+    .billing-expect-cancel strong {
+      color: var(--neon-red);
+    }
+
+    .billing-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(3, 4, 8, 0.78);
+      backdrop-filter: blur(4px);
+    }
+
+    .billing-modal.hidden {
+      display: none !important;
+    }
+
+    body.billing-modal-open {
+      overflow: hidden;
+    }
+
+    .billing-modal-card {
+      width: min(480px, 100%);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(18, 20, 28, 0.98), rgba(11, 12, 18, 0.98));
+      box-shadow: 0 24px 56px rgba(0, 0, 0, 0.42);
+      padding: 22px;
+    }
+
+    .billing-modal-card.upgrade {
+      border-color: rgba(255, 148, 46, 0.28);
+    }
+
+    .billing-modal-card.downgrade {
+      border-color: rgba(47, 155, 255, 0.28);
+    }
+
+    .billing-modal-title {
+      margin: 0 0 12px;
+      font-size: 1.08rem;
+      letter-spacing: 0.02em;
+      text-align: center;
+    }
+
+    .billing-modal-title.upgrade {
+      color: var(--amber);
+    }
+
+    .billing-modal-title.downgrade {
+      color: var(--neon-blue);
+    }
+
+    .billing-modal-copy {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.65;
+    }
+
+    .billing-modal-copy strong {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .billing-modal-actions {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .billing-modal-actions .button {
+      min-width: 112px;
+      width: auto;
+    }
+
+    .billing-modal-actions .button.cancel {
+      border-color: rgba(255, 23, 77, 0.58);
+      background: rgba(255, 23, 77, 0.14);
+      color: var(--neon-red);
+      box-shadow: 0 0 0 1px rgba(255, 23, 77, 0.12) inset;
+    }
+
+    .billing-modal-actions .button.cancel:hover {
+      border-color: rgba(255, 23, 77, 0.78);
+      background: rgba(255, 23, 77, 0.2);
+    }
+
+    .membership-price {
+      color: var(--muted);
+      font-size: 0.76rem;
+      font-weight: 600;
+      justify-self: end;
+      letter-spacing: 0.02em;
+      text-align: right;
+      text-transform: none;
+      white-space: nowrap;
+    }
+
+    .membership-footnote {
+      color: var(--muted);
+      font-size: 0.74rem;
+      line-height: 1.45;
+      margin: 12px 0 0;
+      text-align: center;
+    }
+
+    .membership-prompt {
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .membership-current .tier-title {
+      width: 100%;
+    }
+
+    .tier-current-badge {
+      color: var(--muted);
+      font-size: 0.62rem;
+      font-weight: 800;
+      justify-self: end;
+      letter-spacing: 0.08em;
+      text-align: right;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .tier-other {
+      border-left: 5px solid rgba(255, 255, 255, 0.12);
+      padding: 2px 0 2px 14px;
+    }
+
+    .tier-other-basic {
+      border-left-color: rgba(47, 155, 255, 0.35);
+    }
+
+    .tier-other-pro {
+      border-left-color: rgba(255, 148, 46, 0.35);
+    }
+
+    .tier-other-life {
+      border-left-color: rgba(255, 216, 79, 0.35);
+    }
+
+    .tier-other-summary {
+      cursor: pointer;
+      list-style: none;
+    }
+
+    .tier-other-summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .tier-other-summary::after {
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 999px;
+      color: var(--muted);
+      content: "+";
+      display: grid;
+      font-size: 0.78rem;
+      font-weight: 700;
+      height: 20px;
+      justify-self: end;
+      line-height: 1;
+      place-items: center;
+      width: 20px;
+    }
+
+    .tier-other[open] .tier-other-summary::after {
+      content: "−";
+    }
+
+    .tier-other-body {
+      margin-top: 8px;
+    }
+
+    .tier-other-note {
+      color: var(--muted);
+      font-size: 0.76rem;
+      font-weight: 600;
+      justify-self: end;
+      text-align: right;
+      white-space: nowrap;
     }
 
     .tier-title .tier-cta {
@@ -920,6 +1197,19 @@
               </form>
             </div>
           </div>
+
+          <div class="settings-row">
+            <div class="settings-row-title">
+              <h2>Support</h2>
+              <p>Questions about billing, access, or pitchIQ.</p>
+            </div>
+            <div class="settings-row-body">
+              <p class="support-copy">
+                Email us at
+                <a class="support-email" href="mailto:Sales@MinMaxTechnology.com">Sales@MinMaxTechnology.com</a>.
+              </p>
+            </div>
+          </div>
         </section>
 
         <aside class="account-sidebar">
@@ -942,7 +1232,7 @@
           </section>
 
           <section class="account-sidebar-section">
-            <h2>Tier</h2>
+            <h2>Membership</h2>
             <div class="tier-list" id="tier-list"></div>
             <div class="billing-actions" id="billing-actions"></div>
             <p class="status" id="billing-status"></p>
@@ -952,8 +1242,20 @@
     </section>
   </main>
 
+  <div id="billing-confirm-modal" class="billing-modal hidden" aria-hidden="true">
+    <div class="billing-modal-card" id="billing-confirm-card" role="dialog" aria-modal="true" aria-labelledby="billing-confirm-title">
+      <h2 class="billing-modal-title" id="billing-confirm-title"></h2>
+      <p class="billing-modal-copy" id="billing-confirm-copy"></p>
+      <div class="billing-modal-actions">
+        <button class="button cancel" type="button" id="billing-confirm-cancel">Cancel</button>
+        <button class="button" type="button" id="billing-confirm-proceed">Proceed</button>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" crossorigin="anonymous"></script>
-  <script src="./pitchiq-billing.js"></script>
+  <script src="./pitchiq-feature-locks.js"></script>
+  <script src="./pitchiq-billing.js?v=20260703"></script>
   <script>
     (function () {
       const CDN = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js";
@@ -1014,7 +1316,7 @@
     });
 
     const ALLOWED_ACCOUNT_ROLES = ["basic", "pro", "life", "admin", "owner"];
-    const DISPLAY_TIERS = ["basic", "pro", "life"];
+    const MEMBERSHIP_TIERS = ["basic", "pro", "life"];
     const tierDetails = {
       basic: "Core slate tools for daily strikeout prop research.",
       pro: "Saved-card workflow and historical review tools for deeper tracking.",
@@ -1034,6 +1336,7 @@
         "My Cards wallet for saved projections",
         "Saved card table and card views with search and sorting",
         "Manual win/loss tracking for saved cards",
+        "My Pitchers watchlist with favorited pitchers and upcoming starts",
         "Historical games table with projections, lines, and results",
         "Historical pitcher lookup and past-matchup review"
       ],
@@ -1050,17 +1353,9 @@
         "Operational access for account and site management"
       ]
     };
-    const tierActions = {
-      basic: "Subscribe",
-      pro: "Upgrade",
-      life: "Invite Only"
-    };
-    const tierRanks = {
-      basic: 1,
-      pro: 2,
-      life: 3,
-      admin: 3,
-      owner: 3
+    const TIER_PRICES = {
+      basic: "$5 / month",
+      pro: "$10 / month",
     };
 
     const usernameForm = document.getElementById("username-form");
@@ -1073,6 +1368,12 @@
     const currentTier = document.getElementById("current-tier");
     const tierList = document.getElementById("tier-list");
     const billingActions = document.getElementById("billing-actions");
+    const billingConfirmModal = document.getElementById("billing-confirm-modal");
+    const billingConfirmCard = document.getElementById("billing-confirm-card");
+    const billingConfirmTitle = document.getElementById("billing-confirm-title");
+    const billingConfirmCopy = document.getElementById("billing-confirm-copy");
+    const billingConfirmCancel = document.getElementById("billing-confirm-cancel");
+    const billingConfirmProceed = document.getElementById("billing-confirm-proceed");
     const logoutButton = document.getElementById("logout-button");
     const defaultViewInputs = Array.from(document.querySelectorAll("input[name='default-view']"));
 
@@ -1081,6 +1382,23 @@
     let activeProfile = null;
     let activeDefaultView = "table";
     let billingBusy = false;
+    let billingConfirmHandler = null;
+    let billingConfirmOpenedAt = 0;
+
+    const BILLING_CONFIRM_COPY = {
+      upgrade: {
+        title: "Upgrade to Pro?",
+        tone: "upgrade",
+        proceedClass: "button tier-pro",
+        copy: "<strong>This change is instant.</strong> Pro features unlock as soon as you proceed. Stripe charges the prorated difference for the rest of this billing period. Your subscription renews at $10/month.",
+      },
+      downgrade: {
+        title: "Downgrade to Basic?",
+        tone: "downgrade",
+        proceedClass: "button tier-basic",
+        copy: "<strong>This change is instant.</strong> Pro features lock as soon as you proceed. Stripe credits unused Pro time and bills Basic for the rest of this month. Your subscription renews at $5/month. Adjustments apply to your next invoice—not a refund to your card.",
+      },
+    };
 
     const SUPABASE_FUNCTIONS_URL = SUPABASE_URL;
 
@@ -1109,45 +1427,270 @@
       });
     }
 
-    function tierButtonState(role) {
-      const current = String(activeRole || "").toLowerCase();
+    function renderMembershipCard(role, options = {}) {
       const tier = String(role || "").toLowerCase();
+      const features = tierFeatures[tier] || [];
+      const price = TIER_PRICES[tier] || "";
+      const isCurrent = Boolean(options.isCurrent);
+      const compact = Boolean(options.compact);
 
-      if (current === tier) {
-        return { label: "Current", action: null, disabled: true, unlocked: true };
-      }
-      if (current === "basic" && tier === "pro") {
-        return { label: "Upgrade to Pro", action: "pro", disabled: false, unlocked: false };
-      }
-      if (current === "pro" && tier === "basic") {
-        return { label: "Downgrade to Basic", action: "basic", disabled: false, unlocked: false };
+      const featuresBlock = features.length ? `
+        <details class="tier-feature-panel">
+          <summary class="tier-feature-label tier-feature-label-${tier}">What's included</summary>
+          <ul class="tier-features">
+            ${features.map(feature => `<li class="tier-feature tier-feature-${tier}">${feature}</li>`).join("")}
+          </ul>
+        </details>
+      ` : "";
+
+      const body = `
+        <p class="tier-copy">${tierDetails[tier] || ""}</p>
+        ${featuresBlock}
+      `;
+
+      if (compact && !isCurrent) {
+        return `
+          <details class="tier-other tier-other-${tier}">
+            <summary class="tier-other-summary tier-row-header">
+              <span class="tier-name-${tier}">${formatRoleLabel(tier)}</span>
+              ${price
+                ? `<span class="membership-price">${price}</span>`
+                : `<span class="tier-other-note">Invite only</span>`}
+              <span class="tier-row-spacer" aria-hidden="true"></span>
+            </summary>
+            <div class="tier-other-body">${body}</div>
+          </details>
+        `;
       }
 
-      const isUnlocked = (tierRanks[current] || 0) >= (tierRanks[tier] || 0);
-      if (isUnlocked) {
-        return { label: "Included", action: null, disabled: true, unlocked: true };
+      return `
+        <div class="tier ${isCurrent ? `current tier-current-${tier} membership-current` : ""}">
+          <div class="tier-title tier-row-header">
+            <span class="tier-name-${tier}">${formatRoleLabel(tier)}</span>
+            ${price
+              ? `<span class="membership-price">${price}</span>`
+              : `<span class="tier-other-note">Invite only</span>`}
+            ${isCurrent ? '<span class="tier-current-badge">Current</span>' : '<span class="tier-row-spacer" aria-hidden="true"></span>'}
+            <span class="tier-row-spacer" aria-hidden="true"></span>
+          </div>
+          ${body}
+        </div>
+      `;
+    }
+
+    function renderMembershipTiers(activeRole) {
+      const role = String(activeRole || "").toLowerCase();
+      const tiers = role === "owner" ? [...MEMBERSHIP_TIERS, "owner"] : MEMBERSHIP_TIERS;
+
+      return tiers.map((tier) => renderMembershipCard(tier, {
+        isCurrent: tier === role,
+        compact: tier !== role,
+      })).join("");
+    }
+
+    function renderBillingExpectations() {
+      return `
+        <div class="billing-expectations">
+          <p class="billing-expect-item billing-expect-upgrade">
+            <strong>Upgrade to Pro</strong>
+            Pro unlocks immediately. You are charged the prorated difference for the rest of this billing period. Renews at $10/month.
+          </p>
+          <p class="billing-expect-item billing-expect-downgrade">
+            <strong>Downgrade to Basic</strong>
+            Basic starts immediately and Pro features lock right away. Stripe credits unused Pro time and charges Basic for the rest of this month. Renews at $5/month. Adjustments apply to your next invoice—not a refund to your card.
+          </p>
+          <p class="billing-expect-item billing-expect-cancel">
+            <strong>Cancel</strong>
+            You keep your current tier until the billing period ends, then access stops.
+          </p>
+        </div>
+      `;
+    }
+
+    function renderBillingActions() {
+      const role = String(activeRole || "").toLowerCase();
+      const hasStripeCustomer = Boolean(activeProfile?.stripe_customer_id);
+      const hasSubscription = Boolean(activeProfile?.stripe_subscription_id);
+      const canManageBilling = ["basic", "pro"].includes(role)
+        && (hasStripeCustomer || hasSubscription);
+      const needsPlan = !window.PitchIQBilling.hasActiveMembership(activeProfile);
+      const canUpgradeToPro = role === "basic";
+      const canDowngradeToBasic = role === "pro" && canManageBilling && hasSubscription;
+
+      billingActions.innerHTML = `
+        ${canUpgradeToPro ? `<button class="button tier-pro" type="button" id="upgrade-plan-button">Upgrade to Pro</button>` : ""}
+        ${canDowngradeToBasic ? `<button class="button tier-basic" type="button" id="downgrade-plan-button">Downgrade to Basic</button>` : ""}
+        ${canManageBilling ? `<button class="button secondary" type="button" id="manage-billing-button">Payment & invoices</button>` : ""}
+        ${canManageBilling && hasSubscription ? `<button class="button secondary" type="button" id="cancel-billing-button">Cancel subscription</button>` : ""}
+        ${needsPlan ? `<button class="button tier-pro" type="button" id="choose-plan-button">Choose a plan</button>` : ""}
+        ${canManageBilling ? renderBillingExpectations() : ""}
+      `;
+
+      window.PitchIQFeatureLocks.applyButtonLock(
+        document.getElementById("upgrade-plan-button"),
+        "membershipUpgrade",
+      );
+      window.PitchIQFeatureLocks.applyButtonLock(
+        document.getElementById("downgrade-plan-button"),
+        "membershipDowngrade",
+      );
+      window.PitchIQFeatureLocks.applyButtonLock(
+        document.getElementById("manage-billing-button"),
+        "billingPortal",
+      );
+      window.PitchIQFeatureLocks.applyButtonLock(
+        document.getElementById("cancel-billing-button"),
+        "billingPortal",
+      );
+      window.PitchIQFeatureLocks.applyButtonLock(
+        document.getElementById("choose-plan-button"),
+        "initialCheckout",
+      );
+    }
+
+    function bindBillingActions() {
+      if (billingActions.dataset.bound === "true") return;
+      billingActions.dataset.bound = "true";
+
+      billingActions.addEventListener("click", (event) => {
+        const button = event.target.closest("button");
+        if (!button || !billingActions.contains(button)) return;
+
+        if (button.id === "upgrade-plan-button") {
+          event.preventDefault();
+          event.stopPropagation();
+          if (window.PitchIQFeatureLocks.isLocked("membershipUpgrade")) {
+            setStatus("billing-status", window.PitchIQFeatureLocks.lockMessage("membershipUpgrade"), "error");
+            return;
+          }
+          window.setTimeout(() => {
+            openBillingConfirm("upgrade", () => startTierCheckout("pro"));
+          }, 0);
+          return;
+        }
+
+        if (button.id === "downgrade-plan-button") {
+          event.preventDefault();
+          event.stopPropagation();
+          if (window.PitchIQFeatureLocks.isLocked("membershipDowngrade")) {
+            setStatus("billing-status", window.PitchIQFeatureLocks.lockMessage("membershipDowngrade"), "error");
+            return;
+          }
+          window.setTimeout(() => {
+            openBillingConfirm("downgrade", () => startTierCheckout("basic"));
+          }, 0);
+          return;
+        }
+
+        if (button.id === "manage-billing-button") {
+          event.preventDefault();
+          if (window.PitchIQFeatureLocks.isLocked("billingPortal")) {
+            setStatus("billing-status", window.PitchIQFeatureLocks.lockMessage("billingPortal"), "error");
+            return;
+          }
+          openBillingPortal();
+          return;
+        }
+
+        if (button.id === "cancel-billing-button") {
+          event.preventDefault();
+          if (window.PitchIQFeatureLocks.isLocked("billingPortal")) {
+            setStatus("billing-status", window.PitchIQFeatureLocks.lockMessage("billingPortal"), "error");
+            return;
+          }
+          openBillingPortal("cancel");
+          return;
+        }
+
+        if (button.id === "choose-plan-button") {
+          event.preventDefault();
+          if (window.PitchIQFeatureLocks.isLocked("initialCheckout")) {
+            setStatus("billing-status", window.PitchIQFeatureLocks.lockMessage("initialCheckout"), "error");
+            return;
+          }
+          window.location.href = "./subscribe.html";
+        }
+      });
+    }
+
+    function renderAccount() {
+      const user = activeSession?.user;
+      const username = String(user?.user_metadata?.username || "").trim();
+      const email = user?.email || "";
+
+      currentEmail.textContent = email || "unknown";
+      currentUsername.textContent = username || "not set";
+      currentTier.textContent = formatRoleLabel(activeRole);
+      currentTier.className = `meta-value tier-value-${activeRole || ""}`;
+      usernameInput.value = username;
+      emailInput.value = "";
+      setDefaultViewControls(activeDefaultView);
+
+      const role = String(activeRole || "").toLowerCase();
+      const needsPlan = !window.PitchIQBilling.hasActiveMembership(activeProfile);
+
+      if (needsPlan && !["life", "admin", "owner"].includes(role)) {
+        tierList.innerHTML = `
+          <p class="membership-prompt">Choose Basic or Pro to unlock PitchIQ.</p>
+          ${renderMembershipTiers(null)}
+        `;
+      } else if (role === "basic" || role === "pro" || ["life", "admin", "owner"].includes(role)) {
+        tierList.innerHTML = renderMembershipTiers(role === "admin" ? "life" : role);
+      } else {
+        tierList.innerHTML = `
+          <p class="membership-prompt">Choose Basic or Pro to unlock PitchIQ.</p>
+          ${renderMembershipTiers(null)}
+        `;
       }
 
-      return {
-        label: tierActions[tier] || "Choose",
-        action: ["basic", "pro"].includes(tier) ? tier : null,
-        disabled: false,
-        unlocked: false,
-      };
+      renderBillingActions();
+    }
+
+    function closeBillingConfirm() {
+      billingConfirmHandler = null;
+      billingConfirmOpenedAt = 0;
+      billingConfirmCard.style.pointerEvents = "";
+      billingConfirmModal.classList.add("hidden");
+      billingConfirmModal.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("billing-modal-open");
+    }
+
+    function openBillingConfirm(kind, onProceed) {
+      if (billingBusy) {
+        setStatus("billing-status", "A billing action is already in progress. Please wait.", "pending");
+        return;
+      }
+      const config = BILLING_CONFIRM_COPY[kind];
+      if (!config) return;
+
+      billingConfirmHandler = onProceed;
+      billingConfirmOpenedAt = performance.now();
+      billingConfirmCard.className = `billing-modal-card ${config.tone}`;
+      billingConfirmTitle.className = `billing-modal-title ${config.tone}`;
+      billingConfirmTitle.textContent = config.title;
+      billingConfirmCopy.innerHTML = config.copy;
+      billingConfirmProceed.className = config.proceedClass;
+      billingConfirmProceed.textContent = "Proceed";
+      billingConfirmModal.classList.remove("hidden");
+      billingConfirmModal.setAttribute("aria-hidden", "false");
+      document.body.classList.add("billing-modal-open");
     }
 
     async function startTierCheckout(priceTier) {
-      if (billingBusy) return;
+      if (billingBusy) {
+        setStatus("billing-status", "A billing action is already in progress. Please wait.", "pending");
+        return;
+      }
       billingBusy = true;
       const hasSubscription = Boolean(activeProfile?.stripe_subscription_id);
       setStatus(
         "billing-status",
         hasSubscription ? "Updating your plan..." : "Redirecting to secure checkout...",
-        "",
+        "pending",
       );
       try {
         if (hasSubscription) {
-          await window.PitchIQBilling.changeSubscription(
+          const result = await window.PitchIQBilling.changeSubscription(
             supabaseClient,
             SUPABASE_FUNCTIONS_URL,
             SUPABASE_PUBLISHABLE_KEY,
@@ -1158,15 +1701,19 @@
             throw new Error("Plan updated in Stripe, but your account could not be refreshed.");
           }
           activeProfile = profile;
-          activeRole = profile.role || activeRole;
+          activeRole = profile.role || result?.role || activeRole;
           renderAccount();
-          setStatus(
-            "billing-status",
-            priceTier === "pro"
-              ? "Upgraded to Pro. Changes apply immediately."
-              : "Downgraded to Basic. Changes apply immediately.",
-            "success",
-          );
+          if (priceTier === "pro") {
+            setStatus("billing-status", "Upgraded to Pro. Pro features are unlocked now.", "success");
+          } else if (result?.scheduled) {
+            setStatus(
+              "billing-status",
+              "Downgrade to Basic is scheduled for the end of your billing period.",
+              "success",
+            );
+          } else {
+            setStatus("billing-status", "Downgraded to Basic. Pro features are locked now.", "success");
+          }
           billingBusy = false;
           return;
         }
@@ -1186,7 +1733,12 @@
     async function openBillingPortal(flow) {
       if (billingBusy) return;
       billingBusy = true;
-      setStatus("billing-status", "Opening billing portal...", "");
+      const statusMessage = flow === "cancel"
+        ? "Opening Stripe to cancel..."
+        : flow === "update"
+          ? "Opening Stripe to change your plan..."
+          : "Opening billing portal...";
+      setStatus("billing-status", statusMessage, "pending");
       try {
         await window.PitchIQBilling.openBillingPortal(
           supabaseClient,
@@ -1198,101 +1750,6 @@
         setStatus("billing-status", error.message || "Unable to open billing portal.", "error");
         billingBusy = false;
       }
-    }
-
-    function bindTierActions() {
-      tierList.querySelectorAll("[data-tier-action]").forEach((button) => {
-        button.addEventListener("click", () => {
-          const tier = button.getAttribute("data-tier-action");
-          if (tier === "basic" || tier === "pro") {
-            startTierCheckout(tier);
-          }
-        });
-      });
-    }
-
-    function renderBillingActions() {
-      const role = String(activeRole || "").toLowerCase();
-      const hasStripeCustomer = Boolean(activeProfile?.stripe_customer_id);
-      const hasSubscription = Boolean(activeProfile?.stripe_subscription_id);
-      const canManageBilling = hasStripeCustomer && ["basic", "pro"].includes(role);
-      const needsPlan = !window.PitchIQBilling.hasActiveMembership(activeProfile);
-
-      billingActions.innerHTML = `
-        ${canManageBilling && role === "basic" ? `<button class="button" type="button" id="upgrade-plan-button">Upgrade to Pro</button>` : ""}
-        ${canManageBilling && role === "pro" ? `<button class="button" type="button" id="downgrade-plan-button">Downgrade to Basic</button>` : ""}
-        ${canManageBilling ? `<button class="button secondary" type="button" id="manage-billing-button">Payment method & invoices</button>` : ""}
-        ${canManageBilling && hasSubscription ? `<button class="button secondary" type="button" id="cancel-billing-button">Cancel subscription</button>` : ""}
-        ${needsPlan ? `<button class="button" type="button" id="choose-plan-button">Choose a Plan</button>` : ""}
-        ${canManageBilling ? `<p class="billing-note">Upgrades and downgrades happen instantly with prorated billing. Cancel keeps access until the period ends.</p>` : ""}
-      `;
-
-      billingActions.querySelector("#upgrade-plan-button")?.addEventListener("click", () => {
-        startTierCheckout("pro");
-      });
-      billingActions.querySelector("#downgrade-plan-button")?.addEventListener("click", () => {
-        startTierCheckout("basic");
-      });
-      billingActions.querySelector("#manage-billing-button")?.addEventListener("click", () => {
-        openBillingPortal();
-      });
-      billingActions.querySelector("#cancel-billing-button")?.addEventListener("click", () => {
-        openBillingPortal("cancel");
-      });
-      billingActions.querySelector("#choose-plan-button")?.addEventListener("click", () => {
-        window.location.href = "./subscribe.html";
-      });
-    }
-
-    function renderAccount() {
-      const user = activeSession?.user;
-      const username = String(user?.user_metadata?.username || "").trim();
-      const email = user?.email || "";
-
-      currentEmail.textContent = email || "unknown";
-      currentUsername.textContent = username || "not set";
-      currentTier.textContent = formatRoleLabel(activeRole);
-      currentTier.className = `meta-value tier-value-${activeRole || ""}`;
-      usernameInput.value = username;
-      emailInput.value = "";
-      setDefaultViewControls(activeDefaultView);
-
-      const visibleTiers = activeRole === "owner" ? [...DISPLAY_TIERS, "owner"] : DISPLAY_TIERS;
-      tierList.innerHTML = visibleTiers.map(role => {
-        const isCurrent = role === activeRole;
-        const buttonState = tierButtonState(role);
-        const features = tierFeatures[role] || [];
-        return `
-        <div class="tier ${isCurrent ? `current tier-current-${role}` : ""}">
-          <div class="tier-title">
-            <span class="tier-name-${role}">${formatRoleLabel(role)}</span>
-            ${buttonState.label ? `
-              <button
-                class="tier-cta ${buttonState.unlocked ? `tier-cta-current tier-cta-current-${role}` : `tier-cta-${role}`}"
-                type="button"
-                ${buttonState.action ? `data-tier-action="${buttonState.action}"` : "disabled"}
-              >
-                <span class="tier-lock" aria-hidden="true">${buttonState.unlocked ? "&#128275;" : "&#128274;"}</span>
-                <span>${buttonState.label}</span>
-              </button>
-            ` : ""}
-            ${isCurrent ? '<span class="badge">current</span>' : ""}
-          </div>
-          <p class="tier-copy">${tierDetails[role]}</p>
-          ${features.length ? `
-            <details class="tier-feature-panel">
-              <summary class="tier-feature-label tier-feature-label-${role}">What you get</summary>
-              <ul class="tier-features">
-                ${features.map(feature => `<li class="tier-feature tier-feature-${role}">${feature}</li>`).join("")}
-              </ul>
-            </details>
-          ` : ""}
-        </div>
-      `;
-      }).join("");
-
-      bindTierActions();
-      renderBillingActions();
     }
 
     function formatRoleLabel(role) {
@@ -1481,6 +1938,31 @@
     logoutButton.addEventListener("click", async () => {
       await supabaseClient.auth.signOut();
       window.location.replace("./login.html");
+    });
+
+    bindBillingActions();
+
+    billingConfirmCancel.addEventListener("click", closeBillingConfirm);
+    billingConfirmProceed.addEventListener("click", async (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (performance.now() - billingConfirmOpenedAt < 300) {
+        return;
+      }
+      const proceed = billingConfirmHandler;
+      if (typeof proceed !== "function") return;
+      closeBillingConfirm();
+      await proceed();
+    });
+    billingConfirmModal.addEventListener("click", (event) => {
+      if (event.target === billingConfirmModal) {
+        closeBillingConfirm();
+      }
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !billingConfirmModal.classList.contains("hidden")) {
+        closeBillingConfirm();
+      }
     });
 
     const billingParams = new URLSearchParams(window.location.search);

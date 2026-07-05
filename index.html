@@ -15,6 +15,24 @@
   <link rel="icon" type="image/png" sizes="16x16" href="./images/favicon/favicon-16x16.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="./images/favicon/apple-touch-icon.png" />
   <link rel="manifest" href="./images/favicon/site.webmanifest" />
+  <script>
+    (function () {
+      const hash = window.location.hash || "";
+      const params = new URLSearchParams(window.location.search);
+      const hasAuthCallback =
+        hash.includes("access_token=")
+        || hash.includes("type=signup")
+        || params.has("code");
+      if (!hasAuthCallback) {
+        return;
+      }
+
+      const target = new URL("./subscribe.html", window.location.href);
+      target.search = window.location.search;
+      target.hash = window.location.hash;
+      window.location.replace(target.toString());
+    })();
+  </script>
 
   <style>
     :root {
