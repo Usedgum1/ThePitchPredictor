@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>pitchIQ | Account Settings</title>
   <meta name="description" content="Manage your pitchIQ account settings." />
   <meta name="theme-color" content="#050505" />
@@ -1070,26 +1070,149 @@
     }
 
     @media (max-width: 760px) {
-      .topbar,
-      .layout {
-        grid-template-columns: 1fr;
+      .page {
+        padding: 12px 12px calc(24px + env(safe-area-inset-bottom, 0px));
+      }
+
+      .shell {
+        padding: 16px 14px;
+        border-radius: 16px;
       }
 
       .topbar {
         flex-direction: column;
+        gap: 12px;
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+      }
+
+      h1 {
+        font-size: 1.28rem;
+      }
+
+      .sub {
+        font-size: 0.88rem;
       }
 
       .top-actions {
+        display: flex;
         flex-wrap: wrap;
+        gap: 8px;
+        width: 100%;
+        white-space: normal;
       }
 
-      .settings-row {
+      .top-actions .text-link,
+      .top-actions .text-button {
+        display: inline-flex;
+        align-items: center;
+        min-height: 36px;
+        padding: 0 12px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.03);
+        text-decoration: none;
+        text-transform: uppercase;
+        font-size: 0.68rem;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+      }
+
+      .top-actions .text-link:hover,
+      .top-actions .text-button:hover {
+        text-decoration: none;
+        border-color: rgba(141, 138, 255, 0.35);
+        color: var(--text);
+      }
+
+      .layout {
         grid-template-columns: 1fr;
-        gap: 12px;
+        gap: 14px;
       }
 
       .account-sidebar {
         position: static;
+        order: -1;
+        padding: 14px;
+      }
+
+      .settings-row {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        padding: 16px 14px;
+      }
+
+      .settings-row-body form {
+        max-width: none;
+      }
+
+      .meta-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+      }
+
+      .meta-value {
+        max-width: none;
+        width: 100%;
+        text-align: left;
+        white-space: normal;
+        overflow: visible;
+        text-overflow: unset;
+        word-break: break-word;
+      }
+
+      .tier-row-header {
+        grid-template-columns: minmax(0, 1fr) auto;
+        row-gap: 6px;
+      }
+
+      .tier-row-spacer {
+        display: none;
+      }
+
+      .membership-price {
+        justify-self: end;
+        grid-column: 2;
+        grid-row: 1;
+      }
+
+      .tier-current-badge,
+      .tier-other-note {
+        grid-column: 1 / -1;
+        justify-self: start;
+      }
+
+      .tier-title .tier-cta {
+        width: 100%;
+        margin-top: 8px;
+      }
+
+      .button {
+        min-height: 42px;
+      }
+
+      .billing-modal {
+        padding: 14px;
+        align-items: flex-end;
+      }
+
+      .billing-modal-card {
+        width: 100%;
+        max-height: calc(100vh - 28px - env(safe-area-inset-bottom, 0px));
+        overflow-y: auto;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        padding: 18px 16px calc(18px + env(safe-area-inset-bottom, 0px));
+      }
+
+      .billing-modal-actions {
+        flex-direction: column-reverse;
+      }
+
+      .billing-modal-actions .button {
+        width: 100%;
+        min-width: 0;
       }
     }
   </style>
@@ -1104,8 +1227,9 @@
           <p class="sub">Manage your pitchIQ login, username, and account tier.</p>
         </div>
         <div class="top-actions">
+          <a class="text-link" href="./app-mobile.html">mobile</a>
           <a class="text-link" href="./faqs-knowledge.html">faqs / knowledge</a>
-          <a class="text-link" href="./app.html">back to app</a>
+          <a class="text-link" href="./app.html">desktop app</a>
           <button class="text-button" id="logout-button" type="button">sign out</button>
         </div>
       </div>
