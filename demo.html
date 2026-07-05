@@ -2827,6 +2827,103 @@
       filter: drop-shadow(0 0 5px rgba(255, 148, 46, 0.5));
     }
 
+    .pitchiq-confirm-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(3, 4, 8, 0.78);
+      backdrop-filter: blur(4px);
+    }
+
+    .pitchiq-confirm-modal.hidden {
+      display: none !important;
+    }
+
+    body.pitchiq-modal-open {
+      overflow: hidden;
+    }
+
+    .pitchiq-confirm-card {
+      width: min(480px, 100%);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(18, 20, 28, 0.98), rgba(11, 12, 18, 0.98));
+      box-shadow: 0 24px 56px rgba(0, 0, 0, 0.42);
+      padding: 22px;
+    }
+
+    .pitchiq-confirm-card.add {
+      border-color: rgba(255, 148, 46, 0.28);
+    }
+
+    .pitchiq-confirm-card.remove {
+      border-color: rgba(255, 23, 77, 0.28);
+    }
+
+    .pitchiq-confirm-title {
+      margin: 0 0 12px;
+      font-size: 1.08rem;
+      letter-spacing: 0.02em;
+      text-align: center;
+    }
+
+    .pitchiq-confirm-title.add {
+      color: var(--amber);
+    }
+
+    .pitchiq-confirm-title.remove {
+      color: var(--neon-red);
+    }
+
+    .pitchiq-confirm-copy {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.65;
+      text-align: center;
+    }
+
+    .pitchiq-confirm-actions {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .pitchiq-confirm-actions .button {
+      min-width: 112px;
+      width: auto;
+      height: auto;
+      padding: 10px 16px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .pitchiq-confirm-actions .button.cancel {
+      border-color: rgba(255, 23, 77, 0.58);
+      background: rgba(255, 23, 77, 0.14);
+      color: var(--neon-red);
+    }
+
+    .pitchiq-confirm-actions .button.proceed.add {
+      border-color: rgba(255, 148, 46, 0.58);
+      background: rgba(255, 148, 46, 0.14);
+      color: var(--amber);
+    }
+
+    .pitchiq-confirm-actions .button.proceed.remove {
+      border-color: rgba(255, 23, 77, 0.58);
+      background: rgba(255, 23, 77, 0.14);
+      color: var(--neon-red);
+    }
+
     .ump-cell {
       text-align: center;
     }
@@ -3470,6 +3567,17 @@
     last server activity: pending
   </footer>
 
+  <div id="pitchiq-confirm-modal" class="pitchiq-confirm-modal hidden" aria-hidden="true">
+    <div class="pitchiq-confirm-card" id="pitchiq-confirm-card" role="dialog" aria-modal="true" aria-labelledby="pitchiq-confirm-title">
+      <h2 class="pitchiq-confirm-title" id="pitchiq-confirm-title"></h2>
+      <p class="pitchiq-confirm-copy" id="pitchiq-confirm-copy"></p>
+      <div class="pitchiq-confirm-actions">
+        <button class="button cancel" type="button" id="pitchiq-confirm-cancel">Cancel</button>
+        <button class="button proceed" type="button" id="pitchiq-confirm-proceed">Proceed</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const accountPill = document.getElementById("account-pill");
     const serverActivityFooter = document.getElementById("server-activity-footer");
@@ -3600,6 +3708,14 @@
     const pitcherInput = document.getElementById("pitcher-input");
     const pitcherDropdown = document.getElementById("pitcher-dropdown");
     const pitcherLookupFavoriteBtn = document.getElementById("pitcher-lookup-favorite-btn");
+    const pitchiqConfirmModal = document.getElementById("pitchiq-confirm-modal");
+    const pitchiqConfirmCard = document.getElementById("pitchiq-confirm-card");
+    const pitchiqConfirmTitle = document.getElementById("pitchiq-confirm-title");
+    const pitchiqConfirmCopy = document.getElementById("pitchiq-confirm-copy");
+    const pitchiqConfirmCancel = document.getElementById("pitchiq-confirm-cancel");
+    const pitchiqConfirmProceed = document.getElementById("pitchiq-confirm-proceed");
+    let pitchiqConfirmResolve = null;
+    let pitchiqConfirmOpenedAt = 0;
     const clearPitcherButton = document.getElementById("clear-pitcher");
 
     let upcomingGames = [];
@@ -3659,6 +3775,10 @@
       { key: "fd_bet_payout", label: "FD Bet Payout", value: game => formatBetPayout(game.fd_bet, game.fd_over_payout, game.fd_under_payout) },
       { key: "fd_result", label: "FD O/U Result", value: game => evaluateBetCorrectness(game.actual_k ?? game.strikeouts, game.fd_line, game.fd_bet) },
       { key: "projected_strikeouts", label: "PitchIQ Ks", value: game => formatNumber(displayProjectionValue(game), 2) },
+      { key: "ek", label: "EK", value: game => formatNumber(game.ensemble_prediction, 2) },
+      { key: "poisson", label: "POISSON", value: game => formatNumber(game.poisson_prediction, 2) },
+      { key: "linear", label: "Linear", value: game => formatNumber(game.linear_prediction, 2) },
+      { key: "nonlinear", label: "Nonlinear", value: game => formatNumber(game.nonlinear_prediction, 2) },
       { key: "volatility_score", label: "Volatility", value: game => formatVolatility(game) },
       { key: "dk_bet", label: "DK Bet", value: game => game.dk_bet },
       { key: "dk_edge", label: "DK Edge", value: game => formatEdge(game.dk_edge) },
@@ -5362,11 +5482,54 @@
       pitcherLookupFavoriteBtn.innerHTML = renderFavoriteStarIcon(favorited);
     }
 
-    function toggleFavoritePitcher(pitcherName) {
+    function closePitchiqConfirm(confirmed = false) {
+      const resolve = pitchiqConfirmResolve;
+      pitchiqConfirmResolve = null;
+      pitchiqConfirmOpenedAt = 0;
+      pitchiqConfirmModal.classList.add("hidden");
+      pitchiqConfirmModal.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("pitchiq-modal-open");
+      if (resolve) resolve(confirmed);
+    }
+
+    function openPitchiqConfirm({ title, copy, tone, proceedLabel }) {
+      return new Promise((resolve) => {
+        pitchiqConfirmResolve = resolve;
+        pitchiqConfirmOpenedAt = performance.now();
+        pitchiqConfirmCard.className = `pitchiq-confirm-card ${tone}`;
+        pitchiqConfirmTitle.className = `pitchiq-confirm-title ${tone}`;
+        pitchiqConfirmTitle.textContent = title;
+        pitchiqConfirmCopy.textContent = copy;
+        pitchiqConfirmProceed.className = `button proceed ${tone}`;
+        pitchiqConfirmProceed.textContent = proceedLabel;
+        pitchiqConfirmModal.classList.remove("hidden");
+        pitchiqConfirmModal.setAttribute("aria-hidden", "false");
+        document.body.classList.add("pitchiq-modal-open");
+        pitchiqConfirmCancel.focus();
+      });
+    }
+
+    async function confirmFavoritePitcherChange(pitcherName, adding) {
+      const label = String(pitcherName || "").trim() || "this pitcher";
+      return openPitchiqConfirm({
+        title: adding ? "Add to My Pitchers?" : "Remove from My Pitchers?",
+        copy: adding
+          ? `Add ${label} to your My Pitchers watchlist?`
+          : `Remove ${label} from your My Pitchers watchlist?`,
+        tone: adding ? "add" : "remove",
+        proceedLabel: adding ? "Add" : "Remove",
+      });
+    }
+
+    async function toggleFavoritePitcher(pitcherName) {
       const canonicalPitcher = canonicalPitcherName(pitcherName);
       if (!canonicalPitcher) return;
       const key = normalizePitcherKey(canonicalPitcher);
-      if (favoritePitcherKeys.has(key)) {
+      const wasFavorited = favoritePitcherKeys.has(key);
+      if (!(await confirmFavoritePitcherChange(canonicalPitcher, !wasFavorited))) {
+        return;
+      }
+      if (wasFavorited) {
         favoritePitcherNames = favoritePitcherNames.filter(name => normalizePitcherKey(name) !== key);
       } else {
         favoritePitcherNames = normalizeFavoritePitcherNames([...favoritePitcherNames, canonicalPitcher]);
@@ -6681,7 +6844,21 @@
     pitcherLookupFavoriteBtn?.addEventListener("click", () => {
       const pitcherName = (resolvePitcherName() || pitcherInput.value || "").trim();
       if (!pitcherName) return;
-      toggleFavoritePitcher(pitcherName);
+      void toggleFavoritePitcher(pitcherName);
+    });
+
+    pitchiqConfirmCancel.addEventListener("click", () => closePitchiqConfirm(false));
+    pitchiqConfirmProceed.addEventListener("click", () => {
+      if (performance.now() - pitchiqConfirmOpenedAt < 300) return;
+      closePitchiqConfirm(true);
+    });
+    pitchiqConfirmModal.addEventListener("click", event => {
+      if (event.target === pitchiqConfirmModal) closePitchiqConfirm(false);
+    });
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape" && !pitchiqConfirmModal.classList.contains("hidden")) {
+        closePitchiqConfirm(false);
+      }
     });
 
     pitcherInput.addEventListener("focus", openPitcherDropdown);
@@ -6731,7 +6908,7 @@
     function handleGameTableActionClick(event, options = {}) {
       const favoriteButton = event.target.closest(".favorite-pitcher-btn");
       if (favoriteButton) {
-        toggleFavoritePitcher(favoriteButton.dataset.pitcher || "");
+        void toggleFavoritePitcher(favoriteButton.dataset.pitcher || "");
         return;
       }
       if (options.includeHistorical !== false) {

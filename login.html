@@ -245,6 +245,18 @@
       background: rgba(141, 138, 255, 0.16);
     }
 
+    .create-account-button:disabled {
+      cursor: not-allowed;
+      opacity: 0.58;
+      transform: none;
+    }
+
+    .create-account-button:disabled:hover {
+      transform: none;
+      border-color: rgba(141, 138, 255, 0.28);
+      background: var(--violet-soft);
+    }
+
     .helper-row {
       display: flex;
       justify-content: flex-end;
@@ -629,6 +641,8 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" crossorigin="anonymous"></script>
+  <script src="./pitchiq-feature-locks.js"></script>
+  <script src="./pitchiq-billing.js"></script>
   <script>
     (function () {
       const CDN = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js";
@@ -713,6 +727,9 @@
 
     const SUPABASE_URL = "https://odvopvoqssamjquinhft.supabase.co";
     const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_7g1yX__kNzT-6tj8Tr4SIg_T4BX9BlV";
+    const SITE_ORIGIN = /localhost|127\.0\.0\.1/i.test(window.location.hostname)
+      ? window.location.origin
+      : "https://thepitchpredictor.com";
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
       auth: {
         autoRefreshToken: true,
@@ -734,24 +751,6 @@
       }
 
       return { profile: data, error: null };
-    }
-
-    function hasActiveMembership(profile) {
-      if (!profile) return false;
-
-      const role = String(profile.role || "").toLowerCase();
-      if (["life", "admin", "owner"].includes(role)) return true;
-      if (!["basic", "pro"].includes(role)) return false;
-
-      const status = String(profile.subscription_status || "").toLowerCase();
-      if (status === "active" || status === "trialing") return true;
-
-      if (profile.subscription_current_period_end) {
-        return new Date(profile.subscription_current_period_end).getTime() > Date.now();
-      }
-
-      if (!profile.stripe_subscription_id) return true;
-      return false;
     }
 
     function openModal(modal, focusTarget) {
@@ -854,7 +853,7 @@
         return;
       }
 
-      if (!hasActiveMembership(profile)) {
+      if (!window.PitchIQBilling.hasActiveMembership(profile)) {
         window.location.href = "./subscribe.html";
         return;
       }
@@ -862,7 +861,16 @@
       window.location.href = "./app.html";
     });
 
-    document.getElementById("create-account-open").addEventListener("click", openResponsibilityModal);
+    const createAccountOpen = document.getElementById("create-account-open");
+    window.PitchIQFeatureLocks.applyButtonLock(createAccountOpen, "createAccount");
+    createAccountOpen.addEventListener("click", () => {
+      if (window.PitchIQFeatureLocks.isLocked("createAccount")) {
+        loginStatus.textContent = window.PitchIQFeatureLocks.lockMessage("createAccount");
+        loginStatus.style.color = "var(--muted)";
+        return;
+      }
+      openResponsibilityModal();
+    });
     forgotPasswordOpen.addEventListener("click", openForgotPasswordModal);
 
     termsAgree.addEventListener("change", () => {
@@ -942,7 +950,7 @@
           password,
           options: {
             data: { username },
-            emailRedirectTo: `${window.location.origin}/subscribe.html`,
+            emailRedirectTo: `${SITE_ORIGIN}/subscribe.html`,
           },
         });
         data = result.data;
@@ -978,7 +986,7 @@
 
       const formData = new FormData(forgotPasswordForm);
       const email = String(formData.get("email") || "").trim();
-      const redirectTo = `${window.location.origin}/reset-password.html`;
+      const redirectTo = `${SITE_ORIGIN}/reset-password.html`;
       const { error } = await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo });
 
       if (error) {

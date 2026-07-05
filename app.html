@@ -1017,6 +1017,22 @@
       width: 100%;
     }
 
+    #pitcher-lookup-game-panel.is-live {
+      border-color: rgba(141, 214, 159, 0.24);
+      background: linear-gradient(180deg, rgba(141, 214, 159, 0.1), rgba(141, 214, 159, 0.03));
+    }
+
+    #pitcher-lookup-game-panel.is-live .section-title {
+      color: var(--success);
+    }
+
+    .lookup-live-text {
+      color: var(--success);
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
     .info-grid {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -2034,7 +2050,37 @@
       vertical-align: baseline;
     }
 
-    .desktop-live-status,
+    .desktop-live-status {
+      margin-top: 0;
+      font-size: 0.58rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      line-height: 1.15;
+      text-transform: uppercase;
+      font-variant-numeric: tabular-nums;
+      color: var(--muted);
+    }
+
+    .desktop-live-status.is-delayed {
+      color: var(--amber);
+    }
+
+    .desktop-live-status.is-warmup {
+      color: var(--neon-blue);
+    }
+
+    .desktop-live-status.is-pitching {
+      color: var(--success);
+    }
+
+    .desktop-live-status.is-batting {
+      color: var(--neon-blue);
+    }
+
+    .desktop-live-status.is-finished {
+      color: var(--neon-red);
+    }
+
     .desktop-live-time {
       margin-top: 0;
       color: #5db2ff;
@@ -3018,11 +3064,35 @@
       white-space: nowrap;
     }
 
+    .pitcher-cell .pitcher-team-sub {
+      display: block;
+    }
+
     .pitcher-team-sub,
     .date-time-sub {
       color: var(--muted);
       font-size: 0.78rem;
       line-height: 1.25;
+    }
+
+    .live-starter-status.is-delayed {
+      color: var(--amber);
+    }
+
+    .live-starter-status.is-warmup {
+      color: var(--neon-blue);
+    }
+
+    .live-starter-status.is-pitching {
+      color: var(--success);
+    }
+
+    .live-starter-status.is-batting {
+      color: var(--neon-blue);
+    }
+
+    .live-starter-status.is-finished {
+      color: var(--neon-red);
     }
 
     .book-line-cell {
@@ -3426,6 +3496,148 @@
       box-shadow: 0 0 24px rgba(255, 63, 89, 0.38);
     }
 
+    .pitchiq-confirm-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(3, 4, 8, 0.78);
+      backdrop-filter: blur(4px);
+    }
+
+    .pitchiq-confirm-modal.hidden {
+      display: none !important;
+    }
+
+    body.pitchiq-modal-open {
+      overflow: hidden;
+    }
+
+    .pitchiq-confirm-card {
+      width: min(480px, 100%);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(18, 20, 28, 0.98), rgba(11, 12, 18, 0.98));
+      box-shadow: 0 24px 56px rgba(0, 0, 0, 0.42);
+      padding: 22px;
+    }
+
+    .pitchiq-confirm-card.add {
+      border-color: rgba(255, 148, 46, 0.28);
+    }
+
+    .pitchiq-confirm-card.remove {
+      border-color: rgba(255, 23, 77, 0.28);
+    }
+
+    .pitchiq-confirm-title {
+      margin: 0 0 12px;
+      font-size: 1.08rem;
+      letter-spacing: 0.02em;
+      text-align: center;
+      text-transform: none;
+    }
+
+    .pitchiq-confirm-title.add {
+      color: var(--amber);
+    }
+
+    .pitchiq-confirm-title.remove {
+      color: var(--neon-red);
+    }
+
+    .pitchiq-confirm-copy {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.65;
+      text-align: center;
+    }
+
+    .pitchiq-confirm-actions {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .pitchiq-confirm-actions .button {
+      min-width: 112px;
+      width: auto;
+      height: auto;
+      padding: 10px 16px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .pitchiq-confirm-actions .button.cancel {
+      border-color: rgba(255, 23, 77, 0.58);
+      background: rgba(255, 23, 77, 0.14);
+      color: var(--neon-red);
+      box-shadow: 0 0 0 1px rgba(255, 23, 77, 0.12) inset;
+    }
+
+    .pitchiq-confirm-actions .button.cancel:hover {
+      border-color: rgba(255, 23, 77, 0.78);
+      background: rgba(255, 23, 77, 0.2);
+    }
+
+    .pitchiq-confirm-actions .button.proceed.add {
+      border-color: rgba(255, 148, 46, 0.58);
+      background: rgba(255, 148, 46, 0.14);
+      color: var(--amber);
+      box-shadow: 0 0 0 1px rgba(255, 148, 46, 0.12) inset;
+    }
+
+    .pitchiq-confirm-actions .button.proceed.add:hover {
+      border-color: rgba(255, 148, 46, 0.78);
+      background: rgba(255, 148, 46, 0.2);
+    }
+
+    .pitchiq-confirm-actions .button.proceed.remove {
+      border-color: rgba(255, 23, 77, 0.58);
+      background: rgba(255, 23, 77, 0.14);
+      color: var(--neon-red);
+      box-shadow: 0 0 0 1px rgba(255, 23, 77, 0.12) inset;
+    }
+
+    .pitchiq-confirm-actions .button.proceed.remove:hover {
+      border-color: rgba(255, 23, 77, 0.78);
+      background: rgba(255, 23, 77, 0.2);
+    }
+
+    @media (max-width: 760px) {
+      .pitchiq-confirm-modal {
+        padding: 14px;
+        padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+        align-items: flex-end;
+      }
+
+      .pitchiq-confirm-card {
+        width: 100%;
+        max-height: calc(100vh - 28px - env(safe-area-inset-bottom, 0px));
+        overflow-y: auto;
+        border-radius: 18px 18px 14px 14px;
+        padding: 20px 18px calc(18px + env(safe-area-inset-bottom, 0px));
+      }
+
+      .pitchiq-confirm-actions {
+        flex-direction: column-reverse;
+      }
+
+      .pitchiq-confirm-actions .button {
+        width: 100%;
+        min-width: 0;
+        min-height: 42px;
+      }
+    }
+
     .ump-cell {
       text-align: center;
     }
@@ -3747,8 +3959,8 @@
           </div>
         </div>
 
-        <div class="subtile glass-subtile">
-          <div class="section-title center-title">Upcoming Game</div>
+        <div class="subtile glass-subtile" id="pitcher-lookup-game-panel">
+          <div class="section-title center-title" id="pitcher-lookup-game-title">Upcoming Game</div>
           <div class="info-grid four" id="upcoming-game-grid"></div>
         </div>
 
@@ -3796,6 +4008,7 @@
                   <th class="sortable" data-sort-key="opponent"><span class="th-inner">Opponent <span class="sort-indicator"></span></span></th>
                   <th class="sortable" data-sort-key="date"><span class="th-inner">Date <span class="sort-indicator"></span></span></th>
                   <th class="sortable" data-sort-key="plate_umpire"><span class="th-inner">Ump <span class="sort-indicator"></span></span></th>
+                  <th class="sortable" data-sort-key="opponent_lineup_assigned"><span class="th-inner">Lineup <span class="sort-indicator"></span></span></th>
                   <th class="sortable" data-sort-key="dk_line"><span class="th-inner">DK O/U Line <span class="sort-indicator"></span></span></th>
                   <th class="sortable" data-sort-key="fd_line"><span class="th-inner">FD O/U Line <span class="sort-indicator"></span></span></th>
                   <th class="sortable" data-sort-key="projected_strikeouts"><span class="th-inner">PitchIQ Ks <span class="sort-indicator"></span></span></th>
@@ -4254,6 +4467,17 @@
     </div>
   </div>
 
+  <div id="pitchiq-confirm-modal" class="pitchiq-confirm-modal hidden" aria-hidden="true">
+    <div class="pitchiq-confirm-card" id="pitchiq-confirm-card" role="dialog" aria-modal="true" aria-labelledby="pitchiq-confirm-title">
+      <h2 class="pitchiq-confirm-title" id="pitchiq-confirm-title"></h2>
+      <p class="pitchiq-confirm-copy" id="pitchiq-confirm-copy"></p>
+      <div class="pitchiq-confirm-actions">
+        <button class="button cancel" type="button" id="pitchiq-confirm-cancel">Cancel</button>
+        <button class="button proceed" type="button" id="pitchiq-confirm-proceed">Proceed</button>
+      </div>
+    </div>
+  </div>
+
   <script src="./Card%20Styles/DropRateController.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" crossorigin="anonymous"></script>
   <script>
@@ -4555,6 +4779,14 @@
     const walletConfirmOverlay = document.getElementById("wallet-confirm-overlay");
     const walletConfirmCancel = document.getElementById("wallet-confirm-cancel");
     const walletConfirmYes = document.getElementById("wallet-confirm-yes");
+    const pitchiqConfirmModal = document.getElementById("pitchiq-confirm-modal");
+    const pitchiqConfirmCard = document.getElementById("pitchiq-confirm-card");
+    const pitchiqConfirmTitle = document.getElementById("pitchiq-confirm-title");
+    const pitchiqConfirmCopy = document.getElementById("pitchiq-confirm-copy");
+    const pitchiqConfirmCancel = document.getElementById("pitchiq-confirm-cancel");
+    const pitchiqConfirmProceed = document.getElementById("pitchiq-confirm-proceed");
+    let pitchiqConfirmResolve = null;
+    let pitchiqConfirmOpenedAt = 0;
     const historicalSearchInput = document.getElementById("historical-search-input");
     const clearHistoricalSearchButton = document.getElementById("clear-historical-search");
     const historicalGamesMeta = document.getElementById("historical-games-meta");
@@ -4706,6 +4938,10 @@
       { key: "fd_bet_payout", label: "FD Bet Payout", value: game => formatBetPayout(game.fd_bet, game.fd_over_payout, game.fd_under_payout) },
       { key: "fd_result", label: "FD O/U Result", value: game => evaluateBetCorrectness(game.actual_k ?? game.strikeouts, game.fd_line, game.fd_bet) },
       { key: "projected_strikeouts", label: "PitchIQ Ks", value: game => formatNumber(displayProjectionValue(game), 2) },
+      { key: "ek", label: "EK", value: game => exportDecimal(game.ensemble_prediction) },
+      { key: "poisson", label: "POISSON", value: game => exportDecimal(game.poisson_prediction) },
+      { key: "linear", label: "Linear", value: game => exportDecimal(game.linear_prediction) },
+      { key: "nonlinear", label: "Nonlinear", value: game => exportDecimal(game.nonlinear_prediction) },
       { key: "volatility_score", label: "Volatility", value: game => formatVolatility(game) },
       { key: "dk_bet", label: "DK Bet", value: game => game.dk_bet },
       { key: "dk_edge", label: "DK Edge", value: game => formatEdge(game.dk_edge) },
@@ -4935,7 +5171,12 @@
     function splitSupabaseGameRows(rows) {
       const upcomingByKey = new Map();
       const liveByKey = new Map();
-      rows.forEach(row => {
+      const sortedRows = [...rows].sort((left, right) => {
+        const leftIsLive = String(left?.table_type || "").toLowerCase() === "live" ? 1 : 0;
+        const rightIsLive = String(right?.table_type || "").toLowerCase() === "live" ? 1 : 0;
+        return leftIsLive - rightIsLive;
+      });
+      sortedRows.forEach(row => {
         if (!row?.payload) return;
         const tableType = String(row.table_type || "").toLowerCase();
         const game = { ...row.payload };
@@ -5363,6 +5604,45 @@
       refreshMyPitchersView();
     }
 
+    function closePitchiqConfirm(confirmed = false) {
+      const resolve = pitchiqConfirmResolve;
+      pitchiqConfirmResolve = null;
+      pitchiqConfirmOpenedAt = 0;
+      pitchiqConfirmModal.classList.add("hidden");
+      pitchiqConfirmModal.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("pitchiq-modal-open");
+      if (resolve) resolve(confirmed);
+    }
+
+    function openPitchiqConfirm({ title, copy, tone, proceedLabel }) {
+      return new Promise((resolve) => {
+        pitchiqConfirmResolve = resolve;
+        pitchiqConfirmOpenedAt = performance.now();
+        pitchiqConfirmCard.className = `pitchiq-confirm-card ${tone}`;
+        pitchiqConfirmTitle.className = `pitchiq-confirm-title ${tone}`;
+        pitchiqConfirmTitle.textContent = title;
+        pitchiqConfirmCopy.textContent = copy;
+        pitchiqConfirmProceed.className = `button proceed ${tone}`;
+        pitchiqConfirmProceed.textContent = proceedLabel;
+        pitchiqConfirmModal.classList.remove("hidden");
+        pitchiqConfirmModal.setAttribute("aria-hidden", "false");
+        document.body.classList.add("pitchiq-modal-open");
+        pitchiqConfirmCancel.focus();
+      });
+    }
+
+    async function confirmFavoritePitcherChange(pitcherName, adding) {
+      const label = String(pitcherName || "").trim() || "this pitcher";
+      return openPitchiqConfirm({
+        title: adding ? "Add to My Pitchers?" : "Remove from My Pitchers?",
+        copy: adding
+          ? `Add ${label} to your My Pitchers watchlist?`
+          : `Remove ${label} from your My Pitchers watchlist?`,
+        tone: adding ? "add" : "remove",
+        proceedLabel: adding ? "Add" : "Remove",
+      });
+    }
+
     async function toggleFavoritePitcher(pitcherName, button = null) {
       if (!canViewMyPitchers()) {
         setActiveWorkspace("my-pitchers");
@@ -5372,6 +5652,9 @@
       const canonicalPitcher = canonicalPitcherName(pitcherName);
       const key = normalizePitcherKey(canonicalPitcher);
       const wasFavorited = favoritePitcherKeys.has(key);
+      if (!(await confirmFavoritePitcherChange(canonicalPitcher, !wasFavorited))) {
+        return;
+      }
       if (wasFavorited) {
         favoritePitcherNames = favoritePitcherNames.filter(name => normalizePitcherKey(name) !== key);
       } else {
@@ -6506,6 +6789,10 @@
       return Boolean(normalized && !["pending", "unknown", "n/a", "na"].includes(normalized));
     }
 
+    function isAssignedLineup(game) {
+      return Boolean(game?.opponent_lineup_assigned);
+    }
+
     function renderUmpCell(game) {
       const umpName = String(game?.plate_umpire || "").trim();
       const assigned = isAssignedUmp(umpName);
@@ -6517,6 +6804,55 @@
             title="${escapeHtml(label)}"
             aria-label="${escapeHtml(label)}"
           >${assigned ? "&#10003;" : ""}</span>
+        </td>
+      `;
+    }
+
+    function renderLineupCell(game) {
+      const assigned = isAssignedLineup(game);
+      const opponent = String(game?.opponent || "opponent").trim() || "opponent";
+      const label = assigned
+        ? `${opponent} lineup announced for this game`
+        : `${opponent} lineup not announced yet`;
+      return `
+        <td class="ump-cell">
+          <span
+            class="ump-indicator ${assigned ? "assigned" : ""}"
+            title="${escapeHtml(label)}"
+            aria-label="${escapeHtml(label)}"
+          >${assigned ? "&#10003;" : ""}</span>
+        </td>
+      `;
+    }
+
+    function formatLiveStarterStatsLine(game) {
+      const ks = String(game?.live_strikeouts ?? "").trim();
+      const pitchCount = String(game?.live_pitch_count ?? "").trim();
+      if (!ks && !pitchCount) return "";
+      if (ks && pitchCount) return `(${ks}k - ${pitchCount} pitches)`;
+      if (ks) return `(${ks}k)`;
+      return `(${pitchCount} pitches)`;
+    }
+
+    function renderLiveStatusCell(game) {
+      const starterStatus = String(game?.starter_status || "").trim();
+      const status = String(game?.game_status || "In Progress").trim();
+      const inning = String(game?.game_inning || "").trim();
+      const primary = starterStatus || inning || status;
+      const statusTone = liveStarterStatusTone(game);
+      const statusToneClass = statusTone ? ` live-starter-status is-${statusTone}` : "";
+      const contextParts = [];
+      if (inning) contextParts.push(inning);
+      const starterStats = formatLiveStarterStatsLine(game);
+      const subLines = [];
+      if (contextParts.length) subLines.push(contextParts.join(" · "));
+      if (starterStats) subLines.push(starterStats);
+      return `
+        <td>
+          <div class="pitcher-cell">
+            <span class="pitcher-name${statusToneClass}">${escapeHtml(primary)}</span>
+            ${subLines.map((line) => `<span class="pitcher-team-sub">${escapeHtml(line)}</span>`).join("")}
+          </div>
         </td>
       `;
     }
@@ -6682,6 +7018,32 @@
       return String(value || "").trim().toLowerCase();
     }
 
+    function isDelayLikeStatus(status) {
+      const normalized = normalizeText(status);
+      return normalized.includes("delay")
+        || normalized.includes("postpon")
+        || normalized.includes("suspend");
+    }
+
+    function liveStarterStatusTone(game) {
+      const status = String(game?.game_status || game?.status || "").trim();
+      if (status && isDelayLikeStatus(status)) return "delayed";
+
+      const starterStatus = normalizeText(game?.starter_status);
+      if (starterStatus === "pitching") return "pitching";
+      if (starterStatus === "team batting") return "batting";
+      if (starterStatus === "finished") return "finished";
+      if (starterStatus.includes("warm")) return "warmup";
+
+      const detailed = normalizeText(game?.game_detailed_state || game?.detailed_state);
+      if (detailed.includes("warm")) return "warmup";
+
+      const statusNorm = normalizeText(status);
+      if (statusNorm.includes("warm")) return "warmup";
+
+      return "";
+    }
+
     function renderCells(containerId, items) {
       const container = document.getElementById(containerId);
       if (!container) return;
@@ -6788,7 +7150,13 @@
       }
     }
 
+    function setPitcherLookupGamePanelLive(isLive) {
+      const panel = document.getElementById("pitcher-lookup-game-panel");
+      if (panel) panel.classList.toggle("is-live", Boolean(isLive));
+    }
+
     function renderEmptyPitcherLookup() {
+      setPitcherLookupGamePanelLive(false);
       renderCells("upcoming-game-grid", [
         { label: "Pitcher", value: " " },
         { label: "Opponent", value: " " },
@@ -6849,6 +7217,13 @@
           body: `${game.plate_umpire} is listed behind the plate for this matchup.`
         });
       }
+      if (isAssignedLineup(game)) {
+        notes.push({
+          impact: "neutral",
+          title: "Opponent Lineup Announced",
+          body: `${game.opponent || "The opponent"} has posted its starting batting order for tonight.`
+        });
+      }
       if (game.weather || game.wind) {
         notes.push({
           impact: "neutral",
@@ -6874,11 +7249,19 @@
       const projected = displayProjectionValue(game);
       const latestHistory = latestHistoricalGameForPitcher(game.pitcher);
       const lastGameK = game.last_game_k || latestHistory?.actual_k || latestHistory?.strikeouts || "";
+      const isLive = shouldShowAsLiveGame(game, game?._pitchiq_source_table || "");
+      const gameDateTime = `${game.date || ""}${game.time ? ` ${game.time}` : ""}`.trim();
+
+      setPitcherLookupGamePanelLive(isLive);
 
       renderCells("upcoming-game-grid", [
         { label: "Pitcher", value: game.pitcher || "" },
         { label: "Opponent", value: game.opponent || "" },
-        { label: "Game Date/Time", value: `${game.date || ""}${game.time ? ` ${game.time}` : ""}` },
+        {
+          label: "Game Date/Time",
+          value: isLive ? "Live" : gameDateTime,
+          className: isLive ? "lookup-live-text" : "",
+        },
         { label: "PitchIQ K", value: formatNumber(projected, 2) },
         { label: "Venue", value: game.venue || "" },
         { label: "Home Or Away", value: game.home_or_away || "" },
@@ -6929,6 +7312,7 @@
 
     function renderNotScheduledPitcherLookup(pitcherName, latestHistory = null) {
       const lastGameK = latestHistory?.actual_k || latestHistory?.strikeouts || "";
+      setPitcherLookupGamePanelLive(false);
       renderCells("upcoming-game-grid", [
         { label: "Pitcher", value: pitcherName || latestHistory?.pitcher || "" },
         { label: "Opponent", value: "Not Scheduled" },
@@ -6997,6 +7381,9 @@
       }
       if (key === "plate_umpire") {
         return isAssignedUmp(game.plate_umpire) ? 1 : 0;
+      }
+      if (key === "opponent_lineup_assigned") {
+        return isAssignedLineup(game) ? 1 : 0;
       }
       if (key === "notes") {
         return normalizeText(displayNotesText(game));
@@ -8209,7 +8596,7 @@
             <div class="desktop-card-live-fill"></div>
             ${
               Number.isFinite(projectedKs)
-                ? `<div class="desktop-card-live-marker"><span>${escapeHtml(formatNumber(projectedKs, 1))}</span></div>`
+                ? `<div class="desktop-card-live-marker"><span>${escapeHtml(formatNumber(projectedKs, 2))}</span></div>`
                 : ""
             }
           </div>
@@ -8305,15 +8692,9 @@
       const inningCompact = view === "live" ? formatInningCompact(game.game_inning) : "";
       const time = String(inningCompact || game.time || formatDisplayTime(game.start_time) || "").trim();
       const date = String(game.date || formatDisplayDate(game.game_date_raw) || "").trim();
-      const currentPitcherId = String(game.current_pitcher_id ?? "").trim();
-      const starterPitcherId = String(game.mlb_pitcher_id ?? game.pitcher_id ?? "").trim();
-      const currentPitcherName = normalizeText(game.current_pitcher);
-      const starterPitcherName = normalizeText(game.pitcher);
-      const isCurrentStarter = Boolean(
-        (currentPitcherId && starterPitcherId && currentPitcherId === starterPitcherId)
-        || (currentPitcherName && starterPitcherName && currentPitcherName === starterPitcherName)
-      );
-      const starterStatus = isCurrentStarter ? "Pitching" : String(game.starter_status || "").trim();
+      const starterStatus = String(game.starter_status || "").trim();
+      const liveStatusTone = view === "live" ? liveStarterStatusTone(game) : "";
+      const liveStatusClass = liveStatusTone ? ` is-${liveStatusTone}` : "";
       const matchupStatusLeft =
         view === "live"
           ? escapeHtml(starterStatus || game.game_status || "In Progress")
@@ -8348,7 +8729,7 @@
                 <div class="desktop-live-matchup">
                   <div class="desktop-live-opponent"><span class="desktop-live-matchup-vs">vs</span>${escapeHtml(game.opponent || "Opponent pending")}</div>
                   <span class="desktop-live-date">${escapeHtml(date || "Date pending")}</span>
-                  <div class="desktop-live-status">${matchupStatusLeft}</div>
+                  <div class="desktop-live-status${liveStatusClass}">${matchupStatusLeft}</div>
                   <span class="desktop-live-time">${escapeHtml(time === "Pending" ? "" : time)}</span>
                 </div>
                 <div class="desktop-live-corner-grid">
@@ -8472,7 +8853,7 @@
       if (!games || !games.length) {
         container.innerHTML = `
           <tr>
-            <td colspan="12">No upcoming probable starters available.</td>
+            <td colspan="13">No upcoming probable starters available.</td>
           </tr>
         `;
         renderDesktopCards(upcomingCardGrid, [], "upcoming");
@@ -8498,6 +8879,7 @@
           <td>${escapeHtml(game.opponent)}</td>
           ${renderDateCell(game)}
           ${renderUmpCell(game)}
+          ${renderLineupCell(game)}
           ${renderBookLineCell(game.dk_line, game.dk_over_payout, game.dk_under_payout)}
           ${renderBookLineCell(game.fd_line, game.fd_over_payout, game.fd_under_payout)}
           ${renderProjectedKsCell(game)}
@@ -8558,7 +8940,7 @@
             </div>
           </td>
           <td>${escapeHtml(game.opponent)}</td>
-          <td>${escapeHtml(game.game_status || "In Progress")}</td>
+          ${renderLiveStatusCell(game)}
           ${renderUmpCell(game)}
           ${renderBookLineCell(game.dk_line, game.dk_over_payout, game.dk_under_payout)}
           ${renderBookLineCell(game.fd_line, game.fd_over_payout, game.fd_under_payout)}
@@ -8906,7 +9288,10 @@
         if (upcomingSort.key === key) {
           upcomingSort.direction = upcomingSort.direction === "asc" ? "desc" : "asc";
         } else {
-          upcomingSort = { key, direction: "asc" };
+          upcomingSort = {
+            key,
+            direction: key === "opponent_lineup_assigned" || key === "plate_umpire" ? "desc" : "asc"
+          };
         }
         upcomingGamesPage = 1;
         refreshUpcomingGamesView();
@@ -9291,8 +9676,21 @@
 
     document.addEventListener("keydown", event => {
       if (event.key !== "Escape") return;
+      if (!pitchiqConfirmModal.classList.contains("hidden")) {
+        closePitchiqConfirm(false);
+        return;
+      }
       closeWalletContextMenu();
       closeWalletRemoveConfirm();
+    });
+
+    pitchiqConfirmCancel.addEventListener("click", () => closePitchiqConfirm(false));
+    pitchiqConfirmProceed.addEventListener("click", () => {
+      if (performance.now() - pitchiqConfirmOpenedAt < 300) return;
+      closePitchiqConfirm(true);
+    });
+    pitchiqConfirmModal.addEventListener("click", event => {
+      if (event.target === pitchiqConfirmModal) closePitchiqConfirm(false);
     });
 
     walletRemoveCardButton.addEventListener("click", () => {
