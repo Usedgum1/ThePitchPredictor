@@ -4453,7 +4453,7 @@
             <div style="height:18px;"></div>
             <div id="report-columns-section">
               <div class="section-title">Columns</div>
-              <p class="owner-alert-section-hint" id="report-columns-hint">Choose which fields to include in CSV exports. Styled XLSX always uses the full desktop report layout.</p>
+              <p class="owner-alert-section-hint" id="report-columns-hint">Choose columns for CSV or styled XLSX exports. Conditional formatting applies to supported fields like bets, volatility, and results.</p>
               <div class="report-column-actions">
                 <button class="button" id="report-columns-select-all" type="button">Select All</button>
                 <button class="button" id="report-columns-deselect-all" type="button">Deselect All</button>
@@ -4823,8 +4823,6 @@
     const reportExportTypeSelect = document.getElementById("report-export-type");
     const reportStartDateInput = document.getElementById("report-start-date");
     const reportEndDateInput = document.getElementById("report-end-date");
-    const reportColumnsSection = document.getElementById("report-columns-section");
-    const reportColumnsHint = document.getElementById("report-columns-hint");
     const reportColumnsSelectAllButton = document.getElementById("report-columns-select-all");
     const reportColumnsDeselectAllButton = document.getElementById("report-columns-deselect-all");
     const reportColumnGrid = document.getElementById("report-column-grid");
@@ -7758,24 +7756,13 @@
       if (!unlocked) return;
 
       const rows = getFilteredReportRows();
-      const csvExport = isCsvReportExport();
       const selectedColumns = getSelectedReportColumns();
-      if (reportColumnsSection) {
-        reportColumnsSection.classList.toggle("hidden", !csvExport);
-      }
-      if (reportColumnsHint) {
-        reportColumnsHint.classList.toggle("hidden", !csvExport);
-      }
-      reportDownloadButton.disabled = csvExport
-        ? (!rows.length || !selectedColumns.length)
-        : !rows.length;
+      reportDownloadButton.disabled = !rows.length || !selectedColumns.length;
       const sourceLabel = reportSourceSelect.options[reportSourceSelect.selectedIndex]?.text || "Selected";
       const exportLabel = reportExportTypeSelect.options[reportExportTypeSelect.selectedIndex]?.text || "Selected";
-      const columnText = csvExport
-        ? (selectedColumns.length === 1 ? "1 column" : `${selectedColumns.length} columns`)
-        : `${HISTORICAL_XLSX_COLUMNS.length} styled columns`;
+      const columnText = selectedColumns.length === 1 ? "1 column" : `${selectedColumns.length} columns`;
       const rowText = rows.length === 1 ? "1 row" : `${rows.length} rows`;
-      reportDownloadButton.textContent = csvExport ? "Download CSV" : "Download Styled XLSX";
+      reportDownloadButton.textContent = isCsvReportExport() ? "Download CSV" : "Download Styled XLSX";
       reportSummary.textContent = `${sourceLabel} ${exportLabel} report ready with ${rowText} and ${columnText}.`;
     }
 
@@ -7984,12 +7971,12 @@
     }
 
     async function downloadReportStyledXlsx() {
+      const columns = getSelectedReportColumns();
       const rows = getFilteredReportRows();
-      if (String(currentUserRole || "").toLowerCase() !== "owner" || !rows.length) return;
+      if (String(currentUserRole || "").toLowerCase() !== "owner" || !columns.length || !rows.length) return;
 
       const source = reportSourceSelect.value || "upcoming";
       const config = BUILDER_XLSX_REPORTS[source] || BUILDER_XLSX_REPORTS.upcoming;
-      const columns = HISTORICAL_XLSX_COLUMNS;
       reportDownloadButton.disabled = true;
       reportSummary.textContent = `Building ${config.statusName} with ${rows.length === 1 ? "1 row" : `${rows.length} rows`}...`;
       try {
@@ -8124,7 +8111,7 @@
         if (cellText === "Medium") return 5;
         if (cellText === "Low") return 6;
       }
-      if (columnLabel === "Vix Level") {
+      if (columnLabel === "Vix Level" || columnLabel === "Volatility") {
         if (cellText.startsWith("Low")) return 4;
         if (cellText.startsWith("Medium")) return 5;
         if (cellText.startsWith("High")) return 6;
@@ -8132,6 +8119,11 @@
       if (columnLabel === "DK Bet" || columnLabel === "FD Bet") {
         if (cellText === "OVER") return 7;
         if (cellText === "UNDER") return 8;
+      }
+      if (columnLabel === "DK O/U Result" || columnLabel === "FD O/U Result" || columnLabel === "DK Correct?" || columnLabel === "FD Correct?") {
+        if (cellText === "Win" || cellText === "Yes") return 4;
+        if (cellText === "Push") return 5;
+        if (cellText === "Loss" || cellText === "No") return 6;
       }
       if (columnLabel === "Pitcher") return rowNumber % 2 === 1 ? 9 : 10;
       return rowNumber % 2 === 1 ? 2 : 3;
