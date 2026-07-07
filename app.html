@@ -714,6 +714,19 @@
       gap: 10px;
     }
 
+    .report-column-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 12px 0;
+    }
+
+    .report-column-actions .button {
+      min-width: 0;
+      padding: 8px 14px;
+      font-size: 0.82rem;
+    }
+
     .report-column-option {
       align-items: center;
       border: 1px solid rgba(255,255,255,0.06);
@@ -4438,8 +4451,15 @@
               </div>
             </div>
             <div style="height:18px;"></div>
-            <div class="section-title">Columns</div>
-            <div class="report-column-grid" id="report-column-grid"></div>
+            <div id="report-columns-section">
+              <div class="section-title">Columns</div>
+              <p class="owner-alert-section-hint" id="report-columns-hint">Choose which fields to include in CSV exports. Styled XLSX always uses the full desktop report layout.</p>
+              <div class="report-column-actions">
+                <button class="button" id="report-columns-select-all" type="button">Select All</button>
+                <button class="button" id="report-columns-deselect-all" type="button">Deselect All</button>
+              </div>
+              <div class="report-column-grid" id="report-column-grid"></div>
+            </div>
             <div class="report-actions">
               <button class="button" id="report-download-button" type="button">Download Styled XLSX</button>
               <div class="report-summary" id="report-summary"></div>
@@ -4803,6 +4823,10 @@
     const reportExportTypeSelect = document.getElementById("report-export-type");
     const reportStartDateInput = document.getElementById("report-start-date");
     const reportEndDateInput = document.getElementById("report-end-date");
+    const reportColumnsSection = document.getElementById("report-columns-section");
+    const reportColumnsHint = document.getElementById("report-columns-hint");
+    const reportColumnsSelectAllButton = document.getElementById("report-columns-select-all");
+    const reportColumnsDeselectAllButton = document.getElementById("report-columns-deselect-all");
     const reportColumnGrid = document.getElementById("report-column-grid");
     const reportDownloadButton = document.getElementById("report-download-button");
     const reportSummary = document.getElementById("report-summary");
@@ -7715,6 +7739,18 @@
       reportSelectedColumns = selected.slice();
     }
 
+    function setAllReportColumnsSelected(selected) {
+      reportSelectedColumns = selected
+        ? REPORT_COLUMNS.map(column => column.key)
+        : [];
+      renderReportColumns();
+      refreshReportBuilderView();
+    }
+
+    function isCsvReportExport() {
+      return reportExportTypeSelect.value === "csv";
+    }
+
     function refreshReportBuilderView() {
       const unlocked = String(currentUserRole || "").toLowerCase() === "owner";
       reportLockedPanel.classList.toggle("hidden", unlocked);
@@ -7722,13 +7758,24 @@
       if (!unlocked) return;
 
       const rows = getFilteredReportRows();
+      const csvExport = isCsvReportExport();
       const selectedColumns = getSelectedReportColumns();
-      reportDownloadButton.disabled = !rows.length || !selectedColumns.length;
+      if (reportColumnsSection) {
+        reportColumnsSection.classList.toggle("hidden", !csvExport);
+      }
+      if (reportColumnsHint) {
+        reportColumnsHint.classList.toggle("hidden", !csvExport);
+      }
+      reportDownloadButton.disabled = csvExport
+        ? (!rows.length || !selectedColumns.length)
+        : !rows.length;
       const sourceLabel = reportSourceSelect.options[reportSourceSelect.selectedIndex]?.text || "Selected";
       const exportLabel = reportExportTypeSelect.options[reportExportTypeSelect.selectedIndex]?.text || "Selected";
-      const columnText = selectedColumns.length === 1 ? "1 column" : `${selectedColumns.length} columns`;
+      const columnText = csvExport
+        ? (selectedColumns.length === 1 ? "1 column" : `${selectedColumns.length} columns`)
+        : `${HISTORICAL_XLSX_COLUMNS.length} styled columns`;
       const rowText = rows.length === 1 ? "1 row" : `${rows.length} rows`;
-      reportDownloadButton.textContent = reportExportTypeSelect.value === "csv" ? "Download CSV" : "Download Styled XLSX";
+      reportDownloadButton.textContent = csvExport ? "Download CSV" : "Download Styled XLSX";
       reportSummary.textContent = `${sourceLabel} ${exportLabel} report ready with ${rowText} and ${columnText}.`;
     }
 
@@ -7937,12 +7984,12 @@
     }
 
     async function downloadReportStyledXlsx() {
-      const columns = getSelectedReportColumns();
       const rows = getFilteredReportRows();
-      if (String(currentUserRole || "").toLowerCase() !== "owner" || !columns.length || !rows.length) return;
+      if (String(currentUserRole || "").toLowerCase() !== "owner" || !rows.length) return;
 
       const source = reportSourceSelect.value || "upcoming";
       const config = BUILDER_XLSX_REPORTS[source] || BUILDER_XLSX_REPORTS.upcoming;
+      const columns = HISTORICAL_XLSX_COLUMNS;
       reportDownloadButton.disabled = true;
       reportSummary.textContent = `Building ${config.statusName} with ${rows.length === 1 ? "1 row" : `${rows.length} rows`}...`;
       try {
@@ -9558,6 +9605,8 @@
       reportSelectedColumns = getSelectedReportColumns().map(column => column.key);
       refreshReportBuilderView();
     });
+    reportColumnsSelectAllButton?.addEventListener("click", () => setAllReportColumnsSelected(true));
+    reportColumnsDeselectAllButton?.addEventListener("click", () => setAllReportColumnsSelected(false));
     reportDownloadButton.addEventListener("click", downloadReport);
     ownerAlertAppearancePresetSelect.addEventListener("change", () => applySelectedAppearancePreset());
     ownerAlertTextPresetSelect.addEventListener("change", () => applySelectedTextPreset());
