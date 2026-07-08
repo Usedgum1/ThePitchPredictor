@@ -6,6 +6,15 @@
   <title>pitchIQ | Demo Snapshot</title>
   <meta name="description" content="Closed pitchIQ demo snapshot with made-up MLB strikeout prop data." />
   <meta name="theme-color" content="#050505" />
+  <script>
+    if (
+      window.matchMedia("(max-width: 760px)").matches &&
+      !new URLSearchParams(window.location.search).has("desktop")
+    ) {
+      window.location.replace("./demo-mobile.html");
+    }
+  </script>
+
   <link rel="icon" type="image/x-icon" href="./images/favicon/favicon.ico" />
   <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon/favicon-32x32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="./images/favicon/favicon-16x16.png" />
@@ -3174,6 +3183,7 @@
         <div class="account-summary">
           <div id="account-pill" class="account-line">Welcome, <span class="account-username tier-value-pro">Demo Pro</span>!</div>
           <div class="account-links">
+            <a class="signout-link" href="./demo-mobile.html">Mobile View</a>
             <a class="signout-link" href="./faqs-knowledge.html">faqs / knowledge</a>
             <a class="signout-link" href="./index.html">landing page</a>
             <button id="logout-button" class="signout-link" type="button">exit demo</button>

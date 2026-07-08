@@ -1,0 +1,3057 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>pitchIQ | Demo Mobile</title>
+  <meta name="description" content="Closed pitchIQ mobile demo snapshot with made-up MLB strikeout prop data." />
+  <meta name="theme-color" content="#050505" />
+  <link rel="icon" type="image/x-icon" href="./images/favicon/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="./images/favicon/favicon-16x16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="./images/favicon/apple-touch-icon.png" />
+  <link rel="manifest" href="./images/favicon/site.webmanifest" />
+
+  <style>
+    :root {
+      --bg: #050505;
+      --panel: rgba(12, 14, 20, 0.64);
+      --surface: rgba(12, 14, 20, 0.72);
+      --surface-raised: rgba(15, 17, 24, 0.92);
+      --line: rgba(255, 255, 255, 0.08);
+      --text: #f4f0e8;
+      --muted: #a7afbc;
+      --violet: #8d8aff;
+      --amber: #ff942e;
+      --blue: #6bb6ff;
+      --success: #8ddf9f;
+      --neon-blue: #2f9bff;
+      --neon-gold: #ffd84f;
+      --neon-red: #ff174d;
+      --danger: #ff8c7a;
+      --connected-neon: #39ff14;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --toolbar-pill-height: 40px;
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background:
+        radial-gradient(circle at 12% 14%, rgba(141, 138, 255, 0.2), transparent 22%),
+        radial-gradient(circle at 86% 10%, rgba(255, 148, 46, 0.18), transparent 20%),
+        radial-gradient(circle at 62% 28%, rgba(107, 182, 255, 0.14), transparent 18%),
+        linear-gradient(180deg, #050505 0%, #090a10 100%);
+      color: var(--text);
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    }
+
+    button, input, select { font: inherit; }
+
+    .app {
+      max-width: 520px;
+      margin: 0 auto;
+      min-height: 100vh;
+      padding:
+        0
+        14px
+        calc(18px + var(--safe-bottom));
+    }
+
+    .header-spacer {
+      height: var(--mobile-header-height, 220px);
+    }
+
+    .site-alert-ticker {
+      --alert-bg: rgba(37, 8, 20, 0.96);
+      --alert-text: #ffffff;
+      --alert-accent: #ff174d;
+      --alert-speed: 24s;
+      --alert-start-x: 100%;
+      --alert-end-x: -100%;
+      border: 1px solid color-mix(in srgb, var(--alert-accent) 58%, transparent);
+      background: var(--alert-bg);
+      border-radius: 12px;
+      color: var(--alert-text);
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+
+    .site-alert-ticker.hidden { display: none; }
+
+    .site-alert-track {
+      display: inline-flex;
+      align-items: center;
+      gap: 34px;
+      min-width: max-content;
+      padding: 8px 0;
+      white-space: nowrap;
+      animation: siteAlertScroll var(--alert-speed) linear infinite;
+    }
+
+    .site-alert-message {
+      color: var(--alert-text);
+      font-size: 0.76rem;
+      font-weight: var(--alert-font-weight, 700);
+      letter-spacing: 0.06em;
+      padding: 0 28px;
+      text-transform: var(--alert-text-transform, none);
+    }
+
+    .site-alert-message[aria-hidden="true"] { display: none; }
+
+    .site-alert-prefix,
+    .site-alert-suffix {
+      color: var(--alert-accent);
+      font-size: 0.66rem;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+    }
+
+    .site-alert-prefix { margin-right: 10px; }
+    .site-alert-suffix { margin-left: 10px; }
+
+    @keyframes siteAlertScroll {
+      from { transform: translateX(var(--alert-start-x)); }
+      to { transform: translateX(var(--alert-end-x)); }
+    }
+
+    .header {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      z-index: 20;
+      width: 100%;
+      max-width: 520px;
+      margin: 0;
+      padding: calc(10px + var(--safe-top)) 14px 0;
+      background: #090a10;
+      border-bottom: 1px solid var(--line);
+      box-sizing: border-box;
+      transform: translateX(-50%) translateZ(0);
+      -webkit-transform: translateX(-50%) translateZ(0);
+    }
+
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .brand-block {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      flex: 0 1 auto;
+    }
+
+    .brand-mark {
+      width: 36px;
+      height: 36px;
+      object-fit: contain;
+      flex: 0 0 auto;
+    }
+
+    .brand-text h1 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      color: var(--amber);
+    }
+
+    .brand-text p {
+      margin: 2px 0 0;
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .header-account {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      min-width: 0;
+      flex: 1 1 auto;
+    }
+
+    .account-line {
+      margin: 0;
+      min-width: 0;
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      line-height: 1.2;
+      color: var(--muted);
+      text-align: right;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .account-username { font-weight: 800; }
+
+    .tier-value-basic { color: var(--neon-blue); }
+    .tier-value-pro { color: var(--amber); }
+    .tier-value-life { color: var(--neon-gold); }
+    .tier-value-admin { color: var(--violet); }
+    .tier-value-owner { color: var(--neon-red); }
+
+    .toolbar {
+      padding-bottom: 8px;
+    }
+
+    .search-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .search {
+      width: 100%;
+      min-width: 0;
+      min-height: 40px;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--surface);
+      color: var(--text);
+    }
+
+    .search::placeholder { color: #6f7785; }
+
+    .search:focus {
+      outline: none;
+      border-color: rgba(141, 138, 255, 0.55);
+      box-shadow: 0 0 0 3px rgba(141, 138, 255, 0.12);
+    }
+
+    .nav-menu {
+      position: relative;
+    }
+
+    .nav-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: var(--toolbar-pill-height);
+      height: var(--toolbar-pill-height);
+      min-height: var(--toolbar-pill-height);
+      padding: 0;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--surface);
+      color: var(--violet);
+      cursor: pointer;
+    }
+
+    .nav-toggle-icon {
+      display: block;
+      width: 16px;
+      height: 12px;
+      position: relative;
+    }
+
+    .nav-toggle-icon::before,
+    .nav-toggle-icon::after,
+    .nav-toggle-icon > span {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 2px;
+      border-radius: 999px;
+      background: currentColor;
+    }
+
+    .nav-toggle-icon::before { content: ""; top: 0; }
+    .nav-toggle-icon > span { top: 5px; }
+    .nav-toggle-icon::after { content: ""; bottom: 0; }
+
+    .nav-toggle[aria-expanded="true"] {
+      border-color: rgba(141, 138, 255, 0.45);
+      background: rgba(141, 138, 255, 0.1);
+      color: var(--text);
+    }
+
+    .nav-dropdown {
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      z-index: 20;
+      min-width: 192px;
+      padding: 6px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--surface-raised);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.34);
+    }
+
+    .nav-dropdown.hidden {
+      display: none;
+    }
+
+    .nav-dropdown a {
+      display: flex;
+      align-items: center;
+      min-height: 40px;
+      padding: 0 12px;
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-decoration: none;
+    }
+
+    .nav-dropdown a:hover,
+    .nav-dropdown a:active {
+      background: rgba(141, 138, 255, 0.12);
+      color: var(--violet);
+    }
+
+    .view-switch {
+      margin: 0 -14px;
+      padding: 6px 14px;
+      border-top: 1px solid var(--line);
+      background: #090a10;
+    }
+
+    .view-switch-track {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 4px;
+      width: 100%;
+      padding: 3px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .view-switch-indicator {
+      position: absolute;
+      top: 3px;
+      bottom: 3px;
+      left: 3px;
+      width: calc((100% - 14px) / 3);
+      border-radius: 7px;
+      background: rgba(255, 148, 46, 0.16);
+      box-shadow: inset 0 0 0 1px rgba(255, 148, 46, 0.28);
+      transition: transform 0.22s ease, background 0.22s ease, box-shadow 0.22s ease;
+      pointer-events: none;
+    }
+
+    .view-switch.is-live .view-switch-indicator {
+      transform: translateX(calc(100% + 4px));
+      background: rgba(141, 214, 159, 0.14);
+      box-shadow: inset 0 0 0 1px rgba(141, 214, 159, 0.28);
+    }
+
+    .view-switch.is-historical .view-switch-indicator {
+      transform: translateX(calc(200% + 8px));
+      background: rgba(141, 138, 255, 0.14);
+      box-shadow: inset 0 0 0 1px rgba(141, 138, 255, 0.28);
+    }
+
+    .view-switch-btn {
+      position: relative;
+      z-index: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      width: 100%;
+      min-height: 34px;
+      padding: 0 4px;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .view-switch-btn.active {
+      color: var(--amber);
+    }
+
+    .view-switch.is-live .view-switch-btn.active {
+      color: var(--success);
+    }
+
+    .view-switch.is-historical .view-switch-btn.active {
+      color: var(--violet);
+    }
+
+    .view-switch.is-historical .view-switch-btn.active .view-switch-count {
+      background: rgba(141, 138, 255, 0.16);
+      color: var(--violet);
+    }
+
+    .view-switch-count {
+      min-width: 20px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--muted);
+      font-size: 0.62rem;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.2;
+    }
+
+    .view-switch-btn.active .view-switch-count {
+      background: rgba(255, 148, 46, 0.14);
+      color: var(--amber);
+    }
+
+    .view-switch.is-live .view-switch-btn.active .view-switch-count {
+      background: rgba(141, 214, 159, 0.16);
+      color: var(--success);
+    }
+
+    .search-row .sort-select {
+      width: auto;
+      min-width: 112px;
+      max-width: 128px;
+      padding: 0 24px;
+      font-size: 0.72rem;
+    }
+
+    .sort-select {
+      height: var(--toolbar-pill-height);
+      min-height: var(--toolbar-pill-height);
+      padding: 0 24px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background-color: var(--surface);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath stroke='%23a7afbc' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' d='M1.5 1.5 6 6l4.5-4.5'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 10px 6px;
+      appearance: none;
+      -webkit-appearance: none;
+      color: var(--text);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      text-align: center;
+      text-align-last: center;
+      cursor: pointer;
+    }
+
+    .board-head {
+      display: grid;
+      grid-template-columns: 1fr 72px;
+      gap: 8px;
+      margin: 0 -14px;
+      padding: 6px 14px 8px;
+      border-top: 1px solid var(--line);
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .board {
+      margin: 0 -14px;
+    }
+
+    .board-body {
+      display: grid;
+    }
+
+    .board-body.loading-shell {
+      display: grid;
+      padding: 14px;
+      gap: 10px;
+    }
+
+    .board-head.hidden {
+      display: none;
+    }
+
+    .board-head.live-mode,
+    .board-head.historical-mode {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: end;
+    }
+
+    .board-head .num,
+    .game-row:not(.live-mode) .ks {
+      text-align: right;
+    }
+
+    .k-head,
+    .k-columns {
+      display: grid;
+      grid-template-columns: 56px 56px;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .k-head {
+      font-size: 0.58rem;
+      letter-spacing: 0.08em;
+      line-height: 1.25;
+    }
+
+    .k-head .num {
+      text-align: center;
+    }
+
+    .k-columns {
+      padding-top: 1px;
+    }
+
+    .k-columns .actual-k,
+    .k-columns .live-k,
+    .k-columns .ks {
+      text-align: center;
+      justify-self: center;
+      width: 100%;
+    }
+
+    .actual-k {
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .detail-chip.is-win .value { color: var(--success); }
+    .detail-chip.is-loss .value { color: var(--danger); }
+    .detail-chip.is-push .value { color: var(--muted); }
+
+    .locked-panel {
+      margin: 12px 14px;
+      padding: 18px 14px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      background: rgba(0, 0, 0, 0.18);
+      text-align: center;
+    }
+
+    .locked-badge {
+      display: inline-block;
+      margin-bottom: 10px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.62rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--amber);
+      background: rgba(255, 148, 46, 0.12);
+      border: 1px solid rgba(255, 148, 46, 0.24);
+    }
+
+    .locked-title {
+      margin: 0 0 10px;
+      font-size: 1.2rem;
+      font-weight: 800;
+    }
+
+    .locked-copy {
+      margin: 0 0 14px;
+      font-size: 0.86rem;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+
+    .locked-link {
+      display: inline-block;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: rgba(141, 138, 255, 0.16);
+      border: 1px solid rgba(141, 138, 255, 0.32);
+      color: var(--violet);
+      font-size: 0.82rem;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .game-row-shell {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .game-row-shell:last-child {
+      border-bottom: 0;
+    }
+
+    .game-row-shell.expanded {
+      background: rgba(141, 138, 255, 0.06);
+      border-bottom-color: rgba(141, 138, 255, 0.14);
+    }
+
+    .game-row-shell .game-row {
+      padding: 12px 14px;
+      border-bottom: 0;
+      width: 100%;
+    }
+
+    .game-row-shell.expanded .game-row {
+      padding-bottom: 8px;
+    }
+
+    .row-action-bar {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .row-action-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      min-height: 58px;
+      padding: 8px 4px;
+      border: 1px solid rgba(107, 182, 255, 0.28);
+      border-radius: 12px;
+      background: rgba(24, 91, 173, 0.12);
+      color: var(--blue);
+      cursor: pointer;
+    }
+
+    .row-action-btn:active {
+      transform: scale(0.98);
+    }
+
+    .row-action-btn .row-action-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      font-size: 1rem;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .row-action-btn .row-action-icon svg {
+      width: 18px;
+      height: 18px;
+      display: block;
+    }
+
+    .row-action-btn .row-action-label {
+      font-size: 0.56rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      text-align: center;
+      line-height: 1.2;
+      color: var(--muted);
+    }
+
+    .row-action-btn.pitcher-lookup-btn {
+      border-color: rgba(107, 182, 255, 0.34);
+      background: rgba(24, 91, 173, 0.12);
+      color: var(--blue);
+    }
+
+    .row-action-btn.favorite-pitcher-btn,
+    .row-action-btn.historical-lookup-btn,
+    .row-action-btn.historical-search-btn,
+    .row-action-btn.add-card-btn {
+      border-color: rgba(255, 148, 46, 0.34);
+      background: rgba(255, 148, 46, 0.1);
+      color: var(--amber);
+    }
+
+    .row-action-btn.favorite-pitcher-btn.is-favorited {
+      border-color: rgba(255, 215, 79, 0.55);
+      background: rgba(255, 215, 79, 0.16);
+      color: #ffd84f;
+      box-shadow: 0 0 12px rgba(255, 215, 79, 0.18);
+    }
+
+    .row-action-btn.is-locked {
+      border-color: rgba(255, 148, 46, 0.22);
+      background: rgba(255, 148, 46, 0.06);
+      color: var(--muted);
+      cursor: default;
+    }
+
+    .row-action-btn.add-card-btn.is-saved {
+      border-color: rgba(141, 214, 159, 0.55);
+      background: rgba(141, 214, 159, 0.14);
+      color: var(--success);
+    }
+
+    .row-action-btn.add-card-btn.is-failed {
+      border-color: rgba(255, 104, 104, 0.55);
+      background: rgba(255, 104, 104, 0.14);
+      color: var(--danger);
+    }
+
+    .game-row {
+      display: grid;
+      grid-template-columns: 1fr 72px;
+      gap: 8px;
+      align-items: center;
+      padding: 12px 14px;
+      border: 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      background: transparent;
+      color: inherit;
+      text-align: left;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .game-row.live-mode {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: start;
+    }
+
+    .pitcher-block {
+      min-width: 0;
+    }
+
+    .game-row:last-child { border-bottom: 0; }
+
+    .game-row-shell:active .game-row {
+      background: transparent;
+    }
+
+    .game-row:active { background: rgba(255, 255, 255, 0.03); }
+
+    .game-row-shell.expanded .game-row {
+      background: transparent;
+    }
+
+    .pitcher-name {
+      font-size: 0.96rem;
+      font-weight: 800;
+      line-height: 1.2;
+      color: var(--text);
+    }
+
+    .matchup-line {
+      margin-top: 3px;
+      font-size: 0.76rem;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    .status-line {
+      margin-top: 2px;
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    .status-line.is-delayed {
+      color: var(--amber);
+      font-weight: 700;
+    }
+
+    .status-line.is-live {
+      color: var(--success);
+      font-weight: 700;
+    }
+
+    .status-line.is-warmup {
+      color: var(--neon-blue);
+      font-weight: 700;
+    }
+
+    .status-line.is-pitching {
+      color: var(--success);
+      font-weight: 700;
+    }
+
+    .status-line.is-batting {
+      color: var(--neon-blue);
+      font-weight: 700;
+    }
+
+    .status-line.is-finished {
+      color: var(--neon-red);
+      font-weight: 700;
+    }
+
+    .ks {
+      font-size: 1.28rem;
+      font-weight: 900;
+      color: var(--amber);
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .game-row.live-mode .ks {
+      font-size: 1.14rem;
+    }
+
+    .live-k {
+      font-size: 1.14rem;
+      font-weight: 900;
+      color: var(--success);
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .ks.pending,
+    .live-k.pending,
+    .actual-k.pending {
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .row-detail {
+      margin-top: 0;
+      padding: 10px 14px 12px;
+      border-top: 1px dashed rgba(255, 255, 255, 0.08);
+      display: grid;
+      gap: 6px;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .detail-chip {
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .detail-chip .label {
+      display: block;
+      margin-bottom: 3px;
+      font-size: 0.62rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .detail-chip .value {
+      font-size: 0.86rem;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .detail-chip.dk .label { color: var(--success); }
+    .detail-chip.fd .label { color: var(--blue); }
+    .detail-chip.team-pitcher .label { color: var(--amber); }
+    .detail-chip.team-opponent .label { color: var(--violet); }
+    .detail-chip.pitch-count .label { color: var(--neon-blue); }
+    .detail-chip.ump .label { color: var(--amber); }
+    .detail-chip.ump.is-assigned .value { color: var(--text); }
+    .detail-chip.ump.is-pending .value { color: var(--muted); }
+    .detail-chip.lineup .label { color: var(--amber); }
+    .detail-chip.lineup.is-assigned .value { color: var(--text); }
+    .detail-chip.lineup.is-pending .value { color: var(--muted); }
+
+    .row-notes {
+      grid-column: 1 / -1;
+    }
+
+    .row-notes-label {
+      margin-bottom: 8px;
+      font-size: 0.62rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--violet);
+      text-align: center;
+    }
+
+    .note-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .note-card {
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      padding: 12px;
+      background: linear-gradient(180deg, rgba(28, 30, 38, 0.88), rgba(15, 17, 24, 0.88));
+    }
+
+    .note-card.up {
+      border-color: rgba(255, 148, 46, 0.58);
+      background: linear-gradient(180deg, rgba(52, 28, 6, 0.92), rgba(24, 15, 8, 0.92));
+      box-shadow: inset 0 1px 0 rgba(255, 148, 46, 0.18);
+    }
+
+    .note-card.down {
+      border-color: rgba(107, 182, 255, 0.58);
+      background: linear-gradient(180deg, rgba(8, 22, 48, 0.92), rgba(8, 14, 28, 0.92));
+      box-shadow: inset 0 1px 0 rgba(107, 182, 255, 0.16);
+    }
+
+    .note-card.neutral {
+      border-color: rgba(167, 175, 188, 0.34);
+      background: linear-gradient(180deg, rgba(28, 30, 38, 0.88), rgba(15, 17, 24, 0.88));
+      box-shadow: inset 0 1px 0 rgba(167, 175, 188, 0.12);
+    }
+
+    .note-title {
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .note-k {
+      color: var(--amber);
+      margin-left: 6px;
+    }
+
+    .note-k.down {
+      color: var(--blue);
+    }
+
+    .note-body {
+      font-size: 0.78rem;
+      line-height: 1.45;
+      color: var(--text);
+      overflow-wrap: anywhere;
+    }
+
+    .note-card.up .note-body strong {
+      color: var(--blue);
+      font-weight: 950;
+    }
+
+    .note-card.down .note-body strong {
+      color: var(--amber);
+      font-weight: 950;
+    }
+
+    .note-body strong.note-book-dk {
+      color: #5cff77;
+      font-weight: 950;
+    }
+
+    .note-body strong.note-book-fd {
+      color: var(--blue);
+      font-weight: 950;
+    }
+
+    .empty-state {
+      padding: 36px 18px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .board-pager {
+      margin: 0 -14px;
+      padding: 12px 14px 4px;
+      border-top: 1px solid var(--line);
+      display: grid;
+      gap: 10px;
+    }
+
+    .board-pager.hidden {
+      display: none !important;
+    }
+
+    .pager-meta {
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    .pager-controls {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pager-button {
+      min-height: 40px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      cursor: pointer;
+      padding: 0 12px;
+    }
+
+    .pager-button:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+
+    .pager-page {
+      color: var(--text);
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .footer {
+      margin-top: 14px;
+      padding-top: 4px;
+      text-align: center;
+      font-size: 0.66rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--connected-neon);
+      text-shadow: 0 0 10px rgba(57, 255, 20, 0.35);
+    }
+
+    .loading-shell .skeleton-row {
+      border-radius: 10px;
+    }
+
+    .skeleton-row {
+      height: 52px;
+      border-radius: 10px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+      background-size: 200% 100%;
+      animation: shimmer 1.2s ease infinite;
+    }
+
+    @keyframes shimmer {
+      from { background-position: 200% 0; }
+      to { background-position: -200% 0; }
+    }
+
+    .pitchiq-confirm-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(3, 4, 8, 0.78);
+      backdrop-filter: blur(4px);
+    }
+
+    .pitchiq-confirm-modal.hidden {
+      display: none !important;
+    }
+
+    body.pitchiq-modal-open {
+      overflow: hidden;
+    }
+
+    .pitchiq-confirm-card {
+      width: min(480px, 100%);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(18, 20, 28, 0.98), rgba(11, 12, 18, 0.98));
+      box-shadow: 0 24px 56px rgba(0, 0, 0, 0.42);
+      padding: 22px;
+    }
+
+    .pitchiq-confirm-card.add {
+      border-color: rgba(255, 148, 46, 0.28);
+    }
+
+    .pitchiq-confirm-card.remove {
+      border-color: rgba(255, 23, 77, 0.28);
+    }
+
+    .pitchiq-confirm-title {
+      margin: 0 0 12px;
+      font-size: 1.08rem;
+      letter-spacing: 0.02em;
+      text-align: center;
+    }
+
+    .pitchiq-confirm-title.add {
+      color: var(--amber);
+    }
+
+    .pitchiq-confirm-title.remove {
+      color: var(--neon-red);
+    }
+
+    .pitchiq-confirm-copy {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.65;
+      text-align: center;
+    }
+
+    .pitchiq-confirm-actions {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .pitchiq-confirm-actions .button {
+      min-width: 112px;
+      border-radius: 12px;
+      border: 1px solid rgba(141, 138, 255, 0.24);
+      background: linear-gradient(180deg, rgba(24, 26, 38, 0.96), rgba(18, 19, 28, 0.96));
+      color: var(--text);
+      font-size: 0.88rem;
+      font-weight: 700;
+      padding: 10px 16px;
+      cursor: pointer;
+    }
+
+    .pitchiq-confirm-actions .button.cancel {
+      border-color: rgba(255, 23, 77, 0.58);
+      background: rgba(255, 23, 77, 0.14);
+      color: var(--neon-red);
+    }
+
+    .pitchiq-confirm-actions .button.proceed.add {
+      border-color: rgba(255, 148, 46, 0.58);
+      background: rgba(255, 148, 46, 0.14);
+      color: var(--amber);
+    }
+
+    .pitchiq-confirm-actions .button.proceed.remove {
+      border-color: rgba(255, 23, 77, 0.58);
+      background: rgba(255, 23, 77, 0.14);
+      color: var(--neon-red);
+    }
+
+    @media (max-width: 760px) {
+      .pitchiq-confirm-modal {
+        padding: 14px;
+        padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+        align-items: flex-end;
+      }
+
+      .pitchiq-confirm-card {
+        width: 100%;
+        max-height: calc(100vh - 28px - env(safe-area-inset-bottom, 0px));
+        overflow-y: auto;
+        border-radius: 18px 18px 14px 14px;
+        padding: 20px 18px calc(18px + env(safe-area-inset-bottom, 0px));
+      }
+
+      .pitchiq-confirm-actions {
+        flex-direction: column-reverse;
+      }
+
+      .pitchiq-confirm-actions .button {
+        width: 100%;
+        min-width: 0;
+        min-height: 42px;
+      }
+    }
+  
+    .demo-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 0;
+      padding: 8px 12px;
+      border-bottom: 1px solid rgba(255, 148, 46, 0.24);
+      background: rgba(255, 148, 46, 0.08);
+      color: var(--text);
+      font-size: 0.72rem;
+      line-height: 1.35;
+    }
+
+    .demo-banner strong {
+      color: var(--amber, #ff942e);
+    }
+
+    .demo-pill {
+      flex: 0 0 auto;
+      border: 1px solid rgba(141, 223, 159, 0.3);
+      border-radius: 999px;
+      padding: 4px 8px;
+      background: rgba(141, 223, 159, 0.1);
+      color: #d9ffe2;
+      font-size: 0.62rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .nav-dropdown a.is-active {
+      color: var(--text);
+      background: rgba(107, 182, 255, 0.14);
+    }
+
+    .site-alert-ticker { display: none !important; }
+
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="header-top">
+        <div class="brand-block">
+          <img class="brand-mark" src="./images/tagsplashpng.png" alt="" width="36" height="36" decoding="async" />
+          <div class="brand-text">
+            <h1>PitchIQ</h1>
+            <p id="board-subtitle">Upcoming</p>
+          </div>
+        </div>
+        <div class="header-account">
+          <p class="account-line" id="account-pill">Welcome, <span class="account-username tier-value-pro">Demo Pro</span></p>
+          <div class="nav-menu" id="nav-menu">
+            <button
+              class="nav-toggle"
+              id="nav-toggle"
+              type="button"
+              aria-label="Open site navigation"
+              aria-haspopup="true"
+              aria-expanded="false"
+              aria-controls="nav-dropdown"
+            >
+              <span class="nav-toggle-icon" aria-hidden="true"><span></span></span>
+            </button>
+            
+            <div class="nav-dropdown hidden" id="nav-dropdown" role="menu">
+              <a href="./demo-mobile-lookup.html" role="menuitem">Pitcher Lookup</a>
+              <a href="./demo-mobile.html" class="is-active" role="menuitem">Game Board</a>
+              <a href="./demo-mobile-cards.html" role="menuitem">My Cards</a>
+              <a href="./demo-mobile-pitchers.html" role="menuitem">My Pitchers</a>
+              <a href="./faqs-knowledge.html" role="menuitem">FAQs/Help</a>
+              <a href="./demo.html?desktop=1" role="menuitem">Desktop View</a>
+              <a href="./index.html" role="menuitem">Exit Demo</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="toolbar">
+        <div class="search-row">
+          <input class="search" id="search-input" type="search" placeholder="Search" autocomplete="off" />
+          <select class="sort-select" id="sort-select" aria-label="Sort or filter board">
+            <option value="favorites">Favorites</option>
+            <option value="date-desc">Newest</option>
+            <option value="date-asc" selected>Soonest</option>
+            <option value="actual-desc">Actual K</option>
+            <option value="projected-desc">Ks High</option>
+            <option value="projected-asc">Ks Low</option>
+            <option value="ump-desc">Has Ump</option>
+            <option value="lineup-desc">Has Lineup</option>
+            <option value="pitcher-asc">A–Z</option>
+          </select>
+        </div>
+      </div>
+      <div class="view-switch" id="view-switch" role="tablist" aria-label="Board view">
+        <div class="view-switch-track">
+          <span class="view-switch-indicator" aria-hidden="true"></span>
+          <button class="view-switch-btn active" type="button" data-view="upcoming" role="tab" aria-selected="true">
+            <span class="view-switch-label">Upcoming</span>
+            <span class="view-switch-count" id="upcoming-count">0</span>
+          </button>
+          <button class="view-switch-btn" type="button" data-view="live" role="tab" aria-selected="false">
+            <span class="view-switch-label">Live</span>
+            <span class="view-switch-count" id="live-count">0</span>
+          </button>
+          <button class="view-switch-btn" type="button" data-view="historical" role="tab" aria-selected="false">
+            <span class="view-switch-label">History</span>
+            <span class="view-switch-count" id="historical-count">0</span>
+          </button>
+        </div>
+      </div>
+      <div class="board-head" id="board-head">
+        <span>Pitcher</span>
+        <span class="num">PitchIQ K</span>
+      </div>
+    
+    <div class="demo-banner" role="note">
+      <span><strong>Closed demo:</strong> made-up data frozen from the view of a Pro user on July 18, 2025.</span>
+      <span class="demo-pill">Snapshot</span>
+    </div>
+
+    </header>
+<div class="header-spacer" id="header-spacer" aria-hidden="true"></div>
+
+    <div class="site-alert-ticker hidden" id="site-alert-ticker" role="status" aria-live="polite">
+      <div class="site-alert-track">
+        <span class="site-alert-message" id="site-alert-message"></span>
+        <span class="site-alert-message" id="site-alert-message-copy" aria-hidden="true"></span>
+      </div>
+    </div>
+
+    <section class="board" id="board" aria-live="polite">
+      <div class="board-body loading-shell" id="board-body">
+        <div class="skeleton-row"></div>
+        <div class="skeleton-row"></div>
+        <div class="skeleton-row"></div>
+        <div class="skeleton-row"></div>
+      </div>
+    </section>
+
+    <div class="board-pager hidden" id="historical-board-pager">
+      <div class="pager-meta" id="historical-games-meta"></div>
+      <div class="pager-controls">
+        <button class="pager-button" id="historical-prev-button" type="button">Previous</button>
+        <div class="pager-page" id="historical-page-indicator">Page 1 / 1</div>
+        <button class="pager-button" id="historical-next-button" type="button">Next</button>
+      </div>
+    </div>
+
+    <footer class="footer" id="server-activity-footer">last server activity: 07/18/2025 12:00 PM</footer>
+  </div>
+
+  <div id="pitchiq-confirm-modal" class="pitchiq-confirm-modal hidden" aria-hidden="true">
+    <div class="pitchiq-confirm-card" id="pitchiq-confirm-card" role="dialog" aria-modal="true" aria-labelledby="pitchiq-confirm-title">
+      <h2 class="pitchiq-confirm-title" id="pitchiq-confirm-title"></h2>
+      <p class="pitchiq-confirm-copy" id="pitchiq-confirm-copy"></p>
+      <div class="pitchiq-confirm-actions">
+        <button class="button cancel" type="button" id="pitchiq-confirm-cancel">Cancel</button>
+        <button class="button proceed" type="button" id="pitchiq-confirm-proceed">Proceed</button>
+      </div>
+    </div>
+  </div>
+  <script src="./demo-data.js"></script>
+  <script src="./Card%20Styles/DropRateController.js"></script>
+  <script>
+(async () => {
+      const DEMO_STORAGE_FAVORITES = "pitchiq.demo.favoritePitchers";
+      const DEMO_STORAGE_CARDS = "pitchiq.demo.myCards";
+      const DEMO_SERVER_ACTIVITY = "last server activity: 07/18/2025 12:00 PM";
+const ALLOWED_ACCOUNT_ROLES = ["basic", "pro", "life", "admin", "owner"];
+      const DATA_REFRESH_INTERVAL_MS = 60000;
+      const DATA_REFRESH_DEBOUNCE_MS = 5000;
+      const LIVE_GAME_MAX_MINUTES = 18 * 60;
+      const GAME_BOARD_CACHE_TTL_MS = 12 * 60 * 60 * 1000;
+
+      const accountPill = document.getElementById("account-pill");
+      const searchInput = document.getElementById("search-input");
+      const sortSelect = document.getElementById("sort-select");
+      const boardHead = document.getElementById("board-head");
+      const header = document.querySelector(".header");
+      const headerSpacer = document.getElementById("header-spacer");
+      const boardBody = document.getElementById("board-body");
+      const serverActivityFooter = document.getElementById("server-activity-footer");
+      const siteAlertTicker = document.getElementById("site-alert-ticker");
+      const siteAlertMessage = document.getElementById("site-alert-message");
+      const siteAlertMessageCopy = document.getElementById("site-alert-message-copy");
+      const viewSwitch = document.getElementById("view-switch");
+      const upcomingCount = document.getElementById("upcoming-count");
+      const liveCount = document.getElementById("live-count");
+      const historicalCount = document.getElementById("historical-count");
+      const historicalBoardPager = document.getElementById("historical-board-pager");
+      const historicalGamesMeta = document.getElementById("historical-games-meta");
+      const historicalPrevButton = document.getElementById("historical-prev-button");
+      const historicalNextButton = document.getElementById("historical-next-button");
+      const historicalPageIndicator = document.getElementById("historical-page-indicator");
+      const viewTabs = Array.from(document.querySelectorAll(".view-switch-btn"));
+      const pitchiqConfirmModal = document.getElementById("pitchiq-confirm-modal");
+      const pitchiqConfirmCard = document.getElementById("pitchiq-confirm-card");
+      const pitchiqConfirmTitle = document.getElementById("pitchiq-confirm-title");
+      const pitchiqConfirmCopy = document.getElementById("pitchiq-confirm-copy");
+      const pitchiqConfirmCancel = document.getElementById("pitchiq-confirm-cancel");
+      const pitchiqConfirmProceed = document.getElementById("pitchiq-confirm-proceed");
+      let pitchiqConfirmResolve = null;
+      let pitchiqConfirmOpenedAt = 0;
+
+      let authAccepted = false;
+      function cloneDemoGames(list) {
+        return (list || []).map((game) => ({ ...game, upcoming_notes: Array.isArray(game.upcoming_notes) ? game.upcoming_notes.map((n) => ({ ...n })) : game.upcoming_notes }));
+      }
+
+      function loadDemoFavorites() {
+        try {
+          const raw = window.sessionStorage.getItem(DEMO_STORAGE_FAVORITES);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (Array.isArray(parsed) && parsed.length) {
+              favoritePitcherNames = normalizeFavoritePitcherNames(parsed);
+              rebuildFavoritePitcherKeys();
+              return;
+            }
+          }
+        } catch {}
+        favoritePitcherNames = normalizeFavoritePitcherNames([...(window.PitchIQDemoData?.DEMO_FAVORITE_PITCHERS || [])]);
+        rebuildFavoritePitcherKeys();
+        persistFavoritePitchersLocal();
+      }
+
+      function loadDemoCards() {
+        try {
+          const raw = window.sessionStorage.getItem(DEMO_STORAGE_CARDS);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (Array.isArray(parsed)) {
+              return cloneDemoGames(parsed);
+            }
+          }
+        } catch {}
+        return cloneDemoGames(window.PitchIQDemoData?.DEMO_MY_CARDS || []);
+      }
+
+      function persistDemoCards(cards) {
+        try {
+          window.sessionStorage.setItem(DEMO_STORAGE_CARDS, JSON.stringify(cards || []));
+        } catch {}
+      }
+
+      function setDemoProIdentity() {
+        currentUserRole = "pro";
+        currentUserId = "demo-pro";
+        authAccepted = true;
+        if (accountPill) {
+          accountPill.innerHTML = `Welcome, <span class="account-username tier-value-pro">Demo Pro</span>`;
+        }
+        if (serverActivityFooter) {
+          serverActivityFooter.textContent = DEMO_SERVER_ACTIVITY;
+        }
+      }
+
+      let authRedirected = false;
+      let authCheckId = 0;
+      let currentUserId = null;
+      let currentUserRole = null;
+      let activeView = "upcoming";
+      let searchQuery = "";
+      let lastBoardSort = "date-asc";
+      let expandedRowKey = null;
+      let historicalGamesPage = 1;
+      const historicalGamesPageSize = 20;
+      let upcomingGames = [];
+      let liveGames = [];
+      let gameHistory = [];
+      let allPitchers = [];
+      let favoritePitcherNames = [];
+      let favoritePitcherKeys = new Set();
+      let dataRefreshIntervalId = null;
+      let dataRefreshTimeoutId = null;
+      let dataRefreshInFlight = false;
+      let dataRefreshQueued = false;
+      let dataRefreshChannel = null;
+      let siteAlertSettingsSignature = "";
+
+      const DEFAULT_SITE_ALERT_SETTINGS = Object.freeze({
+        enabled: false,
+        text: "DraftKings is currently experiencing issues with the API.",
+        prefix_text: "Alert!",
+        suffix_text: "Alert!",
+        speed_seconds: 24,
+        background_color: "#250814",
+        text_color: "#ffffff",
+        accent_color: "#ff174d",
+        font_family: "Segoe UI, Arial, sans-serif",
+        text_transform: "none",
+        font_weight: "700",
+      });
+
+      function escapeHtml(value) {
+        return String(value ?? "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      function normalizePitcherKey(name) {
+        return String(name || "").trim().toLowerCase();
+      }
+
+      function canonicalPitcherName(name) {
+        const raw = String(name || "").trim();
+        if (!raw) return "";
+        const key = normalizePitcherKey(raw);
+        return allPitchers.find((candidate) => normalizePitcherKey(candidate) === key) || raw;
+      }
+
+      function normalizeFavoritePitcherNames(names) {
+        const unique = new Map();
+        (names || []).forEach((name) => {
+          const canonical = canonicalPitcherName(name);
+          if (!canonical) return;
+          unique.set(normalizePitcherKey(canonical), canonical);
+        });
+        return [...unique.values()];
+      }
+
+      function rebuildFavoritePitcherKeys() {
+        favoritePitcherKeys = new Set(favoritePitcherNames.map((name) => normalizePitcherKey(name)).filter(Boolean));
+      }
+
+      function favoritePitcherStorageKey() {
+        return DEMO_STORAGE_FAVORITES;
+      }
+
+      function persistFavoritePitchersLocal() {
+        if (!currentUserId) return;
+        window.sessionStorage.setItem(favoritePitcherStorageKey(), JSON.stringify(favoritePitcherNames));
+      }
+
+      function loadFavoritePitchersLocal() {
+        if (!currentUserId) {
+          favoritePitcherNames = [];
+          rebuildFavoritePitcherKeys();
+          return;
+        }
+        try {
+          const raw = window.sessionStorage.getItem(favoritePitcherStorageKey());
+          const parsed = JSON.parse(raw || "[]");
+          favoritePitcherNames = normalizeFavoritePitcherNames(Array.isArray(parsed) ? parsed : []);
+          rebuildFavoritePitcherKeys();
+        } catch {
+          favoritePitcherNames = [];
+          rebuildFavoritePitcherKeys();
+        }
+      }
+
+      function canUseProFeatures() {
+        return ["pro", "life", "admin", "owner"].includes(String(currentUserRole || "").toLowerCase());
+      }
+
+      function canViewMyPitchers() {
+        return true;
+      }
+
+      function canViewHistoricalGames() {
+        return true;
+      }
+
+      function canViewMyCards() {
+        return true;
+      }
+
+      const cardStyleController = window.PitchIQCardStyles;
+
+      function ensureCardStyleId(game) {
+        const fallback = cardStyleController?.BASE_STYLE_ID || "base-design";
+        if (!game || typeof game !== "object") return fallback;
+        const existingStyleId = game._card_style || game.card_style || game.cardStyle;
+        game._card_style = existingStyleId
+          ? cardStyleController?.resolveCardStyleId(existingStyleId) || fallback
+          : cardStyleController?.chooseStyleId?.() || fallback;
+        return game._card_style;
+      }
+
+      function walletSourceTable(game) {
+        const source = String(game?._pitchiq_source_table || game?.source_table || "").toLowerCase();
+        if (source === "live" || source === "historical") return source;
+        return "upcoming";
+      }
+
+      function walletCardKey(game) {
+        return [
+          walletSourceTable(game),
+          game?.event_key || game?.source_event_key || game?.game_id || "",
+          game?.pitcher || game?.source_pitcher || "",
+          game?.date || game?.game_date || game?.game_date_raw || "",
+          game?.opponent || "",
+          game?.start_time || "",
+        ].map((value) => normalizeText(value)).join("|");
+      }
+
+      function findWalletSourceGame(walletKey) {
+        const key = String(walletKey || "");
+        if (!key) return null;
+        return [...upcomingGames, ...liveGames, ...gameHistory].find((game) => walletCardKey(game) === key) || null;
+      }
+
+      function preferredBookSnapshot(game) {
+        const dkLine = parseValidLine(game?.dk_line);
+        const fdLine = parseValidLine(game?.fd_line);
+        if (dkLine !== null) {
+          return {
+            sportsbook: "DraftKings",
+            sportsbook_line: dkLine,
+            bet_side: String(game?.dk_bet || "").trim() || null,
+            play_tier: String(game?.dk_play_tier || game?.play_tier || "").trim() || null,
+            confidence: String(game?.dk_confidence || game?.confidence || "").trim() || null,
+          };
+        }
+        if (fdLine !== null) {
+          return {
+            sportsbook: "FanDuel",
+            sportsbook_line: fdLine,
+            bet_side: String(game?.fd_bet || "").trim() || null,
+            play_tier: String(game?.fd_play_tier || game?.play_tier || "").trim() || null,
+            confidence: String(game?.fd_confidence || game?.confidence || "").trim() || null,
+          };
+        }
+        return {
+          sportsbook: null,
+          sportsbook_line: null,
+          bet_side: String(game?.bet || game?.lean || "").trim() || null,
+          play_tier: String(game?.play_tier || "").trim() || null,
+          confidence: String(game?.confidence || "").trim() || null,
+        };
+      }
+
+      function buildSavedCardRecord(game) {
+        const sourceTable = walletSourceTable(game);
+        const sourceEventKey = String(game?.event_key || game?.game_id || walletCardKey(game)).trim();
+        const book = preferredBookSnapshot(game);
+        const projection = displayProjectionValue(game);
+        ensureCardStyleId(game);
+        return {
+          user_id: currentUserId,
+          source_table: sourceTable,
+          source_event_key: sourceEventKey,
+          source_pitcher: String(game?.pitcher || "").trim(),
+          pitcher: String(game?.pitcher || "").trim() || null,
+          opponent: String(game?.opponent || "").trim() || null,
+          game_date: String(game?.date || game?.game_date || game?.game_date_raw || "").trim() || null,
+          sportsbook: book.sportsbook,
+          sportsbook_line: book.sportsbook_line,
+          bet_side: book.bet_side,
+          play_tier: book.play_tier,
+          confidence: book.confidence,
+          projected_strikeouts: Number.isFinite(Number(projection)) ? Number(projection) : null,
+          snapshot: {
+            ...game,
+            _pitchiq_source_table: sourceTable,
+            _saved_snapshot_at: new Date().toISOString(),
+          },
+        };
+      }
+
+      async function saveGameToMyCards(game, button = null) {
+        if (!canViewMyCards()) return;
+        const showButtonFeedback = (state, title, icon = null, duration = 1600) => {
+          if (!button) return;
+          const originalHtml = button.dataset.originalHtml || button.innerHTML;
+          button.dataset.originalHtml = originalHtml;
+          button.disabled = false;
+          button.classList.toggle("is-saved", state === "saved");
+          button.classList.toggle("is-failed", state === "failed");
+          button.setAttribute("title", title);
+          if (icon !== null) {
+            const iconEl = button.querySelector(".row-action-icon");
+            if (iconEl) iconEl.innerHTML = icon;
+          }
+          window.setTimeout(() => {
+            button.classList.remove("is-saved", "is-failed");
+            button.setAttribute("title", button.dataset.originalTitle || "Add to my cards");
+            button.innerHTML = originalHtml;
+          }, duration);
+        };
+        if (!game) {
+          showButtonFeedback("failed", "Could not find card", "!");
+          return;
+        }
+        const originalTitle = button?.getAttribute("title") || "Add to my cards";
+        if (button) {
+          button.dataset.originalTitle = originalTitle;
+          button.dataset.originalHtml = button.innerHTML;
+          button.disabled = true;
+          button.setAttribute("title", "Saving...");
+        }
+        const cards = loadDemoCards();
+        const eventKey = String(game.event_key || "");
+        const pitcher = String(game.pitcher || "");
+        const already = cards.some((card) => String(card.event_key || "") === eventKey && String(card.pitcher || "") === pitcher);
+        if (!already) {
+          cards.unshift({
+            ...game,
+            _saved_card_id: `demo-card-${Date.now()}`,
+            _saved_at: "2025-07-18T12:00:00-04:00",
+          });
+          persistDemoCards(cards);
+          if (typeof myCards !== "undefined") myCards = cards;
+        }
+        showButtonFeedback("saved", already ? "Already saved" : "Saved to my cards", "✓");
+      }
+
+      function openPitcherLookup(pitcherName) {
+        if (!pitcherName) return;
+        window.location.href = `./demo-mobile-lookup.html?pitcher=${encodeURIComponent(pitcherName)}`;
+      }
+
+      function populateHistoricalSearch(pitcherName) {
+        if (!pitcherName || !canViewHistoricalGames()) return;
+        historicalGamesPage = 1;
+        searchInput.value = pitcherName;
+        searchQuery = pitcherName;
+        expandedRowKey = null;
+        renderBoard();
+        searchInput.focus();
+      }
+
+      function openHistoricalLookup(pitcherName) {
+        if (!pitcherName) return;
+        if (!canViewHistoricalGames()) {
+          window.location.href = "./index.html";
+          return;
+        }
+        activeView = "historical";
+        historicalGamesPage = 1;
+        searchInput.value = pitcherName;
+        searchQuery = pitcherName;
+        expandedRowKey = null;
+        renderBoard();
+        searchInput.focus();
+      }
+
+      function updateHistoricalPager(totalRows, visibleCount) {
+        if (!historicalBoardPager) return;
+        const totalPages = Math.max(1, Math.ceil(totalRows / historicalGamesPageSize));
+        historicalGamesPage = Math.min(Math.max(1, historicalGamesPage), totalPages);
+        const showPager = activeView === "historical" && canViewHistoricalGames() && totalRows > 0;
+        historicalBoardPager.classList.toggle("hidden", !showPager);
+        if (!showPager) return;
+        const startDisplay = totalRows ? (historicalGamesPage - 1) * historicalGamesPageSize + 1 : 0;
+        const endDisplay = totalRows ? startDisplay + visibleCount - 1 : 0;
+        historicalGamesMeta.textContent = `${startDisplay}-${endDisplay} of ${totalRows} games`;
+        historicalPageIndicator.textContent = `Page ${historicalGamesPage} / ${totalPages}`;
+        historicalPrevButton.disabled = historicalGamesPage <= 1;
+        historicalNextButton.disabled = historicalGamesPage >= totalPages;
+      }
+
+      function renderMobileRowActions(game) {
+        const pitcher = escapeHtml(game?.pitcher || "");
+        const walletKey = escapeHtml(walletCardKey(game));
+        const isHistoricalBoard = activeView === "historical";
+        const historicalUnlocked = canViewHistoricalGames();
+        const myCardsUnlocked = canViewMyCards();
+        const pitchersUnlocked = canViewMyPitchers();
+        const favorited = isPitcherFavorited(game?.pitcher);
+        const favoriteTitle = favorited ? "Remove from favorites" : "Add to favorites";
+        const histTitle = historicalUnlocked
+          ? (isHistoricalBoard ? "Search historical games for this pitcher" : "View historical games")
+          : "Historical is a Pro feature";
+        const histIcon = historicalUnlocked
+          ? (isHistoricalBoard
+            ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>'
+            : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/><path d="M12 7v5l3 2"/></svg>')
+          : "&#128274;";
+        const histButtonClass = isHistoricalBoard ? "historical-search-btn" : "historical-lookup-btn";
+        const addTitle = myCardsUnlocked ? "Add to my cards" : "My Cards is a Pro feature";
+        const addIcon = myCardsUnlocked
+          ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>'
+          : "&#128274;";
+
+        return `
+          <div class="row-action-bar" role="toolbar" aria-label="Game actions">
+            <button class="row-action-btn pitcher-lookup-btn" type="button" data-pitcher="${pitcher}" title="Pitch lookup" aria-label="Pitch lookup">
+              <span class="row-action-icon" aria-hidden="true">&#8981;</span>
+              <span class="row-action-label">Pitch Lookup</span>
+            </button>
+            <button class="row-action-btn favorite-pitcher-btn${pitchersUnlocked ? (favorited ? " is-favorited" : "") : " is-locked"}" type="button" data-pitcher="${pitcher}" title="${escapeHtml(pitchersUnlocked ? favoriteTitle : "My Pitchers is a Pro feature")}" aria-label="${escapeHtml(pitchersUnlocked ? favoriteTitle : "My Pitchers is a Pro feature")}" aria-pressed="${favorited ? "true" : "false"}">
+              <span class="row-action-icon" aria-hidden="true">${pitchersUnlocked ? renderFavoriteStarIcon(favorited) : "&#128274;"}</span>
+              <span class="row-action-label">Favorite</span>
+            </button>
+            <button class="row-action-btn ${histButtonClass}" type="button" data-pitcher="${pitcher}" title="${escapeHtml(histTitle)}" aria-label="${escapeHtml(histTitle)}">
+              <span class="row-action-icon" aria-hidden="true">${histIcon}</span>
+              <span class="row-action-label">Hist Look</span>
+            </button>
+            <button class="row-action-btn add-card-btn" type="button" data-wallet-key="${walletKey}" data-pitcher="${pitcher}" title="${escapeHtml(addTitle)}" aria-label="${escapeHtml(addTitle)}">
+              <span class="row-action-icon" aria-hidden="true">${addIcon}</span>
+              <span class="row-action-label">Add Game</span>
+            </button>
+          </div>
+        `;
+      }
+
+      function isPitcherFavorited(name) {
+        return favoritePitcherKeys.has(normalizePitcherKey(name));
+      }
+
+      function isFavoritesSortActive() {
+        return sortSelect.value === "favorites" && canViewMyPitchers();
+      }
+
+      function syncSortSelectAccess() {
+        if (!sortSelect) return;
+        if (!canViewMyPitchers() && sortSelect.value === "favorites") {
+          sortSelect.value = lastBoardSort;
+        }
+      }
+
+      function renderFavoriteStarIcon(favorited) {
+        if (favorited) {
+          return `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.5l2.86 5.8 6.4.93-4.63 4.52 1.09 6.38L12 17.77l-5.72 3.01 1.09-6.38L2.74 9.23l6.4-.93L12 2.5z"/></svg>`;
+        }
+        return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 2.5l2.86 5.8 6.4.93-4.63 4.52 1.09 6.38L12 17.77l-5.72 3.01 1.09-6.38L2.74 9.23l6.4-.93L12 2.5z"/></svg>`;
+      }
+
+      function closePitchiqConfirm(confirmed = false) {
+        const resolve = pitchiqConfirmResolve;
+        pitchiqConfirmResolve = null;
+        pitchiqConfirmOpenedAt = 0;
+        pitchiqConfirmModal.classList.add("hidden");
+        pitchiqConfirmModal.setAttribute("aria-hidden", "true");
+        document.body.classList.remove("pitchiq-modal-open");
+        if (resolve) resolve(confirmed);
+      }
+
+      function openPitchiqConfirm({ title, copy, tone, proceedLabel }) {
+        return new Promise((resolve) => {
+          pitchiqConfirmResolve = resolve;
+          pitchiqConfirmOpenedAt = performance.now();
+          pitchiqConfirmCard.className = `pitchiq-confirm-card ${tone}`;
+          pitchiqConfirmTitle.className = `pitchiq-confirm-title ${tone}`;
+          pitchiqConfirmTitle.textContent = title;
+          pitchiqConfirmCopy.textContent = copy;
+          pitchiqConfirmProceed.className = `button proceed ${tone}`;
+          pitchiqConfirmProceed.textContent = proceedLabel;
+          pitchiqConfirmModal.classList.remove("hidden");
+          pitchiqConfirmModal.setAttribute("aria-hidden", "false");
+          document.body.classList.add("pitchiq-modal-open");
+          pitchiqConfirmCancel.focus();
+        });
+      }
+
+      async function confirmFavoritePitcherChange(pitcherName, adding) {
+        const label = String(pitcherName || "").trim() || "this pitcher";
+        return openPitchiqConfirm({
+          title: adding ? "Add to My Pitchers?" : "Remove from My Pitchers?",
+          copy: adding
+            ? `Add ${label} to your My Pitchers watchlist?`
+            : `Remove ${label} from your My Pitchers watchlist?`,
+          tone: adding ? "add" : "remove",
+          proceedLabel: adding ? "Add" : "Remove",
+        });
+      }
+
+      async function toggleFavoritePitcher(pitcherName) {
+        if (!canViewMyPitchers() || !pitcherName) return;
+        const canonicalPitcher = canonicalPitcherName(pitcherName);
+        const key = normalizePitcherKey(canonicalPitcher);
+        const wasFavorited = favoritePitcherKeys.has(key);
+        if (typeof confirmFavoritePitcherChange === "function") {
+          if (!(await confirmFavoritePitcherChange(canonicalPitcher, !wasFavorited))) return;
+        }
+        if (wasFavorited) {
+          favoritePitcherNames = favoritePitcherNames.filter((name) => normalizePitcherKey(name) !== key);
+        } else {
+          favoritePitcherNames = normalizeFavoritePitcherNames([...favoritePitcherNames, canonicalPitcher]);
+        }
+        rebuildFavoritePitcherKeys();
+        persistFavoritePitchersLocal();
+        if (typeof renderBoard === "function") renderBoard();
+        if (typeof renderCards === "function") renderCards();
+        if (typeof renderPitchers === "function") renderPitchers();
+        if (typeof syncFavoriteButton === "function") syncFavoriteButton(canonicalPitcher);
+        if (typeof updateFavoriteButton === "function") updateFavoriteButton();
+        if (typeof updateLookupFavoriteButton === "function") updateLookupFavoriteButton();
+      }
+
+      async function loadFavoritePitchers() {
+        if (!canViewMyPitchers()) {
+          favoritePitcherNames = [];
+          rebuildFavoritePitcherKeys();
+          return;
+        }
+        loadDemoFavorites();
+      }
+
+      function rebuildAllPitchers() {
+        const names = new Set();
+        [...upcomingGames, ...liveGames, ...gameHistory].forEach((game) => {
+          const pitcher = String(game?.pitcher || "").trim();
+          if (pitcher) names.add(pitcher);
+        });
+        favoritePitcherNames.forEach((name) => {
+          if (name) names.add(name);
+        });
+        allPitchers = Array.from(names).sort((a, b) => a.localeCompare(b));
+      }
+
+      async function loadHistoricalRows() {
+        gameHistory = cloneDemoGames(window.PitchIQDemoData?.DEMO_HISTORICAL_GAMES || []);
+        gameHistory.sort((left, right) => sortableGameDate(right) - sortableGameDate(left));
+      }
+
+      function normalizeText(value) {
+        return String(value || "").trim().toLowerCase();
+      }
+
+      function formatNumber(value, digits = 2) {
+        if (typeof value === "string" && !value.trim()) return "";
+        if (value === null || value === undefined || Number.isNaN(Number(value))) return "";
+        return Number(value).toFixed(digits);
+      }
+
+      function displayProjectionValue(game) {
+        const keys = ["projected_strikeouts", "adjusted_EK_full", "adjusted_EK_hand", "ensemble_prediction"];
+        for (const key of keys) {
+          if (!(key in game)) continue;
+          const value = game[key];
+          if (typeof value === "string" && !value.trim()) continue;
+          if (value === null || value === undefined || Number.isNaN(Number(value))) continue;
+          return Number(value);
+        }
+        return null;
+      }
+
+      function sortableGameDate(game) {
+        const parsed = Date.parse(game?.sort_datetime || game?.game_date_raw || game?.start_time || game?.date || "");
+        return Number.isNaN(parsed) ? Number.POSITIVE_INFINITY : parsed;
+      }
+
+      function parseGameStartDate(game) {
+        const candidates = [
+          game?.sort_datetime,
+          game?.start_time,
+          game?.game_date_raw,
+          [game?.date, game?.time].filter(Boolean).join(" "),
+          game?.date,
+        ].filter((value) => String(value || "").trim());
+        for (const value of candidates) {
+          const parsed = new Date(value);
+          if (!Number.isNaN(parsed.getTime())) return parsed;
+        }
+        return null;
+      }
+
+      function formatGameTime(game) {
+        const start = parseGameStartDate(game);
+        if (!start) return String(game?.time || "").trim();
+        return start.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }).toLowerCase();
+      }
+
+      function formatHistoricalMeta(game) {
+        const start = parseGameStartDate(game);
+        const datePart = start
+          ? start.toLocaleDateString([], { month: "numeric", day: "numeric" })
+          : String(game?.date || game?.game_date || "").trim();
+        const opponent = String(game?.opponent || "").trim();
+        if (datePart && opponent) return `${datePart} · vs ${opponent}`;
+        return datePart || (opponent ? `vs ${opponent}` : "");
+      }
+
+      function formatActualStrikeouts(value) {
+        if (value === null || value === undefined || value === "" || Number.isNaN(Number(value))) return "";
+        return String(Math.trunc(Number(value)));
+      }
+
+      function actualStrikeoutValue(game) {
+        return formatActualStrikeouts(game?.actual_k ?? game?.strikeouts ?? game?.live_strikeouts);
+      }
+
+      function evaluateBetCorrectness(actualValue, lineValue, betValue) {
+        const bet = String(betValue || "").trim().toUpperCase();
+        const actual = Number(actualValue);
+        const line = Number(lineValue);
+        if (!["OVER", "UNDER"].includes(bet) || !Number.isFinite(actual) || !Number.isFinite(line)) return "";
+        if (actual === line) return "Push";
+        if (bet === "OVER") return actual > line ? "Win" : "Loss";
+        return actual < line ? "Win" : "Loss";
+      }
+
+      function resultChipClass(value) {
+        if (value === "Win") return "is-win";
+        if (value === "Loss") return "is-loss";
+        if (value === "Push") return "is-push";
+        return "";
+      }
+
+      function formatInningCompact(value) {
+        const raw = String(value || "").trim();
+        if (!raw) return "";
+        const match = raw.match(/^(Top|Bottom|Middle|Mid)\s+(\d+)(?:st|nd|rd|th)?$/i);
+        if (match) {
+          const halfRaw = match[1].toLowerCase();
+          const half = halfRaw.startsWith("mid") ? "Mid" : (halfRaw.startsWith("top") ? "Top" : "Bottom");
+          return `${half} ${match[2]}`;
+        }
+        return raw
+          .replace(/^Middle\b/i, "Mid")
+          .replace(/(\d+)(st|nd|rd|th)\b/gi, "$1")
+          .trim();
+      }
+
+      function isDelayLikeStatus(status) {
+        const normalized = normalizeText(status);
+        return normalized.includes("delay")
+          || normalized.includes("postpon")
+          || normalized.includes("suspend");
+      }
+
+      function formatDelayStatusLabel(status, reason) {
+        const statusText = String(status || "").trim();
+        const reasonText = String(reason || "").trim();
+        if (!statusText) return reasonText ? `${reasonText} Delay` : "";
+        if (!reasonText) return statusText;
+        if (normalizeText(statusText).includes(normalizeText(reasonText))) return statusText;
+        if (isDelayLikeStatus(statusText)) return `${reasonText} Delay`;
+        return statusText;
+      }
+
+      function formatLiveMatchupMeta(game) {
+        const status = String(game?.game_status || game?.status || "").trim();
+        const reason = String(game?.game_status_reason || "").trim();
+        if (status && isDelayLikeStatus(status)) {
+          return formatDelayStatusLabel(status, reason);
+        }
+
+        const starterStatus = String(game?.starter_status || "").trim();
+        const inning = formatInningCompact(game?.game_inning || game?.inning || game?.inning_state);
+        if (starterStatus && inning) return `${starterStatus} · ${inning}`;
+        if (starterStatus) return starterStatus;
+        if (inning) return inning;
+        if (status) return status;
+        return "In Progress";
+      }
+
+      function liveStatusTone(game) {
+        const status = String(game?.game_status || game?.status || "").trim();
+        if (status && isDelayLikeStatus(status)) return "delayed";
+
+        const starterStatus = normalizeText(game?.starter_status);
+        if (starterStatus === "pitching") return "pitching";
+        if (starterStatus === "team batting") return "batting";
+        if (starterStatus === "finished") return "finished";
+        if (starterStatus.includes("warm")) return "warmup";
+
+        const detailed = normalizeText(game?.game_detailed_state || game?.detailed_state);
+        if (detailed.includes("warm")) return "warmup";
+
+        const statusNorm = normalizeText(status);
+        if (statusNorm.includes("warm")) return "warmup";
+
+        const inning = formatInningCompact(game?.game_inning || game?.inning || game?.inning_state);
+        if (inning) return "live";
+
+        if (statusNorm.includes("progress") || statusNorm.includes("live")) return "live";
+        return "";
+      }
+
+      function formatStatusLine(game, isLive = false) {
+        const meta = isLive ? formatLiveMatchupMeta(game) : formatGameTime(game);
+        return meta ? escapeHtml(meta) : "";
+      }
+
+      function formatTeamTileValue(teamName, fallback) {
+        const text = String(teamName || "").trim();
+        return text || fallback;
+      }
+
+      function renderPitcherBlock(game, isLive = false) {
+        const status = formatStatusLine(game, isLive);
+        const statusTone = isLive ? liveStatusTone(game) : "";
+        const statusClass = statusTone ? ` is-${statusTone}` : "";
+        return `
+          <div class="pitcher-block">
+            <div class="pitcher-name">${escapeHtml(game.pitcher || "Unknown")}</div>
+            ${status ? `<div class="matchup-line status-line${statusClass}">${status}</div>` : ""}
+          </div>
+        `;
+      }
+
+      function renderHistoricalPitcherBlock(game) {
+        const meta = formatHistoricalMeta(game);
+        return `
+          <div class="pitcher-block">
+            <div class="pitcher-name">${escapeHtml(game.pitcher || "Unknown")}</div>
+            ${meta ? `<div class="matchup-line">${escapeHtml(meta)}</div>` : ""}
+          </div>
+        `;
+      }
+
+      function liveStrikeoutValue(game) {
+        const value = game?.live_strikeouts ?? game?.live_ks ?? game?.starter_strikeouts;
+        if (value === null || value === undefined || value === "") return "";
+        const numeric = Number(value);
+        return Number.isFinite(numeric) ? String(Math.trunc(numeric)) : String(value).trim();
+      }
+
+      function livePitchCountDisplay(game) {
+        const value = game?.live_pitch_count;
+        if (value === null || value === undefined || value === "") return "—";
+        const numeric = Number(value);
+        return Number.isFinite(numeric) ? String(Math.trunc(numeric)) : String(value).trim();
+      }
+
+      function isClearlyCompletedGame(game) {
+        const status = normalizeText(game?.game_status || game?.status || game?.abstract_game_state);
+        return status.includes("final") || status.includes("completed") || status.includes("game over");
+      }
+
+      function isClearlyLiveGame(game) {
+        const status = normalizeText(game?.game_status || game?.status || game?.abstract_game_state);
+        return status.includes("live") || status.includes("in progress") || status.includes("middle") || status.includes("top ") || status.includes("bottom ");
+      }
+
+      function hasLiveGameSignals(game) {
+        const inning = normalizeText(game?.game_inning || game?.inning || game?.inning_state);
+        const liveKs = game?.live_strikeouts ?? game?.live_ks ?? game?.starter_strikeouts;
+        return Boolean(inning || (liveKs !== null && liveKs !== undefined && String(liveKs).trim() !== ""));
+      }
+
+      function isClearlyUpcomingGame(game) {
+        const status = normalizeText(game?.game_status || game?.status || game?.abstract_game_state);
+        return status.includes("pre-game") || status.includes("scheduled") || status.includes("preview");
+      }
+
+      function shouldShowAsLiveGame(game, tableType) {
+        if (isClearlyCompletedGame(game)) return false;
+        if (isClearlyLiveGame(game) || tableType === "live") return true;
+        if (hasLiveGameSignals(game)) return true;
+        const startDate = parseGameStartDate(game);
+        if (!startDate) return false;
+        const minutesSinceStart = (Date.now() - startDate.getTime()) / 60000;
+        return minutesSinceStart >= 0 && minutesSinceStart <= LIVE_GAME_MAX_MINUTES;
+      }
+
+      function splitSupabaseGameRows(rows) {
+        const upcomingByKey = new Map();
+        const liveByKey = new Map();
+        const sortedRows = [...rows].sort((left, right) => {
+          const leftIsLive = String(left?.table_type || "").toLowerCase() === "live" ? 1 : 0;
+          const rightIsLive = String(right?.table_type || "").toLowerCase() === "live" ? 1 : 0;
+          return leftIsLive - rightIsLive;
+        });
+        sortedRows.forEach((row) => {
+          if (!row?.payload) return;
+          const tableType = String(row.table_type || "").toLowerCase();
+          const game = { ...row.payload };
+          game._pitchiq_source_table = tableType === "live" ? "live" : "upcoming";
+          const rowKey = [game.event_key, game.pitcher, game.opponent, game.date || game.game_date, game.start_time]
+            .map((value) => normalizeText(value))
+            .join("|");
+          if (shouldShowAsLiveGame(game, tableType)) {
+            if (!game.game_status || isClearlyUpcomingGame(game)) game.game_status = "In Progress";
+            liveByKey.set(rowKey, game);
+            upcomingByKey.delete(rowKey);
+            return;
+          }
+          if ((tableType === "upcoming" || !isClearlyCompletedGame(game)) && !liveByKey.has(rowKey)) {
+            upcomingByKey.set(rowKey, game);
+          }
+        });
+        const sortByStartTime = (left, right) => sortableGameDate(left) - sortableGameDate(right);
+        return {
+          upcoming: Array.from(upcomingByKey.values()).sort(sortByStartTime),
+          live: Array.from(liveByKey.values()).sort(sortByStartTime),
+        };
+      }
+
+      function gameBoardCacheKey(userId = currentUserId) {
+        return userId ? `pitchiq.gameBoardCache.${userId}` : "pitchiq.gameBoardCache";
+      }
+
+      function cacheGameBoardSnapshot(splitGames, updatedAt = null) {
+        const upcoming = Array.isArray(splitGames?.upcoming) ? splitGames.upcoming : [];
+        const live = Array.isArray(splitGames?.live) ? splitGames.live : [];
+        if (!upcoming.length && !live.length) return;
+        try {
+          window.localStorage.setItem(gameBoardCacheKey(), JSON.stringify({
+            cachedAt: Date.now(),
+            updatedAt,
+            upcoming,
+            live,
+          }));
+        } catch (error) {}
+      }
+
+      function loadCachedGameBoardSnapshot() {
+        try {
+          const raw = window.localStorage.getItem(gameBoardCacheKey());
+          if (!raw) return null;
+          const parsed = JSON.parse(raw);
+          const cachedAt = Number(parsed?.cachedAt);
+          if (!Number.isFinite(cachedAt) || Date.now() - cachedAt > GAME_BOARD_CACHE_TTL_MS) return null;
+          return {
+            upcoming: Array.isArray(parsed?.upcoming) ? parsed.upcoming : [],
+            live: Array.isArray(parsed?.live) ? parsed.live : [],
+            updatedAt: parsed?.updatedAt || null,
+          };
+        } catch (error) {
+          return null;
+        }
+      }
+
+      function rowKey(game) {
+        return [activeView, game?.event_key, game?.pitcher, game?.date, game?.opponent]
+          .map((value) => String(value || "").trim())
+          .join("|");
+      }
+
+      function isAssignedUmp(value) {
+        const normalized = normalizeText(value);
+        return Boolean(normalized && !["pending", "unknown", "n/a", "na"].includes(normalized));
+      }
+
+      function isAssignedLineup(game) {
+        return Boolean(game?.opponent_lineup_assigned);
+      }
+
+      function formatUmpire(value) {
+        const umpire = String(value || "").trim();
+        return isAssignedUmp(umpire) ? umpire : "Pending";
+      }
+
+      function formatTeamLineupLabel(teamName) {
+        const text = String(teamName || "").trim();
+        if (!text) return "Opponent";
+        const parts = text.split(/\s+/);
+        if (parts.length === 1) return parts[0];
+        const lastTwo = parts.slice(-2).join(" ");
+        if (lastTwo === "Red Sox" || lastTwo === "White Sox" || lastTwo === "Blue Jays") {
+          return lastTwo;
+        }
+        return parts[parts.length - 1];
+      }
+
+      function rowSearchText(game) {
+        const base = [game.pitcher, game.opponent, game.pitcher_team, game.date, game.time, game.game_status, game.plate_umpire];
+        if (activeView === "historical" || game?._pitchiq_source_table === "historical") {
+          const actual = game.actual_k ?? game.strikeouts;
+          const dkCorrect = evaluateBetCorrectness(actual, game.dk_line, game.dk_bet);
+          const fdCorrect = evaluateBetCorrectness(actual, game.fd_line, game.fd_bet);
+          base.push(
+            actual,
+            game.dk_line,
+            game.fd_line,
+            game.dk_bet,
+            game.fd_bet,
+            dkCorrect,
+            fdCorrect,
+            formatNumber(displayProjectionValue(game), 2),
+            displayNotesText(game)
+          );
+        }
+        return base.map(normalizeText).join(" ");
+      }
+
+      function filteredSortedGames() {
+        const query = normalizeText(searchQuery);
+        let source = upcomingGames;
+        if (activeView === "live") source = liveGames;
+        if (activeView === "historical") source = gameHistory;
+        let filtered = query ? source.filter((game) => rowSearchText(game).includes(query)) : source.slice();
+        if (isFavoritesSortActive()) {
+          filtered = filtered.filter((game) => isPitcherFavorited(game.pitcher));
+        }
+        let sortValue = sortSelect.value;
+        if (isFavoritesSortActive()) {
+          sortValue = activeView === "historical" ? "date-desc" : "date-asc";
+        }
+        const [key, direction] = sortValue.split("-");
+        const multiplier = direction === "desc" ? -1 : 1;
+        return filtered.sort((left, right) => {
+          let a;
+          let b;
+          if (key === "projected") {
+            a = displayProjectionValue(left) ?? Number.NEGATIVE_INFINITY;
+            b = displayProjectionValue(right) ?? Number.NEGATIVE_INFINITY;
+          } else if (key === "actual") {
+            a = Number(actualStrikeoutValue(left)) || Number.NEGATIVE_INFINITY;
+            b = Number(actualStrikeoutValue(right)) || Number.NEGATIVE_INFINITY;
+          } else if (key === "ump") {
+            a = isAssignedUmp(left.plate_umpire) ? 1 : 0;
+            b = isAssignedUmp(right.plate_umpire) ? 1 : 0;
+          } else if (key === "lineup") {
+            a = isAssignedLineup(left) ? 1 : 0;
+            b = isAssignedLineup(right) ? 1 : 0;
+          } else if (key === "pitcher") {
+            a = normalizeText(left.pitcher);
+            b = normalizeText(right.pitcher);
+          } else {
+            a = sortableGameDate(left);
+            b = sortableGameDate(right);
+          }
+          if (a < b) return -1 * multiplier;
+          if (a > b) return 1 * multiplier;
+          return normalizeText(left.pitcher).localeCompare(normalizeText(right.pitcher));
+        });
+      }
+
+      function formatEdge(value) {
+        if (value === null || value === undefined || value === "" || Number.isNaN(Number(value))) return "—";
+        const number = Number(value);
+        return `${number >= 0 ? "+" : ""}${number.toFixed(2)}`;
+      }
+
+      function formatBet(value) {
+        const normalized = String(value || "").trim().toUpperCase();
+        if (!normalized || normalized === "PASS" || normalized === "AVOID") return "Avoid";
+        return normalized.charAt(0) + normalized.slice(1).toLowerCase();
+      }
+
+      function parseValidLine(value) {
+        const normalized = String(value ?? "").trim().toLowerCase();
+        if (!normalized || ["-", "pending", "unknown", "n/a", "na"].includes(normalized)) return null;
+        const line = Number(value);
+        return Number.isFinite(line) && line > 0 ? line : null;
+      }
+
+      function lineDiscrepancyNote(game) {
+        const dkLine = parseValidLine(game?.dk_line);
+        const fdLine = parseValidLine(game?.fd_line);
+        if (dkLine === null || fdLine === null || dkLine === fdLine) return "";
+        const projected = displayProjectionValue(game);
+        if (!Number.isFinite(Number(projected))) return "";
+
+        if (Number(projected) < Math.min(dkLine, fdLine)) {
+          return dkLine > fdLine ? "+DK O/U Line" : "+FD O/U Line";
+        }
+        if (Number(projected) > Math.max(dkLine, fdLine)) {
+          return dkLine < fdLine ? "+DK O/U Line" : "+FD O/U Line";
+        }
+        return "";
+      }
+
+      function normalizeLineNoteKey(value) {
+        const normalized = normalizeText(value);
+        if (normalized === "+dk line" || normalized === "+dk o/u line") return "+dk o/u line";
+        if (normalized === "+fd line" || normalized === "+fd o/u line") return "+fd o/u line";
+        return normalized;
+      }
+
+      function upgradeLineNoteLabels(notesText) {
+        return String(notesText || "")
+          .replace(/\+DK Line\b/g, "+DK O/U Line")
+          .replace(/\+FD Line\b/g, "+FD O/U Line");
+      }
+
+      function cleanLineNotes(game, notes) {
+        const validLineNote = normalizeLineNoteKey(lineDiscrepancyNote(game));
+        return upgradeLineNoteLabels(String(notes || "")
+          .split(/\s*(?:,|\|)\s*/)
+          .map((note) => note.trim())
+          .filter(Boolean)
+          .filter((note) => {
+            const normalized = normalizeLineNoteKey(note);
+            if (normalized === "+dk o/u line" || normalized === "+fd o/u line") return normalized === validLineNote;
+            return true;
+          })
+          .join(", "));
+      }
+
+      function displayNotesText(game) {
+        const rawNotes = cleanLineNotes(game, game?.notes);
+        const discrepancyNote = lineDiscrepancyNote(game);
+        const hasDiscrepancyNote = String(rawNotes || "")
+          .split(/\s*(?:,|\|)\s*/)
+          .map((note) => normalizeLineNoteKey(note.trim()))
+          .includes(normalizeLineNoteKey(discrepancyNote));
+        if (!discrepancyNote || hasDiscrepancyNote) {
+          return rawNotes;
+        }
+        return [discrepancyNote, rawNotes].filter(Boolean).join(" | ");
+      }
+
+      function dedupeNotes(notes) {
+        const seen = new Set();
+        return (Array.isArray(notes) ? notes : []).filter((note) => {
+          const key = [
+            normalizeText(note?.title),
+            normalizeText(note?.body),
+            normalizeText(note?.impact),
+          ].join("|");
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        });
+      }
+
+      function noteImpactSuffix(impact) {
+        if (impact === "up") return { text: "+K", className: "" };
+        if (impact === "down") return { text: "-K", className: "down" };
+        return { text: "", className: "" };
+      }
+
+      function sanitizeNoteHtml(value, title = "") {
+        let html = escapeHtml(value)
+          .replace(/&lt;strong&gt;/gi, "<strong>")
+          .replace(/&lt;\/strong&gt;/gi, "</strong>");
+        const dkToken = "__NOTE_BOOK_DK__";
+        const fdToken = "__NOTE_BOOK_FD__";
+        html = html
+          .replace(/<strong>DraftKings<\/strong>/g, dkToken)
+          .replace(/<strong>FanDuel<\/strong>/g, fdToken)
+          .replace(/\bDraftKings\b/g, dkToken)
+          .replace(/\bFanDuel\b/g, fdToken)
+          .replace(new RegExp(dkToken, "g"), '<strong class="note-book-dk">DraftKings</strong>')
+          .replace(new RegExp(fdToken, "g"), '<strong class="note-book-fd">FanDuel</strong>');
+        if (normalizeText(title).includes("umpire")) {
+          html = html.replace(/^([A-Z][^<.]*?)(?= (?:has|is) )/, (match) => {
+            if (normalizeText(match).startsWith("the ")) return match;
+            return `<strong>${match}</strong>`;
+          });
+        }
+        return html;
+      }
+
+      function notesFromGame(game) {
+        if (Array.isArray(game.upcoming_notes) && game.upcoming_notes.length) {
+          return dedupeNotes(game.upcoming_notes);
+        }
+
+        const notes = [];
+        const projected = displayProjectionValue(game);
+        const bestEdge = Math.max(Number(game.dk_edge) || 0, Number(game.fd_edge) || 0);
+        if (bestEdge >= 1) {
+          notes.push({
+            impact: "up",
+            title: "Edge Showing",
+            body: `The board is showing at least a +${formatNumber(bestEdge, 2)} edge against one available sportsbook line.`,
+          });
+        }
+        if (isAssignedUmp(game.plate_umpire)) {
+          notes.push({
+            impact: "neutral",
+            title: "Umpire Assigned",
+            body: `${game.plate_umpire} is listed behind the plate for this matchup.`,
+          });
+        }
+        if (isAssignedLineup(game)) {
+          notes.push({
+            impact: "neutral",
+            title: "Opponent Lineup Announced",
+            body: `${game.opponent || "The opponent"} has posted its starting batting order for tonight.`,
+          });
+        }
+        if (game.weather || game.wind) {
+          notes.push({
+            impact: "neutral",
+            title: "Game Context",
+            body: [game.weather, game.temperature ? `${game.temperature}F` : "", game.wind].filter(Boolean).join(", "),
+          });
+        }
+        const displayNotes = displayNotesText(game);
+        if (!notes.length && displayNotes) {
+          notes.push({ impact: "neutral", title: "Notes", body: displayNotes });
+        }
+        if (!notes.length && Number.isFinite(Number(projected))) {
+          notes.push({
+            impact: "neutral",
+            title: "Projection Ready",
+            body: `${game.pitcher} is projected for ${formatNumber(projected, 2)} strikeouts.`,
+          });
+        }
+        return notes;
+      }
+
+      function renderNotes(notes) {
+        notes = dedupeNotes(notes);
+        if (!notes.length) {
+          return `
+            <div class="note-card neutral">
+              <div class="note-title">No Major Flags</div>
+              <div class="note-body">No strong context edges are standing out for the upcoming projection yet.</div>
+            </div>
+          `;
+        }
+        return notes.map((note) => {
+          const suffix = noteImpactSuffix(note.impact);
+          return `
+            <div class="note-card ${escapeHtml(note.impact || "neutral")}">
+              <div class="note-title">
+                ${escapeHtml(note.title || "")}
+                ${suffix.text ? `<span class="note-k ${suffix.className}">${suffix.text}</span>` : ""}
+              </div>
+              <div class="note-body">${sanitizeNoteHtml(note.body || "", note.title || "")}</div>
+            </div>
+          `;
+        }).join("");
+      }
+
+      function renderRowNotes(game) {
+        if (activeView !== "upcoming") return "";
+        const notes = notesFromGame(game);
+        if (!notes.length && !displayNotesText(game)) return "";
+        return `
+          <div class="row-notes">
+            <div class="row-notes-label">Notes</div>
+            <div class="note-list">${renderNotes(notes)}</div>
+          </div>
+        `;
+      }
+
+      function renderHistoricalRowDetail(game) {
+        const actual = game?.actual_k ?? game?.strikeouts;
+        const dkCorrect = evaluateBetCorrectness(actual, game?.dk_line, game?.dk_bet);
+        const fdCorrect = evaluateBetCorrectness(actual, game?.fd_line, game?.fd_bet);
+        const dkLine = String(game?.dk_line || "").trim() || "—";
+        const fdLine = String(game?.fd_line || "").trim() || "—";
+        const umpAssigned = isAssignedUmp(game?.plate_umpire);
+        const umpDisplay = formatUmpire(game?.plate_umpire);
+        const notes = displayNotesText(game);
+        return `
+          <div class="row-detail">
+            ${renderMobileRowActions(game)}
+            <div class="detail-grid">
+              <div class="detail-chip team-pitcher">
+                <span class="label">Pitcher's Team</span>
+                <span class="value">${escapeHtml(formatTeamTileValue(game?.pitcher_team, "—"))}</span>
+              </div>
+              <div class="detail-chip team-opponent">
+                <span class="label">Opponent</span>
+                <span class="value">${escapeHtml(formatTeamTileValue(game?.opponent, "TBD"))}</span>
+              </div>
+              <div class="detail-chip dk">
+                <span class="label">DraftKings</span>
+                <span class="value">${escapeHtml(dkLine)} · ${escapeHtml(formatBet(game?.dk_bet))}</span>
+              </div>
+              <div class="detail-chip dk ${resultChipClass(dkCorrect)}">
+                <span class="label">DK Result</span>
+                <span class="value">${escapeHtml(dkCorrect || "—")}</span>
+              </div>
+              <div class="detail-chip fd">
+                <span class="label">FanDuel</span>
+                <span class="value">${escapeHtml(fdLine)} · ${escapeHtml(formatBet(game?.fd_bet))}</span>
+              </div>
+              <div class="detail-chip fd ${resultChipClass(fdCorrect)}">
+                <span class="label">FD Result</span>
+                <span class="value">${escapeHtml(fdCorrect || "—")}</span>
+              </div>
+              <div class="detail-chip">
+                <span class="label">DK Edge</span>
+                <span class="value">${escapeHtml(formatEdge(game?.dk_edge))}</span>
+              </div>
+              <div class="detail-chip">
+                <span class="label">FD Edge</span>
+                <span class="value">${escapeHtml(formatEdge(game?.fd_edge))}</span>
+              </div>
+              <div class="detail-chip ump${umpAssigned ? " is-assigned" : " is-pending"}">
+                <span class="label">Plate Ump</span>
+                <span class="value">${escapeHtml(umpDisplay)}</span>
+              </div>
+              ${notes ? `
+              <div class="detail-chip">
+                <span class="label">Notes</span>
+                <span class="value">${escapeHtml(notes)}</span>
+              </div>
+              ` : ""}
+            </div>
+          </div>
+        `;
+      }
+
+      function renderHistoricalLockedPanel() {
+        return `
+          <div class="locked-panel">
+            <div class="locked-badge">Pro Feature</div>
+            <h2 class="locked-title">Historical locked</h2>
+            <p class="locked-copy">Upgrade to Pro to search past projections, compare closing lines, and review which sides won or lost.</p>
+            <a class="locked-link" href="./index.html">View Account</a>
+          </div>
+        `;
+      }
+
+      function renderRowDetail(game) {
+        const dkLine = String(game?.dk_line || "").trim() || "—";
+        const fdLine = String(game?.fd_line || "").trim() || "—";
+        const umpAssigned = isAssignedUmp(game?.plate_umpire);
+        const umpDisplay = formatUmpire(game?.plate_umpire);
+        const lineupAssigned = isAssignedLineup(game);
+        const lineupDisplay = lineupAssigned ? "Announced" : "Pending";
+        const lineupLabel = `${formatTeamLineupLabel(game?.opponent)} Lineup`;
+        return `
+          <div class="row-detail">
+            ${renderMobileRowActions(game)}
+            <div class="detail-grid">
+              <div class="detail-chip team-pitcher">
+                <span class="label">Pitcher's Team</span>
+                <span class="value">${escapeHtml(formatTeamTileValue(game?.pitcher_team, "Pending"))}</span>
+              </div>
+              <div class="detail-chip team-opponent">
+                <span class="label">Opponent</span>
+                <span class="value">${escapeHtml(formatTeamTileValue(game?.opponent, "TBD"))}</span>
+              </div>
+              <div class="detail-chip dk">
+                <span class="label">DraftKings</span>
+                <span class="value">${escapeHtml(dkLine)} · ${escapeHtml(formatBet(game?.dk_bet))}</span>
+              </div>
+              <div class="detail-chip fd">
+                <span class="label">FanDuel</span>
+                <span class="value">${escapeHtml(fdLine)} · ${escapeHtml(formatBet(game?.fd_bet))}</span>
+              </div>
+              <div class="detail-chip">
+                <span class="label">DK Edge</span>
+                <span class="value">${escapeHtml(formatEdge(game?.dk_edge))}</span>
+              </div>
+              <div class="detail-chip">
+                <span class="label">FD Edge</span>
+                <span class="value">${escapeHtml(formatEdge(game?.fd_edge))}</span>
+              </div>
+              ${activeView === "live" ? `
+              <div class="detail-chip pitch-count">
+                <span class="label">Pitch Count</span>
+                <span class="value">${escapeHtml(livePitchCountDisplay(game))}</span>
+              </div>
+              ` : ""}
+              ${activeView === "upcoming" ? `
+              <div class="detail-chip ump${umpAssigned ? " is-assigned" : " is-pending"}">
+                <span class="label">Plate Ump</span>
+                <span class="value">${escapeHtml(umpDisplay)}</span>
+              </div>
+              <div class="detail-chip lineup${lineupAssigned ? " is-assigned" : " is-pending"}">
+                <span class="label">${escapeHtml(lineupLabel)}</span>
+                <span class="value">${escapeHtml(lineupDisplay)}</span>
+              </div>
+              ` : ""}
+              ${renderRowNotes(game)}
+            </div>
+          </div>
+        `;
+      }
+
+      function updateViewSwitcher() {
+        if (viewSwitch) {
+          viewSwitch.classList.remove("is-live", "is-historical");
+          if (activeView === "live") viewSwitch.classList.add("is-live");
+          if (activeView === "historical") viewSwitch.classList.add("is-historical");
+        }
+        const boardSubtitle = document.getElementById("board-subtitle");
+        if (boardSubtitle) {
+          boardSubtitle.textContent = activeView === "live"
+            ? "Live"
+            : activeView === "historical"
+              ? "Historical"
+              : "Upcoming";
+        }
+        viewTabs.forEach((tab) => {
+          const selected = (tab.dataset.view || "upcoming") === activeView;
+          tab.classList.toggle("active", selected);
+          tab.setAttribute("aria-selected", selected ? "true" : "false");
+        });
+        if (upcomingCount) upcomingCount.textContent = String(upcomingGames.length);
+        if (liveCount) liveCount.textContent = String(liveGames.length);
+        if (historicalCount) historicalCount.textContent = String(gameHistory.length);
+      }
+
+      function syncHistoricalSortSelect() {
+        if (activeView !== "historical" || !sortSelect) return;
+        if (["lineup-desc", "ump-desc"].includes(sortSelect.value)) {
+          sortSelect.value = "date-desc";
+          lastBoardSort = "date-desc";
+        }
+      }
+
+      function syncHeaderSpacer() {
+        if (!header || !headerSpacer) return;
+        const height = Math.ceil(header.getBoundingClientRect().height);
+        headerSpacer.style.height = `${height}px`;
+        document.documentElement.style.setProperty("--mobile-header-height", `${height}px`);
+      }
+
+      function renderBoard() {
+        const isHistorical = activeView === "historical";
+        const isLive = activeView === "live";
+        const historicalUnlocked = canViewHistoricalGames();
+
+        updateViewSwitcher();
+        syncSortSelectAccess();
+        syncHistoricalSortSelect();
+        boardBody.classList.remove("loading-shell");
+
+        if (!authAccepted) {
+          boardHead.classList.add("hidden");
+          historicalBoardPager?.classList.add("hidden");
+          boardBody.innerHTML = `
+            <div class="empty-state">Signing you in…</div>
+          `;
+          requestAnimationFrame(syncHeaderSpacer);
+          return;
+        }
+
+        if (isHistorical && !historicalUnlocked) {
+          boardHead.classList.add("hidden");
+          historicalBoardPager?.classList.add("hidden");
+          boardBody.innerHTML = renderHistoricalLockedPanel();
+          requestAnimationFrame(syncHeaderSpacer);
+          return;
+        }
+
+        boardHead.classList.remove("hidden");
+        const games = filteredSortedGames();
+        const total = isHistorical ? gameHistory.length : isLive ? liveGames.length : upcomingGames.length;
+
+        boardHead.className = `board-head${isLive || isHistorical ? " live-mode" : ""}${isHistorical ? " historical-mode" : ""}`;
+        if (isHistorical) {
+          boardHead.innerHTML = "<span>Pitcher</span><div class=\"k-head\"><span class=\"num\">Actual K</span><span class=\"num\">PitchIQ K</span></div>";
+        } else if (isLive) {
+          boardHead.innerHTML = "<span>Pitcher</span><div class=\"k-head\"><span class=\"num\">Current Ks</span><span class=\"num\">PitchIQ K</span></div>";
+        } else {
+          boardHead.innerHTML = "<span>Pitcher</span><span class=\"num\">PitchIQ K</span>";
+        }
+
+        if (!games.length) {
+          let emptyMessage = total
+            ? "No pitchers match your search."
+            : isHistorical
+              ? "No historical games available."
+              : `No ${isLive ? "live" : "upcoming"} games on the board right now.`;
+          if (isFavoritesSortActive()) {
+            emptyMessage = total
+              ? "No favorite pitchers match your current filters."
+              : `No favorite pitchers on the ${isHistorical ? "historical" : isLive ? "live" : "upcoming"} board right now.`;
+          }
+          boardBody.innerHTML = `
+            <div class="empty-state">
+              ${emptyMessage}
+            </div>
+          `;
+          if (isHistorical) {
+            updateHistoricalPager(0, 0);
+          } else {
+            historicalBoardPager?.classList.add("hidden");
+          }
+          requestAnimationFrame(syncHeaderSpacer);
+          return;
+        }
+
+        let visibleGames = games;
+        if (isHistorical) {
+          const totalPages = Math.max(1, Math.ceil(games.length / historicalGamesPageSize));
+          historicalGamesPage = Math.min(Math.max(1, historicalGamesPage), totalPages);
+          const startIndex = (historicalGamesPage - 1) * historicalGamesPageSize;
+          visibleGames = games.slice(startIndex, startIndex + historicalGamesPageSize);
+          updateHistoricalPager(games.length, visibleGames.length);
+        } else {
+          historicalBoardPager?.classList.add("hidden");
+        }
+
+        boardBody.innerHTML = visibleGames.map((game) => {
+          const key = rowKey(game);
+          const projected = displayProjectionValue(game);
+          const projectedText = projected === null ? "—" : formatNumber(projected);
+          const liveK = liveStrikeoutValue(game);
+          const actualK = actualStrikeoutValue(game);
+          const expanded = expandedRowKey === key;
+          return `
+            <div class="game-row-shell${expanded ? " expanded" : ""}">
+              <button
+                class="game-row${isLive || isHistorical ? " live-mode" : ""}"
+                type="button"
+                data-row-key="${escapeHtml(key)}"
+                aria-expanded="${expanded ? "true" : "false"}"
+              >
+                ${isHistorical ? renderHistoricalPitcherBlock(game) : renderPitcherBlock(game, isLive)}
+                ${isHistorical || isLive ? `
+                <div class="k-columns">
+                  ${isHistorical
+                    ? `<div class="actual-k${actualK ? "" : " pending"}">${escapeHtml(actualK || "—")}</div>`
+                    : `<div class="live-k${liveK ? "" : " pending"}">${escapeHtml(liveK || "—")}</div>`}
+                  <div class="ks${projected === null ? " pending" : ""}">${escapeHtml(projectedText)}</div>
+                </div>
+                ` : `<div class="ks${projected === null ? " pending" : ""}">${escapeHtml(projectedText)}</div>`}
+              </button>
+              ${expanded ? (isHistorical ? renderHistoricalRowDetail(game) : renderRowDetail(game)) : ""}
+            </div>
+          `;
+        }).join("");
+        requestAnimationFrame(syncHeaderSpacer);
+      }
+
+      function clampAlertSpeed(value) {
+        const speed = Number(value);
+        if (!Number.isFinite(speed)) return DEFAULT_SITE_ALERT_SETTINGS.speed_seconds;
+        return Math.min(90, Math.max(8, Math.round(speed)));
+      }
+
+      function cleanAlertColor(value, fallback) {
+        const text = String(value || "").trim();
+        return /^#[0-9a-f]{6}$/i.test(text) ? text : fallback;
+      }
+
+      function normalizeSiteAlertSettings(payload) {
+        const source = payload && typeof payload === "object" ? payload : {};
+        return {
+          enabled: Boolean(source.enabled),
+          text: String(source.text || DEFAULT_SITE_ALERT_SETTINGS.text).slice(0, 240),
+          prefix_text: String(source.prefix_text ?? DEFAULT_SITE_ALERT_SETTINGS.prefix_text).slice(0, 32),
+          suffix_text: String(source.suffix_text ?? DEFAULT_SITE_ALERT_SETTINGS.suffix_text).slice(0, 32),
+          speed_seconds: clampAlertSpeed(source.speed_seconds),
+          background_color: cleanAlertColor(source.background_color, DEFAULT_SITE_ALERT_SETTINGS.background_color),
+          text_color: cleanAlertColor(source.text_color, DEFAULT_SITE_ALERT_SETTINGS.text_color),
+          accent_color: cleanAlertColor(source.accent_color, DEFAULT_SITE_ALERT_SETTINGS.accent_color),
+          font_family: String(source.font_family || DEFAULT_SITE_ALERT_SETTINGS.font_family),
+          text_transform: source.text_transform === "uppercase" ? "uppercase" : "none",
+          font_weight: ["600", "700", "800"].includes(String(source.font_weight)) ? String(source.font_weight) : "700",
+        };
+      }
+
+      function renderAlertMessageHtml(settings) {
+        const prefix = settings.prefix_text.trim();
+        const suffix = settings.suffix_text.trim();
+        return `${prefix ? `<span class="site-alert-prefix">${escapeHtml(prefix)}</span>` : ""}${escapeHtml(settings.text.trim())}${suffix ? `<span class="site-alert-suffix">${escapeHtml(suffix)}</span>` : ""}`;
+      }
+
+      function updateAlertTravel(container, messageElement) {
+        if (!container || !messageElement) return;
+        window.requestAnimationFrame(() => {
+          const track = container.querySelector(".site-alert-track");
+          const containerWidth = Math.max(1, container.clientWidth);
+          const messageWidth = Math.max(1, messageElement.scrollWidth);
+          container.style.setProperty("--alert-start-x", `${containerWidth}px`);
+          container.style.setProperty("--alert-end-x", `${-messageWidth}px`);
+          if (track) {
+            track.style.animation = "none";
+            void track.offsetWidth;
+            track.style.animation = "";
+          }
+        });
+      }
+
+      function renderSiteAlert(settings) {
+        const normalized = normalizeSiteAlertSettings(settings);
+        const nextSignature = JSON.stringify(normalized);
+        if (nextSignature === siteAlertSettingsSignature) return;
+        siteAlertSettingsSignature = nextSignature;
+        siteAlertTicker.style.setProperty("--alert-bg", normalized.background_color);
+        siteAlertTicker.style.setProperty("--alert-text", normalized.text_color);
+        siteAlertTicker.style.setProperty("--alert-accent", normalized.accent_color);
+        siteAlertTicker.style.setProperty("--alert-speed", `${normalized.speed_seconds}s`);
+        siteAlertTicker.style.setProperty("--alert-font-family", normalized.font_family);
+        siteAlertTicker.style.setProperty("--alert-text-transform", normalized.text_transform);
+        siteAlertTicker.style.setProperty("--alert-font-weight", normalized.font_weight);
+        const message = normalized.text.trim();
+        siteAlertMessage.innerHTML = renderAlertMessageHtml(normalized);
+        siteAlertMessageCopy.innerHTML = renderAlertMessageHtml(normalized);
+        siteAlertTicker.classList.toggle("hidden", !normalized.enabled || !message);
+        if (normalized.enabled && message) updateAlertTravel(siteAlertTicker, siteAlertMessage);
+      }
+
+      async function loadSiteAlertSettings() {
+        renderSiteAlert(DEFAULT_SITE_ALERT_SETTINGS);
+      }
+
+      function formatServerActivity(value) {
+        const parsed = new Date(value);
+        if (Number.isNaN(parsed.getTime())) return "";
+        const part = (number) => String(number).padStart(2, "0");
+        return `${part(parsed.getHours())}:${part(parsed.getMinutes())} ${part(parsed.getMonth() + 1)}:${part(parsed.getDate())}:${parsed.getFullYear()}`;
+      }
+
+      function setServerActivity() {
+        if (serverActivityFooter) serverActivityFooter.textContent = DEMO_SERVER_ACTIVITY;
+      }
+
+      function latestTimestamp(values) {
+        return values
+          .filter(Boolean)
+          .map((value) => new Date(value))
+          .filter((value) => !Number.isNaN(value.getTime()))
+          .sort((left, right) => right.getTime() - left.getTime())[0] || null;
+      }
+
+      async function loadLatestTableUpdate() {
+        return null;
+      }
+
+      async function loadServerActivity() {
+        if (serverActivityFooter) serverActivityFooter.textContent = DEMO_SERVER_ACTIVITY;
+      }
+
+      async function loadSupabaseTables() {
+        const data = window.PitchIQDemoData || {};
+        upcomingGames = cloneDemoGames(data.DEMO_UPCOMING_GAMES || []);
+        liveGames = cloneDemoGames(data.DEMO_LIVE_GAMES || []);
+        await loadHistoricalRows();
+        rebuildAllPitchers();
+        renderBoard();
+      }
+
+      function queueSupabaseRefresh() {}
+
+      async function refreshSupabaseData() {
+        await loadSupabaseTables();
+        if (typeof loadFavoritePitchers === "function") await loadFavoritePitchers();
+        await loadServerActivity();
+      }
+
+      function startSupabaseAutoRefresh() {}
+
+      
+      function bootDemoBoard() {
+        setDemoProIdentity();
+        loadDemoFavorites();
+        void loadSupabaseTables();
+        void loadServerActivity();
+      }
+      bootDemoBoard();
+
+
+      viewTabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          activeView = tab.dataset.view || "upcoming";
+          expandedRowKey = null;
+          if (activeView === "historical") {
+            historicalGamesPage = 1;
+            syncHistoricalSortSelect();
+          }
+          renderBoard();
+        });
+      });
+
+      searchInput.addEventListener("input", () => {
+        searchQuery = searchInput.value || "";
+        expandedRowKey = null;
+        if (activeView === "historical") {
+          historicalGamesPage = 1;
+        }
+        renderBoard();
+      });
+
+      sortSelect.addEventListener("change", () => {
+        if (sortSelect.value === "favorites" && !canViewMyPitchers()) {
+          sortSelect.value = lastBoardSort;
+          window.location.href = "./demo-mobile-pitchers.html";
+          return;
+        }
+        if (sortSelect.value !== "favorites") {
+          lastBoardSort = sortSelect.value;
+        }
+        expandedRowKey = null;
+        if (activeView === "historical") {
+          historicalGamesPage = 1;
+        }
+        renderBoard();
+      });
+
+      historicalPrevButton?.addEventListener("click", () => {
+        if (historicalGamesPage <= 1) return;
+        historicalGamesPage -= 1;
+        expandedRowKey = null;
+        renderBoard();
+        document.getElementById("board")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+
+      historicalNextButton?.addEventListener("click", () => {
+        const totalPages = Math.max(1, Math.ceil(filteredSortedGames().length / historicalGamesPageSize));
+        if (historicalGamesPage >= totalPages) return;
+        historicalGamesPage += 1;
+        expandedRowKey = null;
+        renderBoard();
+        document.getElementById("board")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+
+      const navMenu = document.getElementById("nav-menu");
+      const navToggle = document.getElementById("nav-toggle");
+      const navDropdown = document.getElementById("nav-dropdown");
+
+      function setNavOpen(open) {
+        if (!navToggle || !navDropdown) return;
+        navToggle.setAttribute("aria-expanded", open ? "true" : "false");
+        navToggle.setAttribute("aria-label", open ? "Close site navigation" : "Open site navigation");
+        navDropdown.classList.toggle("hidden", !open);
+      }
+
+      navToggle?.addEventListener("click", (event) => {
+        event.stopPropagation();
+        const open = navToggle.getAttribute("aria-expanded") === "true";
+        setNavOpen(!open);
+      });
+
+      navDropdown?.addEventListener("click", () => {
+        setNavOpen(false);
+      });
+
+      document.addEventListener("click", (event) => {
+        if (!navMenu || navMenu.contains(event.target)) return;
+        setNavOpen(false);
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && !pitchiqConfirmModal.classList.contains("hidden")) {
+          closePitchiqConfirm(false);
+          return;
+        }
+        if (event.key === "Escape") setNavOpen(false);
+      });
+
+      pitchiqConfirmCancel.addEventListener("click", () => closePitchiqConfirm(false));
+      pitchiqConfirmProceed.addEventListener("click", () => {
+        if (performance.now() - pitchiqConfirmOpenedAt < 300) return;
+        closePitchiqConfirm(true);
+      });
+      pitchiqConfirmModal.addEventListener("click", (event) => {
+        if (event.target === pitchiqConfirmModal) closePitchiqConfirm(false);
+      });
+
+      function handleBoardActionClick(event) {
+        const favoriteButton = event.target.closest(".favorite-pitcher-btn");
+        if (favoriteButton) {
+          event.preventDefault();
+          event.stopPropagation();
+          if (favoriteButton.classList.contains("is-locked")) {
+            window.location.href = "./index.html";
+            return;
+          }
+          void toggleFavoritePitcher(favoriteButton.dataset.pitcher || favoriteButton.dataset.favoritePitcher || "");
+          return;
+        }
+        const addButton = event.target.closest(".add-card-btn");
+        if (addButton) {
+          event.preventDefault();
+          event.stopPropagation();
+          if (!canViewMyCards()) {
+            window.location.href = "./index.html";
+            return;
+          }
+          const game = findWalletSourceGame(addButton.dataset.walletKey || "") || filteredSortedGames().find((row) => normalizeText(row.pitcher) === normalizeText(addButton.dataset.pitcher || ""));
+          void saveGameToMyCards(game, addButton);
+          return;
+        }
+        const historicalButton = event.target.closest(".historical-lookup-btn");
+        if (historicalButton) {
+          event.preventDefault();
+          event.stopPropagation();
+          openHistoricalLookup(historicalButton.dataset.pitcher || "");
+          return;
+        }
+        const historicalSearchButton = event.target.closest(".historical-search-btn");
+        if (historicalSearchButton) {
+          event.preventDefault();
+          event.stopPropagation();
+          if (!canViewHistoricalGames()) {
+            window.location.href = "./index.html";
+            return;
+          }
+          populateHistoricalSearch(historicalSearchButton.dataset.pitcher || "");
+          return;
+        }
+        const lookupButton = event.target.closest(".pitcher-lookup-btn");
+        if (lookupButton) {
+          event.preventDefault();
+          event.stopPropagation();
+          openPitcherLookup(lookupButton.dataset.pitcher || "");
+          return;
+        }
+      }
+
+      boardBody.addEventListener("click", (event) => {
+        if (event.target.closest(".row-action-bar")) {
+          handleBoardActionClick(event);
+          return;
+        }
+        const row = event.target.closest(".game-row");
+        if (!row) return;
+        const key = row.dataset.rowKey || "";
+        expandedRowKey = expandedRowKey === key ? null : key;
+        renderBoard();
+      });
+
+      
+
+      renderSiteAlert(DEFAULT_SITE_ALERT_SETTINGS);
+      syncHeaderSpacer();
+      if (header && typeof ResizeObserver !== "undefined") {
+        new ResizeObserver(syncHeaderSpacer).observe(header);
+      }
+      window.addEventListener("resize", syncHeaderSpacer, { passive: true });
+      renderBoard();
+    })();
+  </script>
+</body>
+</html>
