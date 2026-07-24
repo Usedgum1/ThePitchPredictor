@@ -4,10 +4,10 @@
 
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ThePitchPredictor.com | Coming Soon</title>
+  <title>The Pitch Predictor | Strikeout Projections</title>
   <meta
     name="description"
-    content="ThePitchPredictor.com is a pitching-first MLB strikeout prop site focused on projections, lines, leans, and edge."
+    content="The Pitch Predictor is a pitching-first MLB strikeout prop tool for projections, sportsbook lines, leans, and edge — powered by PitchIQ."
   />
   <meta name="theme-color" content="#050505" />
   <link rel="icon" type="image/x-icon" href="./images/favicon/favicon.ico" />
@@ -79,66 +79,6 @@
       padding: 18px 20px 40px;
     }
 
-    .site-header {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 16px 20px 0;
-      display: flex;
-      justify-content: flex-end;
-    }
-
-    .site-header-inner {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 10px;
-    }
-
-    .login-button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 28px;
-      padding: 5px 13px;
-      border: 1px solid rgba(141, 223, 159, 0.34);
-      border-radius: 999px;
-      background: var(--dk-green-soft);
-      color: #d9ffe2;
-      font-size: 0.76rem;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      text-decoration: none;
-      text-transform: uppercase;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
-      transition: transform 140ms ease, border-color 140ms ease, background 140ms ease, color 140ms ease;
-    }
-
-    .login-button:hover {
-      transform: translateY(-1px);
-      border-color: rgba(141, 223, 159, 0.5);
-      background: var(--dk-green);
-      color: #050505;
-    }
-
-    .demo-login-button {
-      border-color: rgba(255, 148, 46, 0.42);
-      background: rgba(255, 148, 46, 0.12);
-      color: #ffe0b3;
-    }
-
-    .demo-login-button:hover {
-      border-color: rgba(255, 148, 46, 0.62);
-      background: var(--over-orange);
-      color: #050505;
-    }
-
-    .login-button:focus-visible {
-      outline: none;
-      box-shadow:
-        0 0 0 4px rgba(141, 223, 159, 0.16),
-        inset 0 1px 0 rgba(255, 255, 255, 0.18);
-    }
-
     .panel {
       background: var(--panel);
       border: 1px solid var(--line);
@@ -153,7 +93,7 @@
       font-size: clamp(1.55rem, 3.5vw, 2.3rem);
       line-height: 1.08;
       letter-spacing: -0.03em;
-      max-width: 16ch;
+      max-width: 18ch;
       color: #d9ecfb;
     }
 
@@ -168,25 +108,14 @@
       line-height: 1.65;
     }
 
-    .eyebrow {
-      font-size: clamp(2.4rem, 5.6vw, 4rem);
+    .brand {
+      margin: 0 0 10px;
+      font-size: clamp(2rem, 5vw, 3.35rem);
       line-height: 1;
-      letter-spacing: -0.05em;
-      text-transform: uppercase;
-      color: var(--over-orange);
-      margin-bottom: 12px;
+      letter-spacing: -0.04em;
       font-weight: 800;
-      white-space: nowrap;
+      color: var(--over-orange);
       text-shadow: 0 10px 28px rgba(255, 148, 46, 0.2);
-    }
-
-    .domain {
-      margin: 0 0 14px;
-      font-size: 0.95rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--text);
-      opacity: 0.92;
     }
 
     .hero {
@@ -215,22 +144,63 @@
       margin-top: 24px;
     }
 
-    .demo-button {
+    .demo-button,
+    .login-button,
+    .cta-button {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       min-height: 42px;
       padding: 10px 18px;
-      border: 1px solid rgba(255, 148, 46, 0.42);
       border-radius: 999px;
-      background: rgba(255, 148, 46, 0.14);
-      color: #ffe0b3;
       font-size: 0.82rem;
       font-weight: 800;
       letter-spacing: 0.08em;
       text-decoration: none;
       text-transform: uppercase;
-      transition: transform 140ms ease, border-color 140ms ease, background 140ms ease, color 140ms ease;
+      transition: transform 140ms ease, border-color 140ms ease, background 140ms ease, color 140ms ease, box-shadow 140ms ease, filter 140ms ease;
+    }
+
+    .cta-button {
+      border: 1px solid rgba(47, 155, 255, 0.42);
+      background: var(--accent-soft);
+      color: #bfe6ff;
+    }
+
+    .cta-button:hover {
+      transform: translateY(-1px);
+      border-color: rgba(47, 155, 255, 0.62);
+      background: var(--accent);
+      color: #050505;
+    }
+
+    .cta-button:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 4px rgba(47, 155, 255, 0.18);
+    }
+
+    .login-button {
+      border: 1px solid rgba(141, 223, 159, 0.42);
+      background: var(--dk-green-soft);
+      color: #d9ffe2;
+    }
+
+    .login-button:hover {
+      transform: translateY(-1px);
+      border-color: rgba(141, 223, 159, 0.62);
+      background: var(--dk-green);
+      color: #050505;
+    }
+
+    .login-button:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 4px rgba(141, 223, 159, 0.18);
+    }
+
+    .demo-button {
+      border: 1px solid rgba(255, 148, 46, 0.42);
+      background: rgba(255, 148, 46, 0.14);
+      color: #ffe0b3;
     }
 
     .demo-button:hover {
@@ -243,28 +213,6 @@
     .demo-button:focus-visible {
       outline: none;
       box-shadow: 0 0 0 4px rgba(255, 148, 46, 0.18);
-    }
-
-    .chips {
-      grid-column: 1 / -1;
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin-top: 0;
-      padding-top: 18px;
-      border-top: 1px solid var(--line);
-    }
-
-    .chip {
-      padding: 8px 12px;
-      border-radius: 999px;
-      background: var(--accent-soft);
-      border: 1px solid var(--line);
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--text);
     }
 
     .preview {
@@ -436,13 +384,13 @@
       display: flex;
       flex-direction: column;
       gap: 14px;
+      text-align: center;
     }
 
     .showcase-card-primary {
       position: relative;
       overflow: hidden;
       align-items: center;
-      text-align: center;
       border-color: var(--line);
       background: var(--panel);
     }
@@ -458,6 +406,12 @@
       text-transform: uppercase;
       color: var(--accent);
       font-weight: 700;
+      text-align: center;
+    }
+
+    .showcase-kicker h2 {
+      margin: 0;
+      text-align: center;
     }
 
     .showcase-card h3 {
@@ -467,7 +421,7 @@
     }
 
     .showcase-card p {
-      margin: 0;
+      margin: 0 auto;
       color: var(--muted);
       line-height: 1.65;
     }
@@ -489,33 +443,26 @@
       letter-spacing: 0.03em;
       text-transform: none;
       color: var(--accent);
-      text-align: center;
     }
 
-    .showcase-card-smart .showcase-kicker {
+    .showcase-card-smart .showcase-kicker,
+    .showcase-card-upcoming .showcase-kicker,
+    .showcase-card-live .showcase-kicker,
+    .showcase-card-my-cards .showcase-kicker,
+    .showcase-card-my-pitchers .showcase-kicker,
+    .showcase-card-historical .showcase-kicker {
       font-size: clamp(1.25rem, 2.5vw, 1.8rem);
       letter-spacing: 0.03em;
       text-transform: none;
       color: var(--accent);
     }
 
-    .showcase-card-smart p {
-      width: 100%;
-      max-width: none;
-      font-size: clamp(1rem, 1.5vw, 1.15rem);
-      line-height: 1.35;
-      color: var(--text);
-      opacity: 0.92;
-    }
-
-    .showcase-card-upcoming .showcase-kicker {
-      font-size: clamp(1.25rem, 2.5vw, 1.8rem);
-      letter-spacing: 0.03em;
-      text-transform: none;
-      color: var(--accent);
-    }
-
-    .showcase-card-upcoming p {
+    .showcase-card-smart p,
+    .showcase-card-upcoming p,
+    .showcase-card-live p,
+    .showcase-card-my-cards p,
+    .showcase-card-my-pitchers p,
+    .showcase-card-historical p {
       width: 100%;
       max-width: none;
       margin: 0;
@@ -625,201 +572,49 @@
       line-height: 1.6;
     }
 
-    .sections {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
-      margin-top: 20px;
-    }
-
-    .signup-wrap {
-      margin-top: 20px;
-    }
-
-    .signup-form {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .signup-copy {
-      margin: 12px 0 0;
-    }
-
-    .signup-label {
-      display: inline-flex;
-      gap: 6px;
-      align-items: center;
-      font-size: 0.82rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--text);
-    }
-
-    .signup-controls {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .signup-input {
-      flex: 1 1 220px;
-      min-width: 200px;
-      padding: 12px 14px;
-      border-radius: 10px;
-      border: 1px solid var(--line);
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--text);
-      font: inherit;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
-    }
-
-    .signup-input::placeholder {
-      color: var(--muted);
-    }
-
-    .signup-input:focus {
-      outline: none;
-      border-color: var(--line-strong);
-      box-shadow:
-        0 0 0 4px rgba(47, 155, 255, 0.16),
-        inset 0 1px 0 rgba(255, 255, 255, 0.06);
-    }
-
-    .signup-button {
-      padding: 12px 18px;
-      border: 1px solid rgba(255, 148, 46, 0.42);
-      border-radius: 10px;
-      background: var(--over-orange);
-      color: #050505;
-      font: inherit;
-      font-weight: 800;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      cursor: pointer;
-      box-shadow:
-        0 12px 24px rgba(255, 148, 46, 0.24),
-        inset 0 1px 0 rgba(255, 255, 255, 0.45);
-      transition: transform 140ms ease, box-shadow 140ms ease, filter 140ms ease;
-    }
-
-    .signup-button:hover {
-      transform: translateY(-1px);
-      filter: brightness(1.03);
-      box-shadow:
-        0 16px 28px rgba(255, 148, 46, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.55);
-    }
-
-    .signup-button:focus-visible {
-      outline: none;
-      box-shadow:
-        0 0 0 4px rgba(255, 148, 46, 0.18),
-        0 16px 28px rgba(255, 148, 46, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.55);
-    }
-
-    .signup-button:disabled {
-      cursor: wait;
-      opacity: 0.78;
-      transform: none;
-      filter: none;
-    }
-
-    .signup-status {
-      min-height: 1.2rem;
-      margin: 2px 0 0;
-      font-size: 0.9rem;
-      color: var(--muted);
-    }
-
-    .signup-status.is-error {
-      color: #ffb3a4;
-    }
-
-    .signup-modal {
-      position: fixed;
-      inset: 0;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      background: rgba(4, 10, 18, 0.84);
-      backdrop-filter: blur(12px);
-      z-index: 60;
-    }
-
-    .signup-modal.visible {
-      display: flex;
-    }
-
-    .signup-modal-panel {
-      width: min(420px, 100%);
-      padding: 28px;
-      border-radius: 22px;
-      border: 1px solid rgba(255, 148, 46, 0.26);
-      background:
-        linear-gradient(180deg, rgba(15, 24, 36, 0.98), rgba(8, 17, 27, 0.98));
-      box-shadow:
-        0 24px 60px rgba(0, 0, 0, 0.36),
-        0 14px 30px rgba(255, 148, 46, 0.08);
+    .pitching-only {
+      margin-top: 10px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
       text-align: center;
     }
 
-    .signup-modal-kicker {
-      margin-bottom: 10px;
-      font-size: 0.78rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--over-orange);
-    }
-
-    .signup-modal-panel h3 {
-      margin: 0;
-      font-size: 1.55rem;
-      line-height: 1.1;
+    .pitching-only h2 {
+      margin: 0 0 10px;
       color: var(--text);
     }
 
-    .signup-modal-panel p {
-      margin: 12px 0 0;
+    .pitching-only p {
+      margin: 0 auto;
+      max-width: 62ch;
+      color: var(--muted);
+      opacity: 1;
     }
 
-    .signup-modal-close {
-      margin-top: 18px;
-      min-width: 132px;
-      padding: 12px 18px;
-      border: 1px solid rgba(255, 148, 46, 0.42);
-      border-radius: 999px;
-      background: var(--over-orange);
-      color: #050505;
-      font: inherit;
-      font-weight: 800;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      cursor: pointer;
+    .get-started {
+      margin-top: 20px;
+      text-align: center;
+      border-color: rgba(255, 215, 0, 0.42);
+      background:
+        linear-gradient(180deg, rgba(255, 215, 0, 0.1), rgba(12, 14, 20, 0.64));
       box-shadow:
-        0 12px 24px rgba(255, 148, 46, 0.24),
-        inset 0 1px 0 rgba(255, 255, 255, 0.45);
-      transition: transform 140ms ease, box-shadow 140ms ease, filter 140ms ease;
+        0 20px 60px rgba(0, 0, 0, 0.28),
+        0 0 28px rgba(255, 215, 0, 0.08);
     }
 
-    .signup-modal-close:hover {
-      transform: translateY(-1px);
-      filter: brightness(1.03);
-      box-shadow:
-        0 16px 28px rgba(255, 148, 46, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.55);
+    .get-started h2 {
+      color: #ffd700;
+      text-shadow: 0 0 18px rgba(255, 215, 0, 0.28);
     }
 
-    .signup-modal-close:focus-visible {
-      outline: none;
-      box-shadow:
-        0 0 0 4px rgba(255, 148, 46, 0.18),
-        0 16px 28px rgba(255, 148, 46, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.55);
+    .get-started p {
+      margin: 12px auto 0;
+      max-width: 70ch;
+      color: #ffe88a;
+    }
+
+    .get-started .hero-actions {
+      justify-content: center;
     }
 
     .footer {
@@ -839,8 +634,7 @@
 
     @media (max-width: 900px) {
       .hero,
-      .showcase-grid,
-      .sections {
+      .showcase-grid {
         grid-template-columns: 1fr;
       }
     }
@@ -848,29 +642,24 @@
 </head>
 
 <body>
-  <header class="site-header" aria-label="Site header">
-    <div class="site-header-inner">
-      <a class="login-button demo-login-button" href="./demo.html" aria-label="Open The Pitch Predictor demo">Demo</a>
-      <a class="login-button" href="./login.html" aria-label="Log in to The Pitch Predictor">Log In</a>
-    </div>
-  </header>
-
   <div class="container">
 
 	<div class="panel hero">
 	  <div class="hero-copy">
-		<div class="eyebrow">Coming Soon</div>
-		<div class="domain">ThePitchPredictor.com</div>
+		<div class="brand">The Pitch Predictor</div>
 
 		<h1>Strikeout projections built for betting edges.</h1>
-        <div class="hero-actions">
-          <a class="demo-button" href="./demo.html">View Demo</a>
-        </div>
 
 		<p>
-		  Powered by our PitchIQ software, The Pitch Predictor gives you projected strikeouts, sportsbook lines,
-		  and true edge — all in one clean view for fast, confident decisions.
+		  Powered by PitchIQ, The Pitch Predictor is a numbers-first tool built to surface real betting edge.
+		  No AI picks — just statistically grounded strikeout projections, sportsbook lines, and clear decision-making in one clean view.
 		</p>
+
+        <div class="hero-actions">
+          <a class="cta-button" href="./login.html">Create Account</a>
+          <a class="login-button" href="./login.html">Log In</a>
+          <a class="demo-button" href="./demo.html">View Demo</a>
+        </div>
 	  </div>
 
 	  <div class="preview">
@@ -903,14 +692,6 @@
 			<strong>+1.37</strong>
 		  </div>
 		</div>
-	  </div>
-
-	  <div class="chips">
-		<div class="chip"><b>Pitcher/Game/Team lookups</b></div>
-		<div class="chip"><b>Model-calibrated projections</b></div>
-		<div class="chip"><b>Built on years of data</b></div>
-		<div class="chip"><b>Tens of thousands of data points</b></div>
-		<div class="chip"><b>Game notes and insights</b></div>
 	  </div>
 </div>
 
@@ -1094,65 +875,24 @@
               />
             </button>
           </div>
+          <div class="pitching-only">
+            <h2>Pitching only, by design</h2>
+            <p>
+              We focus on one thing: pitching. Strikeout props are where the edge is clearest, and everything here is built to find it.
+            </p>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="sections">
-      <div class="panel">
-		<h2>Pitching only, by design</h2>
-		<p>
-		  We focus on one thing: pitching. Strikeout props are where the edge is clearest, and everything here is built to find it.
-		</p>
-      </div>
-
-      <div class="panel">
-		<h2>Interested?</h2>
-		<p>
-		  Try the demo to click through the board, lookup tools, live view, saved cards, pitcher watchlists, and historical table before launch.
-		</p>
-        <div class="hero-actions">
-          <a class="demo-button" href="./demo.html">Try the Demo</a>
-        </div>
-      </div>
-
-      <div class="panel">
-		<h2>Get early access</h2>
-		<p>
-		  Be first in when The Pitch Predictor launches. No spam, no nonsense, just one email. Early users get first access to launch pricing.
-		</p>
-        <div class="signup-wrap">
-			<form
-			  action="https://formsubmit.co/ajax/sales@minmaxtechnology.com"
-			  method="POST"
-			  class="signup-form"
-			>
-
-
-			  <div class="signup-controls">
-				<input
-				  type="email"
-				  name="waitlist_email"
-				  class="signup-input"
-				  id="signup-email"
-				  placeholder="Enter your email"
-				  autocomplete="email"
-				  required
-				/>
-
-				<button type="submit" class="signup-button">
-				  Notify Me!
-				</button>
-			  </div>
-
-			  <!-- Hidden config -->
-			  <input type="hidden" name="_subject" value="New Interest Signup">
-			  <input type="hidden" name="_url" value="https://thepitchpredictor.com">
-			  <input type="text" name="_honey" style="display:none">
-			  <p class="signup-status" id="signup-status" aria-live="polite"></p>
-
-			</form>
-        </div>
+    <div class="panel get-started">
+      <h2>Get started</h2>
+      <p>
+        Try the demo to click through the board, lookup tools, live view, saved cards, pitcher watchlists, and historical table — then create an account when you're ready.
+      </p>
+      <div class="hero-actions">
+        <a class="cta-button" href="./login.html">Create Account</a>
+        <a class="demo-button" href="./demo.html">Try the Demo</a>
       </div>
     </div>
 
@@ -1170,22 +910,6 @@
 
   </div>
 
-  <div
-    class="signup-modal"
-    id="signup-modal"
-    aria-hidden="true"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="signup-modal-title"
-  >
-    <div class="signup-modal-panel">
-      <div class="signup-modal-kicker">Early Access</div>
-      <h3 id="signup-modal-title">You're in</h3>
-      <p>Thanks for signing up. We'll let you know as soon as The Pitch Predictor goes live.</p>
-      <button type="button" class="signup-modal-close" id="signup-modal-close">Close</button>
-    </div>
-  </div>
-
   <div class="lightbox" id="image-lightbox" aria-hidden="true">
     <div class="lightbox-panel">
       <button type="button" class="lightbox-close" id="lightbox-close" aria-label="Close image viewer">×</button>
@@ -1195,28 +919,11 @@
   </div>
 
   <script>
-    const yearElement = document.getElementById("year");
-    if (yearElement) {
-      yearElement.textContent = new Date().getFullYear();
-    }
-
-    const heroDescription = document.querySelector(".hero-copy p");
-    if (heroDescription) {
-      heroDescription.innerHTML =
-        "Powered by PitchIQ, The Pitch Predictor is a numbers-first tool built to surface real betting edge.<br>No AI picks &mdash; just statistically grounded strikeout projections, sportsbook lines, and clear decision-making in one clean view.";
-    }
-
     const lightbox = document.getElementById("image-lightbox");
     const lightboxImage = document.getElementById("lightbox-image");
     const lightboxCaption = document.getElementById("lightbox-caption");
     const lightboxClose = document.getElementById("lightbox-close");
     const lightboxTriggers = Array.from(document.querySelectorAll(".lightbox-trigger"));
-    const signupForm = document.querySelector(".signup-form");
-    const signupButton = signupForm?.querySelector(".signup-button");
-    const signupStatus = document.getElementById("signup-status");
-    const signupModal = document.getElementById("signup-modal");
-    const signupModalClose = document.getElementById("signup-modal-close");
-    let lastSignupFocus = null;
 
     function closeLightbox() {
       lightbox.classList.remove("visible");
@@ -1224,82 +931,6 @@
       lightboxImage.removeAttribute("src");
       lightboxImage.alt = "";
       lightboxCaption.textContent = "";
-    }
-
-    function openSignupModal() {
-      if (!signupModal) {
-        return;
-      }
-      lastSignupFocus = document.activeElement;
-      signupModal.classList.add("visible");
-      signupModal.setAttribute("aria-hidden", "false");
-      signupModalClose?.focus();
-    }
-
-    function closeSignupModal() {
-      if (!signupModal) {
-        return;
-      }
-      signupModal.classList.remove("visible");
-      signupModal.setAttribute("aria-hidden", "true");
-      if (lastSignupFocus instanceof HTMLElement) {
-        lastSignupFocus.focus();
-      }
-    }
-
-    if (signupForm && signupButton) {
-      signupForm.addEventListener("submit", async (event) => {
-        event.preventDefault();
-        signupStatus.textContent = "";
-        signupStatus.classList.remove("is-error");
-        signupButton.disabled = true;
-
-        try {
-          const formData = new FormData(signupForm);
-          const waitlistEmail = String(formData.get("waitlist_email") || "").trim();
-          if (waitlistEmail) {
-            formData.set("_replyto", waitlistEmail);
-          }
-
-          const response = await fetch(signupForm.action, {
-            method: "POST",
-            headers: {
-              Accept: "application/json"
-            },
-            body: formData
-          });
-
-          const responsePayload = await response.json().catch(() => null);
-          const wasSuccessful = response.ok
-            && (
-              !responsePayload
-              || responsePayload.success === undefined
-              || String(responsePayload.success).toLowerCase() === "true"
-            );
-
-          if (!wasSuccessful) {
-            throw new Error(responsePayload?.message || "Signup failed");
-          }
-
-          signupForm.reset();
-          openSignupModal();
-        } catch (error) {
-          const errorMessage = error instanceof Error && error.message
-            ? error.message
-            : "Something went wrong. Please try again.";
-
-          if (errorMessage.includes("needs Activation")) {
-            signupStatus.textContent = "FormSubmit needs activation. Check sales@minmaxtechnology.com for the 'Activate Form' email.";
-          } else if (errorMessage.includes("open this page through a web server")) {
-            signupStatus.textContent = "Open this page through your live site URL or a local web server, not as a raw HTML file.";
-          } else {
-            signupStatus.textContent = errorMessage;
-          }
-          signupStatus.classList.add("is-error");
-        } finally {
-          signupButton.disabled = false;
-        }
-      });
     }
 
     lightboxTriggers.forEach((trigger) => {
@@ -1314,7 +945,6 @@
     });
 
     lightboxClose.addEventListener("click", closeLightbox);
-    signupModalClose?.addEventListener("click", closeSignupModal);
 
     lightbox.addEventListener("click", (event) => {
       if (event.target === lightbox) {
@@ -1322,18 +952,9 @@
       }
     });
 
-    signupModal?.addEventListener("click", (event) => {
-      if (event.target === signupModal) {
-        closeSignupModal();
-      }
-    });
-
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && lightbox.classList.contains("visible")) {
         closeLightbox();
-      }
-      if (event.key === "Escape" && signupModal?.classList.contains("visible")) {
-        closeSignupModal();
       }
     });
   </script>
