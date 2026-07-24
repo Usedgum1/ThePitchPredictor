@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>pitchIQ | Mobile View</title>
-  <meta name="description" content="pitchIQ mobile strikeout prop slate — upcoming pitchers and PitchIQ K projections." />
+  <title>pitchIQ | Demo Mobile</title>
+  <meta name="description" content="Closed pitchIQ mobile demo snapshot with made-up MLB strikeout prop data." />
   <meta name="theme-color" content="#050505" />
   <link rel="icon" type="image/x-icon" href="./images/favicon/favicon.ico" />
   <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon/favicon-32x32.png" />
@@ -1165,6 +1165,45 @@
         min-height: 42px;
       }
     }
+  
+    .demo-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 0;
+      padding: 8px 12px;
+      border-bottom: 1px solid rgba(255, 148, 46, 0.24);
+      background: rgba(255, 148, 46, 0.08);
+      color: var(--text);
+      font-size: 0.72rem;
+      line-height: 1.35;
+    }
+
+    .demo-banner strong {
+      color: var(--amber, #ff942e);
+    }
+
+    .demo-pill {
+      flex: 0 0 auto;
+      border: 1px solid rgba(141, 223, 159, 0.3);
+      border-radius: 999px;
+      padding: 4px 8px;
+      background: rgba(141, 223, 159, 0.1);
+      color: #d9ffe2;
+      font-size: 0.62rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .nav-dropdown a.is-active {
+      color: var(--text);
+      background: rgba(107, 182, 255, 0.14);
+    }
+
+    .site-alert-ticker { display: none !important; }
+
   </style>
 </head>
 <body>
@@ -1179,7 +1218,7 @@
           </div>
         </div>
         <div class="header-account">
-          <p class="account-line" id="account-pill">Checking session…</p>
+          <p class="account-line" id="account-pill">Welcome, <span class="account-username tier-value-pro">Demo Pro</span></p>
           <div class="nav-menu" id="nav-menu">
             <button
               class="nav-toggle"
@@ -1192,14 +1231,15 @@
             >
               <span class="nav-toggle-icon" aria-hidden="true"><span></span></span>
             </button>
+            
             <div class="nav-dropdown hidden" id="nav-dropdown" role="menu">
-              <a href="./app-mobile-lookup.html" role="menuitem">Pitcher Lookup</a>
-              <a href="./app-mobile.html" role="menuitem">Game Board</a>
-              <a href="./app-mobile-cards.html" role="menuitem">My Cards</a>
-              <a href="./app-mobile-pitchers.html" role="menuitem">My Pitchers</a>
-              <a href="./account-settings.html" role="menuitem">Account Settings</a>
+              <a href="./demo-mobile-lookup.html" role="menuitem">Pitcher Lookup</a>
+              <a href="./demo-mobile.html" class="is-active" role="menuitem">Game Board</a>
+              <a href="./demo-mobile-cards.html" role="menuitem">My Cards</a>
+              <a href="./demo-mobile-pitchers.html" role="menuitem">My Pitchers</a>
               <a href="./faqs-knowledge.html" role="menuitem">FAQs/Help</a>
-              <a href="./app.html?desktop=1" role="menuitem">Desktop View</a>
+              <a href="./demo.html?desktop=1" role="menuitem">Desktop View</a>
+              <a href="./index.html" role="menuitem">Exit Demo</a>
             </div>
           </div>
         </div>
@@ -1241,9 +1281,14 @@
         <span>Pitcher</span>
         <span class="num">PitchIQ K</span>
       </div>
-    </header>
+    
+    <div class="demo-banner" role="note">
+      <span><strong>Closed demo:</strong> made-up data frozen from the view of a Pro user on July 18, 2025.</span>
+      <span class="demo-pill">Snapshot</span>
+    </div>
 
-    <div class="header-spacer" id="header-spacer" aria-hidden="true"></div>
+    </header>
+<div class="header-spacer" id="header-spacer" aria-hidden="true"></div>
 
     <div class="site-alert-ticker hidden" id="site-alert-ticker" role="status" aria-live="polite">
       <div class="site-alert-track">
@@ -1270,7 +1315,7 @@
       </div>
     </div>
 
-    <footer class="footer" id="server-activity-footer">last server activity: pending</footer>
+    <footer class="footer" id="server-activity-footer">last server activity: 07/18/2025 12:00 PM</footer>
   </div>
 
   <div id="pitchiq-confirm-modal" class="pitchiq-confirm-modal hidden" aria-hidden="true">
@@ -1283,75 +1328,14 @@
       </div>
     </div>
   </div>
-
-  <script>
-    (function () {
-      const CDN = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js";
-      const LOCAL = "./vendor/supabase.js";
-      function getLib() {
-        if (window.supabase?.createClient) return window.supabase;
-        try {
-          if (typeof supabase !== "undefined" && supabase?.createClient) {
-            window.supabase = supabase;
-            return supabase;
-          }
-        } catch {}
-        return null;
-      }
-      function loadScript(src) {
-        return new Promise((resolve, reject) => {
-          const script = document.createElement("script");
-          script.src = src;
-          script.async = false;
-          script.onload = () => resolve();
-          script.onerror = () => reject(new Error(`Failed to load ${src}`));
-          document.head.appendChild(script);
-        });
-      }
-      window.pitchiqLoadSupabase = function pitchiqLoadSupabase() {
-        const ready = getLib();
-        if (ready) return Promise.resolve(ready);
-        if (!window.__pitchiqSupabaseLoadPromise) {
-          window.__pitchiqSupabaseLoadPromise = (async () => {
-            for (const src of [CDN, LOCAL]) {
-              try {
-                await loadScript(src);
-              } catch {
-                continue;
-              }
-              const lib = getLib();
-              if (lib) return lib;
-            }
-            throw new Error("Supabase library failed to load");
-          })();
-        }
-        return window.__pitchiqSupabaseLoadPromise;
-      };
-    })();
-  </script>
-  <script src="./pitchiq-billing.js"></script>
+  <script src="./demo-data.js"></script>
   <script src="./Card%20Styles/DropRateController.js"></script>
   <script>
-    (async () => {
-      try {
-        await window.pitchiqLoadSupabase();
-      } catch (error) {
-        window.location.replace("./login.html");
-        return;
-      }
-
-      const SUPABASE_URL = "https://odvopvoqssamjquinhft.supabase.co";
-      const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_7g1yX__kNzT-6tj8Tr4SIg_T4BX9BlV";
-      const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
-        auth: {
-          autoRefreshToken: true,
-          detectSessionInUrl: true,
-          persistSession: true,
-          storage: window.localStorage,
-        },
-      });
-
-      const ALLOWED_ACCOUNT_ROLES = ["basic", "pro", "life", "admin", "owner"];
+(async () => {
+      const DEMO_STORAGE_FAVORITES = "pitchiq.demo.favoritePitchers";
+      const DEMO_STORAGE_CARDS = "pitchiq.demo.myCards";
+      const DEMO_SERVER_ACTIVITY = "last server activity: 07/18/2025 12:00 PM";
+const ALLOWED_ACCOUNT_ROLES = ["basic", "pro", "life", "admin", "owner"];
       const DATA_REFRESH_INTERVAL_MS = 60000;
       const DATA_REFRESH_DEBOUNCE_MS = 5000;
       const LIVE_GAME_MAX_MINUTES = 18 * 60;
@@ -1388,6 +1372,58 @@
       let pitchiqConfirmOpenedAt = 0;
 
       let authAccepted = false;
+      function cloneDemoGames(list) {
+        return (list || []).map((game) => ({ ...game, upcoming_notes: Array.isArray(game.upcoming_notes) ? game.upcoming_notes.map((n) => ({ ...n })) : game.upcoming_notes }));
+      }
+
+      function loadDemoFavorites() {
+        try {
+          const raw = window.sessionStorage.getItem(DEMO_STORAGE_FAVORITES);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (Array.isArray(parsed) && parsed.length) {
+              favoritePitcherNames = normalizeFavoritePitcherNames(parsed);
+              rebuildFavoritePitcherKeys();
+              return;
+            }
+          }
+        } catch {}
+        favoritePitcherNames = normalizeFavoritePitcherNames([...(window.PitchIQDemoData?.DEMO_FAVORITE_PITCHERS || [])]);
+        rebuildFavoritePitcherKeys();
+        persistFavoritePitchersLocal();
+      }
+
+      function loadDemoCards() {
+        try {
+          const raw = window.sessionStorage.getItem(DEMO_STORAGE_CARDS);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (Array.isArray(parsed)) {
+              return cloneDemoGames(parsed);
+            }
+          }
+        } catch {}
+        return cloneDemoGames(window.PitchIQDemoData?.DEMO_MY_CARDS || []);
+      }
+
+      function persistDemoCards(cards) {
+        try {
+          window.sessionStorage.setItem(DEMO_STORAGE_CARDS, JSON.stringify(cards || []));
+        } catch {}
+      }
+
+      function setDemoProIdentity() {
+        currentUserRole = "pro";
+        currentUserId = "demo-pro";
+        authAccepted = true;
+        if (accountPill) {
+          accountPill.innerHTML = `Welcome, <span class="account-username tier-value-pro">Demo Pro</span>`;
+        }
+        if (serverActivityFooter) {
+          serverActivityFooter.textContent = DEMO_SERVER_ACTIVITY;
+        }
+      }
+
       let authRedirected = false;
       let authCheckId = 0;
       let currentUserId = null;
@@ -1459,13 +1495,13 @@
         favoritePitcherKeys = new Set(favoritePitcherNames.map((name) => normalizePitcherKey(name)).filter(Boolean));
       }
 
-      function favoritePitcherStorageKey(userId = currentUserId) {
-        return userId ? `pitchiq.favoritePitchers.${userId}` : "pitchiq.favoritePitchers";
+      function favoritePitcherStorageKey() {
+        return DEMO_STORAGE_FAVORITES;
       }
 
       function persistFavoritePitchersLocal() {
         if (!currentUserId) return;
-        window.localStorage.setItem(favoritePitcherStorageKey(), JSON.stringify(favoritePitcherNames));
+        window.sessionStorage.setItem(favoritePitcherStorageKey(), JSON.stringify(favoritePitcherNames));
       }
 
       function loadFavoritePitchersLocal() {
@@ -1475,7 +1511,7 @@
           return;
         }
         try {
-          const raw = window.localStorage.getItem(favoritePitcherStorageKey());
+          const raw = window.sessionStorage.getItem(favoritePitcherStorageKey());
           const parsed = JSON.parse(raw || "[]");
           favoritePitcherNames = normalizeFavoritePitcherNames(Array.isArray(parsed) ? parsed : []);
           rebuildFavoritePitcherKeys();
@@ -1490,15 +1526,15 @@
       }
 
       function canViewMyPitchers() {
-        return canUseProFeatures();
+        return true;
       }
 
       function canViewHistoricalGames() {
-        return canUseProFeatures();
+        return true;
       }
 
       function canViewMyCards() {
-        return canUseProFeatures();
+        return true;
       }
 
       const cardStyleController = window.PitchIQCardStyles;
@@ -1595,10 +1631,7 @@
       }
 
       async function saveGameToMyCards(game, button = null) {
-        if (!canViewMyCards()) {
-          window.location.href = "./account-settings.html";
-          return;
-        }
+        if (!canViewMyCards()) return;
         const showButtonFeedback = (state, title, icon = null, duration = 1600) => {
           if (!button) return;
           const originalHtml = button.dataset.originalHtml || button.innerHTML;
@@ -1608,7 +1641,8 @@
           button.classList.toggle("is-failed", state === "failed");
           button.setAttribute("title", title);
           if (icon !== null) {
-            button.querySelector(".row-action-icon").innerHTML = icon;
+            const iconEl = button.querySelector(".row-action-icon");
+            if (iconEl) iconEl.innerHTML = icon;
           }
           window.setTimeout(() => {
             button.classList.remove("is-saved", "is-failed");
@@ -1616,7 +1650,7 @@
             button.innerHTML = originalHtml;
           }, duration);
         };
-        if (!currentUserId || !game) {
+        if (!game) {
           showButtonFeedback("failed", "Could not find card", "!");
           return;
         }
@@ -1627,37 +1661,25 @@
           button.disabled = true;
           button.setAttribute("title", "Saving...");
         }
-        const record = buildSavedCardRecord(game);
-        let { error } = await supabaseClient
-          .from("pitchiq_saved_cards")
-          .insert(record);
-        const isHistoricalSourceRejected = error
-          && record.source_table === "historical"
-          && (error.code === "23514" || /source_table|check constraint/i.test(`${error.message || ""} ${error.details || ""}`));
-        if (isHistoricalSourceRejected) {
-          const fallbackRecord = {
-            ...record,
-            source_table: "upcoming",
-            snapshot: {
-              ...record.snapshot,
-              _pitchiq_source_table: "historical",
-              _pitchiq_storage_source_table: "upcoming",
-            },
-          };
-          ({ error } = await supabaseClient
-            .from("pitchiq_saved_cards")
-            .insert(fallbackRecord));
+        const cards = loadDemoCards();
+        const eventKey = String(game.event_key || "");
+        const pitcher = String(game.pitcher || "");
+        const already = cards.some((card) => String(card.event_key || "") === eventKey && String(card.pitcher || "") === pitcher);
+        if (!already) {
+          cards.unshift({
+            ...game,
+            _saved_card_id: `demo-card-${Date.now()}`,
+            _saved_at: "2025-07-18T12:00:00-04:00",
+          });
+          persistDemoCards(cards);
+          if (typeof myCards !== "undefined") myCards = cards;
         }
-        if (error && error.code !== "23505") {
-          showButtonFeedback("failed", "Save failed", "!");
-          return;
-        }
-        showButtonFeedback("saved", error?.code === "23505" ? "Already saved" : "Saved to my cards", "✓");
+        showButtonFeedback("saved", already ? "Already saved" : "Saved to my cards", "✓");
       }
 
       function openPitcherLookup(pitcherName) {
         if (!pitcherName) return;
-        window.location.href = `./app-mobile-lookup.html?pitcher=${encodeURIComponent(pitcherName)}`;
+        window.location.href = `./demo-mobile-lookup.html?pitcher=${encodeURIComponent(pitcherName)}`;
       }
 
       function populateHistoricalSearch(pitcherName) {
@@ -1673,7 +1695,7 @@
       function openHistoricalLookup(pitcherName) {
         if (!pitcherName) return;
         if (!canViewHistoricalGames()) {
-          window.location.href = "./account-settings.html";
+          window.location.href = "./index.html";
           return;
         }
         activeView = "historical";
@@ -1807,12 +1829,12 @@
       }
 
       async function toggleFavoritePitcher(pitcherName) {
-        if (!canViewMyPitchers() || !currentUserId || !pitcherName) return;
+        if (!canViewMyPitchers() || !pitcherName) return;
         const canonicalPitcher = canonicalPitcherName(pitcherName);
         const key = normalizePitcherKey(canonicalPitcher);
         const wasFavorited = favoritePitcherKeys.has(key);
-        if (!(await confirmFavoritePitcherChange(canonicalPitcher, !wasFavorited))) {
-          return;
+        if (typeof confirmFavoritePitcherChange === "function") {
+          if (!(await confirmFavoritePitcherChange(canonicalPitcher, !wasFavorited))) return;
         }
         if (wasFavorited) {
           favoritePitcherNames = favoritePitcherNames.filter((name) => normalizePitcherKey(name) !== key);
@@ -1821,41 +1843,21 @@
         }
         rebuildFavoritePitcherKeys();
         persistFavoritePitchersLocal();
-        renderBoard();
-
-        let error = null;
-        if (wasFavorited) {
-          ({ error } = await supabaseClient
-            .from("pitchiq_favorite_pitchers")
-            .delete()
-            .eq("pitcher", canonicalPitcher));
-        } else {
-          ({ error } = await supabaseClient
-            .from("pitchiq_favorite_pitchers")
-            .insert({ user_id: currentUserId, pitcher: canonicalPitcher }));
-        }
-        if (error) {
-          await loadFavoritePitchers();
-          renderBoard();
-        }
+        if (typeof renderBoard === "function") renderBoard();
+        if (typeof renderCards === "function") renderCards();
+        if (typeof renderPitchers === "function") renderPitchers();
+        if (typeof syncFavoriteButton === "function") syncFavoriteButton(canonicalPitcher);
+        if (typeof updateFavoriteButton === "function") updateFavoriteButton();
+        if (typeof updateLookupFavoriteButton === "function") updateLookupFavoriteButton();
       }
 
       async function loadFavoritePitchers() {
-        if (!currentUserId || !canViewMyPitchers()) {
+        if (!canViewMyPitchers()) {
           favoritePitcherNames = [];
           rebuildFavoritePitcherKeys();
           return;
         }
-        const { data, error } = await supabaseClient
-          .from("pitchiq_favorite_pitchers")
-          .select("pitcher");
-        if (error) {
-          loadFavoritePitchersLocal();
-          return;
-        }
-        favoritePitcherNames = normalizeFavoritePitcherNames((data || []).map((row) => row.pitcher));
-        rebuildFavoritePitcherKeys();
-        persistFavoritePitchersLocal();
+        loadDemoFavorites();
       }
 
       function rebuildAllPitchers() {
@@ -1871,27 +1873,7 @@
       }
 
       async function loadHistoricalRows() {
-        const { data: historyRows, error } = await supabaseClient
-          .from("pitchiq_historical_rows")
-          .select("event_key,pitcher,game_date,payload,updated_at")
-          .order("updated_at", { ascending: false })
-          .limit(2000);
-
-        if (error) {
-          gameHistory = [];
-          return;
-        }
-
-        gameHistory = (historyRows || [])
-          .filter((row) => row.payload)
-          .map((row) => ({
-            ...row.payload,
-            event_key: row.payload.event_key || row.event_key || "",
-            pitcher: row.payload.pitcher || row.pitcher || "",
-            game_date: row.payload.game_date || row.payload.date || row.game_date || "",
-            _pitchiq_source_table: "historical",
-          }));
-
+        gameHistory = cloneDemoGames(window.PitchIQDemoData?.DEMO_HISTORICAL_GAMES || []);
         gameHistory.sort((left, right) => sortableGameDate(right) - sortableGameDate(left));
       }
 
@@ -2560,7 +2542,7 @@
             <div class="locked-badge">Pro Feature</div>
             <h2 class="locked-title">Historical locked</h2>
             <p class="locked-copy">Upgrade to Pro to search past projections, compare closing lines, and review which sides won or lost.</p>
-            <a class="locked-link" href="./account-settings.html">View Account</a>
+            <a class="locked-link" href="./index.html">View Account</a>
           </div>
         `;
       }
@@ -2841,16 +2823,7 @@
       }
 
       async function loadSiteAlertSettings() {
-        try {
-          const { data, error } = await supabaseClient
-            .from("pitchiq_site_settings")
-            .select("payload")
-            .eq("id", "global_alert")
-            .maybeSingle();
-          renderSiteAlert(error ? DEFAULT_SITE_ALERT_SETTINGS : data?.payload || DEFAULT_SITE_ALERT_SETTINGS);
-        } catch (error) {
-          renderSiteAlert(DEFAULT_SITE_ALERT_SETTINGS);
-        }
+        renderSiteAlert(DEFAULT_SITE_ALERT_SETTINGS);
       }
 
       function formatServerActivity(value) {
@@ -2860,9 +2833,8 @@
         return `${part(parsed.getHours())}:${part(parsed.getMinutes())} ${part(parsed.getMonth() + 1)}:${part(parsed.getDate())}:${parsed.getFullYear()}`;
       }
 
-      function setServerActivity(value) {
-        const formatted = formatServerActivity(value);
-        serverActivityFooter.textContent = `last server activity: ${formatted || "pending"}`;
+      function setServerActivity() {
+        if (serverActivityFooter) serverActivityFooter.textContent = DEMO_SERVER_ACTIVITY;
       }
 
       function latestTimestamp(values) {
@@ -2873,187 +2845,42 @@
           .sort((left, right) => right.getTime() - left.getTime())[0] || null;
       }
 
-      async function loadLatestTableUpdate(tableName) {
-        const { data, error } = await supabaseClient
-          .from(tableName)
-          .select("updated_at")
-          .order("updated_at", { ascending: false })
-          .limit(1);
-        if (error) return null;
-        return data?.[0]?.updated_at || null;
+      async function loadLatestTableUpdate() {
+        return null;
       }
 
       async function loadServerActivity() {
-        const { data, error } = await supabaseClient
-          .from("pitchiq_server_activity")
-          .select("last_activity_at")
-          .eq("id", "worker")
-          .maybeSingle();
-        const latestGameRowsUpdate = await loadLatestTableUpdate("pitchiq_game_rows");
-        setServerActivity(latestTimestamp([
-          !error ? data?.last_activity_at : null,
-          latestGameRowsUpdate,
-        ]));
+        if (serverActivityFooter) serverActivityFooter.textContent = DEMO_SERVER_ACTIVITY;
       }
 
       async function loadSupabaseTables() {
-        const [gameRowsResult] = await Promise.all([
-          supabaseClient
-            .from("pitchiq_game_rows")
-            .select("table_type,payload,updated_at")
-            .order("updated_at", { ascending: false }),
-          loadHistoricalRows(),
-        ]);
-        const { data: gameRows, error } = gameRowsResult;
-
-        if (error) {
-          renderBoard();
-          return;
-        }
-
-        const fetchedGameRows = gameRows || [];
-        const splitGames = splitSupabaseGameRows(fetchedGameRows);
-        if (fetchedGameRows.length) {
-          upcomingGames = splitGames.upcoming;
-          liveGames = splitGames.live;
-          cacheGameBoardSnapshot(splitGames, latestTimestamp(fetchedGameRows.map((row) => row.updated_at))?.toISOString() || null);
-        } else {
-          // Successful empty fetch means the worker cleared the slate (all games finished).
-          upcomingGames = [];
-          liveGames = [];
-          cacheGameBoardSnapshot({ upcoming: [], live: [] }, null);
-        }
+        const data = window.PitchIQDemoData || {};
+        upcomingGames = cloneDemoGames(data.DEMO_UPCOMING_GAMES || []);
+        liveGames = cloneDemoGames(data.DEMO_LIVE_GAMES || []);
+        await loadHistoricalRows();
         rebuildAllPitchers();
         renderBoard();
       }
 
-      function queueSupabaseRefresh() {
-        window.clearTimeout(dataRefreshTimeoutId);
-        dataRefreshTimeoutId = window.setTimeout(() => {
-          if (document.hidden) {
-            dataRefreshQueued = true;
-            return;
-          }
-          refreshSupabaseData();
-        }, DATA_REFRESH_DEBOUNCE_MS);
-      }
+      function queueSupabaseRefresh() {}
 
       async function refreshSupabaseData() {
-        if (dataRefreshInFlight) {
-          dataRefreshQueued = true;
-          return;
-        }
-        dataRefreshInFlight = true;
-        try {
-          await loadSupabaseTables();
-          await loadFavoritePitchers();
-          await loadServerActivity();
-        } finally {
-          dataRefreshInFlight = false;
-          if (dataRefreshQueued) {
-            dataRefreshQueued = false;
-            queueSupabaseRefresh();
-          }
-        }
+        await loadSupabaseTables();
+        if (typeof loadFavoritePitchers === "function") await loadFavoritePitchers();
+        await loadServerActivity();
       }
 
-      function startSupabaseAutoRefresh() {
-        if (!dataRefreshIntervalId) {
-          dataRefreshIntervalId = window.setInterval(() => {
-            if (document.hidden) {
-              dataRefreshQueued = true;
-              return;
-            }
-            refreshSupabaseData();
-          }, DATA_REFRESH_INTERVAL_MS);
-        }
-        if (dataRefreshChannel) return;
-        dataRefreshChannel = supabaseClient
-          .channel("pitchiq-mobile-slate-refresh")
-          .on("postgres_changes", { event: "*", schema: "public", table: "pitchiq_game_rows" }, queueSupabaseRefresh)
-          .on("postgres_changes", { event: "*", schema: "public", table: "pitchiq_server_activity" }, queueSupabaseRefresh)
-          .on("postgres_changes", { event: "*", schema: "public", table: "pitchiq_site_settings" }, loadSiteAlertSettings)
-          .on("postgres_changes", { event: "*", schema: "public", table: "pitchiq_favorite_pitchers" }, queueSupabaseRefresh)
-          .on("postgres_changes", { event: "*", schema: "public", table: "pitchiq_historical_rows" }, queueSupabaseRefresh)
-          .subscribe();
+      function startSupabaseAutoRefresh() {}
+
+      
+      function bootDemoBoard() {
+        setDemoProIdentity();
+        loadDemoFavorites();
+        void loadSupabaseTables();
+        void loadServerActivity();
       }
+      bootDemoBoard();
 
-      async function getUserProfile(userId) {
-        return window.PitchIQBilling.fetchBillingProfile(supabaseClient, userId);
-      }
-
-      function setAccountIdentity(session, role = currentUserRole) {
-        const user = session?.user;
-        const username = user?.user_metadata?.username;
-        const identityLabel = String(username || user?.email || "Unknown user").trim();
-        const normalizedRole = ALLOWED_ACCOUNT_ROLES.includes(role) ? role : "";
-        accountPill.innerHTML = `Welcome, <span class="account-username tier-value-${escapeHtml(normalizedRole)}">${escapeHtml(identityLabel)}</span>`;
-      }
-
-      function redirectToLogin() {
-        if (authAccepted || authRedirected) return;
-        authRedirected = true;
-        window.location.replace("./login.html");
-      }
-
-      async function acceptSession(session) {
-        if (!session || authAccepted || authRedirected) return;
-        const checkId = ++authCheckId;
-        const { profile, error } = await getUserProfile(session.user.id);
-        if (checkId !== authCheckId || authAccepted || authRedirected) return;
-        if (error) {
-          window.clearTimeout(authTimeout);
-          redirectToLogin();
-          return;
-        }
-
-        const role = profile?.role || null;
-        if (!window.PitchIQBilling.hasActiveMembership(profile)) {
-          window.clearTimeout(authTimeout);
-          window.location.replace("./subscribe.html");
-          return;
-        }
-
-        if (!ALLOWED_ACCOUNT_ROLES.includes(role)) {
-          await supabaseClient.auth.signOut();
-          redirectToLogin();
-          return;
-        }
-
-        authAccepted = true;
-        currentUserRole = role;
-        currentUserId = session.user.id;
-        setAccountIdentity(session, role);
-        await loadSiteAlertSettings();
-        refreshSupabaseData();
-        startSupabaseAutoRefresh();
-      }
-
-      const authTimeout = window.setTimeout(redirectToLogin, 8000);
-
-      supabaseClient.auth.onAuthStateChange((event, session) => {
-        if (session) {
-          window.clearTimeout(authTimeout);
-          acceptSession(session);
-          return;
-        }
-        if (event === "SIGNED_OUT" && !authAccepted) {
-          window.clearTimeout(authTimeout);
-          redirectToLogin();
-        }
-      });
-
-      supabaseClient.auth.getSession().then(({ data, error }) => {
-        if (error) {
-          window.clearTimeout(authTimeout);
-          redirectToLogin();
-          return;
-        }
-        if (data.session) {
-          window.clearTimeout(authTimeout);
-          acceptSession(data.session);
-        }
-      });
 
       viewTabs.forEach((tab) => {
         tab.addEventListener("click", () => {
@@ -3079,7 +2906,7 @@
       sortSelect.addEventListener("change", () => {
         if (sortSelect.value === "favorites" && !canViewMyPitchers()) {
           sortSelect.value = lastBoardSort;
-          window.location.href = "./app-mobile-pitchers.html";
+          window.location.href = "./demo-mobile-pitchers.html";
           return;
         }
         if (sortSelect.value !== "favorites") {
@@ -3158,7 +2985,7 @@
           event.preventDefault();
           event.stopPropagation();
           if (favoriteButton.classList.contains("is-locked")) {
-            window.location.href = "./account-settings.html";
+            window.location.href = "./index.html";
             return;
           }
           void toggleFavoritePitcher(favoriteButton.dataset.pitcher || favoriteButton.dataset.favoritePitcher || "");
@@ -3169,7 +2996,7 @@
           event.preventDefault();
           event.stopPropagation();
           if (!canViewMyCards()) {
-            window.location.href = "./account-settings.html";
+            window.location.href = "./index.html";
             return;
           }
           const game = findWalletSourceGame(addButton.dataset.walletKey || "") || filteredSortedGames().find((row) => normalizeText(row.pitcher) === normalizeText(addButton.dataset.pitcher || ""));
@@ -3188,7 +3015,7 @@
           event.preventDefault();
           event.stopPropagation();
           if (!canViewHistoricalGames()) {
-            window.location.href = "./account-settings.html";
+            window.location.href = "./index.html";
             return;
           }
           populateHistoricalSearch(historicalSearchButton.dataset.pitcher || "");
@@ -3215,11 +3042,7 @@
         renderBoard();
       });
 
-      document.addEventListener("visibilitychange", () => {
-        if (document.hidden || !authAccepted || !dataRefreshQueued) return;
-        dataRefreshQueued = false;
-        refreshSupabaseData();
-      });
+      
 
       renderSiteAlert(DEFAULT_SITE_ALERT_SETTINGS);
       syncHeaderSpacer();

@@ -523,6 +523,58 @@
       margin: 18px 0;
     }
 
+    .owner-settings-shell {
+      display: grid;
+      gap: 16px;
+    }
+
+    .owner-settings-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .owner-settings-tab {
+      border: 2px solid rgba(255, 148, 46, 0.28);
+      background: rgba(255, 148, 46, 0.08);
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 9px 14px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .owner-settings-tab:hover {
+      color: var(--text);
+      border-color: rgba(255, 148, 46, 0.5);
+      background: rgba(255, 148, 46, 0.14);
+    }
+
+    .owner-settings-tab.active {
+      color: var(--text);
+      border-color: rgba(255, 148, 46, 0.92);
+      background: rgba(255, 148, 46, 0.24);
+      box-shadow:
+        0 0 0 1px rgba(255, 148, 46, 0.16) inset,
+        0 0 14px rgba(255, 148, 46, 0.36);
+    }
+
+    .owner-settings-panel {
+      display: none;
+    }
+
+    .owner-settings-panel.active {
+      display: block;
+    }
+
+    .owner-settings-panel[hidden] {
+      display: none !important;
+    }
+
     .empty-state {
       color: var(--muted);
       font-size: 0.9rem;
@@ -712,6 +764,19 @@
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
       gap: 10px;
+    }
+
+    .report-column-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 12px 0;
+    }
+
+    .report-column-actions .button {
+      min-width: 0;
+      padding: 8px 14px;
+      font-size: 0.82rem;
     }
 
     .report-column-option {
@@ -1003,6 +1068,251 @@
       text-align: center;
     }
 
+    .owner-user-tools {
+      display: grid;
+      gap: 14px;
+    }
+
+    .owner-user-tools-controls {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: end;
+    }
+
+    .owner-user-tools-status {
+      color: var(--muted);
+      font-size: 0.86rem;
+      line-height: 1.45;
+      min-height: 1.2em;
+    }
+
+    .owner-user-tools-status.is-error {
+      color: var(--danger, #f07178);
+    }
+
+    .owner-user-results {
+      display: grid;
+      gap: 10px;
+    }
+
+    .owner-user-empty {
+      color: var(--muted);
+      font-size: 0.9rem;
+      text-align: center;
+      padding: 18px 8px;
+    }
+
+    #owner-users-table-shell {
+      min-height: 180px;
+    }
+
+    #owner-users-table-shell table {
+      min-width: 920px;
+    }
+
+    tr.owner-user-row {
+      cursor: pointer;
+    }
+
+    tr.owner-user-row.is-expanded {
+      background: rgba(255, 148, 46, 0.08);
+    }
+
+    tr.owner-user-detail-row > td {
+      padding: 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      background: rgba(0, 0, 0, 0.22);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    tr.owner-user-detail-row.hidden {
+      display: none;
+    }
+
+    .owner-user-expand {
+      width: 28px;
+      color: var(--muted);
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .owner-user-detail {
+      padding: 14px 16px 16px;
+      display: grid;
+      gap: 14px;
+      text-align: left;
+    }
+
+    .owner-user-detail-section {
+      display: grid;
+      gap: 8px;
+    }
+
+    .owner-user-detail-heading {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-align: left;
+    }
+
+    .owner-user-kv {
+      margin: 0;
+      display: grid;
+      grid-template-columns: 108px minmax(0, 1fr) 108px minmax(0, 1fr);
+      column-gap: 12px;
+      row-gap: 8px;
+      align-items: baseline;
+    }
+
+    .owner-user-kv dt,
+    .owner-user-kv dd {
+      margin: 0;
+      text-align: left;
+    }
+
+    .owner-user-kv dt {
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .owner-user-kv dd {
+      color: var(--text);
+      font-size: 0.86rem;
+      line-height: 1.4;
+      word-break: break-word;
+    }
+
+    .owner-user-kv dt.full {
+      grid-column: 1;
+    }
+
+    .owner-user-kv dd.full {
+      grid-column: 2 / -1;
+    }
+
+    .owner-user-action-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .owner-user-action-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.03);
+      text-align: left;
+    }
+
+    .owner-user-action-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .owner-user-action-title {
+      color: var(--text);
+      font-size: 0.84rem;
+      font-weight: 700;
+      margin: 0 0 2px;
+      text-align: left;
+    }
+
+    .owner-user-action-desc {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.74rem;
+      line-height: 1.4;
+      text-align: left;
+    }
+
+    .owner-user-action-controls {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: flex-end;
+      flex: 0 0 auto;
+    }
+
+    .owner-user-action-controls .field {
+      margin: 0;
+      min-width: 120px;
+    }
+
+    .owner-user-action-controls .field label {
+      display: none;
+    }
+
+    .owner-user-action-controls .button {
+      white-space: nowrap;
+    }
+
+    .owner-user-action-controls .button.danger {
+      border-color: rgba(255, 23, 77, 0.7);
+      background: rgba(255, 23, 77, 0.16);
+      color: var(--neon-red, #ff174d);
+    }
+
+    .owner-user-badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .owner-user-badge.is-banned {
+      color: var(--neon-red, #ff174d);
+      border: 1px solid rgba(255, 23, 77, 0.45);
+      background: rgba(255, 23, 77, 0.12);
+    }
+
+    .owner-user-badge.is-ok {
+      color: var(--success, #8dd69f);
+      border: 1px solid rgba(141, 214, 159, 0.35);
+      background: rgba(141, 214, 159, 0.1);
+    }
+
+    .owner-user-badge.is-pending {
+      color: var(--amber, #ff942e);
+      border: 1px solid rgba(255, 148, 46, 0.4);
+      background: rgba(255, 148, 46, 0.12);
+    }
+
+    @media (max-width: 900px) {
+      .owner-user-kv {
+        grid-template-columns: 108px minmax(0, 1fr);
+      }
+
+      .owner-user-kv dd.full {
+        grid-column: 2;
+      }
+
+      .owner-user-action-card {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .owner-user-action-controls {
+        justify-content: flex-start;
+        flex-wrap: wrap;
+      }
+    }
+
     .section-title {
       color: var(--muted);
       font-size: 0.82rem;
@@ -1015,6 +1325,22 @@
     .center-title {
       text-align: center;
       width: 100%;
+    }
+
+    #pitcher-lookup-game-panel.is-live {
+      border-color: rgba(141, 214, 159, 0.24);
+      background: linear-gradient(180deg, rgba(141, 214, 159, 0.1), rgba(141, 214, 159, 0.03));
+    }
+
+    #pitcher-lookup-game-panel.is-live .section-title {
+      color: var(--success);
+    }
+
+    .lookup-live-text {
+      color: var(--success);
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
 
     .info-grid {
@@ -2034,7 +2360,37 @@
       vertical-align: baseline;
     }
 
-    .desktop-live-status,
+    .desktop-live-status {
+      margin-top: 0;
+      font-size: 0.58rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      line-height: 1.15;
+      text-transform: uppercase;
+      font-variant-numeric: tabular-nums;
+      color: var(--muted);
+    }
+
+    .desktop-live-status.is-delayed {
+      color: var(--amber);
+    }
+
+    .desktop-live-status.is-warmup {
+      color: var(--neon-blue);
+    }
+
+    .desktop-live-status.is-pitching {
+      color: var(--success);
+    }
+
+    .desktop-live-status.is-batting {
+      color: var(--neon-blue);
+    }
+
+    .desktop-live-status.is-finished {
+      color: var(--neon-red);
+    }
+
     .desktop-live-time {
       margin-top: 0;
       color: #5db2ff;
@@ -3018,11 +3374,35 @@
       white-space: nowrap;
     }
 
+    .pitcher-cell .pitcher-team-sub {
+      display: block;
+    }
+
     .pitcher-team-sub,
     .date-time-sub {
       color: var(--muted);
       font-size: 0.78rem;
       line-height: 1.25;
+    }
+
+    .live-starter-status.is-delayed {
+      color: var(--amber);
+    }
+
+    .live-starter-status.is-warmup {
+      color: var(--neon-blue);
+    }
+
+    .live-starter-status.is-pitching {
+      color: var(--success);
+    }
+
+    .live-starter-status.is-batting {
+      color: var(--neon-blue);
+    }
+
+    .live-starter-status.is-finished {
+      color: var(--neon-red);
     }
 
     .book-line-cell {
@@ -3426,6 +3806,148 @@
       box-shadow: 0 0 24px rgba(255, 63, 89, 0.38);
     }
 
+    .pitchiq-confirm-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(3, 4, 8, 0.78);
+      backdrop-filter: blur(4px);
+    }
+
+    .pitchiq-confirm-modal.hidden {
+      display: none !important;
+    }
+
+    body.pitchiq-modal-open {
+      overflow: hidden;
+    }
+
+    .pitchiq-confirm-card {
+      width: min(480px, 100%);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(18, 20, 28, 0.98), rgba(11, 12, 18, 0.98));
+      box-shadow: 0 24px 56px rgba(0, 0, 0, 0.42);
+      padding: 22px;
+    }
+
+    .pitchiq-confirm-card.add {
+      border-color: rgba(255, 148, 46, 0.28);
+    }
+
+    .pitchiq-confirm-card.remove {
+      border-color: rgba(255, 23, 77, 0.28);
+    }
+
+    .pitchiq-confirm-title {
+      margin: 0 0 12px;
+      font-size: 1.08rem;
+      letter-spacing: 0.02em;
+      text-align: center;
+      text-transform: none;
+    }
+
+    .pitchiq-confirm-title.add {
+      color: var(--amber);
+    }
+
+    .pitchiq-confirm-title.remove {
+      color: var(--neon-red);
+    }
+
+    .pitchiq-confirm-copy {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.65;
+      text-align: center;
+    }
+
+    .pitchiq-confirm-actions {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .pitchiq-confirm-actions .button {
+      min-width: 112px;
+      width: auto;
+      height: auto;
+      padding: 10px 16px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .pitchiq-confirm-actions .button.cancel {
+      border-color: rgba(255, 23, 77, 0.58);
+      background: rgba(255, 23, 77, 0.14);
+      color: var(--neon-red);
+      box-shadow: 0 0 0 1px rgba(255, 23, 77, 0.12) inset;
+    }
+
+    .pitchiq-confirm-actions .button.cancel:hover {
+      border-color: rgba(255, 23, 77, 0.78);
+      background: rgba(255, 23, 77, 0.2);
+    }
+
+    .pitchiq-confirm-actions .button.proceed.add {
+      border-color: rgba(255, 148, 46, 0.58);
+      background: rgba(255, 148, 46, 0.14);
+      color: var(--amber);
+      box-shadow: 0 0 0 1px rgba(255, 148, 46, 0.12) inset;
+    }
+
+    .pitchiq-confirm-actions .button.proceed.add:hover {
+      border-color: rgba(255, 148, 46, 0.78);
+      background: rgba(255, 148, 46, 0.2);
+    }
+
+    .pitchiq-confirm-actions .button.proceed.remove {
+      border-color: rgba(255, 23, 77, 0.58);
+      background: rgba(255, 23, 77, 0.14);
+      color: var(--neon-red);
+      box-shadow: 0 0 0 1px rgba(255, 23, 77, 0.12) inset;
+    }
+
+    .pitchiq-confirm-actions .button.proceed.remove:hover {
+      border-color: rgba(255, 23, 77, 0.78);
+      background: rgba(255, 23, 77, 0.2);
+    }
+
+    @media (max-width: 760px) {
+      .pitchiq-confirm-modal {
+        padding: 14px;
+        padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+        align-items: flex-end;
+      }
+
+      .pitchiq-confirm-card {
+        width: 100%;
+        max-height: calc(100vh - 28px - env(safe-area-inset-bottom, 0px));
+        overflow-y: auto;
+        border-radius: 18px 18px 14px 14px;
+        padding: 20px 18px calc(18px + env(safe-area-inset-bottom, 0px));
+      }
+
+      .pitchiq-confirm-actions {
+        flex-direction: column-reverse;
+      }
+
+      .pitchiq-confirm-actions .button {
+        width: 100%;
+        min-width: 0;
+        min-height: 42px;
+      }
+    }
+
     .ump-cell {
       text-align: center;
     }
@@ -3649,6 +4171,7 @@
       .report-controls,
       .owner-alert-preset-row,
       .owner-alert-controls,
+      .owner-user-tools-controls,
       .info-grid,
       .info-grid.two,
       .info-grid.three,
@@ -3747,8 +4270,8 @@
           </div>
         </div>
 
-        <div class="subtile glass-subtile">
-          <div class="section-title center-title">Upcoming Game</div>
+        <div class="subtile glass-subtile" id="pitcher-lookup-game-panel">
+          <div class="section-title center-title" id="pitcher-lookup-game-title">Upcoming Game</div>
           <div class="info-grid four" id="upcoming-game-grid"></div>
         </div>
 
@@ -3796,6 +4319,7 @@
                   <th class="sortable" data-sort-key="opponent"><span class="th-inner">Opponent <span class="sort-indicator"></span></span></th>
                   <th class="sortable" data-sort-key="date"><span class="th-inner">Date <span class="sort-indicator"></span></span></th>
                   <th class="sortable" data-sort-key="plate_umpire"><span class="th-inner">Ump <span class="sort-indicator"></span></span></th>
+                  <th class="sortable" data-sort-key="opponent_lineup_assigned"><span class="th-inner">Lineup <span class="sort-indicator"></span></span></th>
                   <th class="sortable" data-sort-key="dk_line"><span class="th-inner">DK O/U Line <span class="sort-indicator"></span></span></th>
                   <th class="sortable" data-sort-key="fd_line"><span class="th-inner">FD O/U Line <span class="sort-indicator"></span></span></th>
                   <th class="sortable" data-sort-key="projected_strikeouts"><span class="th-inner">PitchIQ Ks <span class="sort-indicator"></span></span></th>
@@ -4055,181 +4579,245 @@
       </div>
 
       <div id="settings-panel" class="workspace-panel">
-        <div class="subtile glass-subtile">
-          <div class="section-title center-title">Owner's Settings</div>
-          <p class="settings-owner-intro">Open the phone-first card board (same session as this site).</p>
-          <a class="button" href="./app-mobile.html">Mobile View</a>
-        </div>
-        <div class="owner-settings-divider" aria-hidden="true"></div>
-        <div class="subtile glass-subtile">
-          <div class="section-title center-title">Site Alert</div>
-          <div class="owner-alert-studio" id="owner-alert-studio">
-            <section class="owner-alert-section owner-alert-current-section" aria-labelledby="owner-alert-current-line">
-              <div class="owner-alert-current-row">
-                <p class="owner-alert-current-line is-none" id="owner-alert-current-line">Current Alert: None</p>
-                <div class="site-alert-ticker hidden" id="owner-alert-current-ticker" aria-hidden="true">
-                  <div class="site-alert-track" id="owner-alert-current-track">
-                    <span class="site-alert-message" id="owner-alert-current-message"></span>
-                    <span class="site-alert-message" id="owner-alert-current-message-copy" aria-hidden="true"></span>
+        <div class="owner-settings-shell">
+          <div class="subtile glass-subtile">
+            <div class="section-title center-title">Owner's Settings</div>
+            <div class="owner-settings-tabs" role="tablist" aria-label="Owner settings sections">
+              <button class="owner-settings-tab active" type="button" role="tab" aria-selected="true" data-owner-tab="mobile">Mobile</button>
+              <button class="owner-settings-tab" type="button" role="tab" aria-selected="false" data-owner-tab="alert">Site Alert</button>
+              <button class="owner-settings-tab" type="button" role="tab" aria-selected="false" data-owner-tab="users">Users</button>
+              <button class="owner-settings-tab" type="button" role="tab" aria-selected="false" data-owner-tab="report">Report</button>
+            </div>
+          </div>
+
+          <div class="owner-settings-panel active" id="owner-tab-mobile" role="tabpanel" data-owner-panel="mobile">
+            <div class="subtile glass-subtile">
+              <div class="section-title center-title">Mobile View</div>
+              <p class="settings-owner-intro">Open the phone-first card board (same session as this site).</p>
+              <a class="button" href="./app-mobile.html">Open Mobile View</a>
+            </div>
+          </div>
+
+          <div class="owner-settings-panel" id="owner-tab-alert" role="tabpanel" data-owner-panel="alert" hidden>
+            <div class="subtile glass-subtile">
+              <div class="section-title center-title">Site Alert</div>
+              <div class="owner-alert-studio" id="owner-alert-studio">
+                <section class="owner-alert-section owner-alert-current-section" aria-labelledby="owner-alert-current-line">
+                  <div class="owner-alert-current-row">
+                    <p class="owner-alert-current-line is-none" id="owner-alert-current-line">Current Alert: None</p>
+                    <div class="site-alert-ticker hidden" id="owner-alert-current-ticker" aria-hidden="true">
+                      <div class="site-alert-track" id="owner-alert-current-track">
+                        <span class="site-alert-message" id="owner-alert-current-message"></span>
+                        <span class="site-alert-message" id="owner-alert-current-message-copy" aria-hidden="true"></span>
+                      </div>
+                    </div>
+                  </div>
+                  <button class="button hidden" id="owner-alert-turn-off-button" type="button">Turn Off</button>
+                </section>
+
+                <section class="owner-alert-section" aria-labelledby="owner-alert-appearance-title">
+                  <h3 class="owner-alert-section-title" id="owner-alert-appearance-title">Appearance Settings</h3>
+                  <p class="owner-alert-section-hint">Colors, font, and scroll speed. Saving a preset does not affect the live site.</p>
+                  <div class="owner-alert-controls">
+                    <div class="field">
+                      <label for="owner-alert-speed">Speed Seconds</label>
+                      <input id="owner-alert-speed" type="number" min="8" max="90" step="1" />
+                    </div>
+                    <div class="field">
+                      <label for="owner-alert-font">Text Type</label>
+                      <select id="owner-alert-font">
+                        <option value="Segoe UI, Arial, sans-serif">Clean Sans</option>
+                        <option value="Georgia, serif">Editorial Serif</option>
+                        <option value="Consolas, monospace">Data Mono</option>
+                      </select>
+                    </div>
+                    <div class="field">
+                      <label for="owner-alert-transform">Text Style</label>
+                      <select id="owner-alert-transform">
+                        <option value="none">Normal</option>
+                        <option value="uppercase">Uppercase</option>
+                      </select>
+                    </div>
+                    <div class="field">
+                      <label for="owner-alert-weight">Text Weight</label>
+                      <select id="owner-alert-weight">
+                        <option value="600">Regular</option>
+                        <option value="700">Bold</option>
+                        <option value="800">Heavy</option>
+                      </select>
+                    </div>
+                    <div class="field">
+                      <label for="owner-alert-background-color">Background</label>
+                      <input id="owner-alert-background-color" type="color" />
+                    </div>
+                    <div class="field">
+                      <label for="owner-alert-text-color">Text Color</label>
+                      <input id="owner-alert-text-color" type="color" />
+                    </div>
+                    <div class="field">
+                      <label for="owner-alert-accent-color">Accent Color</label>
+                      <input id="owner-alert-accent-color" type="color" />
+                    </div>
+                  </div>
+                  <div class="owner-alert-preset-row">
+                    <div class="field">
+                      <label for="owner-alert-appearance-preset-select">Appearance Presets</label>
+                      <select id="owner-alert-appearance-preset-select">
+                        <option value="">Select appearance preset</option>
+                      </select>
+                    </div>
+                    <div class="field">
+                      <label for="owner-alert-appearance-preset-name">Preset Name</label>
+                      <input id="owner-alert-appearance-preset-name" type="text" maxlength="48" placeholder="API Issue Red" />
+                    </div>
+                    <button class="button" id="owner-alert-appearance-load-button" type="button">Load</button>
+                    <button class="button" id="owner-alert-appearance-save-button" type="button">Save</button>
+                    <button class="button" id="owner-alert-appearance-delete-button" type="button">Delete</button>
+                  </div>
+                </section>
+
+                <section class="owner-alert-section" aria-labelledby="owner-alert-text-title">
+                  <h3 class="owner-alert-section-title" id="owner-alert-text-title">Text Settings</h3>
+                  <p class="owner-alert-section-hint">Message wording only. Saving a text preset does not affect the live site.</p>
+                  <div class="field">
+                    <label for="owner-alert-text">Alert Text</label>
+                    <textarea id="owner-alert-text" maxlength="240" placeholder="Our Odds API is currently undergoing maintenance and may experience degraded performance."></textarea>
+                  </div>
+                  <div class="owner-alert-controls">
+                    <div class="field">
+                      <label for="owner-alert-prefix">Pre Message</label>
+                      <input id="owner-alert-prefix" type="text" maxlength="32" />
+                    </div>
+                    <div class="field">
+                      <label for="owner-alert-suffix">Post Message</label>
+                      <input id="owner-alert-suffix" type="text" maxlength="32" />
+                    </div>
+                  </div>
+                  <div class="owner-alert-preset-row">
+                    <div class="field">
+                      <label for="owner-alert-text-preset-select">Text Presets</label>
+                      <select id="owner-alert-text-preset-select">
+                        <option value="">Select text preset</option>
+                      </select>
+                    </div>
+                    <div class="field">
+                      <label for="owner-alert-text-preset-name">Preset Name</label>
+                      <input id="owner-alert-text-preset-name" type="text" maxlength="48" placeholder="Odds API maintenance" />
+                    </div>
+                    <button class="button" id="owner-alert-text-load-button" type="button">Load</button>
+                    <button class="button" id="owner-alert-text-save-button" type="button">Save</button>
+                    <button class="button" id="owner-alert-text-delete-button" type="button">Delete</button>
+                  </div>
+                </section>
+
+                <section class="owner-alert-section" aria-labelledby="owner-alert-publish-title">
+                  <h3 class="owner-alert-section-title" id="owner-alert-publish-title">Publish</h3>
+                  <p class="owner-alert-publish-note">Preview shows your draft appearance and text combined. Publishing replaces the live alert and turns it on for all users.</p>
+                  <div class="site-alert-ticker" id="owner-alert-preview" aria-hidden="true">
+                    <div class="site-alert-track" id="owner-alert-preview-track">
+                      <span class="site-alert-message" id="owner-alert-preview-message"></span>
+                      <span class="site-alert-message" id="owner-alert-preview-message-copy" aria-hidden="true"></span>
+                    </div>
+                  </div>
+                  <div class="owner-alert-actions">
+                    <button class="button" id="owner-alert-publish-button" type="button">Publish Alert</button>
+                    <div class="owner-alert-status" id="owner-alert-status"></div>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </div>
+
+          <div class="owner-settings-panel" id="owner-tab-users" role="tabpanel" data-owner-panel="users" hidden>
+            <div class="subtile glass-subtile">
+              <div class="section-title center-title">Users</div>
+              <p class="settings-owner-intro">Look up registered users, membership status, and Terms acceptance records.</p>
+              <div class="owner-user-tools" id="owner-user-tools">
+                <div class="owner-user-tools-controls">
+                  <div class="field">
+                    <label for="owner-user-query">Filter email, username, or user id</label>
+                    <input id="owner-user-query" type="search" placeholder="Filter users..." autocomplete="off" />
+                  </div>
+                  <button class="button" id="owner-user-refresh-button" type="button">Refresh</button>
+                </div>
+                <div class="owner-user-tools-status" id="owner-user-tools-status" aria-live="polite"></div>
+                <div class="table-shell" id="owner-users-table-shell">
+                  <div class="table-scroll">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th class="owner-user-expand" aria-label="Expand"></th>
+                          <th>Email</th>
+                          <th>Username</th>
+                          <th>Role</th>
+                          <th>Subscription</th>
+                          <th>Confirmed</th>
+                          <th>Created</th>
+                        </tr>
+                      </thead>
+                      <tbody id="owner-users-grid">
+                        <tr>
+                          <td colspan="7"><div class="owner-user-empty">Loading users...</div></td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               </div>
-              <button class="button hidden" id="owner-alert-turn-off-button" type="button">Turn Off</button>
-            </section>
-
-            <section class="owner-alert-section" aria-labelledby="owner-alert-appearance-title">
-              <h3 class="owner-alert-section-title" id="owner-alert-appearance-title">Appearance Settings</h3>
-              <p class="owner-alert-section-hint">Colors, font, and scroll speed. Saving a preset does not affect the live site.</p>
-              <div class="owner-alert-controls">
-                <div class="field">
-                  <label for="owner-alert-speed">Speed Seconds</label>
-                  <input id="owner-alert-speed" type="number" min="8" max="90" step="1" />
-                </div>
-                <div class="field">
-                  <label for="owner-alert-font">Text Type</label>
-                  <select id="owner-alert-font">
-                    <option value="Segoe UI, Arial, sans-serif">Clean Sans</option>
-                    <option value="Georgia, serif">Editorial Serif</option>
-                    <option value="Consolas, monospace">Data Mono</option>
-                  </select>
-                </div>
-                <div class="field">
-                  <label for="owner-alert-transform">Text Style</label>
-                  <select id="owner-alert-transform">
-                    <option value="none">Normal</option>
-                    <option value="uppercase">Uppercase</option>
-                  </select>
-                </div>
-                <div class="field">
-                  <label for="owner-alert-weight">Text Weight</label>
-                  <select id="owner-alert-weight">
-                    <option value="600">Regular</option>
-                    <option value="700">Bold</option>
-                    <option value="800">Heavy</option>
-                  </select>
-                </div>
-                <div class="field">
-                  <label for="owner-alert-background-color">Background</label>
-                  <input id="owner-alert-background-color" type="color" />
-                </div>
-                <div class="field">
-                  <label for="owner-alert-text-color">Text Color</label>
-                  <input id="owner-alert-text-color" type="color" />
-                </div>
-                <div class="field">
-                  <label for="owner-alert-accent-color">Accent Color</label>
-                  <input id="owner-alert-accent-color" type="color" />
-                </div>
-              </div>
-              <div class="owner-alert-preset-row">
-                <div class="field">
-                  <label for="owner-alert-appearance-preset-select">Appearance Presets</label>
-                  <select id="owner-alert-appearance-preset-select">
-                    <option value="">Select appearance preset</option>
-                  </select>
-                </div>
-                <div class="field">
-                  <label for="owner-alert-appearance-preset-name">Preset Name</label>
-                  <input id="owner-alert-appearance-preset-name" type="text" maxlength="48" placeholder="API Issue Red" />
-                </div>
-                <button class="button" id="owner-alert-appearance-load-button" type="button">Load</button>
-                <button class="button" id="owner-alert-appearance-save-button" type="button">Save</button>
-                <button class="button" id="owner-alert-appearance-delete-button" type="button">Delete</button>
-              </div>
-            </section>
-
-            <section class="owner-alert-section" aria-labelledby="owner-alert-text-title">
-              <h3 class="owner-alert-section-title" id="owner-alert-text-title">Text Settings</h3>
-              <p class="owner-alert-section-hint">Message wording only. Saving a text preset does not affect the live site.</p>
-              <div class="field">
-                <label for="owner-alert-text">Alert Text</label>
-                <textarea id="owner-alert-text" maxlength="240" placeholder="Our Odds API is currently undergoing maintenance and may experience degraded performance."></textarea>
-              </div>
-              <div class="owner-alert-controls">
-                <div class="field">
-                  <label for="owner-alert-prefix">Pre Message</label>
-                  <input id="owner-alert-prefix" type="text" maxlength="32" />
-                </div>
-                <div class="field">
-                  <label for="owner-alert-suffix">Post Message</label>
-                  <input id="owner-alert-suffix" type="text" maxlength="32" />
-                </div>
-              </div>
-              <div class="owner-alert-preset-row">
-                <div class="field">
-                  <label for="owner-alert-text-preset-select">Text Presets</label>
-                  <select id="owner-alert-text-preset-select">
-                    <option value="">Select text preset</option>
-                  </select>
-                </div>
-                <div class="field">
-                  <label for="owner-alert-text-preset-name">Preset Name</label>
-                  <input id="owner-alert-text-preset-name" type="text" maxlength="48" placeholder="Odds API maintenance" />
-                </div>
-                <button class="button" id="owner-alert-text-load-button" type="button">Load</button>
-                <button class="button" id="owner-alert-text-save-button" type="button">Save</button>
-                <button class="button" id="owner-alert-text-delete-button" type="button">Delete</button>
-              </div>
-            </section>
-
-            <section class="owner-alert-section" aria-labelledby="owner-alert-publish-title">
-              <h3 class="owner-alert-section-title" id="owner-alert-publish-title">Publish</h3>
-              <p class="owner-alert-publish-note">Preview shows your draft appearance and text combined. Publishing replaces the live alert and turns it on for all users.</p>
-              <div class="site-alert-ticker" id="owner-alert-preview" aria-hidden="true">
-                <div class="site-alert-track" id="owner-alert-preview-track">
-                  <span class="site-alert-message" id="owner-alert-preview-message"></span>
-                  <span class="site-alert-message" id="owner-alert-preview-message-copy" aria-hidden="true"></span>
-                </div>
-              </div>
-              <div class="owner-alert-actions">
-                <button class="button" id="owner-alert-publish-button" type="button">Publish Alert</button>
-                <div class="owner-alert-status" id="owner-alert-status"></div>
-              </div>
-            </section>
-          </div>
-        </div>
-        <div class="owner-settings-divider" aria-hidden="true"></div>
-        <div class="subtile glass-subtile">
-          <div class="section-title center-title">Report Settings</div>
-          <div id="report-locked-panel" class="locked-feature hidden">
-            <div class="locked-badge">Owner Tool</div>
-            <div class="locked-title">Report builder locked</div>
-            <div class="locked-copy">Custom report exports are managed from Owner's Settings.</div>
-          </div>
-
-          <div id="report-builder-form">
-            <div class="report-controls">
-              <div class="field">
-                <label for="report-source">Data Source</label>
-                <select id="report-source">
-                  <option value="upcoming">Upcoming</option>
-                  <option value="assigned">Assigned Upcoming</option>
-                  <option value="live">Live</option>
-                  <option value="historical">Historical</option>
-                </select>
-              </div>
-              <div class="field">
-                <label for="report-export-type">Export Type</label>
-                <select id="report-export-type">
-                  <option value="styled">Styled XLSX</option>
-                  <option value="csv">CSV</option>
-                </select>
-              </div>
-              <div class="field">
-                <label for="report-start-date">Start Date</label>
-                <input id="report-start-date" type="date" />
-              </div>
-              <div class="field">
-                <label for="report-end-date">End Date</label>
-                <input id="report-end-date" type="date" />
-              </div>
             </div>
-            <div style="height:18px;"></div>
-            <div class="section-title">Columns</div>
-            <div class="report-column-grid" id="report-column-grid"></div>
-            <div class="report-actions">
-              <button class="button" id="report-download-button" type="button">Download Styled XLSX</button>
-              <div class="report-summary" id="report-summary"></div>
+          </div>
+
+          <div class="owner-settings-panel" id="owner-tab-report" role="tabpanel" data-owner-panel="report" hidden>
+            <div class="subtile glass-subtile">
+              <div class="section-title center-title">Report</div>
+              <div id="report-locked-panel" class="locked-feature hidden">
+                <div class="locked-badge">Owner Tool</div>
+                <div class="locked-title">Report builder locked</div>
+                <div class="locked-copy">Custom report exports are managed from Owner's Settings.</div>
+              </div>
+
+              <div id="report-builder-form">
+                <div class="report-controls">
+                  <div class="field">
+                    <label for="report-source">Data Source</label>
+                    <select id="report-source">
+                      <option value="upcoming">Upcoming</option>
+                      <option value="assigned">Assigned Upcoming</option>
+                      <option value="live">Live</option>
+                      <option value="historical">Historical</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label for="report-export-type">Export Type</label>
+                    <select id="report-export-type">
+                      <option value="styled">Styled XLSX</option>
+                      <option value="csv">CSV</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label for="report-start-date">Start Date</label>
+                    <input id="report-start-date" type="date" />
+                  </div>
+                  <div class="field">
+                    <label for="report-end-date">End Date</label>
+                    <input id="report-end-date" type="date" />
+                  </div>
+                </div>
+                <div style="height:18px;"></div>
+                <div id="report-columns-section">
+                  <div class="section-title">Columns</div>
+                  <p class="owner-alert-section-hint" id="report-columns-hint">Choose columns for CSV or styled XLSX exports. Conditional formatting applies to supported fields like bets, volatility, and results.</p>
+                  <div class="report-column-actions">
+                    <button class="button" id="report-columns-select-all" type="button">Select All</button>
+                    <button class="button" id="report-columns-deselect-all" type="button">Deselect All</button>
+                  </div>
+                  <div class="report-column-grid" id="report-column-grid"></div>
+                </div>
+                <div class="report-actions">
+                  <button class="button" id="report-download-button" type="button">Download Styled XLSX</button>
+                  <div class="report-summary" id="report-summary"></div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -4250,6 +4838,17 @@
       <div class="wallet-confirm-actions">
         <button class="wallet-confirm-cancel" id="wallet-confirm-cancel" type="button">Cancel</button>
         <button class="wallet-confirm-yes" id="wallet-confirm-yes" type="button">Yes</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="pitchiq-confirm-modal" class="pitchiq-confirm-modal hidden" aria-hidden="true">
+    <div class="pitchiq-confirm-card" id="pitchiq-confirm-card" role="dialog" aria-modal="true" aria-labelledby="pitchiq-confirm-title">
+      <h2 class="pitchiq-confirm-title" id="pitchiq-confirm-title"></h2>
+      <p class="pitchiq-confirm-copy" id="pitchiq-confirm-copy"></p>
+      <div class="pitchiq-confirm-actions">
+        <button class="button cancel" type="button" id="pitchiq-confirm-cancel">Cancel</button>
+        <button class="button proceed" type="button" id="pitchiq-confirm-proceed">Proceed</button>
       </div>
     </div>
   </div>
@@ -4555,6 +5154,14 @@
     const walletConfirmOverlay = document.getElementById("wallet-confirm-overlay");
     const walletConfirmCancel = document.getElementById("wallet-confirm-cancel");
     const walletConfirmYes = document.getElementById("wallet-confirm-yes");
+    const pitchiqConfirmModal = document.getElementById("pitchiq-confirm-modal");
+    const pitchiqConfirmCard = document.getElementById("pitchiq-confirm-card");
+    const pitchiqConfirmTitle = document.getElementById("pitchiq-confirm-title");
+    const pitchiqConfirmCopy = document.getElementById("pitchiq-confirm-copy");
+    const pitchiqConfirmCancel = document.getElementById("pitchiq-confirm-cancel");
+    const pitchiqConfirmProceed = document.getElementById("pitchiq-confirm-proceed");
+    let pitchiqConfirmResolve = null;
+    let pitchiqConfirmOpenedAt = 0;
     const historicalSearchInput = document.getElementById("historical-search-input");
     const clearHistoricalSearchButton = document.getElementById("clear-historical-search");
     const historicalGamesMeta = document.getElementById("historical-games-meta");
@@ -4571,6 +5178,8 @@
     const reportExportTypeSelect = document.getElementById("report-export-type");
     const reportStartDateInput = document.getElementById("report-start-date");
     const reportEndDateInput = document.getElementById("report-end-date");
+    const reportColumnsSelectAllButton = document.getElementById("report-columns-select-all");
+    const reportColumnsDeselectAllButton = document.getElementById("report-columns-deselect-all");
     const reportColumnGrid = document.getElementById("report-column-grid");
     const reportDownloadButton = document.getElementById("report-download-button");
     const reportSummary = document.getElementById("report-summary");
@@ -4604,6 +5213,497 @@
     const ownerAlertPreviewMessageCopy = document.getElementById("owner-alert-preview-message-copy");
     const ownerAlertPublishButton = document.getElementById("owner-alert-publish-button");
     const ownerAlertStatus = document.getElementById("owner-alert-status");
+    const ownerUserQuery = document.getElementById("owner-user-query");
+    const ownerUserRefreshButton = document.getElementById("owner-user-refresh-button");
+    const ownerUserToolsStatus = document.getElementById("owner-user-tools-status");
+    const ownerUsersGrid = document.getElementById("owner-users-grid");
+    let ownerUsersCache = [];
+    let ownerUsersExpandedId = null;
+    let ownerUsersLoadedOnce = false;
+    let ownerUsersFilterTimer = null;
+
+    function formatOwnerDate(value) {
+      if (!value) return "—";
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return String(value);
+      return date.toLocaleString();
+    }
+
+    function setOwnerUserToolsStatus(message, isError = false) {
+      if (!ownerUserToolsStatus) return;
+      ownerUserToolsStatus.textContent = message || "";
+      ownerUserToolsStatus.classList.toggle("is-error", Boolean(isError));
+    }
+
+    async function callOwnerUserApi(body) {
+      const { data: sessionData, error: sessionError } = await supabaseClient.auth.getSession();
+      if (sessionError || !sessionData.session?.access_token) {
+        throw new Error("You must be signed in.");
+      }
+
+      const response = await fetch(`${SUPABASE_URL}/functions/v1/owner-user-lookup`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${sessionData.session.access_token}`,
+          "Content-Type": "application/json",
+          apikey: SUPABASE_PUBLISHABLE_KEY,
+        },
+        body: JSON.stringify(body || {}),
+      });
+
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(payload.error || payload.msg || "Owner user request failed.");
+      }
+      return payload;
+    }
+
+    function getFilteredOwnerUsers() {
+      const query = String(ownerUserQuery?.value || "").trim().toLowerCase();
+      if (!query) return ownerUsersCache;
+      return ownerUsersCache.filter((user) => {
+        const email = String(user.email || "").toLowerCase();
+        const username = String(user.username || "").toLowerCase();
+        const id = String(user.id || "").toLowerCase();
+        const role = String(user.role || "").toLowerCase();
+        return email.includes(query)
+          || username.includes(query)
+          || id.includes(query)
+          || role.includes(query);
+      });
+    }
+
+    function renderOwnerUsersTable() {
+      if (!ownerUsersGrid) return;
+      const users = getFilteredOwnerUsers();
+      if (!users.length) {
+        ownerUsersGrid.innerHTML = `
+          <tr>
+            <td colspan="7"><div class="owner-user-empty">${
+              ownerUsersCache.length
+                ? "No users match this filter."
+                : "No registered users found."
+            }</div></td>
+          </tr>
+        `;
+        return;
+      }
+
+      ownerUsersGrid.innerHTML = users.map((user) => {
+        const isExpanded = ownerUsersExpandedId === user.id;
+        const isBanned = Boolean(user.is_banned);
+        const confirmed = isBanned
+          ? `<span class="owner-user-badge is-banned">Banned</span>`
+          : user.email_confirmed_at
+            ? `<span class="owner-user-badge is-ok">Yes</span>`
+            : `<span class="owner-user-badge is-pending">No</span>`;
+        const roleValue = String(user.role || "").toLowerCase();
+        const terms = user.terms;
+        const roleOptions = ["", "basic", "pro", "life", "admin", "owner"]
+          .map((role) => {
+            const label = role || "(none)";
+            const selected = roleValue === role ? " selected" : "";
+            return `<option value="${escapeHtml(role)}"${selected}>${escapeHtml(label)}</option>`;
+          })
+          .join("");
+        const banButton = isBanned
+          ? `<button class="button" type="button" data-owner-unban-user="${escapeHtml(user.id)}">Unban User</button>`
+          : `<button class="button danger" type="button" data-owner-ban-user="${escapeHtml(user.id)}">Ban User</button>`;
+        const banTitle = isBanned ? "Unban user" : "Ban user";
+        const banDesc = isBanned
+          ? "Restores sign-in access for this account."
+          : "Blocks sign-in immediately without deleting the account or billing history.";
+        const stripeDisabled = user.stripe_customer_id ? "" : " disabled";
+        const resendDisabled = user.email_confirmed_at || !user.email ? " disabled" : "";
+
+        return `
+          <tr class="owner-user-row${isExpanded ? " is-expanded" : ""}" data-user-id="${escapeHtml(user.id)}" tabindex="0">
+            <td class="owner-user-expand">${isExpanded ? "▾" : "▸"}</td>
+            <td>${escapeHtml(user.email || "(no email)")}</td>
+            <td>${escapeHtml(user.username || "—")}</td>
+            <td>${escapeHtml(user.role || "—")}</td>
+            <td>${escapeHtml(user.subscription_status || "—")}</td>
+            <td>${confirmed}</td>
+            <td>${escapeHtml(formatOwnerDate(user.created_at))}</td>
+          </tr>
+          <tr class="owner-user-detail-row${isExpanded ? "" : " hidden"}" data-user-detail-for="${escapeHtml(user.id)}">
+            <td colspan="7">
+              <div class="owner-user-detail">
+                <section class="owner-user-detail-section">
+                  <h4 class="owner-user-detail-heading">Account</h4>
+                  <dl class="owner-user-kv">
+                    <dt>User ID</dt><dd>${escapeHtml(user.id || "—")}</dd>
+                    <dt>Last sign-in</dt><dd>${escapeHtml(formatOwnerDate(user.last_sign_in_at))}</dd>
+                    <dt>Email</dt><dd>${user.email_confirmed_at ? "Confirmed" : "Unconfirmed"}</dd>
+                    <dt>Ban</dt><dd>${isBanned ? `Banned until ${escapeHtml(formatOwnerDate(user.banned_until))}` : "Not banned"}</dd>
+                  </dl>
+                </section>
+
+                <section class="owner-user-detail-section">
+                  <h4 class="owner-user-detail-heading">Billing</h4>
+                  <dl class="owner-user-kv">
+                    <dt>Status</dt><dd>${escapeHtml(user.subscription_status || "—")}</dd>
+                    <dt>Period end</dt><dd>${escapeHtml(formatOwnerDate(user.subscription_current_period_end))}</dd>
+                    <dt>Customer</dt><dd>${escapeHtml(user.stripe_customer_id || "—")}</dd>
+                    <dt>Subscription</dt><dd>${escapeHtml(user.stripe_subscription_id || "—")}</dd>
+                  </dl>
+                </section>
+
+                <section class="owner-user-detail-section">
+                  <h4 class="owner-user-detail-heading">Terms</h4>
+                  <dl class="owner-user-kv">
+                    <dt>Version</dt><dd>${escapeHtml(terms?.terms_version || "—")}</dd>
+                    <dt>Accepted</dt><dd>${escapeHtml(terms ? formatOwnerDate(terms.accepted_at) : "—")}</dd>
+                    <dt>IP</dt><dd>${escapeHtml(terms?.ip_address || "—")}</dd>
+                    <dt>Recorded</dt><dd>${escapeHtml(terms ? formatOwnerDate(terms.recorded_at) : "—")}</dd>
+                    <dt class="full">Shown as</dt><dd class="full">${escapeHtml(terms?.terms_shown_version || "No acceptance recorded")}</dd>
+                  </dl>
+                </section>
+
+                <section class="owner-user-detail-section">
+                  <h4 class="owner-user-detail-heading">Actions</h4>
+                  <div class="owner-user-action-list">
+                    <div class="owner-user-action-card">
+                      <div class="owner-user-action-copy">
+                        <div class="owner-user-action-title">Change account type</div>
+                        <p class="owner-user-action-desc">Sets the PitchIQ role used for feature access (basic, pro, life, admin, owner).</p>
+                      </div>
+                      <div class="owner-user-action-controls">
+                        <div class="field">
+                          <label for="owner-user-role-${escapeHtml(user.id)}">Account type</label>
+                          <select id="owner-user-role-${escapeHtml(user.id)}" data-owner-role-select="${escapeHtml(user.id)}">
+                            ${roleOptions}
+                          </select>
+                        </div>
+                        <button class="button" type="button" data-owner-save-role="${escapeHtml(user.id)}">Save Type</button>
+                      </div>
+                    </div>
+
+                    <div class="owner-user-action-card">
+                      <div class="owner-user-action-copy">
+                        <div class="owner-user-action-title">Resend confirmation email</div>
+                        <p class="owner-user-action-desc">Sends a fresh signup confirmation link when the user never confirmed their email.</p>
+                      </div>
+                      <div class="owner-user-action-controls">
+                        <button class="button" type="button" data-owner-resend-confirm="${escapeHtml(user.id)}"${resendDisabled}>Resend Confirm</button>
+                      </div>
+                    </div>
+
+                    <div class="owner-user-action-card">
+                      <div class="owner-user-action-copy">
+                        <div class="owner-user-action-title">${escapeHtml(banTitle)}</div>
+                        <p class="owner-user-action-desc">${escapeHtml(banDesc)}</p>
+                      </div>
+                      <div class="owner-user-action-controls">
+                        ${banButton}
+                      </div>
+                    </div>
+
+                    <div class="owner-user-action-card">
+                      <div class="owner-user-action-copy">
+                        <div class="owner-user-action-title">Open in Stripe</div>
+                        <p class="owner-user-action-desc">Opens this customer in Stripe for invoices, subscription, and payment history.</p>
+                      </div>
+                      <div class="owner-user-action-controls">
+                        <button class="button" type="button" data-owner-open-stripe="${escapeHtml(user.id)}"${stripeDisabled}>Open Stripe</button>
+                      </div>
+                    </div>
+
+                    <div class="owner-user-action-card">
+                      <div class="owner-user-action-copy">
+                        <div class="owner-user-action-title">Delete user</div>
+                        <p class="owner-user-action-desc">Permanently removes the auth account and cascaded app records. Cannot be undone.</p>
+                      </div>
+                      <div class="owner-user-action-controls">
+                        <button class="button danger" type="button" data-owner-delete-user="${escapeHtml(user.id)}">Delete User</button>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    async function loadOwnerUsers({ silent = false } = {}) {
+      if (currentUserRole !== "owner") {
+        setOwnerUserToolsStatus("Owner access required.", true);
+        return;
+      }
+
+      if (!silent) setOwnerUserToolsStatus("Loading users...");
+      if (ownerUserRefreshButton) ownerUserRefreshButton.disabled = true;
+
+      try {
+        const payload = await callOwnerUserApi({
+          action: "list",
+          query: "",
+          limit: 200,
+        });
+        ownerUsersCache = Array.isArray(payload.users) ? payload.users : [];
+        ownerUsersLoadedOnce = true;
+        if (ownerUsersExpandedId && !ownerUsersCache.some((user) => user.id === ownerUsersExpandedId)) {
+          ownerUsersExpandedId = null;
+        }
+        renderOwnerUsersTable();
+        const visible = getFilteredOwnerUsers().length;
+        setOwnerUserToolsStatus(
+          `Showing ${visible} of ${ownerUsersCache.length} user${ownerUsersCache.length === 1 ? "" : "s"}. Click a row to expand.`,
+        );
+      } catch (error) {
+        if (!ownerUsersCache.length && ownerUsersGrid) {
+          ownerUsersGrid.innerHTML = `
+            <tr>
+              <td colspan="7"><div class="owner-user-empty">Unable to load users.</div></td>
+            </tr>
+          `;
+        }
+        setOwnerUserToolsStatus(
+          error instanceof Error ? error.message : String(error),
+          true,
+        );
+      } finally {
+        if (ownerUserRefreshButton) ownerUserRefreshButton.disabled = false;
+      }
+    }
+
+    function toggleOwnerUserRow(userId) {
+      ownerUsersExpandedId = ownerUsersExpandedId === userId ? null : userId;
+      renderOwnerUsersTable();
+    }
+
+    async function saveOwnerUserRole(userId) {
+      const select = document.querySelector(`[data-owner-role-select="${CSS.escape(userId)}"]`);
+      const nextRole = String(select?.value || "").trim().toLowerCase();
+      const user = ownerUsersCache.find((entry) => entry.id === userId);
+      const label = user?.email || userId;
+
+      setOwnerUserToolsStatus(`Updating account type for ${label}...`);
+      try {
+        await callOwnerUserApi({
+          action: "set_role",
+          userId,
+          role: nextRole,
+        });
+        setOwnerUserToolsStatus(`Updated ${label} to ${nextRole || "(none)"}.`);
+        await loadOwnerUsers({ silent: true });
+        ownerUsersExpandedId = userId;
+        renderOwnerUsersTable();
+      } catch (error) {
+        setOwnerUserToolsStatus(
+          error instanceof Error ? error.message : String(error),
+          true,
+        );
+      }
+    }
+
+    async function deleteOwnerUser(userId) {
+      const user = ownerUsersCache.find((entry) => entry.id === userId);
+      const label = user?.email || userId;
+      const confirmed = await openPitchiqConfirm({
+        title: "Delete User?",
+        copy: `Permanently delete ${label}? This removes the auth account, profile, and related records.`,
+        tone: "remove",
+        proceedLabel: "Delete",
+      });
+      if (!confirmed) return;
+
+      setOwnerUserToolsStatus(`Deleting ${label}...`);
+      try {
+        await callOwnerUserApi({
+          action: "delete",
+          userId,
+        });
+        ownerUsersExpandedId = null;
+        setOwnerUserToolsStatus(`Deleted ${label}.`);
+        await loadOwnerUsers({ silent: true });
+      } catch (error) {
+        setOwnerUserToolsStatus(
+          error instanceof Error ? error.message : String(error),
+          true,
+        );
+      }
+    }
+
+    async function resendOwnerUserConfirmation(userId) {
+      const user = ownerUsersCache.find((entry) => entry.id === userId);
+      const label = user?.email || userId;
+      setOwnerUserToolsStatus(`Resending confirmation to ${label}...`);
+      try {
+        await callOwnerUserApi({
+          action: "resend_confirmation",
+          userId,
+        });
+        setOwnerUserToolsStatus(`Confirmation email resent to ${label}.`);
+      } catch (error) {
+        setOwnerUserToolsStatus(
+          error instanceof Error ? error.message : String(error),
+          true,
+        );
+      }
+    }
+
+    async function setOwnerUserBanned(userId, banned) {
+      const user = ownerUsersCache.find((entry) => entry.id === userId);
+      const label = user?.email || userId;
+      const confirmed = await openPitchiqConfirm({
+        title: banned ? "Ban User?" : "Unban User?",
+        copy: banned
+          ? `Ban ${label}? They will be blocked from signing in until you unban them.`
+          : `Unban ${label}? They will be able to sign in again.`,
+        tone: banned ? "remove" : "add",
+        proceedLabel: banned ? "Ban" : "Unban",
+      });
+      if (!confirmed) return;
+
+      setOwnerUserToolsStatus(`${banned ? "Banning" : "Unbanning"} ${label}...`);
+      try {
+        await callOwnerUserApi({
+          action: banned ? "ban" : "unban",
+          userId,
+        });
+        setOwnerUserToolsStatus(`${label} has been ${banned ? "banned" : "unbanned"}.`);
+        await loadOwnerUsers({ silent: true });
+        ownerUsersExpandedId = userId;
+        renderOwnerUsersTable();
+      } catch (error) {
+        setOwnerUserToolsStatus(
+          error instanceof Error ? error.message : String(error),
+          true,
+        );
+      }
+    }
+
+    function openOwnerUserInStripe(userId) {
+      const user = ownerUsersCache.find((entry) => entry.id === userId);
+      const customerId = String(user?.stripe_customer_id || "").trim();
+      if (!customerId) {
+        setOwnerUserToolsStatus("No Stripe customer id on this account.", true);
+        return;
+      }
+      window.open(
+        `https://dashboard.stripe.com/search?query=${encodeURIComponent(customerId)}`,
+        "_blank",
+        "noopener,noreferrer",
+      );
+      setOwnerUserToolsStatus(`Opened Stripe search for ${customerId}.`);
+    }
+
+    ownerUserRefreshButton?.addEventListener("click", () => {
+      loadOwnerUsers();
+    });
+    ownerUserQuery?.addEventListener("input", () => {
+      window.clearTimeout(ownerUsersFilterTimer);
+      ownerUsersFilterTimer = window.setTimeout(() => {
+        renderOwnerUsersTable();
+        const visible = getFilteredOwnerUsers().length;
+        setOwnerUserToolsStatus(
+          `Showing ${visible} of ${ownerUsersCache.length} user${ownerUsersCache.length === 1 ? "" : "s"}.`,
+        );
+      }, 150);
+    });
+
+    ownerUsersGrid?.addEventListener("click", (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+
+      const saveBtn = target.closest("[data-owner-save-role]");
+      if (saveBtn) {
+        event.preventDefault();
+        event.stopPropagation();
+        saveOwnerUserRole(saveBtn.getAttribute("data-owner-save-role"));
+        return;
+      }
+
+      const deleteBtn = target.closest("[data-owner-delete-user]");
+      if (deleteBtn) {
+        event.preventDefault();
+        event.stopPropagation();
+        deleteOwnerUser(deleteBtn.getAttribute("data-owner-delete-user"));
+        return;
+      }
+
+      const resendBtn = target.closest("[data-owner-resend-confirm]");
+      if (resendBtn) {
+        event.preventDefault();
+        event.stopPropagation();
+        resendOwnerUserConfirmation(resendBtn.getAttribute("data-owner-resend-confirm"));
+        return;
+      }
+
+      const banBtn = target.closest("[data-owner-ban-user]");
+      if (banBtn) {
+        event.preventDefault();
+        event.stopPropagation();
+        setOwnerUserBanned(banBtn.getAttribute("data-owner-ban-user"), true);
+        return;
+      }
+
+      const unbanBtn = target.closest("[data-owner-unban-user]");
+      if (unbanBtn) {
+        event.preventDefault();
+        event.stopPropagation();
+        setOwnerUserBanned(unbanBtn.getAttribute("data-owner-unban-user"), false);
+        return;
+      }
+
+      const stripeBtn = target.closest("[data-owner-open-stripe]");
+      if (stripeBtn) {
+        event.preventDefault();
+        event.stopPropagation();
+        openOwnerUserInStripe(stripeBtn.getAttribute("data-owner-open-stripe"));
+        return;
+      }
+
+      if (target.closest("select, button, a, input, label")) return;
+
+      const row = target.closest("tr.owner-user-row");
+      if (!row) return;
+      toggleOwnerUserRow(row.getAttribute("data-user-id"));
+    });
+
+    ownerUsersGrid?.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      const row = event.target?.closest?.("tr.owner-user-row");
+      if (!row) return;
+      event.preventDefault();
+      toggleOwnerUserRow(row.getAttribute("data-user-id"));
+    });
+
+    const ownerSettingsTabs = Array.from(document.querySelectorAll(".owner-settings-tab"));
+    const ownerSettingsPanels = Array.from(document.querySelectorAll(".owner-settings-panel"));
+
+    function setOwnerSettingsTab(tabId) {
+      const nextTab = String(tabId || "mobile").trim().toLowerCase();
+      ownerSettingsTabs.forEach((tab) => {
+        const isActive = tab.dataset.ownerTab === nextTab;
+        tab.classList.toggle("active", isActive);
+        tab.setAttribute("aria-selected", isActive ? "true" : "false");
+      });
+      ownerSettingsPanels.forEach((panel) => {
+        const isActive = panel.dataset.ownerPanel === nextTab;
+        panel.classList.toggle("active", isActive);
+        if (isActive) {
+          panel.removeAttribute("hidden");
+        } else {
+          panel.setAttribute("hidden", "");
+        }
+      });
+
+      if (nextTab === "users" && currentUserRole === "owner") {
+        loadOwnerUsers({ silent: ownerUsersLoadedOnce });
+      }
+    }
+
+    ownerSettingsTabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        setOwnerSettingsTab(tab.dataset.ownerTab);
+      });
+    });
+    setOwnerSettingsTab("mobile");
+
     const myCardsLockedPanel = document.getElementById("my-cards-locked-panel");
     const myCardsContentPanel = document.getElementById("my-cards-content-panel");
     const myPitchersLockedPanel = document.getElementById("my-pitchers-locked-panel");
@@ -4706,6 +5806,10 @@
       { key: "fd_bet_payout", label: "FD Bet Payout", value: game => formatBetPayout(game.fd_bet, game.fd_over_payout, game.fd_under_payout) },
       { key: "fd_result", label: "FD O/U Result", value: game => evaluateBetCorrectness(game.actual_k ?? game.strikeouts, game.fd_line, game.fd_bet) },
       { key: "projected_strikeouts", label: "PitchIQ Ks", value: game => formatNumber(displayProjectionValue(game), 2) },
+      { key: "ek", label: "EK", value: game => exportDecimal(game.ensemble_prediction) },
+      { key: "poisson", label: "POISSON", value: game => exportDecimal(game.poisson_prediction) },
+      { key: "linear", label: "Linear", value: game => exportDecimal(game.linear_prediction) },
+      { key: "nonlinear", label: "Nonlinear", value: game => exportDecimal(game.nonlinear_prediction) },
       { key: "volatility_score", label: "Volatility", value: game => formatVolatility(game) },
       { key: "dk_bet", label: "DK Bet", value: game => game.dk_bet },
       { key: "dk_edge", label: "DK Edge", value: game => formatEdge(game.dk_edge) },
@@ -4935,7 +6039,12 @@
     function splitSupabaseGameRows(rows) {
       const upcomingByKey = new Map();
       const liveByKey = new Map();
-      rows.forEach(row => {
+      const sortedRows = [...rows].sort((left, right) => {
+        const leftIsLive = String(left?.table_type || "").toLowerCase() === "live" ? 1 : 0;
+        const rightIsLive = String(right?.table_type || "").toLowerCase() === "live" ? 1 : 0;
+        return leftIsLive - rightIsLive;
+      });
+      sortedRows.forEach(row => {
         if (!row?.payload) return;
         const tableType = String(row.table_type || "").toLowerCase();
         const game = { ...row.payload };
@@ -5363,6 +6472,45 @@
       refreshMyPitchersView();
     }
 
+    function closePitchiqConfirm(confirmed = false) {
+      const resolve = pitchiqConfirmResolve;
+      pitchiqConfirmResolve = null;
+      pitchiqConfirmOpenedAt = 0;
+      pitchiqConfirmModal.classList.add("hidden");
+      pitchiqConfirmModal.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("pitchiq-modal-open");
+      if (resolve) resolve(confirmed);
+    }
+
+    function openPitchiqConfirm({ title, copy, tone, proceedLabel }) {
+      return new Promise((resolve) => {
+        pitchiqConfirmResolve = resolve;
+        pitchiqConfirmOpenedAt = performance.now();
+        pitchiqConfirmCard.className = `pitchiq-confirm-card ${tone}`;
+        pitchiqConfirmTitle.className = `pitchiq-confirm-title ${tone}`;
+        pitchiqConfirmTitle.textContent = title;
+        pitchiqConfirmCopy.textContent = copy;
+        pitchiqConfirmProceed.className = `button proceed ${tone}`;
+        pitchiqConfirmProceed.textContent = proceedLabel;
+        pitchiqConfirmModal.classList.remove("hidden");
+        pitchiqConfirmModal.setAttribute("aria-hidden", "false");
+        document.body.classList.add("pitchiq-modal-open");
+        pitchiqConfirmCancel.focus();
+      });
+    }
+
+    async function confirmFavoritePitcherChange(pitcherName, adding) {
+      const label = String(pitcherName || "").trim() || "this pitcher";
+      return openPitchiqConfirm({
+        title: adding ? "Add to My Pitchers?" : "Remove from My Pitchers?",
+        copy: adding
+          ? `Add ${label} to your My Pitchers watchlist?`
+          : `Remove ${label} from your My Pitchers watchlist?`,
+        tone: adding ? "add" : "remove",
+        proceedLabel: adding ? "Add" : "Remove",
+      });
+    }
+
     async function toggleFavoritePitcher(pitcherName, button = null) {
       if (!canViewMyPitchers()) {
         setActiveWorkspace("my-pitchers");
@@ -5372,6 +6520,9 @@
       const canonicalPitcher = canonicalPitcherName(pitcherName);
       const key = normalizePitcherKey(canonicalPitcher);
       const wasFavorited = favoritePitcherKeys.has(key);
+      if (!(await confirmFavoritePitcherChange(canonicalPitcher, !wasFavorited))) {
+        return;
+      }
       if (wasFavorited) {
         favoritePitcherNames = favoritePitcherNames.filter(name => normalizePitcherKey(name) !== key);
       } else {
@@ -6136,17 +7287,11 @@
         liveGames = splitGames.live;
         cacheGameBoardSnapshot(splitGames, latestFetchedGameRowsUpdatedAt);
       } else {
-        const cachedBoard = loadCachedGameBoardSnapshot();
-        if (cachedBoard && (cachedBoard.upcoming.length || cachedBoard.live.length)) {
-          upcomingGames = cachedBoard.upcoming;
-          liveGames = cachedBoard.live;
-          latestFetchedGameRowsUpdatedAt = latestFetchedGameRowsUpdatedAt || cachedBoard.updatedAt;
-        } else if (upcomingGames.length || liveGames.length) {
-          cacheGameBoardSnapshot({ upcoming: upcomingGames, live: liveGames }, latestFetchedGameRowsUpdatedAt);
-        } else {
-          upcomingGames = [];
-          liveGames = [];
-        }
+        // Successful empty fetch means the worker cleared the slate (all games finished).
+        // Do not restore the local cache or finished games stay in Live until new ones appear.
+        upcomingGames = [];
+        liveGames = [];
+        cacheGameBoardSnapshot({ upcoming: [], live: [] }, latestFetchedGameRowsUpdatedAt);
       }
       if (!historyRowsError) {
         latestFetchedHistoricalRowsUpdatedAt = maxUpdatedAtFromRows(historyRows || []);
@@ -6506,6 +7651,10 @@
       return Boolean(normalized && !["pending", "unknown", "n/a", "na"].includes(normalized));
     }
 
+    function isAssignedLineup(game) {
+      return Boolean(game?.opponent_lineup_assigned);
+    }
+
     function renderUmpCell(game) {
       const umpName = String(game?.plate_umpire || "").trim();
       const assigned = isAssignedUmp(umpName);
@@ -6517,6 +7666,55 @@
             title="${escapeHtml(label)}"
             aria-label="${escapeHtml(label)}"
           >${assigned ? "&#10003;" : ""}</span>
+        </td>
+      `;
+    }
+
+    function renderLineupCell(game) {
+      const assigned = isAssignedLineup(game);
+      const opponent = String(game?.opponent || "opponent").trim() || "opponent";
+      const label = assigned
+        ? `${opponent} lineup announced for this game`
+        : `${opponent} lineup not announced yet`;
+      return `
+        <td class="ump-cell">
+          <span
+            class="ump-indicator ${assigned ? "assigned" : ""}"
+            title="${escapeHtml(label)}"
+            aria-label="${escapeHtml(label)}"
+          >${assigned ? "&#10003;" : ""}</span>
+        </td>
+      `;
+    }
+
+    function formatLiveStarterStatsLine(game) {
+      const ks = String(game?.live_strikeouts ?? "").trim();
+      const pitchCount = String(game?.live_pitch_count ?? "").trim();
+      if (!ks && !pitchCount) return "";
+      if (ks && pitchCount) return `(${ks}k - ${pitchCount} pitches)`;
+      if (ks) return `(${ks}k)`;
+      return `(${pitchCount} pitches)`;
+    }
+
+    function renderLiveStatusCell(game) {
+      const starterStatus = String(game?.starter_status || "").trim();
+      const status = String(game?.game_status || "In Progress").trim();
+      const inning = String(game?.game_inning || "").trim();
+      const primary = starterStatus || inning || status;
+      const statusTone = liveStarterStatusTone(game);
+      const statusToneClass = statusTone ? ` live-starter-status is-${statusTone}` : "";
+      const contextParts = [];
+      if (inning) contextParts.push(inning);
+      const starterStats = formatLiveStarterStatsLine(game);
+      const subLines = [];
+      if (contextParts.length) subLines.push(contextParts.join(" · "));
+      if (starterStats) subLines.push(starterStats);
+      return `
+        <td>
+          <div class="pitcher-cell">
+            <span class="pitcher-name${statusToneClass}">${escapeHtml(primary)}</span>
+            ${subLines.map((line) => `<span class="pitcher-team-sub">${escapeHtml(line)}</span>`).join("")}
+          </div>
         </td>
       `;
     }
@@ -6682,6 +7880,32 @@
       return String(value || "").trim().toLowerCase();
     }
 
+    function isDelayLikeStatus(status) {
+      const normalized = normalizeText(status);
+      return normalized.includes("delay")
+        || normalized.includes("postpon")
+        || normalized.includes("suspend");
+    }
+
+    function liveStarterStatusTone(game) {
+      const status = String(game?.game_status || game?.status || "").trim();
+      if (status && isDelayLikeStatus(status)) return "delayed";
+
+      const starterStatus = normalizeText(game?.starter_status);
+      if (starterStatus === "pitching") return "pitching";
+      if (starterStatus === "team batting") return "batting";
+      if (starterStatus === "finished") return "finished";
+      if (starterStatus.includes("warm")) return "warmup";
+
+      const detailed = normalizeText(game?.game_detailed_state || game?.detailed_state);
+      if (detailed.includes("warm")) return "warmup";
+
+      const statusNorm = normalizeText(status);
+      if (statusNorm.includes("warm")) return "warmup";
+
+      return "";
+    }
+
     function renderCells(containerId, items) {
       const container = document.getElementById(containerId);
       if (!container) return;
@@ -6788,7 +8012,13 @@
       }
     }
 
+    function setPitcherLookupGamePanelLive(isLive) {
+      const panel = document.getElementById("pitcher-lookup-game-panel");
+      if (panel) panel.classList.toggle("is-live", Boolean(isLive));
+    }
+
     function renderEmptyPitcherLookup() {
+      setPitcherLookupGamePanelLive(false);
       renderCells("upcoming-game-grid", [
         { label: "Pitcher", value: " " },
         { label: "Opponent", value: " " },
@@ -6849,6 +8079,13 @@
           body: `${game.plate_umpire} is listed behind the plate for this matchup.`
         });
       }
+      if (isAssignedLineup(game)) {
+        notes.push({
+          impact: "neutral",
+          title: "Opponent Lineup Announced",
+          body: `${game.opponent || "The opponent"} has posted its starting batting order for tonight.`
+        });
+      }
       if (game.weather || game.wind) {
         notes.push({
           impact: "neutral",
@@ -6874,11 +8111,19 @@
       const projected = displayProjectionValue(game);
       const latestHistory = latestHistoricalGameForPitcher(game.pitcher);
       const lastGameK = game.last_game_k || latestHistory?.actual_k || latestHistory?.strikeouts || "";
+      const isLive = shouldShowAsLiveGame(game, game?._pitchiq_source_table || "");
+      const gameDateTime = `${game.date || ""}${game.time ? ` ${game.time}` : ""}`.trim();
+
+      setPitcherLookupGamePanelLive(isLive);
 
       renderCells("upcoming-game-grid", [
         { label: "Pitcher", value: game.pitcher || "" },
         { label: "Opponent", value: game.opponent || "" },
-        { label: "Game Date/Time", value: `${game.date || ""}${game.time ? ` ${game.time}` : ""}` },
+        {
+          label: "Game Date/Time",
+          value: isLive ? "Live" : gameDateTime,
+          className: isLive ? "lookup-live-text" : "",
+        },
         { label: "PitchIQ K", value: formatNumber(projected, 2) },
         { label: "Venue", value: game.venue || "" },
         { label: "Home Or Away", value: game.home_or_away || "" },
@@ -6929,6 +8174,7 @@
 
     function renderNotScheduledPitcherLookup(pitcherName, latestHistory = null) {
       const lastGameK = latestHistory?.actual_k || latestHistory?.strikeouts || "";
+      setPitcherLookupGamePanelLive(false);
       renderCells("upcoming-game-grid", [
         { label: "Pitcher", value: pitcherName || latestHistory?.pitcher || "" },
         { label: "Opponent", value: "Not Scheduled" },
@@ -6997,6 +8243,9 @@
       }
       if (key === "plate_umpire") {
         return isAssignedUmp(game.plate_umpire) ? 1 : 0;
+      }
+      if (key === "opponent_lineup_assigned") {
+        return isAssignedLineup(game) ? 1 : 0;
       }
       if (key === "notes") {
         return normalizeText(displayNotesText(game));
@@ -7328,6 +8577,18 @@
       reportSelectedColumns = selected.slice();
     }
 
+    function setAllReportColumnsSelected(selected) {
+      reportSelectedColumns = selected
+        ? REPORT_COLUMNS.map(column => column.key)
+        : [];
+      renderReportColumns();
+      refreshReportBuilderView();
+    }
+
+    function isCsvReportExport() {
+      return reportExportTypeSelect.value === "csv";
+    }
+
     function refreshReportBuilderView() {
       const unlocked = String(currentUserRole || "").toLowerCase() === "owner";
       reportLockedPanel.classList.toggle("hidden", unlocked);
@@ -7341,7 +8602,7 @@
       const exportLabel = reportExportTypeSelect.options[reportExportTypeSelect.selectedIndex]?.text || "Selected";
       const columnText = selectedColumns.length === 1 ? "1 column" : `${selectedColumns.length} columns`;
       const rowText = rows.length === 1 ? "1 row" : `${rows.length} rows`;
-      reportDownloadButton.textContent = reportExportTypeSelect.value === "csv" ? "Download CSV" : "Download Styled XLSX";
+      reportDownloadButton.textContent = isCsvReportExport() ? "Download CSV" : "Download Styled XLSX";
       reportSummary.textContent = `${sourceLabel} ${exportLabel} report ready with ${rowText} and ${columnText}.`;
     }
 
@@ -7690,7 +8951,7 @@
         if (cellText === "Medium") return 5;
         if (cellText === "Low") return 6;
       }
-      if (columnLabel === "Vix Level") {
+      if (columnLabel === "Vix Level" || columnLabel === "Volatility") {
         if (cellText.startsWith("Low")) return 4;
         if (cellText.startsWith("Medium")) return 5;
         if (cellText.startsWith("High")) return 6;
@@ -7698,6 +8959,11 @@
       if (columnLabel === "DK Bet" || columnLabel === "FD Bet") {
         if (cellText === "OVER") return 7;
         if (cellText === "UNDER") return 8;
+      }
+      if (columnLabel === "DK O/U Result" || columnLabel === "FD O/U Result" || columnLabel === "DK Correct?" || columnLabel === "FD Correct?") {
+        if (cellText === "Win" || cellText === "Yes") return 4;
+        if (cellText === "Push") return 5;
+        if (cellText === "Loss" || cellText === "No") return 6;
       }
       if (columnLabel === "Pitcher") return rowNumber % 2 === 1 ? 9 : 10;
       return rowNumber % 2 === 1 ? 2 : 3;
@@ -8209,7 +9475,7 @@
             <div class="desktop-card-live-fill"></div>
             ${
               Number.isFinite(projectedKs)
-                ? `<div class="desktop-card-live-marker"><span>${escapeHtml(formatNumber(projectedKs, 1))}</span></div>`
+                ? `<div class="desktop-card-live-marker"><span>${escapeHtml(formatNumber(projectedKs, 2))}</span></div>`
                 : ""
             }
           </div>
@@ -8305,15 +9571,9 @@
       const inningCompact = view === "live" ? formatInningCompact(game.game_inning) : "";
       const time = String(inningCompact || game.time || formatDisplayTime(game.start_time) || "").trim();
       const date = String(game.date || formatDisplayDate(game.game_date_raw) || "").trim();
-      const currentPitcherId = String(game.current_pitcher_id ?? "").trim();
-      const starterPitcherId = String(game.mlb_pitcher_id ?? game.pitcher_id ?? "").trim();
-      const currentPitcherName = normalizeText(game.current_pitcher);
-      const starterPitcherName = normalizeText(game.pitcher);
-      const isCurrentStarter = Boolean(
-        (currentPitcherId && starterPitcherId && currentPitcherId === starterPitcherId)
-        || (currentPitcherName && starterPitcherName && currentPitcherName === starterPitcherName)
-      );
-      const starterStatus = isCurrentStarter ? "Pitching" : String(game.starter_status || "").trim();
+      const starterStatus = String(game.starter_status || "").trim();
+      const liveStatusTone = view === "live" ? liveStarterStatusTone(game) : "";
+      const liveStatusClass = liveStatusTone ? ` is-${liveStatusTone}` : "";
       const matchupStatusLeft =
         view === "live"
           ? escapeHtml(starterStatus || game.game_status || "In Progress")
@@ -8348,7 +9608,7 @@
                 <div class="desktop-live-matchup">
                   <div class="desktop-live-opponent"><span class="desktop-live-matchup-vs">vs</span>${escapeHtml(game.opponent || "Opponent pending")}</div>
                   <span class="desktop-live-date">${escapeHtml(date || "Date pending")}</span>
-                  <div class="desktop-live-status">${matchupStatusLeft}</div>
+                  <div class="desktop-live-status${liveStatusClass}">${matchupStatusLeft}</div>
                   <span class="desktop-live-time">${escapeHtml(time === "Pending" ? "" : time)}</span>
                 </div>
                 <div class="desktop-live-corner-grid">
@@ -8472,7 +9732,7 @@
       if (!games || !games.length) {
         container.innerHTML = `
           <tr>
-            <td colspan="12">No upcoming probable starters available.</td>
+            <td colspan="13">No upcoming probable starters available.</td>
           </tr>
         `;
         renderDesktopCards(upcomingCardGrid, [], "upcoming");
@@ -8498,6 +9758,7 @@
           <td>${escapeHtml(game.opponent)}</td>
           ${renderDateCell(game)}
           ${renderUmpCell(game)}
+          ${renderLineupCell(game)}
           ${renderBookLineCell(game.dk_line, game.dk_over_payout, game.dk_under_payout)}
           ${renderBookLineCell(game.fd_line, game.fd_over_payout, game.fd_under_payout)}
           ${renderProjectedKsCell(game)}
@@ -8558,7 +9819,7 @@
             </div>
           </td>
           <td>${escapeHtml(game.opponent)}</td>
-          <td>${escapeHtml(game.game_status || "In Progress")}</td>
+          ${renderLiveStatusCell(game)}
           ${renderUmpCell(game)}
           ${renderBookLineCell(game.dk_line, game.dk_over_payout, game.dk_under_payout)}
           ${renderBookLineCell(game.fd_line, game.fd_over_payout, game.fd_under_payout)}
@@ -8906,7 +10167,10 @@
         if (upcomingSort.key === key) {
           upcomingSort.direction = upcomingSort.direction === "asc" ? "desc" : "asc";
         } else {
-          upcomingSort = { key, direction: "asc" };
+          upcomingSort = {
+            key,
+            direction: key === "opponent_lineup_assigned" || key === "plate_umpire" ? "desc" : "asc"
+          };
         }
         upcomingGamesPage = 1;
         refreshUpcomingGamesView();
@@ -9173,6 +10437,8 @@
       reportSelectedColumns = getSelectedReportColumns().map(column => column.key);
       refreshReportBuilderView();
     });
+    reportColumnsSelectAllButton?.addEventListener("click", () => setAllReportColumnsSelected(true));
+    reportColumnsDeselectAllButton?.addEventListener("click", () => setAllReportColumnsSelected(false));
     reportDownloadButton.addEventListener("click", downloadReport);
     ownerAlertAppearancePresetSelect.addEventListener("change", () => applySelectedAppearancePreset());
     ownerAlertTextPresetSelect.addEventListener("change", () => applySelectedTextPreset());
@@ -9291,8 +10557,21 @@
 
     document.addEventListener("keydown", event => {
       if (event.key !== "Escape") return;
+      if (!pitchiqConfirmModal.classList.contains("hidden")) {
+        closePitchiqConfirm(false);
+        return;
+      }
       closeWalletContextMenu();
       closeWalletRemoveConfirm();
+    });
+
+    pitchiqConfirmCancel.addEventListener("click", () => closePitchiqConfirm(false));
+    pitchiqConfirmProceed.addEventListener("click", () => {
+      if (performance.now() - pitchiqConfirmOpenedAt < 300) return;
+      closePitchiqConfirm(true);
+    });
+    pitchiqConfirmModal.addEventListener("click", event => {
+      if (event.target === pitchiqConfirmModal) closePitchiqConfirm(false);
     });
 
     walletRemoveCardButton.addEventListener("click", () => {

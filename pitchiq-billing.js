@@ -5,6 +5,10 @@
   const PAID_ROLES = new Set(["basic", "pro"]);
   const EXEMPT_ROLES = new Set(["life", "admin", "owner"]);
 
+  function hasStripeBillingLink(profile) {
+    return Boolean(profile?.stripe_customer_id || profile?.stripe_subscription_id);
+  }
+
   function hasActiveMembership(profile) {
     if (!profile) return false;
 
@@ -12,15 +16,26 @@
     if (EXEMPT_ROLES.has(role)) return true;
     if (!PAID_ROLES.has(role)) return false;
 
+    const hasSubscription = Boolean(profile.stripe_subscription_id);
+    const hasStripeCustomer = Boolean(profile.stripe_customer_id);
     const status = String(profile.subscription_status || "").toLowerCase();
-    if (status === "active" || status === "trialing") return true;
+    const inPaidPeriod = profile.subscription_current_period_end
+      ? new Date(profile.subscription_current_period_end).getTime() > Date.now()
+      : false;
 
-    if (profile.subscription_current_period_end) {
-      return new Date(profile.subscription_current_period_end).getTime() > Date.now();
+    if (status === "active" || status === "trialing") {
+      // Partial Stripe sync (customer/status without subscription id) is not active access.
+      if ((hasStripeCustomer || hasSubscription) && !hasSubscription) return false;
+      return true;
     }
 
-    // Manual or grandfathered accounts without Stripe metadata.
-    if (!profile.stripe_subscription_id) return true;
+    if (inPaidPeriod) {
+      if ((hasStripeCustomer || hasSubscription) && !hasSubscription) return false;
+      return true;
+    }
+
+    // Manual or grandfathered accounts without any Stripe metadata.
+    if (!hasStripeBillingLink(profile)) return true;
 
     return false;
   }
@@ -70,6 +85,8 @@
   }
 
   async function startCheckout(supabaseClient, supabaseUrl, publishableKey, priceTier) {
+    global.PitchIQFeatureLocks?.assertStripeAllowed("checkout");
+
     const payload = await callBillingFunction(
       supabaseClient,
       supabaseUrl,
@@ -91,6 +108,8 @@
     publishableKey,
     options,
   ) {
+    global.PitchIQFeatureLocks?.assertStripeAllowed("portal");
+
     const flow = options && options.flow ? options.flow : undefined;
     const payload = await callBillingFunction(
       supabaseClient,
@@ -113,6 +132,9 @@
     publishableKey,
     priceTier,
   ) {
+    const tier = String(priceTier || "").toLowerCase();
+    global.PitchIQFeatureLocks?.assertStripeAllowed(tier === "pro" ? "upgrade" : "downgrade");
+
     return callBillingFunction(
       supabaseClient,
       supabaseUrl,
@@ -134,6 +156,7 @@
 
   global.PitchIQBilling = {
     PROFILE_SELECT,
+    hasStripeBillingLink,
     hasActiveMembership,
     fetchBillingProfile,
     startCheckout,

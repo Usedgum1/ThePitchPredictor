@@ -34,7 +34,7 @@
     }
 
     .container {
-      max-width: 960px;
+      max-width: 1040px;
       margin: 0 auto;
       padding: 40px 20px 64px;
     }
@@ -106,9 +106,29 @@
       line-height: 1.55;
     }
 
+    .plan-features-label {
+      margin: 0;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text);
+    }
+
     .plan-features {
       margin: 0;
       padding-left: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .plan-features li {
+      padding-left: 2px;
+    }
+
+    .plan-card.pro .plan-features-label {
+      color: #dddafe;
     }
 
     .plan-button {
@@ -131,6 +151,11 @@
       color: #dddafe;
     }
 
+    .plan-button:disabled {
+      cursor: not-allowed;
+      opacity: 0.58;
+    }
+
     .status {
       min-height: 1.2rem;
       margin-top: 18px;
@@ -140,6 +165,14 @@
 
     .status.error { color: var(--danger); }
     .status.success { color: var(--success); }
+
+    .status.checkout {
+      margin-top: 24px;
+      font-size: clamp(1.15rem, 3vw, 1.45rem);
+      font-weight: 800;
+      color: #5ce08a;
+      letter-spacing: 0.02em;
+    }
 
     .hidden {
       display: none !important;
@@ -177,10 +210,13 @@
         <div class="plan-name">Basic</div>
         <div class="plan-price">$5 <span>/ month</span></div>
         <p class="plan-copy">Core slate tools for daily strikeout prop research.</p>
+        <p class="plan-features-label">What's included</p>
         <ul class="plan-features">
-          <li>Upcoming and live boards</li>
-          <li>Lines, odds, edge, and confidence</li>
-          <li>Pitcher lookup and table tools</li>
+          <li>Upcoming games board with PitchIQ Ks</li>
+          <li>DraftKings and FanDuel lines, odds, edge, bet side, and confidence</li>
+          <li>Pitcher lookup with matchup context and model notes</li>
+          <li>Live games view with in-game strikeout progress</li>
+          <li>Table search, sorting, and default board view preference</li>
         </ul>
         <button class="plan-button secondary" type="button" data-plan="basic">Subscribe to Basic</button>
       </section>
@@ -188,11 +224,16 @@
       <section class="plan-card pro">
         <div class="plan-name">Pro</div>
         <div class="plan-price">$10 <span>/ month</span></div>
-        <p class="plan-copy">Everything in Basic plus saved-card and historical workflows.</p>
+        <p class="plan-copy">Saved-card workflow, historical review, and deeper tracking on top of Basic.</p>
+        <p class="plan-features-label">What's included</p>
         <ul class="plan-features">
-          <li>My Cards wallet</li>
-          <li>Historical games and lookup</li>
-          <li>Manual win/loss tracking</li>
+          <li>Everything in Basic</li>
+          <li>My Cards wallet for saved projections</li>
+          <li>Saved card table and card views with search and sorting</li>
+          <li>Manual win/loss tracking for saved cards</li>
+          <li>My Pitchers watchlist with favorited pitchers and upcoming starts</li>
+          <li>Historical games table with projections, lines, and results</li>
+          <li>Historical pitcher lookup and past-matchup review</li>
         </ul>
         <button class="plan-button" type="button" data-plan="pro">Subscribe to Pro</button>
       </section>
@@ -208,6 +249,8 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" crossorigin="anonymous"></script>
+  <script src="./pitchiq-feature-locks.js"></script>
+  <script src="./pitchiq-terms.js"></script>
   <script src="./pitchiq-billing.js"></script>
   <script>
     (async () => {
@@ -215,6 +258,9 @@
       const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_7g1yX__kNzT-6tj8Tr4SIg_T4BX9BlV";
       const statusEl = document.getElementById("subscribe-status");
       const params = new URLSearchParams(window.location.search);
+      const isEmailConfirmLanding =
+        /type=signup/.test(window.location.hash)
+        || (params.has("code") && !params.has("billing"));
 
       if (params.get("billing") === "canceled") {
         statusEl.textContent = "Checkout was canceled. Choose a plan when you're ready.";
@@ -230,8 +276,40 @@
         },
       });
 
-      const { data: sessionData } = await supabaseClient.auth.getSession();
-      if (!sessionData.session) {
+      async function resolveSession() {
+        const { data: initialData } = await supabaseClient.auth.getSession();
+        if (initialData.session) {
+          return initialData.session;
+        }
+
+        return new Promise((resolve) => {
+          let settled = false;
+          const timeoutId = window.setTimeout(() => {
+            if (!settled) {
+              settled = true;
+              resolve(null);
+            }
+          }, 8000);
+
+          const { data: listener } = supabaseClient.auth.onAuthStateChange((event, session) => {
+            if (!session) {
+              return;
+            }
+
+            if (event === "SIGNED_IN" || event === "INITIAL_SESSION") {
+              if (!settled) {
+                settled = true;
+                window.clearTimeout(timeoutId);
+                listener.subscription.unsubscribe();
+                resolve(session);
+              }
+            }
+          });
+        });
+      }
+
+      const session = await resolveSession();
+      if (!session) {
         statusEl.textContent = "Please sign in first to choose a plan.";
         statusEl.className = "status error";
         document.querySelector(".plan-grid")?.classList.add("hidden");
@@ -241,26 +319,24 @@
         return;
       }
 
+      await window.PitchIQTerms.ensureRecorded(
+        supabaseClient,
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY,
+      );
+
+      if (isEmailConfirmLanding) {
+        statusEl.textContent = "Email confirmed! Choose your plan below.";
+        statusEl.className = "status success";
+      }
+
       function hasPaidStripeMembership(profile) {
-        if (!profile) return false;
-
-        const role = String(profile.role || "").toLowerCase();
-        if (["life", "admin", "owner"].includes(role)) return true;
-        if (!["basic", "pro"].includes(role)) return false;
-
-        const status = String(profile.subscription_status || "").toLowerCase();
-        if (status === "active" || status === "trialing") return true;
-
-        if (profile.subscription_current_period_end) {
-          return new Date(profile.subscription_current_period_end).getTime() > Date.now();
-        }
-
-        return false;
+        return window.PitchIQBilling.hasActiveMembership(profile);
       }
 
       const { profile, error: profileError } = await window.PitchIQBilling.fetchBillingProfile(
         supabaseClient,
-        sessionData.session.user.id,
+        session.user.id,
       );
 
       if (profileError) {
@@ -294,7 +370,7 @@
         for (let attempt = 0; attempt < 15; attempt += 1) {
           const refreshed = await window.PitchIQBilling.fetchBillingProfile(
             supabaseClient,
-            sessionData.session.user.id,
+            session.user.id,
           );
           if (hasPaidStripeMembership(refreshed.profile)) {
             window.location.replace("./app.html");
@@ -319,8 +395,14 @@
       }
 
       async function handlePlanClick(plan) {
+        if (window.PitchIQFeatureLocks.isLocked("initialCheckout")) {
+          statusEl.textContent = window.PitchIQFeatureLocks.lockMessage("initialCheckout");
+          statusEl.className = "status error";
+          return;
+        }
+
         statusEl.textContent = "Redirecting to secure checkout...";
-        statusEl.className = "status";
+        statusEl.className = "status checkout";
         try {
           await window.PitchIQBilling.startCheckout(
             supabaseClient,
@@ -335,10 +417,16 @@
       }
 
       document.querySelectorAll("[data-plan]").forEach((button) => {
+        window.PitchIQFeatureLocks.applyButtonLock(button, "initialCheckout");
         button.addEventListener("click", () => {
           handlePlanClick(button.getAttribute("data-plan"));
         });
       });
+
+      if (window.PitchIQFeatureLocks.isLocked("initialCheckout")) {
+        statusEl.textContent = window.PitchIQFeatureLocks.lockMessage("initialCheckout");
+        statusEl.className = "status error";
+      }
     })();
   </script>
 </body>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>pitchIQ | FAQs &amp; Knowledge</title>
   <meta name="description" content="FAQs and product knowledge for pitchIQ strikeout prop research." />
   <meta name="theme-color" content="#050505" />
@@ -21,9 +21,14 @@
       --amber: #ff942e;
       --blue: #2f9bff;
       --success: #8ddf9f;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
 
     .hidden {
       display: none !important;
@@ -36,6 +41,7 @@
       background: var(--bg);
       color: var(--text);
       font-family: "Segoe UI", Arial, sans-serif;
+      overflow-x: hidden;
     }
 
     body {
@@ -51,6 +57,7 @@
       max-width: 1100px;
       margin: 0 auto;
       padding: 22px 18px 34px;
+      min-width: 0;
     }
 
     .shell {
@@ -60,6 +67,7 @@
       border-radius: 18px;
       box-shadow: 0 18px 45px rgba(0, 0, 0, 0.18);
       padding: 22px;
+      min-width: 0;
     }
 
     .topbar {
@@ -119,6 +127,7 @@
       grid-template-columns: minmax(0, 1fr) minmax(220px, 0.34fr);
       gap: 22px;
       align-items: start;
+      min-width: 0;
     }
 
     .knowledge-main {
@@ -126,6 +135,7 @@
       border-radius: 14px;
       background: rgba(255, 255, 255, 0.026);
       overflow: hidden;
+      min-width: 0;
     }
 
     .knowledge-section {
@@ -171,6 +181,7 @@
       font-size: 0.92rem;
       font-weight: 700;
       line-height: 1.35;
+      touch-action: manipulation;
     }
 
     .faq-item summary::-webkit-details-marker {
@@ -200,6 +211,7 @@
       font-size: 0.86rem;
       line-height: 1.55;
       padding: 0 16px 14px;
+      overflow-wrap: anywhere;
     }
 
     .faq-answer p {
@@ -217,6 +229,16 @@
 
     .faq-answer strong {
       color: var(--text);
+    }
+
+    .faq-answer a {
+      color: var(--blue);
+      text-decoration: none;
+    }
+
+    .faq-answer a:hover {
+      text-decoration: underline;
+      text-underline-offset: 3px;
     }
 
     .term-grid {
@@ -246,10 +268,21 @@
       color: var(--muted);
       font-size: 0.86rem;
       line-height: 1.55;
+      overflow-wrap: anywhere;
     }
 
     .term-card p + p {
       margin-top: 10px;
+    }
+
+    .term-card a {
+      color: var(--blue);
+      text-decoration: none;
+    }
+
+    .term-card a:hover {
+      text-decoration: underline;
+      text-underline-offset: 3px;
     }
 
     .term-card ul {
@@ -324,21 +357,211 @@
       color: var(--amber);
     }
 
-    @media (max-width: 860px) {
-      .layout {
-        grid-template-columns: 1fr;
+    .mobile-jump-nav {
+      display: none;
+    }
+
+    @media (max-width: 760px) {
+      .page {
+        padding: calc(10px + var(--safe-top)) 10px calc(20px + var(--safe-bottom));
       }
 
-      .knowledge-sidebar {
-        position: static;
+      .shell {
+        padding: 14px 12px;
+        border-radius: 14px;
+        border-left: 0;
+        border-right: 0;
+        box-shadow: none;
       }
 
       .topbar {
         flex-direction: column;
+        gap: 12px;
+        margin-bottom: 14px;
+        padding-bottom: 12px;
+      }
+
+      h1 {
+        font-size: 1.18rem;
+        letter-spacing: 0.06em;
+        line-height: 1.25;
+      }
+
+      .sub {
+        max-width: none;
+        font-size: 0.84rem;
+        line-height: 1.45;
       }
 
       .top-actions {
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        width: 100%;
+        white-space: normal;
+      }
+
+      .top-actions .text-link,
+      .top-actions .text-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 40px;
+        padding: 0 10px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.03);
+        text-decoration: none;
+        text-transform: uppercase;
+        font-size: 0.64rem;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-align: center;
+      }
+
+      .top-actions .text-link:hover,
+      .top-actions .text-button:hover {
+        text-decoration: none;
+        border-color: rgba(47, 155, 255, 0.35);
+        color: var(--text);
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .knowledge-sidebar {
+        position: sticky;
+        top: var(--safe-top);
+        z-index: 4;
+        order: -1;
+        padding: 12px;
+        margin: 0 -2px;
+        border-radius: 12px;
+        background: rgba(10, 11, 17, 0.92);
+        backdrop-filter: blur(14px);
+      }
+
+      .knowledge-sidebar h2 {
+        display: none;
+      }
+
+      .toc {
+        display: none;
+      }
+
+      .mobile-jump-nav {
+        display: block;
+      }
+
+      .mobile-jump-label {
+        display: block;
+        margin: 0 0 6px;
+        color: var(--muted);
+        font-size: 0.64rem;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      .mobile-jump-select {
+        width: 100%;
+        min-height: 42px;
+        padding: 0 36px 0 12px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        background-color: rgba(0, 0, 0, 0.22);
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath stroke='%23a7afbc' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' d='M1.5 1.5 6 6l4.5-4.5'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 10px 6px;
+        appearance: none;
+        -webkit-appearance: none;
+        color: var(--text);
+        font: inherit;
+        font-size: 0.84rem;
+        font-weight: 700;
+      }
+
+      .sidebar-note {
+        margin-top: 10px;
+        padding-top: 10px;
+        font-size: 0.76rem;
+        line-height: 1.4;
+      }
+
+      .knowledge-main {
+        border-radius: 12px;
+      }
+
+      .knowledge-section {
+        padding: 14px 12px;
+        scroll-margin-top: calc(88px + var(--safe-top));
+      }
+
+      .knowledge-section h2 {
+        font-size: 0.8rem;
+      }
+
+      .knowledge-section > p {
+        font-size: 0.82rem;
+        margin-bottom: 12px;
+      }
+
+      .faq-list {
+        gap: 8px;
+      }
+
+      .faq-item {
+        border-radius: 10px;
+      }
+
+      .faq-item summary {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        min-height: 44px;
+        padding: 12px;
+        font-size: 0.88rem;
+        line-height: 1.4;
+      }
+
+      .faq-item summary::after {
+        float: none;
+        flex: 0 0 auto;
+        margin-left: 0;
+        line-height: 1;
+        padding-top: 1px;
+      }
+
+      .faq-answer {
+        padding: 0 12px 12px;
+        font-size: 0.84rem;
+        line-height: 1.5;
+      }
+
+      .faq-answer ul {
+        padding-left: 16px;
+      }
+
+      .term-card {
+        padding: 12px;
+        border-radius: 10px;
+      }
+
+      .term-card h3 {
+        font-size: 0.82rem;
+      }
+
+      .term-card p,
+      .term-card ul {
+        font-size: 0.84rem;
+      }
+
+      .term-note {
+        font-size: 0.76rem;
       }
     }
   </style>
@@ -352,7 +575,8 @@
           <p class="sub">How pitchIQ works, what the boards mean, and how account tiers unlock tools.</p>
         </div>
         <div class="top-actions">
-          <a class="text-link" href="./app.html">back to app</a>
+          <a class="text-link" href="./app-mobile.html">mobile</a>
+          <a class="text-link" href="./app.html">desktop app</a>
           <a class="text-link hidden" id="login-link" href="./login.html">log in</a>
           <button class="text-button hidden" id="logout-button" type="button">sign out</button>
         </div>
@@ -382,12 +606,13 @@
                   <p>Most members start on <strong>Upcoming Games</strong> for the daily slate, then use <strong>Pitcher Lookup</strong> when they want deeper context on one arm. <strong>Live Games</strong> is for in-progress tracking once games start.</p>
                 </div>
               </details>
-              <details class="faq-item">
+              <details class="faq-item" id="how-pitchiq-ks-are-built">
                 <summary>How are you getting your PitchIQ Ks?</summary>
                 <div class="faq-answer">
                   <p><strong>PitchIQ Ks</strong> are built pitching-first: starter profile, opponent context, park and matchup signals, and other game-day factors the model treats as relevant to strikeout volume—not a single back-of-the-napkin average.</p>
                   <p>Behind the headline number, pitchIQ runs several independent projection passes and reconciles them into one published estimate (see <a href="#what-does-vix-mean">What does Vix mean?</a> below). When a plate umpire is assigned, umpire context can factor into the read as well.</p>
                   <p>We do not publish the full feature list, weights, or pass-by-pass recipe. The projection is the output of that stack—meant to be compared to the market, not copied blindly.</p>
+                  <p>For what the number means on the board and how you could read it, see <a href="#term-projected-ks">PitchIQ Ks</a> in <a href="#terminology">Terminology</a>.</p>
                 </div>
               </details>
               <details class="faq-item" id="what-does-vix-mean">
@@ -428,7 +653,8 @@
               <details class="faq-item">
                 <summary>What are PitchIQ Ks?</summary>
                 <div class="faq-answer">
-                  <p>See <a href="#term-projected-ks">PitchIQ Ks</a> in <a href="#terminology">Terminology</a> (bottom of page). On the board, it is the anchor column used when comparing to sportsbook lines and <a href="#term-edge-confidence">Edge/Confidence</a>.</p>
+                  <p><strong>PitchIQ Ks</strong> is the strikeout estimate on each board row—the anchor column used when comparing to sportsbook lines and <a href="#term-edge-confidence">Edge/Confidence</a>.</p>
+                  <p>Everything about what the number represents, how it is built from history and similar scenarios, and how you could use it is in one place: <a href="#term-projected-ks">PitchIQ Ks</a> under <a href="#terminology">Terminology</a>. For the modeling stack behind it, see <a href="#how-pitchiq-ks-are-built">How are you getting your PitchIQ Ks?</a> in Getting Started.</p>
                 </div>
               </details>
               <details class="faq-item">
@@ -441,6 +667,14 @@
                 <summary>What do bet side and the book columns show?</summary>
                 <div class="faq-answer">
                   <p>DraftKings and FanDuel columns show the posted strikeout line and price where available. <strong>Bet side</strong> is Over, Under, or Pass/Avoid—see <a href="#term-bet-side">Bet Side</a> in <a href="#terminology">Terminology</a> (bottom of page).</p>
+                </div>
+              </details>
+              <details class="faq-item">
+                <summary>Why is line data sometimes missing?</summary>
+                <div class="faq-answer">
+                  <p>Sportsbook lines and odds on pitchIQ come from an external API. We are at the mercy of that provider—if they do not return a line, price, or market for a pitcher, we cannot display it.</p>
+                  <p>That can show up as blank cells, <em>Pending</em> placeholders, or missing edge reads on a row even when <strong>PitchIQ Ks</strong> and game context are still there. It is usually temporary: books post props on their own schedule, markets get pulled, or the feed hiccups.</p>
+                  <p>We refresh when new data lands, but we cannot invent lines pitchIQ was never sent. If a book has the prop live and our board is still empty after a refresh, the gap is on the feed side—not something we can force from here.</p>
                 </div>
               </details>
               <details class="faq-item">
@@ -458,6 +692,18 @@
                     <li><strong>With an assignment</strong> — the model can fold that umpire’s historical strike-zone and strikeout environment into the read. The projection may shift once the name is known; that is expected when the last pregame input drops in.</li>
                   </ul>
                   <p>Historical rows keep the ump who worked the game. Live and upcoming rows reflect whatever is known right now—check back if you are prepping early and the box is still empty.</p>
+                </div>
+              </details>
+              <details class="faq-item">
+                <summary>What is the checkmark under Lineup for?</summary>
+                <div class="faq-answer">
+                  <p>On the <strong>Upcoming</strong> board, the <strong>Lineup</strong> column works like <strong>Ump</strong>: it is a readiness indicator for the <em>opposing</em> team’s starting batting order—not a pick grade.</p>
+                  <ul>
+                    <li><strong>No checkmark</strong> — the rival lineup for that game is not posted yet in the MLB feed. The row is still usable for lines and projections.</li>
+                    <li><strong>Orange checkmark</strong> — the opponent’s starting nine for tonight is announced and assigned to that game.</li>
+                  </ul>
+                  <p><strong>When do lineups usually show up?</strong> Official batting orders typically land a few hours before first pitch—often after morning prep when games are still listed as <em>Scheduled</em>. As MLB posts the card, the checkmark appears on the next slate refresh.</p>
+                  <p>The column appears on <strong>Upcoming</strong> only. Live and historical boards do not show it.</p>
                 </div>
               </details>
               <details class="faq-item">
@@ -553,9 +799,10 @@
                 <div class="faq-answer">
                   <ul>
                     <li>Everything in Basic</li>
-                    <li>My Cards wallet for saved projections</li>
-                    <li>Historical games and past-matchup review</li>
+                    <li>My Cards wallet with table and card views, search, and sorting</li>
                     <li>Manual win/loss tracking on saved cards</li>
+                    <li>My Pitchers watchlist with favorited arms and upcoming starts</li>
+                    <li>Historical games table and past-matchup pitcher lookup</li>
                   </ul>
                 </div>
               </details>
@@ -580,13 +827,22 @@
             <div class="term-grid">
               <article class="term-card" id="term-vix">
                 <h3>Vix</h3>
-                <p>We run <strong>multiple tests</strong> on each pitcher—not just one guess. <strong>Vix</strong> tells you whether those tests are on the same page.</p>
+                <p>We run <strong>multiple tests</strong> on each pitcher—not just one guess. <strong>Vix</strong> tells you whether those tests are on the same page. On the board this may appear as <strong>Volatility</strong>; it is the same read.</p>
                 <p>When the tests <strong>agree</strong>, Vix is <strong>low</strong> (you will often see a lower level on the board). When they <strong>don’t agree</strong>, Vix is <strong>higher</strong>—our own numbers are spread out, so take the projection with a little extra caution.</p>
                 <p>It is not about the stock market or “volatility” in the Wall Street sense. It is simply: <em>do our tests line up on this guy?</em></p>
               </article>
               <article class="term-card" id="term-projected-ks">
                 <h3>PitchIQ Ks</h3>
                 <p>The site’s current strikeout estimate for the listed starter—the number every comparison on the row is built around. It is the published output of the modeling stack, not a single raw stat line from a box score.</p>
+                <p>At its core, we are just providing a number—calculated from historical outcomes and similar matchup scenarios (pitcher profile, opponent, park, umpire when assigned, and the rest of the stack). We are not telling you what will happen; we are surfacing one estimate built from what has happened before in like spots. It is not a guarantee about tonight. Predicting the future is hard.</p>
+                <p><strong>How you could use this number:</strong></p>
+                <ul>
+                  <li><strong>Over / Under</strong> — compare <strong>PitchIQ Ks</strong> to the posted line (for example, 5.5). If the projection sits above the line, the model leans <strong>Over</strong>; below the line, <strong>Under</strong>. <a href="#term-bet-side">Bet Side</a> and <a href="#term-edge-confidence">Edge / Confidence</a> spell out that lean on each book.</li>
+                  <li><strong>K+</strong> — some books list milestone strikeout props (6+, 7+, and so on) instead of a half-point total. Treat the plus sign as the floor: <strong>6+</strong> means six strikeouts or more. If <strong>PitchIQ Ks</strong> is well above that whole number, the milestone is more in play; if it sits below, the model is less enthusiastic about clearing it.</li>
+                </ul>
+                <p>The projection is one input—pair it with line shopping, <a href="#term-vix">Vix</a>, and umpire status before you decide.</p>
+                <p>Over, Under, and K+ are framing concepts—not instructions. pitchIQ organizes the slate; what you do with it is your call, and your responsibility.</p>
+                <p>For how the modeling stack produces this number, see <a href="#how-pitchiq-ks-are-built">How are you getting your PitchIQ Ks?</a> in Getting Started.</p>
               </article>
               <article class="term-card" id="term-edge-confidence">
                 <h3>Edge / Confidence</h3>
@@ -614,6 +870,18 @@
 
         <aside class="knowledge-sidebar">
           <h2>On this page</h2>
+          <div class="mobile-jump-nav">
+            <label class="mobile-jump-label" for="section-jump">Jump to section</label>
+            <select class="mobile-jump-select" id="section-jump" aria-label="Jump to section">
+              <option value="#getting-started">Getting Started</option>
+              <option value="#boards">Upcoming &amp; Live Games</option>
+              <option value="#pitcher-lookup">Pitcher Lookup</option>
+              <option value="#my-cards">My Cards</option>
+              <option value="#historical">Historical</option>
+              <option value="#account-tiers">Account &amp; Tiers</option>
+              <option value="#terminology">Terminology</option>
+            </select>
+          </div>
           <ul class="toc">
             <li><a href="#getting-started">Getting Started</a></li>
             <li><a href="#boards">Upcoming &amp; Live Games</a></li>
@@ -650,6 +918,25 @@
 
     const loginLink = document.getElementById("login-link");
     const logoutButton = document.getElementById("logout-button");
+    const sectionJump = document.getElementById("section-jump");
+
+    function syncSectionJump() {
+      if (!sectionJump) return;
+      const hash = window.location.hash;
+      if (!hash) return;
+      const option = sectionJump.querySelector(`option[value="${hash}"]`);
+      if (option) sectionJump.value = hash;
+    }
+
+    sectionJump?.addEventListener("change", (event) => {
+      const target = document.querySelector(event.target.value);
+      if (!target) return;
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+      history.replaceState(null, "", event.target.value);
+    });
+
+    window.addEventListener("hashchange", syncSectionJump);
+    syncSectionJump();
 
     async function refreshSessionActions() {
       const { data } = await supabaseClient.auth.getSession();

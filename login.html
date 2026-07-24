@@ -245,6 +245,18 @@
       background: rgba(141, 138, 255, 0.16);
     }
 
+    .create-account-button:disabled {
+      cursor: not-allowed;
+      opacity: 0.58;
+      transform: none;
+    }
+
+    .create-account-button:disabled:hover {
+      transform: none;
+      border-color: rgba(141, 138, 255, 0.28);
+      background: var(--violet-soft);
+    }
+
     .helper-row {
       display: flex;
       justify-content: flex-end;
@@ -303,6 +315,13 @@
       box-shadow: 0 24px 56px rgba(0, 0, 0, 0.4);
     }
 
+    .modal-card-terms {
+      width: min(640px, 100%);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
     .modal-kicker {
       margin-bottom: 8px;
       color: var(--amber);
@@ -325,31 +344,87 @@
       line-height: 1.6;
     }
 
-    .terms-list {
-      margin: 14px 0 0;
-      padding: 0;
-      list-style: none;
-      display: grid;
-      gap: 10px;
+    .terms-scroll {
+      margin-top: 14px;
+      flex: 1 1 auto;
+      min-height: 180px;
+      max-height: min(46vh, 420px);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding: 14px 16px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      background: rgba(0, 0, 0, 0.28);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+      scrollbar-color: rgba(255, 148, 46, 0.55) rgba(255, 255, 255, 0.06);
     }
 
-    .terms-list li {
-      padding: 11px 12px;
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 12px;
-      background: rgba(255,255,255,0.025);
+    .terms-scroll:focus-visible {
+      outline: none;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03), 0 0 0 4px rgba(141, 138, 255, 0.16);
+    }
+
+    .terms-doc-title {
+      margin: 0 0 6px;
+      color: var(--text);
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+    }
+
+    .terms-doc-updated {
+      margin: 0 0 14px;
       color: var(--muted);
-      line-height: 1.45;
+      font-size: 0.78rem;
+    }
+
+    .terms-doc-intro,
+    .terms-section p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.55;
+    }
+
+    .terms-section {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .terms-section h3 {
+      margin: 0 0 6px;
+      color: var(--text);
+      font-size: 0.86rem;
+      font-weight: 800;
+    }
+
+    .terms-scroll-hint {
+      margin: 10px 0 0;
+      min-height: 1.2rem;
+      color: var(--amber);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .terms-scroll-hint.is-complete {
+      color: var(--success);
     }
 
     .terms-check {
       display: flex;
       align-items: flex-start;
       gap: 10px;
-      margin-top: 16px;
+      margin-top: 14px;
       color: var(--text);
       line-height: 1.45;
       cursor: pointer;
+    }
+
+    .terms-check.is-locked {
+      opacity: 0.62;
+      cursor: not-allowed;
     }
 
     .terms-check input {
@@ -358,6 +433,11 @@
       margin-top: 3px;
       accent-color: var(--amber);
       flex: 0 0 auto;
+    }
+
+    .terms-check input:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
     }
 
     .modal-actions {
@@ -500,21 +580,104 @@
     aria-modal="true"
     aria-labelledby="responsibility-title"
   >
-    <div class="modal-card">
-      <div class="modal-kicker">Responsible Use</div>
+    <div class="modal-card modal-card-terms">
+      <div class="modal-kicker">Terms of Service</div>
       <h2 class="modal-title" id="responsibility-title">Before creating an account</h2>
       <p class="modal-copy">
-        PitchIQ is an informational tool. It is designed to organize projections, lines, and context, not to tell you what to do.
+        Scroll through the full PitchIQ Terms of Service. The agreement checkbox unlocks when you reach the bottom.
       </p>
-      <ul class="terms-list">
-        <li>You are responsible for your own decisions, actions, bankroll, and betting activity.</li>
-        <li>PitchIQ does not guarantee outcomes, profit, accuracy, or availability of any projection, line, or edge.</li>
-        <li>MinMaxTechnology LLC and The Pitch Predictor are not responsible for losses or actions taken from using this tool.</li>
-        <li>Use this product only where legal and only if you meet the applicable age requirements in your location.</li>
-      </ul>
-      <label class="terms-check" for="terms-agree">
-        <input id="terms-agree" type="checkbox" />
-        <span>I understand and agree that I am solely responsible for my actions and use PitchIQ for informational purposes only.</span>
+      <div
+        class="terms-scroll"
+        id="terms-scroll"
+        tabindex="0"
+        role="region"
+        aria-label="PitchIQ Terms of Service"
+      >
+        <h3 class="terms-doc-title">PitchIQ Terms of Service</h3>
+        <p class="terms-doc-updated" id="terms-doc-version-label">Last Updated: July 23, 2026 · Version v1</p>
+        <p class="terms-doc-intro">
+          These Terms of Service ("Terms") govern your use of PitchIQ (the "Service"), operated by MinMax Technology LLC (the "Company"). By accessing, creating an account for, subscribing to, or using the Service, you agree to be bound by these Terms. If you do not agree, do not use the Service.
+        </p>
+
+        <section class="terms-section">
+          <h3>1. Eligibility</h3>
+          <p>You must be at least twenty-one (21) years of age, or the minimum legal age required in your jurisdiction, and legally capable of entering into a binding agreement. You are responsible for ensuring your use of the Service is lawful where you reside.</p>
+        </section>
+        <section class="terms-section">
+          <h3>2. Nature of the Service</h3>
+          <p>PitchIQ is an informational analytics platform. The Service provides statistical projections, historical analysis, sportsbook line comparisons, and related analytical content for informational and entertainment purposes only. PitchIQ is not a sportsbook, does not accept or facilitate wagers, and does not provide gambling services.</p>
+        </section>
+        <section class="terms-section">
+          <h3>3. No Advice</h3>
+          <p>Nothing provided by PitchIQ constitutes betting, gambling, financial, investment, tax, legal, or other professional advice. All decisions remain solely your responsibility.</p>
+        </section>
+        <section class="terms-section">
+          <h3>4. No Guarantees</h3>
+          <p>All projections and statistical outputs are estimates based on available information. The Company does not guarantee the accuracy, completeness, availability, reliability, profitability, or future performance of any projection, model, edge, sportsbook line, or analysis.</p>
+        </section>
+        <section class="terms-section">
+          <h3>5. Third-Party Data</h3>
+          <p>PitchIQ relies on third-party providers for statistics, schedules, sportsbook odds, weather, injuries, and other external information. The Company is not responsible for inaccuracies, delays, outages, or omissions from third-party sources.</p>
+        </section>
+        <section class="terms-section">
+          <h3>6. Assumption of Risk</h3>
+          <p>You acknowledge that use of the Service involves risk. You alone are responsible for your wagers, bankroll management, decisions, compliance with applicable laws, and any financial or non-financial consequences resulting from your use of the Service.</p>
+        </section>
+        <section class="terms-section">
+          <h3>7. Accounts and Security</h3>
+          <p>You are responsible for maintaining the confidentiality of your account credentials and for all activity occurring under your account. Notify the Company promptly of unauthorized access.</p>
+        </section>
+        <section class="terms-section">
+          <h3>8. Subscriptions and Billing</h3>
+          <p>Paid subscriptions automatically renew until canceled. Charges are billed to your selected payment method. Canceling prevents future renewals, and access continues through the end of the current billing period. Subscription pricing may change with reasonable advance notice before renewal.</p>
+        </section>
+        <section class="terms-section">
+          <h3>9. Service Availability</h3>
+          <p>The Company strives to provide reliable access but does not guarantee uninterrupted availability. Maintenance, upgrades, outages, security events, or third-party failures may temporarily affect the Service.</p>
+        </section>
+        <section class="terms-section">
+          <h3>10. Acceptable Use</h3>
+          <p>You may not share accounts, scrape or harvest data, reverse engineer the Service, copy or redistribute proprietary content, create derivative works, or use automated tools to access the Service without authorization.</p>
+        </section>
+        <section class="terms-section">
+          <h3>11. Intellectual Property</h3>
+          <p>All software, projections, statistical methodologies, confidence scores, databases, reports, graphics, branding, trademarks, and other content provided through PitchIQ remain the exclusive property of MinMax Technology LLC. No ownership rights are transferred to users.</p>
+        </section>
+        <section class="terms-section">
+          <h3>12. Disclaimer of Warranties</h3>
+          <p>The Service is provided "AS IS" and "AS AVAILABLE" without warranties of any kind, whether express or implied, including warranties of merchantability, fitness for a particular purpose, non-infringement, accuracy, or availability.</p>
+        </section>
+        <section class="terms-section">
+          <h3>13. Limitation of Liability</h3>
+          <p>To the fullest extent permitted by law, MinMax Technology LLC and its owners, employees, contractors, affiliates, and agents shall not be liable for indirect, incidental, consequential, special, exemplary, or punitive damages, lost profits, lost revenue, lost data, or business interruption arising from use of the Service. The Company's total liability shall not exceed the total subscription fees paid by you during the twelve (12) months immediately preceding the event giving rise to the claim.</p>
+        </section>
+        <section class="terms-section">
+          <h3>14. Indemnification</h3>
+          <p>You agree to defend, indemnify, and hold harmless the Company from claims, damages, liabilities, costs, and expenses arising from your use of the Service, your violation of these Terms, or your violation of applicable law.</p>
+        </section>
+        <section class="terms-section">
+          <h3>15. Suspension and Termination</h3>
+          <p>The Company may suspend or terminate accounts at its discretion for violations of these Terms, abuse of the Service, fraudulent activity, or other conduct that threatens the integrity of the platform.</p>
+        </section>
+        <section class="terms-section">
+          <h3>16. Governing Law and Arbitration</h3>
+          <p>These Terms are governed by the laws of the Commonwealth of Pennsylvania. Any dispute shall be resolved through binding arbitration in Pennsylvania to the fullest extent permitted by law, and each party waives any right to participate in a class action.</p>
+        </section>
+        <section class="terms-section">
+          <h3>17. Changes to These Terms</h3>
+          <p>The Company may update these Terms from time to time. Continued use of PitchIQ after revised Terms are published constitutes acceptance of the updated Terms.</p>
+        </section>
+        <section class="terms-section">
+          <h3>18. Contact</h3>
+          <p>Questions regarding these Terms may be sent to sales@minmaxtechnology.com.</p>
+        </section>
+      </div>
+      <p class="terms-scroll-hint" id="terms-scroll-hint" aria-live="polite">
+        Scroll to the bottom to unlock the agreement checkbox.
+      </p>
+      <label class="terms-check is-locked" for="terms-agree" id="terms-agree-label">
+        <input id="terms-agree" type="checkbox" disabled />
+        <span>I have read and agree to the PitchIQ Terms of Service and Privacy Policy. I understand that PitchIQ is an informational analytics platform, not a sportsbook or betting advisor, and that I am solely responsible for my decisions and actions.</span>
       </label>
       <div class="modal-actions">
         <button class="modal-button secondary" type="button" id="responsibility-cancel">Cancel</button>
@@ -629,6 +792,9 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" crossorigin="anonymous"></script>
+  <script src="./pitchiq-feature-locks.js"></script>
+  <script src="./pitchiq-terms.js"></script>
+  <script src="./pitchiq-billing.js"></script>
   <script>
     (function () {
       const CDN = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js";
@@ -679,6 +845,9 @@
     const loginForm = document.getElementById("login-form");
     const loginStatus = document.getElementById("login-status");
     const responsibilityModal = document.getElementById("responsibility-modal");
+    const termsScroll = document.getElementById("terms-scroll");
+    const termsScrollHint = document.getElementById("terms-scroll-hint");
+    const termsAgreeLabel = document.getElementById("terms-agree-label");
     const termsAgree = document.getElementById("terms-agree");
     const responsibilityAgree = document.getElementById("responsibility-agree");
     const responsibilityCancel = document.getElementById("responsibility-cancel");
@@ -694,6 +863,8 @@
     const ALLOWED_ACCOUNT_ROLES = ["basic", "pro", "life", "admin", "owner"];
     let lastModalFocus = null;
     let responsibilityAcceptedAt = null;
+    let pendingTermsAcceptance = null;
+    let termsFullyRead = false;
 
     try {
       await window.pitchiqLoadSupabase();
@@ -713,6 +884,9 @@
 
     const SUPABASE_URL = "https://odvopvoqssamjquinhft.supabase.co";
     const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_7g1yX__kNzT-6tj8Tr4SIg_T4BX9BlV";
+    const SITE_ORIGIN = /localhost|127\.0\.0\.1/i.test(window.location.hostname)
+      ? window.location.origin
+      : "https://thepitchpredictor.com";
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
       auth: {
         autoRefreshToken: true,
@@ -736,24 +910,6 @@
       return { profile: data, error: null };
     }
 
-    function hasActiveMembership(profile) {
-      if (!profile) return false;
-
-      const role = String(profile.role || "").toLowerCase();
-      if (["life", "admin", "owner"].includes(role)) return true;
-      if (!["basic", "pro"].includes(role)) return false;
-
-      const status = String(profile.subscription_status || "").toLowerCase();
-      if (status === "active" || status === "trialing") return true;
-
-      if (profile.subscription_current_period_end) {
-        return new Date(profile.subscription_current_period_end).getTime() > Date.now();
-      }
-
-      if (!profile.stripe_subscription_id) return true;
-      return false;
-    }
-
     function openModal(modal, focusTarget) {
       lastModalFocus = document.activeElement;
       modal.classList.add("visible");
@@ -773,7 +929,18 @@
       if (!error) return "Signup failed. Please try again.";
 
       const code = String(error.code || error.error_code || "").toLowerCase();
-      const message = String(error.message || error.msg || "").trim();
+      let message = error.message || error.msg || "";
+      if (message && typeof message !== "string") {
+        try {
+          message = JSON.stringify(message);
+        } catch {
+          message = String(message);
+        }
+      }
+      message = String(message || "").trim();
+      if (message === "{}" || message === "[object Object]") {
+        message = "";
+      }
 
       if (code === "weak_password" || /weak_password/i.test(message)) {
         return "Password must include uppercase, lowercase, a number, and a special character (for example: PitchIQ2026!).";
@@ -783,8 +950,23 @@
         return "Account setup failed in Supabase. Run supabase/migrations/20260617120000_fix_profiles_role_nullable.sql, then try again.";
       }
 
-      if (code === "user_already_exists" || /already registered|already exists/i.test(message)) {
-        return "An account with this email already exists. Try signing in instead.";
+      if (
+        code === "unexpected_failure"
+        || /database error saving new user/i.test(message)
+      ) {
+        return "Account could not be created because of a database setup error. Ask an admin to check the signup trigger / terms_acceptances table.";
+      }
+
+      if (/error sending confirmation email/i.test(message)) {
+        return "Account was created, but the confirmation email failed to send. Check Supabase Auth email/SMTP settings, then try signing in or resending confirmation.";
+      }
+
+      if (
+        code === "user_already_exists"
+        || code === "email_exists"
+        || /already registered|already exists|user already|email.*exist/i.test(message)
+      ) {
+        return "An account with this email already exists. Try signing in instead, or use a different email for testing.";
       }
 
       if (/captcha/i.test(message)) {
@@ -793,7 +975,7 @@
 
       if (message) return message;
       if (code) return `Signup failed (${code}).`;
-      return "Signup failed. Please try again.";
+      return "Signup failed. Please try again. If this keeps happening, check the browser Network tab for the signup error details.";
     }
 
     function passwordMeetsPolicy(password) {
@@ -803,11 +985,57 @@
         && /[^A-Za-z0-9]/.test(password);
     }
 
+    function hasScrolledTermsToBottom() {
+      if (!termsScroll) return true;
+      const remaining = termsScroll.scrollHeight - termsScroll.scrollTop - termsScroll.clientHeight;
+      return remaining <= 12;
+    }
+
+    function setTermsAgreementUnlocked(unlocked) {
+      termsFullyRead = unlocked;
+      termsAgree.disabled = !unlocked;
+      termsAgreeLabel.classList.toggle("is-locked", !unlocked);
+
+      if (!unlocked) {
+        termsAgree.checked = false;
+        responsibilityAgree.disabled = true;
+        termsScrollHint.textContent = "Scroll to the bottom to unlock the agreement checkbox.";
+        termsScrollHint.classList.remove("is-complete");
+        return;
+      }
+
+      termsScrollHint.textContent = "Terms reviewed. You can check the box to continue.";
+      termsScrollHint.classList.add("is-complete");
+      responsibilityAgree.disabled = !termsAgree.checked;
+    }
+
+    function syncTermsScrollUnlock() {
+      if (termsFullyRead) return;
+      if (hasScrolledTermsToBottom()) {
+        setTermsAgreementUnlocked(true);
+      }
+    }
+
     function openResponsibilityModal() {
+      termsFullyRead = false;
+      pendingTermsAcceptance = null;
       termsAgree.checked = false;
+      termsAgree.disabled = true;
       responsibilityAgree.disabled = true;
       responsibilityAcceptedAt = null;
-      openModal(responsibilityModal, termsAgree);
+      termsAgreeLabel.classList.add("is-locked");
+      termsScrollHint.textContent = "Scroll to the bottom to unlock the agreement checkbox.";
+      termsScrollHint.classList.remove("is-complete");
+      const versionLabel = document.getElementById("terms-doc-version-label");
+      if (versionLabel && window.PitchIQTerms?.CURRENT) {
+        versionLabel.textContent =
+          `Last Updated: July 23, 2026 · Version ${window.PitchIQTerms.CURRENT.version}`;
+      }
+      termsScroll.scrollTop = 0;
+      openModal(responsibilityModal, termsScroll);
+      requestAnimationFrame(() => {
+        syncTermsScrollUnlock();
+      });
     }
 
     function openCreateAccountModal() {
@@ -854,23 +1082,59 @@
         return;
       }
 
-      if (!hasActiveMembership(profile)) {
+      if (!window.PitchIQBilling.hasActiveMembership(profile)) {
+        await window.PitchIQTerms.ensureRecorded(
+          supabaseClient,
+          SUPABASE_URL,
+          SUPABASE_PUBLISHABLE_KEY,
+        );
         window.location.href = "./subscribe.html";
         return;
       }
 
+      await window.PitchIQTerms.ensureRecorded(
+        supabaseClient,
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY,
+      );
       window.location.href = "./app.html";
     });
 
-    document.getElementById("create-account-open").addEventListener("click", openResponsibilityModal);
+    const createAccountOpen = document.getElementById("create-account-open");
+    window.PitchIQFeatureLocks.applyButtonLock(createAccountOpen, "createAccount");
+    createAccountOpen.addEventListener("click", () => {
+      if (window.PitchIQFeatureLocks.isLocked("createAccount")) {
+        loginStatus.textContent = window.PitchIQFeatureLocks.lockMessage("createAccount");
+        loginStatus.style.color = "var(--muted)";
+        return;
+      }
+      openResponsibilityModal();
+    });
     forgotPasswordOpen.addEventListener("click", openForgotPasswordModal);
 
+    termsScroll.addEventListener("scroll", syncTermsScrollUnlock, { passive: true });
+
     termsAgree.addEventListener("change", () => {
+      if (termsAgree.disabled) {
+        termsAgree.checked = false;
+        responsibilityAgree.disabled = true;
+        return;
+      }
       responsibilityAgree.disabled = !termsAgree.checked;
+    });
+
+    termsAgreeLabel.addEventListener("click", (event) => {
+      if (!termsFullyRead) {
+        event.preventDefault();
+        termsScroll.focus();
+        termsScrollHint.textContent = "Scroll to the bottom of the Terms first.";
+        termsScrollHint.classList.remove("is-complete");
+      }
     });
 
     responsibilityAgree.addEventListener("click", () => {
       responsibilityAcceptedAt = new Date().toISOString();
+      pendingTermsAcceptance = window.PitchIQTerms.buildAcceptancePayload(responsibilityAcceptedAt);
       openCreateAccountModal();
     });
     responsibilityCancel.addEventListener("click", () => closeModal(responsibilityModal));
@@ -931,6 +1195,13 @@
         return;
       }
 
+      if (!pendingTermsAcceptance) {
+        createStatus.textContent = "Please accept the Terms of Service before creating an account.";
+        createStatus.style.color = "var(--danger)";
+        openResponsibilityModal();
+        return;
+      }
+
       createStatus.textContent = "Creating account...";
       createStatus.style.color = "var(--muted)";
 
@@ -941,8 +1212,11 @@
           email,
           password,
           options: {
-            data: { username },
-            emailRedirectTo: `${window.location.origin}/subscribe.html`,
+            data: {
+              username,
+              ...window.PitchIQTerms.toSignupMetadata(pendingTermsAcceptance),
+            },
+            emailRedirectTo: `${SITE_ORIGIN}/subscribe.html`,
           },
         });
         data = result.data;
@@ -964,6 +1238,12 @@
       }
 
       if (data.session) {
+        await window.PitchIQTerms.ensureRecorded(
+          supabaseClient,
+          SUPABASE_URL,
+          SUPABASE_PUBLISHABLE_KEY,
+          pendingTermsAcceptance,
+        );
         window.location.href = "./subscribe.html";
         return;
       }
@@ -978,7 +1258,7 @@
 
       const formData = new FormData(forgotPasswordForm);
       const email = String(formData.get("email") || "").trim();
-      const redirectTo = `${window.location.origin}/reset-password.html`;
+      const redirectTo = `${SITE_ORIGIN}/reset-password.html`;
       const { error } = await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo });
 
       if (error) {

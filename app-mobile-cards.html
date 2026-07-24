@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>pitchIQ | My Cards</title>
+  <meta name="description" content="Mobile My Cards — saved pitchIQ projection cards." />
+  <meta name="theme-color" content="#050505" />
+  <link rel="icon" type="image/x-icon" href="./images/favicon/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="./images/favicon/favicon-16x16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="./images/favicon/apple-touch-icon.png" />
+  <link rel="manifest" href="./images/favicon/site.webmanifest" />
+
+  <style>
+    :root {
+      --bg: #050505;
+      --surface: rgba(12, 14, 20, 0.72);
+      --line: rgba(255, 255, 255, 0.08);
+      --text: #f4f0e8;
+      --muted: #a7afbc;
+      --violet: #8d8aff;
+      --amber: #ff942e;
+      --blue: #6bb6ff;
+      --success: #8ddf9f;
+      --neon-blue: #2f9bff;
+      --neon-gold: #ffd84f;
+      --neon-red: #ff174d;
+      --danger: #ff8c7a;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --toolbar-pill-height: 40px;
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      overflow-x: hidden;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+      background:
+        radial-gradient(circle at 12% 14%, rgba(141, 138, 255, 0.2), transparent 22%),
+        radial-gradient(circle at 86% 10%, rgba(255, 148, 46, 0.18), transparent 20%),
+        radial-gradient(circle at 62% 28%, rgba(107, 182, 255, 0.14), transparent 18%),
+        linear-gradient(180deg, #050505 0%, #090a10 100%);
+      color: var(--text);
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    }
+
+    button, input { font: inherit; }
+    .hidden { display: none !important; }
+
+    .app {
+      max-width: 520px;
+      margin: 0 auto;
+      min-height: 100vh;
+      padding: 0 14px calc(18px + var(--safe-bottom));
+    }
+
+    .header {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      z-index: 20;
+      width: 100%;
+      max-width: 520px;
+      padding: calc(10px + var(--safe-top)) 14px 12px;
+      background: #090a10;
+      border-bottom: 1px solid var(--line);
+      box-sizing: border-box;
+      transform: translateX(-50%) translateZ(0);
+      -webkit-transform: translateX(-50%) translateZ(0);
+    }
+
+    .header-spacer { height: var(--mobile-header-height, 132px); }
+
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .brand-block {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .brand-mark { flex: 0 0 auto; border-radius: 10px; }
+
+    .brand-text h1 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 800;
+      line-height: 1.1;
+    }
+
+    .brand-text p {
+      margin: 2px 0 0;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .header-account {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      min-width: 0;
+      flex: 1 1 auto;
+    }
+
+    .account-line {
+      margin: 0;
+      min-width: 0;
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      line-height: 1.2;
+      color: var(--muted);
+      text-align: right;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .account-username { font-weight: 800; }
+
+    .tier-value-basic { color: var(--neon-blue); }
+    .tier-value-pro { color: var(--amber); }
+    .tier-value-life { color: var(--neon-gold); }
+    .tier-value-admin { color: var(--violet); }
+    .tier-value-owner { color: var(--neon-red); }
+
+    .nav-menu { position: relative; }
+
+    .nav-toggle {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .nav-toggle-icon {
+      display: block;
+      width: 16px;
+      height: 2px;
+      margin: 0 auto;
+      background: currentColor;
+      position: relative;
+    }
+
+    .nav-toggle-icon::before,
+    .nav-toggle-icon::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      width: 16px;
+      height: 2px;
+      background: currentColor;
+    }
+
+    .nav-toggle-icon::before { top: -5px; }
+    .nav-toggle-icon::after { top: 5px; }
+
+    .nav-dropdown {
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      z-index: 30;
+      min-width: 192px;
+      padding: 6px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(10, 11, 17, 0.98);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+    }
+
+    .nav-dropdown a {
+      display: block;
+      padding: 10px 12px;
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-decoration: none;
+    }
+
+    .nav-dropdown a:hover,
+    .nav-dropdown a:active,
+    .nav-dropdown a.is-active {
+      background: rgba(141, 138, 255, 0.12);
+      color: var(--violet);
+    }
+
+    .search-row { position: relative; }
+
+    .search-input {
+      width: 100%;
+      min-height: var(--toolbar-pill-height);
+      padding: 0 36px 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--surface);
+      color: var(--text);
+      font-size: 16px;
+    }
+
+    .clear-btn {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 28px;
+      height: 28px;
+      border: 0;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .cards-meta {
+      margin: 0 0 10px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .cards-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .card-row {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 14px;
+      background: rgba(0, 0, 0, 0.14);
+      color: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .card-row.expanded {
+      border-color: rgba(141, 138, 255, 0.28);
+      background: rgba(141, 138, 255, 0.06);
+    }
+
+    .card-row-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: start;
+    }
+
+    .card-pitcher {
+      margin: 0;
+      font-size: 0.98rem;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .card-sub {
+      margin-top: 4px;
+      font-size: 0.78rem;
+      line-height: 1.35;
+      color: var(--muted);
+    }
+
+    .card-k {
+      font-size: 1.05rem;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+      color: var(--amber);
+    }
+
+    .outcome-badge {
+      display: inline-block;
+      margin-top: 6px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 0.62rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .outcome-badge.won {
+      color: var(--success);
+      background: rgba(141, 214, 159, 0.12);
+      border: 1px solid rgba(141, 214, 159, 0.24);
+    }
+
+    .outcome-badge.loss {
+      color: var(--danger);
+      background: rgba(255, 140, 122, 0.12);
+      border: 1px solid rgba(255, 140, 122, 0.24);
+    }
+
+    .card-detail {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px dashed rgba(255, 255, 255, 0.08);
+      display: grid;
+      gap: 10px;
+    }
+
+    .result-block {
+      padding: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .result-block-title {
+      margin: 0 0 8px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .book-rows { display: grid; gap: 8px; }
+
+    .book-row {
+      padding: 10px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .book-row.is-dk { border-color: rgba(141, 214, 159, 0.14); }
+    .book-row.is-fd { border-color: rgba(107, 182, 255, 0.14); }
+    .book-row.is-pitchiq {
+      border-color: rgba(255, 148, 46, 0.24);
+      background: rgba(255, 148, 46, 0.08);
+    }
+
+    .book-row-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .book-name {
+      font-size: 0.66rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .book-row.is-dk .book-name { color: var(--success); }
+    .book-row.is-fd .book-name { color: var(--blue); }
+    .book-row.is-pitchiq .book-name { color: var(--amber); }
+
+    .book-line {
+      font-size: 0.98rem;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .book-row.is-pitchiq .book-line { color: var(--amber); }
+
+    .book-row-foot {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 4px;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .book-bet.is-over { color: var(--success); font-weight: 700; }
+    .book-bet.is-under { color: var(--danger); font-weight: 700; }
+
+    .book-edge.positive { color: var(--success); font-weight: 800; }
+    .book-edge.negative { color: var(--danger); font-weight: 800; }
+
+    .card-notes {
+      font-size: 0.8rem;
+      line-height: 1.45;
+      color: var(--text);
+      overflow-wrap: anywhere;
+    }
+
+    .card-actions {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .card-action {
+      min-height: 38px;
+      padding: 0 8px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .card-action.is-won { border-color: rgba(141, 214, 159, 0.35); color: var(--success); }
+    .card-action.is-lost { border-color: rgba(255, 140, 122, 0.35); color: var(--danger); }
+    .card-action.is-active { background: rgba(141, 138, 255, 0.14); border-color: rgba(141, 138, 255, 0.35); }
+    .card-action.remove { color: var(--danger); }
+
+    .locked-panel {
+      padding: 18px 14px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      background: rgba(0, 0, 0, 0.18);
+      text-align: center;
+    }
+
+    .locked-badge {
+      display: inline-block;
+      margin-bottom: 10px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.62rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--amber);
+      background: rgba(255, 148, 46, 0.12);
+      border: 1px solid rgba(255, 148, 46, 0.24);
+    }
+
+    .locked-title {
+      margin: 0 0 10px;
+      font-size: 1.2rem;
+      font-weight: 800;
+    }
+
+    .locked-copy {
+      margin: 0 0 14px;
+      font-size: 0.86rem;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+
+    .locked-preview {
+      margin: 0 0 14px;
+    }
+
+    .locked-preview img {
+      width: 100%;
+      max-width: 280px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .locked-link {
+      display: inline-block;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: rgba(141, 138, 255, 0.16);
+      border: 1px solid rgba(141, 138, 255, 0.32);
+      color: var(--violet);
+      font-size: 0.82rem;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .empty-state {
+      padding: 36px 18px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .loading-shell { display: grid; gap: 10px; padding: 8px 0; }
+
+    .skeleton-row {
+      height: 72px;
+      border-radius: 14px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+      background-size: 200% 100%;
+      animation: shimmer 1.2s ease infinite;
+    }
+
+    @keyframes shimmer {
+      from { background-position: 200% 0; }
+      to { background-position: -100% 0; }
+    }
+
+    .footer {
+      margin-top: 14px;
+      padding-top: 4px;
+      text-align: center;
+      font-size: 0.66rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #39ff14;
+      text-shadow: 0 0 10px rgba(57, 255, 20, 0.35);
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="header-top">
+        <div class="brand-block">
+          <img class="brand-mark" src="./images/tagsplashpng.png" alt="" width="36" height="36" decoding="async" />
+          <div class="brand-text">
+            <h1>PitchIQ</h1>
+            <p>My Cards</p>
+          </div>
+        </div>
+        <div class="header-account">
+          <p class="account-line" id="account-pill">Checking session…</p>
+          <div class="nav-menu" id="nav-menu">
+            <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Open site navigation" aria-haspopup="true" aria-expanded="false" aria-controls="nav-dropdown">
+              <span class="nav-toggle-icon" aria-hidden="true"><span></span></span>
+            </button>
+            <div class="nav-dropdown hidden" id="nav-dropdown" role="menu">
+              <a href="./app-mobile-lookup.html" role="menuitem">Pitcher Lookup</a>
+              <a href="./app-mobile.html" role="menuitem">Game Board</a>
+              <a href="./app-mobile-cards.html" class="is-active" role="menuitem">My Cards</a>
+              <a href="./app-mobile-pitchers.html" role="menuitem">My Pitchers</a>
+              <a href="./account-settings.html" role="menuitem">Account Settings</a>
+              <a href="./faqs-knowledge.html" role="menuitem">FAQs/Help</a>
+              <a href="./app.html?desktop=1" role="menuitem">Desktop View</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="search-row">
+        <input class="search-input" id="cards-search" type="search" placeholder="Search saved cards" autocomplete="off" />
+        <button class="clear-btn hidden" id="clear-cards-search" type="button" aria-label="Clear search">×</button>
+      </div>
+    </header>
+
+    <div class="header-spacer" id="header-spacer" aria-hidden="true"></div>
+
+    <main id="cards-panel" aria-live="polite">
+      <div class="loading-shell" id="cards-loading">
+        <div class="skeleton-row"></div>
+        <div class="skeleton-row"></div>
+        <div class="skeleton-row"></div>
+      </div>
+    </main>
+
+    <footer class="footer" id="server-activity-footer">last server activity: pending</footer>
+  </div>
+
+  <script>
+    (function () {
+      const CDN = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js";
+      const LOCAL = "./vendor/supabase.js";
+      function getLib() {
+        if (window.supabase?.createClient) return window.supabase;
+        try {
+          if (typeof supabase !== "undefined" && supabase?.createClient) {
+            window.supabase = supabase;
+            return supabase;
+          }
+        } catch {}
+        return null;
+      }
+      function loadScript(src) {
+        return new Promise((resolve, reject) => {
+          const script = document.createElement("script");
+          script.src = src;
+          script.async = false;
+          script.onload = () => resolve();
+          script.onerror = () => reject(new Error(`Failed to load ${src}`));
+          document.head.appendChild(script);
+        });
+      }
+      window.pitchiqLoadSupabase = async function pitchiqLoadSupabase() {
+        if (getLib()) return getLib();
+        try { await loadScript(CDN); if (getLib()) return getLib(); } catch {}
+        await loadScript(LOCAL);
+        if (!getLib()) throw new Error("Supabase unavailable");
+        return getLib();
+      };
+    })();
+  </script>
+  <script src="./pitchiq-billing.js"></script>
+  <script>
+    (async () => {
+      try {
+        await window.pitchiqLoadSupabase();
+      } catch {
+        window.location.replace("./login.html");
+        return;
+      }
+
+      const SUPABASE_URL = "https://odvopvoqssamjquinhft.supabase.co";
+      const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_7g1yX__kNzT-6tj8Tr4SIg_T4BX9BlV";
+      const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+        auth: { autoRefreshToken: true, detectSessionInUrl: true, persistSession: true, storage: window.localStorage },
+      });
+
+      const ALLOWED_ACCOUNT_ROLES = ["basic", "pro", "life", "admin", "owner"];
+
+      const accountPill = document.getElementById("account-pill");
+      const header = document.querySelector(".header");
+      const headerSpacer = document.getElementById("header-spacer");
+      const cardsPanel = document.getElementById("cards-panel");
+      const cardsLoading = document.getElementById("cards-loading");
+      const cardsSearch = document.getElementById("cards-search");
+      const clearCardsSearch = document.getElementById("clear-cards-search");
+      const serverActivityFooter = document.getElementById("server-activity-footer");
+      const navMenu = document.getElementById("nav-menu");
+      const navToggle = document.getElementById("nav-toggle");
+      const navDropdown = document.getElementById("nav-dropdown");
+
+      let authAccepted = false;
+      let authRedirected = false;
+      let authCheckId = 0;
+      let currentUserId = null;
+      let currentUserRole = null;
+      let myCards = [];
+      let upcomingGames = [];
+      let liveGames = [];
+      let gameHistory = [];
+      let searchQuery = "";
+      let expandedCardId = null;
+      let dataReady = false;
+
+      function escapeHtml(value) {
+        return String(value ?? "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      function normalizeText(value) {
+        return String(value || "").trim().toLowerCase();
+      }
+
+      function formatNumber(value, digits = 2) {
+        if (typeof value === "string" && !value.trim()) return "";
+        if (value === null || value === undefined || Number.isNaN(Number(value))) return "";
+        return Number(value).toFixed(digits);
+      }
+
+      function displayProjectionValue(game) {
+        const keys = ["projected_strikeouts", "adjusted_EK_full", "adjusted_EK_hand", "ensemble_prediction"];
+        for (const key of keys) {
+          if (!(key in game)) continue;
+          const value = game[key];
+          if (typeof value === "string" && !value.trim()) continue;
+          if (value === null || value === undefined || Number.isNaN(Number(value))) continue;
+          return Number(value);
+        }
+        return null;
+      }
+
+      function formatBet(value) {
+        const normalized = String(value || "").trim().toUpperCase();
+        if (!normalized || normalized === "PASS" || normalized === "AVOID") return "Avoid";
+        return normalized.charAt(0) + normalized.slice(1).toLowerCase();
+      }
+
+      function formatEdge(value) {
+        if (value === null || value === undefined || value === "" || Number.isNaN(Number(value))) return "—";
+        const numeric = Number(value);
+        return `${numeric >= 0 ? "+" : ""}${formatNumber(numeric, 2)}`;
+      }
+
+      function formatBetClass(value) {
+        const normalized = String(value || "").trim().toUpperCase();
+        if (normalized === "OVER") return "is-over";
+        if (normalized === "UNDER") return "is-under";
+        return "is-avoid";
+      }
+
+      function edgeToneClass(value, bet) {
+        const betNorm = String(bet || "").trim().toUpperCase();
+        if (betNorm === "PASS" || betNorm === "AVOID") return "neutral";
+        if (value === null || value === undefined || value === "" || Number.isNaN(Number(value))) return "neutral";
+        return Number(value) >= 0 ? "positive" : "negative";
+      }
+
+      function normalizeWalletOutcome(value) {
+        const normalized = normalizeText(value);
+        if (normalized === "won" || normalized === "win") return "won";
+        if (normalized === "lost" || normalized === "loss") return "loss";
+        return "";
+      }
+
+      function displayWalletNotesText(game) {
+        const outcome = normalizeWalletOutcome(game?._wallet_result || game?.wallet_result || "");
+        const outcomeLabel = outcome === "won" ? "Won" : outcome === "loss" ? "Lost" : "";
+        const notes = String(game?.notes || "").trim();
+        return [outcomeLabel, notes].filter(Boolean).join(" | ");
+      }
+
+      function canUseProFeatures() {
+        return ["pro", "life", "admin", "owner"].includes(String(currentUserRole || "").toLowerCase());
+      }
+
+      function canViewMyCards() {
+        return canUseProFeatures();
+      }
+
+      function identityDateValue(game) {
+        const raw = String(game?.game_date_raw || game?.game_date || game?.date || "").trim();
+        const isoMatch = raw.match(/^(\d{4})-(\d{2})-(\d{2})/);
+        if (isoMatch) return `${isoMatch[1]}-${isoMatch[2]}-${isoMatch[3]}`;
+        const displayMatch = raw.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+        if (displayMatch) {
+          return [displayMatch[3], displayMatch[1].padStart(2, "0"), displayMatch[2].padStart(2, "0")].join("-");
+        }
+        return normalizeText(raw);
+      }
+
+      function gameIdentityParts(game) {
+        return [
+          game?.event_key || game?.source_event_key || game?.game_id || "",
+          game?.pitcher || game?.source_pitcher || "",
+          identityDateValue(game),
+          game?.opponent || "",
+        ].map((value) => normalizeText(value));
+      }
+
+      function sameGameIdentity(left, right) {
+        const [leftEvent, leftPitcher, leftDate, leftOpponent] = gameIdentityParts(left);
+        const [rightEvent, rightPitcher, rightDate, rightOpponent] = gameIdentityParts(right);
+        if (leftEvent && rightEvent && leftEvent === rightEvent && (!leftPitcher || !rightPitcher || leftPitcher === rightPitcher)) {
+          return true;
+        }
+        return Boolean(
+          leftPitcher && rightPitcher && leftPitcher === rightPitcher &&
+          leftDate && rightDate && leftDate === rightDate &&
+          (!leftOpponent || !rightOpponent || leftOpponent === rightOpponent)
+        );
+      }
+
+      function firstPresentValue(...values) {
+        return values.find((value) => value !== null && value !== undefined && String(value).trim() !== "");
+      }
+
+      function currentGameForSavedCard(game) {
+        const liveMatch = liveGames.find((candidate) => sameGameIdentity(game, candidate));
+        return liveMatch || upcomingGames.find((candidate) => sameGameIdentity(game, candidate)) || null;
+      }
+
+      function finalHistoryForSavedCard(game) {
+        return gameHistory.find((candidate) => sameGameIdentity(game, candidate)) || null;
+      }
+
+      function hydrateSavedCardLiveK(game) {
+        const current = currentGameForSavedCard(game);
+        const finalHistory = finalHistoryForSavedCard(game);
+        const merged = current ? { ...game, ...current } : { ...game };
+        const finalKs = firstPresentValue(finalHistory?.actual_k, finalHistory?.strikeouts);
+        const liveKs = firstPresentValue(current?.live_strikeouts, current?.live_ks, current?.starter_strikeouts);
+        const resolvedKs = firstPresentValue(finalKs, liveKs, game?.actual_k, game?.strikeouts, game?.live_strikeouts);
+
+        if (finalHistory) {
+          Object.assign(merged, {
+            ...finalHistory,
+            ...merged,
+            actual_k: finalKs,
+            strikeouts: finalKs,
+            live_strikeouts: finalKs,
+            game_status: "Final",
+          });
+        } else if (resolvedKs !== undefined) {
+          merged.live_strikeouts = resolvedKs;
+        }
+
+        merged._saved_card_id = game._saved_card_id || "";
+        merged._saved_at = game._saved_at || "";
+        merged._wallet_result = normalizeWalletOutcome(game._wallet_result || game.wallet_result || "");
+        merged.wallet_result = merged._wallet_result;
+        return merged;
+      }
+
+      function savedCardRowToGame(row) {
+        const snapshot = row?.snapshot && typeof row.snapshot === "object" ? { ...row.snapshot } : {};
+        snapshot._saved_card_id = row?.id || "";
+        snapshot._saved_at = row?.saved_at || "";
+        snapshot.pitcher = snapshot.pitcher || row?.pitcher || "";
+        snapshot.opponent = snapshot.opponent || row?.opponent || "";
+        snapshot.date = snapshot.date || row?.game_date || "";
+        snapshot.projected_strikeouts = snapshot.projected_strikeouts ?? row?.projected_strikeouts ?? "";
+        return hydrateSavedCardLiveK(snapshot);
+      }
+
+      function splitSupabaseGameRows(rows) {
+        const upcomingByKey = new Map();
+        const liveByKey = new Map();
+        rows.forEach((row) => {
+          if (!row?.payload) return;
+          const tableType = String(row.table_type || "").toLowerCase();
+          const game = { ...row.payload };
+          const rowKey = [game.event_key, game.pitcher, game.opponent, game.date || game.game_date]
+            .map((value) => normalizeText(value)).join("|");
+          if (tableType === "live") {
+            liveByKey.set(rowKey, game);
+            upcomingByKey.delete(rowKey);
+          } else if (!liveByKey.has(rowKey)) {
+            upcomingByKey.set(rowKey, game);
+          }
+        });
+        return {
+          upcoming: Array.from(upcomingByKey.values()),
+          live: Array.from(liveByKey.values()),
+        };
+      }
+
+      async function loadHistoricalRows() {
+        const { data } = await supabaseClient
+          .from("pitchiq_historical_rows")
+          .select("payload")
+          .order("updated_at", { ascending: false })
+          .limit(500);
+        gameHistory = (data || [])
+          .filter((row) => row.payload)
+          .map((row) => ({ ...row.payload }));
+      }
+
+      async function loadMyCards() {
+        if (!currentUserId || !canViewMyCards()) {
+          myCards = [];
+          return;
+        }
+        const { data, error } = await supabaseClient
+          .from("pitchiq_saved_cards")
+          .select("id,source_table,source_event_key,source_pitcher,pitcher,opponent,game_date,projected_strikeouts,snapshot,saved_at")
+          .eq("is_archived", false)
+          .order("saved_at", { ascending: false });
+        if (error) {
+          myCards = [];
+          return;
+        }
+        myCards = (data || []).map(savedCardRowToGame);
+      }
+
+      function getFilteredCards() {
+        const query = normalizeText(searchQuery);
+        if (!query) return myCards.slice();
+        return myCards.filter((game) => {
+          const haystack = [
+            game.pitcher, game.pitcher_team, game.opponent, game.date, game.game_date,
+            game.dk_line, game.fd_line, game.dk_bet, game.fd_bet,
+            formatNumber(displayProjectionValue(game), 2),
+            formatEdge(game.dk_edge), formatEdge(game.fd_edge),
+            displayWalletNotesText(game),
+          ].map(normalizeText).join(" ");
+          return haystack.includes(query);
+        });
+      }
+
+      function renderBookRow(label, cssClass, line, bet, edge) {
+        return `
+          <div class="book-row ${cssClass}">
+            <div class="book-row-head">
+              <span class="book-name">${escapeHtml(label)}</span>
+              <span class="book-line">${escapeHtml(String(line || "").trim() || "—")}</span>
+            </div>
+            <div class="book-row-foot">
+              <span class="book-bet ${formatBetClass(bet)}">${escapeHtml(formatBet(bet))}</span>
+              <span class="book-edge ${edgeToneClass(edge, bet)}">${escapeHtml(formatEdge(edge))}</span>
+            </div>
+          </div>
+        `;
+      }
+
+      function renderCardDetail(game) {
+        const projected = displayProjectionValue(game);
+        const projectedText = projected === null ? "—" : formatNumber(projected);
+        const notes = displayWalletNotesText(game);
+        const outcome = normalizeWalletOutcome(game._wallet_result);
+        const cardId = game._saved_card_id || "";
+
+        return `
+          <div class="card-detail">
+            <section class="result-block">
+              <h3 class="result-block-title">Projection/Lines</h3>
+              <div class="book-rows">
+                <div class="book-row is-pitchiq">
+                  <div class="book-row-head">
+                    <span class="book-name">PitchIQ K</span>
+                    <span class="book-line">${escapeHtml(projectedText)}</span>
+                  </div>
+                </div>
+                ${renderBookRow("DraftKings", "is-dk", game?.dk_line, game?.dk_bet, game?.dk_edge)}
+                ${renderBookRow("FanDuel", "is-fd", game?.fd_line, game?.fd_bet, game?.fd_edge)}
+              </div>
+            </section>
+            ${notes ? `
+            <section class="result-block">
+              <h3 class="result-block-title">Notes</h3>
+              <div class="card-notes">${escapeHtml(notes)}</div>
+            </section>
+            ` : ""}
+            <div class="card-actions">
+              <button class="card-action is-won${outcome === "won" ? " is-active" : ""}" type="button" data-card-action="won" data-card-id="${escapeHtml(cardId)}">Mark Won</button>
+              <button class="card-action is-lost${outcome === "loss" ? " is-active" : ""}" type="button" data-card-action="loss" data-card-id="${escapeHtml(cardId)}">Mark Lost</button>
+              <button class="card-action remove" type="button" data-card-action="remove" data-card-id="${escapeHtml(cardId)}">Remove</button>
+            </div>
+          </div>
+        `;
+      }
+
+      function renderLockedPanel() {
+        cardsPanel.innerHTML = `
+          <div class="locked-panel">
+            <div class="locked-badge">Pro Feature</div>
+            <h2 class="locked-title">My Cards locked</h2>
+            <figure class="locked-preview">
+              <img src="./images/My%20Cards%20Example.png" alt="Preview of My Cards saved projection cards" loading="lazy" />
+            </figure>
+            <p class="locked-copy">Save projection cards with Pro, then search your saved pitchers, track wins and losses, and keep your favorite betting spots organized in one place.</p>
+            <a class="locked-link" href="./account-settings.html">View Account</a>
+          </div>
+        `;
+      }
+
+      function renderCards() {
+        if (!canViewMyCards()) {
+          renderLockedPanel();
+          return;
+        }
+
+        const cards = getFilteredCards();
+        if (!cards.length) {
+          cardsPanel.innerHTML = `
+            <p class="cards-meta">0 saved cards</p>
+            <div class="empty-state">${myCards.length ? "No cards match your search." : "No saved cards yet. Save a projection from the Game Board on desktop or mobile when Pro is active."}</div>
+          `;
+          return;
+        }
+
+        cardsPanel.innerHTML = `
+          <p class="cards-meta">${cards.length} saved card${cards.length === 1 ? "" : "s"}</p>
+          <div class="cards-list">
+            ${cards.map((game) => {
+              const cardId = String(game._saved_card_id || "");
+              const expanded = expandedCardId === cardId;
+              const projected = displayProjectionValue(game);
+              const projectedText = projected === null ? "—" : formatNumber(projected);
+              const outcome = normalizeWalletOutcome(game._wallet_result);
+              const meta = [game.opponent, game.date || game.game_date].filter(Boolean).join(" · ");
+              return `
+                <button class="card-row${expanded ? " expanded" : ""}" type="button" data-card-id="${escapeHtml(cardId)}" aria-expanded="${expanded ? "true" : "false"}">
+                  <div class="card-row-head">
+                    <div>
+                      <h2 class="card-pitcher">${escapeHtml(game.pitcher || "Unknown")}</h2>
+                      <div class="card-sub">${escapeHtml(meta || "Saved card")}</div>
+                      ${outcome ? `<span class="outcome-badge ${outcome}">${outcome === "won" ? "Won" : "Lost"}</span>` : ""}
+                    </div>
+                    <div class="card-k">${escapeHtml(projectedText)}</div>
+                  </div>
+                  ${expanded ? renderCardDetail(game) : ""}
+                </button>
+              `;
+            }).join("")}
+          </div>
+        `;
+      }
+
+      async function markSavedCardOutcome(cardId, outcome) {
+        const normalizedOutcome = normalizeWalletOutcome(outcome);
+        const card = myCards.find((game) => String(game._saved_card_id || "") === String(cardId));
+        if (!cardId || !card || !normalizedOutcome) return;
+        const currentOutcome = normalizeWalletOutcome(card._wallet_result);
+        const nextOutcome = currentOutcome === normalizedOutcome ? "" : normalizedOutcome;
+        const snapshot = { ...card, _wallet_result: nextOutcome, wallet_result: nextOutcome };
+        const { error } = await supabaseClient
+          .from("pitchiq_saved_cards")
+          .update({ snapshot })
+          .eq("id", cardId);
+        if (error) return;
+        card._wallet_result = nextOutcome;
+        card.wallet_result = nextOutcome;
+        renderCards();
+      }
+
+      async function permanentlyRemoveSavedCard(cardId) {
+        if (!cardId) return;
+        const { error } = await supabaseClient
+          .from("pitchiq_saved_cards")
+          .delete()
+          .eq("id", cardId);
+        if (error) return;
+        myCards = myCards.filter((game) => String(game._saved_card_id || "") !== String(cardId));
+        if (expandedCardId === String(cardId)) expandedCardId = null;
+        renderCards();
+      }
+
+      function syncHeaderSpacer() {
+        if (!header || !headerSpacer) return;
+        const height = Math.ceil(header.getBoundingClientRect().height);
+        headerSpacer.style.height = `${height}px`;
+        document.documentElement.style.setProperty("--mobile-header-height", `${height}px`);
+      }
+
+      function setNavOpen(open) {
+        navToggle?.setAttribute("aria-expanded", open ? "true" : "false");
+        navDropdown?.classList.toggle("hidden", !open);
+      }
+
+      async function loadSupabaseTables() {
+        const { data: gameRows } = await supabaseClient
+          .from("pitchiq_game_rows")
+          .select("table_type,payload,updated_at")
+          .order("updated_at", { ascending: false });
+        const splitGames = splitSupabaseGameRows(gameRows || []);
+        upcomingGames = splitGames.upcoming;
+        liveGames = splitGames.live;
+        await loadHistoricalRows();
+        await loadMyCards();
+        myCards = myCards.map((game) => hydrateSavedCardLiveK(game));
+        dataReady = true;
+        cardsLoading?.remove();
+        renderCards();
+      }
+
+      async function loadServerActivity() {
+        const { data, error } = await supabaseClient
+          .from("pitchiq_server_activity")
+          .select("last_activity_at")
+          .eq("id", "worker")
+          .maybeSingle();
+        const { data: gameRows } = await supabaseClient
+          .from("pitchiq_game_rows")
+          .select("updated_at")
+          .order("updated_at", { ascending: false })
+          .limit(1);
+        const latest = [error ? null : data?.last_activity_at, gameRows?.[0]?.updated_at]
+          .filter(Boolean)
+          .map((value) => new Date(value))
+          .filter((value) => !Number.isNaN(value.getTime()))
+          .sort((a, b) => b.getTime() - a.getTime())[0];
+        const parsed = latest ? latest : null;
+        if (parsed) {
+          const part = (n) => String(n).padStart(2, "0");
+          serverActivityFooter.textContent = `last server activity: ${part(parsed.getHours())}:${part(parsed.getMinutes())} ${part(parsed.getMonth() + 1)}:${part(parsed.getDate())}:${parsed.getFullYear()}`;
+        }
+      }
+
+      async function getUserProfile(userId) {
+        return window.PitchIQBilling.fetchBillingProfile(supabaseClient, userId);
+      }
+
+      function redirectToLogin() {
+        if (authAccepted || authRedirected) return;
+        authRedirected = true;
+        window.location.replace("./login.html");
+      }
+
+      function setAccountIdentity(session, role = currentUserRole) {
+        const user = session?.user;
+        const username = user?.user_metadata?.username;
+        const identityLabel = String(username || user?.email || "Unknown user").trim();
+        const normalizedRole = ALLOWED_ACCOUNT_ROLES.includes(role) ? role : "";
+        accountPill.innerHTML = `Welcome, <span class="account-username tier-value-${escapeHtml(normalizedRole)}">${escapeHtml(identityLabel)}</span>`;
+      }
+
+      async function acceptSession(session) {
+        if (!session || authAccepted || authRedirected) return;
+        const checkId = ++authCheckId;
+        const { profile, error } = await getUserProfile(session.user.id);
+        if (checkId !== authCheckId || authAccepted || authRedirected) return;
+        if (error) {
+          window.clearTimeout(authTimeout);
+          redirectToLogin();
+          return;
+        }
+        const role = profile?.role || null;
+        if (!window.PitchIQBilling.hasActiveMembership(profile)) {
+          window.clearTimeout(authTimeout);
+          window.location.replace("./subscribe.html");
+          return;
+        }
+        if (!ALLOWED_ACCOUNT_ROLES.includes(role)) {
+          await supabaseClient.auth.signOut();
+          redirectToLogin();
+          return;
+        }
+        authAccepted = true;
+        currentUserId = session.user.id;
+        currentUserRole = role;
+        setAccountIdentity(session, role);
+        await Promise.all([loadSupabaseTables(), loadServerActivity()]);
+        requestAnimationFrame(syncHeaderSpacer);
+      }
+
+      const authTimeout = window.setTimeout(redirectToLogin, 8000);
+
+      cardsSearch.addEventListener("input", () => {
+        searchQuery = cardsSearch.value || "";
+        clearCardsSearch.classList.toggle("hidden", !searchQuery);
+        renderCards();
+      });
+
+      clearCardsSearch.addEventListener("click", () => {
+        cardsSearch.value = "";
+        searchQuery = "";
+        clearCardsSearch.classList.add("hidden");
+        renderCards();
+        cardsSearch.blur();
+      });
+
+      cardsPanel.addEventListener("click", (event) => {
+        const actionButton = event.target.closest("[data-card-action]");
+        if (actionButton) {
+          event.stopPropagation();
+          const cardId = actionButton.dataset.cardId || "";
+          const action = actionButton.dataset.cardAction || "";
+          if (action === "remove") {
+            if (window.confirm("Remove this card from My Cards?")) permanentlyRemoveSavedCard(cardId);
+            return;
+          }
+          if (action === "won" || action === "loss") markSavedCardOutcome(cardId, action);
+          return;
+        }
+
+        const row = event.target.closest(".card-row");
+        if (!row?.dataset.cardId) return;
+        const cardId = row.dataset.cardId;
+        expandedCardId = expandedCardId === cardId ? null : cardId;
+        renderCards();
+      });
+
+      navToggle?.addEventListener("click", (event) => {
+        event.stopPropagation();
+        setNavOpen(navToggle.getAttribute("aria-expanded") !== "true");
+      });
+
+      navDropdown?.addEventListener("click", () => setNavOpen(false));
+
+      document.addEventListener("click", (event) => {
+        if (!navMenu?.contains(event.target)) setNavOpen(false);
+      });
+
+      syncHeaderSpacer();
+      if (header && typeof ResizeObserver !== "undefined") {
+        new ResizeObserver(syncHeaderSpacer).observe(header);
+      }
+      window.addEventListener("resize", syncHeaderSpacer, { passive: true });
+
+      supabaseClient.auth.onAuthStateChange((event, session) => {
+        if (session) {
+          window.clearTimeout(authTimeout);
+          acceptSession(session);
+          return;
+        }
+        if (event === "SIGNED_OUT" && !authAccepted) redirectToLogin();
+      });
+
+      const { data: sessionData } = await supabaseClient.auth.getSession();
+      if (sessionData.session) {
+        window.clearTimeout(authTimeout);
+        await acceptSession(sessionData.session);
+      }
+    })();
+  </script>
+</body>
+</html>
