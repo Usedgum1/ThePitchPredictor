@@ -4212,7 +4212,7 @@
           </div>
         </div>
         <div class="page-head-meta">
-          <button class="workspace-tab settings-tab hidden" id="settings-tab" data-view="settings" type="button">Owner's Settings</button>
+          <button class="workspace-tab settings-tab hidden" id="settings-tab" data-view="owners-portal" type="button">Owner's Settings</button>
         </div>
       </div>
 
@@ -4900,7 +4900,7 @@
       };
     })();
   </script>
-  <script src="./vendor/jszip.min.js" defer></script>
+  <script src="./vendor/jszip.min.js"></script>
   <script src="./pitchiq-billing.js"></script>
   <script>
     (async () => {
@@ -4939,6 +4939,8 @@
     const siteAlertMessage = document.getElementById("site-alert-message");
     const siteAlertMessageCopy = document.getElementById("site-alert-message-copy");
     const settingsTab = document.getElementById("settings-tab");
+    /** Deployed owners portal (replaces the in-app Owner's Settings workspace). */
+    const OWNERS_PORTAL_URL = new URL("./owners/", window.location.href).href;
     const myCardsTab = document.getElementById("my-cards-tab");
     const myCardsTabIcon = document.getElementById("my-cards-tab-icon");
     const myPitchersTab = document.getElementById("my-pitchers-tab");
@@ -8597,12 +8599,26 @@
 
       const rows = getFilteredReportRows();
       const selectedColumns = getSelectedReportColumns();
-      reportDownloadButton.disabled = !rows.length || !selectedColumns.length;
+      const canDownload = rows.length > 0 && selectedColumns.length > 0;
+      reportDownloadButton.disabled = !canDownload;
+      if (!selectedColumns.length) {
+        reportDownloadButton.title = "Select at least one column to download.";
+      } else if (!rows.length) {
+        reportDownloadButton.title = "No rows match this source and date range.";
+      } else {
+        reportDownloadButton.title = "";
+      }
       const sourceLabel = reportSourceSelect.options[reportSourceSelect.selectedIndex]?.text || "Selected";
       const exportLabel = reportExportTypeSelect.options[reportExportTypeSelect.selectedIndex]?.text || "Selected";
       const columnText = selectedColumns.length === 1 ? "1 column" : `${selectedColumns.length} columns`;
       const rowText = rows.length === 1 ? "1 row" : `${rows.length} rows`;
       reportDownloadButton.textContent = isCsvReportExport() ? "Download CSV" : "Download Styled XLSX";
+      if (!canDownload) {
+        reportSummary.textContent = !selectedColumns.length
+          ? `${sourceLabel}: select at least one column, then download.`
+          : `${sourceLabel}: no rows in range. Clear dates or pick another source.`;
+        return;
+      }
       reportSummary.textContent = `${sourceLabel} ${exportLabel} report ready with ${rowText} and ${columnText}.`;
     }
 
@@ -8791,44 +8807,137 @@
       return [header, ...body].join("\r\n");
     }
 
-    function downloadReportCsv() {
-      const columns = getSelectedReportColumns();
-      const rows = getFilteredReportRows();
-      if (String(currentUserRole || "").toLowerCase() !== "owner" || !columns.length || !rows.length) return;
-
-      const csv = buildReportCsv(rows, columns);
-      const source = reportSourceSelect.value || "report";
-      const today = new Date().toISOString().slice(0, 10);
-      const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    function triggerBrowserDownload(blob, filename) {
+      if (window.navigator && typeof window.navigator.msSaveOrOpenBlob === "function") {
+        window.navigator.msSaveOrOpenBlob(blob, filename);
+        return;
+      }
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `pitchiq-${source}-report-${today}.csv`;
+      link.download = filename;
+      link.rel = "noopener";
+      link.style.display = "none";
       document.body.appendChild(link);
       link.click();
-      link.remove();
-      URL.revokeObjectURL(url);
+      // Revoking immediately can cancel the download in Chromium.
+      window.setTimeout(() => {
+        link.remove();
+        URL.revokeObjectURL(url);
+      }, 2000);
+    }
+
+    async function chooseSaveFileHandle(filename, exportKind) {
+      if (typeof window.showSaveFilePicker !== "function") return null;
+      const csvType = {
+        description: "CSV",
+        accept: { "text/csv": [".csv"] },
+      };
+      const xlsxType = {
+        description: "Excel Workbook",
+        accept: {
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [".xlsx"],
+        },
+      };
+      try {
+        return await window.showSaveFilePicker({
+          suggestedName: filename,
+          types: [exportKind === "csv" ? csvType : xlsxType],
+        });
+      } catch (error) {
+        if (error && (error.name === "AbortError" || error.name === "NotAllowedError")) {
+          throw error;
+        }
+        return null;
+      }
+    }
+
+    async function writeBlobToFileHandle(fileHandle, blob) {
+      const writable = await fileHandle.createWritable();
+      await writable.write(blob);
+      await writable.close();
+    }
+
+    function reportDownloadBlockedReason(columns, rows) {
+      if (String(currentUserRole || "").toLowerCase() !== "owner") {
+        return "Report downloads are limited to the owner account.";
+      }
+      if (!columns.length) return "Select at least one column before downloading.";
+      if (!rows.length) return "No rows match the selected source and date range.";
+      return "";
+    }
+
+    async function downloadReportCsv() {
+      const columns = getSelectedReportColumns();
+      const rows = getFilteredReportRows();
+      const blockedReason = reportDownloadBlockedReason(columns, rows);
+      if (blockedReason) {
+        reportSummary.textContent = blockedReason;
+        return;
+      }
+
+      const source = reportSourceSelect.value || "report";
+      const today = new Date().toISOString().slice(0, 10);
+      const filename = `pitchiq-${source}-report-${today}.csv`;
+      let fileHandle = null;
+      try {
+        fileHandle = await chooseSaveFileHandle(filename, "csv");
+      } catch (error) {
+        if (error && (error.name === "AbortError" || error.name === "NotAllowedError")) {
+          reportSummary.textContent = "Download canceled.";
+          return;
+        }
+      }
+
+      const csv = buildReportCsv(rows, columns);
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+      try {
+        if (fileHandle) {
+          await writeBlobToFileHandle(fileHandle, blob);
+        } else {
+          triggerBrowserDownload(blob, filename);
+        }
+        reportSummary.textContent = `CSV downloaded with ${rows.length === 1 ? "1 row" : `${rows.length} rows`}.`;
+      } catch (error) {
+        reportSummary.textContent = `Unable to download CSV: ${error.message || "check browser console"}.`;
+      }
     }
 
     async function downloadReportStyledXlsx() {
       const columns = getSelectedReportColumns();
       const rows = getFilteredReportRows();
-      if (String(currentUserRole || "").toLowerCase() !== "owner" || !columns.length || !rows.length) return;
+      const blockedReason = reportDownloadBlockedReason(columns, rows);
+      if (blockedReason) {
+        reportSummary.textContent = blockedReason;
+        return;
+      }
 
       const source = reportSourceSelect.value || "upcoming";
       const config = BUILDER_XLSX_REPORTS[source] || BUILDER_XLSX_REPORTS.upcoming;
+      const filename = `${config.filenamePrefix}_${appReportTimestamp()}.xlsx`;
+      let fileHandle = null;
+      try {
+        // Ask for the save path while we still have the user-gesture (before await build).
+        fileHandle = await chooseSaveFileHandle(filename, "xlsx");
+      } catch (error) {
+        if (error && (error.name === "AbortError" || error.name === "NotAllowedError")) {
+          reportSummary.textContent = "Download canceled.";
+          return;
+        }
+      }
+
       reportDownloadButton.disabled = true;
       reportSummary.textContent = `Building ${config.statusName} with ${rows.length === 1 ? "1 row" : `${rows.length} rows`}...`;
       try {
+        if (!window.JSZip) {
+          throw new Error("Workbook library is still loading. Try again in a moment.");
+        }
         const blob = await buildBuilderWorkbookBlob(rows, columns, config);
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = `${config.filenamePrefix}_${appReportTimestamp()}.xlsx`;
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-        URL.revokeObjectURL(url);
+        if (fileHandle) {
+          await writeBlobToFileHandle(fileHandle, blob);
+        } else {
+          triggerBrowserDownload(blob, filename);
+        }
         reportSummary.textContent = `${config.statusName} downloaded with ${rows.length === 1 ? "1 row" : `${rows.length} rows`}.`;
       } catch (error) {
         reportSummary.textContent = `Unable to build ${config.statusName}: ${error.message || "check browser console"}.`;
@@ -9993,8 +10102,13 @@
     }
 
     function setActiveWorkspace(view) {
-      if (view === "settings" && currentUserRole !== "owner") {
-        view = "upcoming-games";
+      if (view === "owners-portal" || view === "settings") {
+        if (currentUserRole !== "owner") {
+          view = "upcoming-games";
+        } else {
+          window.location.assign(OWNERS_PORTAL_URL);
+          return;
+        }
       }
       workspaceTabs.forEach(tab => {
         tab.classList.toggle("active", tab.dataset.view === view);
