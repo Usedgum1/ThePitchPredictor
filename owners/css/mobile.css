@@ -1,0 +1,456 @@
+/* PitchIQ Owners Portal — mobile shell overrides (loaded after app.css) */
+
+body[data-shell="mobile"] {
+  --page-gutter: 0.85rem;
+  --stack-gap: 1rem;
+  --mobile-topbar-h: 56px;
+  --mobile-drawer-w: min(20rem, 88vw);
+}
+
+body[data-shell="mobile"] html,
+body[data-shell="mobile"] {
+  height: 100%;
+  overflow: hidden;
+}
+
+/* —— Layout: column with fixed top bar —— */
+body[data-shell="mobile"] .mobile-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  height: 100svh;
+  max-height: 100dvh;
+  overflow: hidden;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+body[data-shell="mobile"] .mobile-main {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow: hidden;
+}
+
+body[data-shell="mobile"] .content-workspace {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+body[data-shell="mobile"] .content {
+  padding: 0.75rem var(--page-gutter) 1.5rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* —— Fixed mobile top bar —— */
+body[data-shell="mobile"] .mobile-topbar {
+  flex-shrink: 0;
+  height: var(--mobile-topbar-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0 0.75rem 0 0.85rem;
+  background: linear-gradient(180deg, #0a0c12 0%, #090a10 100%);
+  border-bottom: 1px solid var(--card-border);
+  z-index: 40;
+}
+
+body[data-shell="mobile"] .mobile-topbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+}
+
+body[data-shell="mobile"] .mobile-brand-mark {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+body[data-shell="mobile"] .mobile-brand-text {
+  min-width: 0;
+}
+
+body[data-shell="mobile"] .mobile-brand-name {
+  margin: 0;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent-orange);
+  line-height: 1.1;
+}
+
+body[data-shell="mobile"] .mobile-view-title {
+  margin: 0.1rem 0 0;
+  font-size: 0.95rem;
+  font-weight: 650;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+
+body[data-shell="mobile"] .mobile-menu-btn {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+body[data-shell="mobile"] .mobile-menu-btn:active {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+body[data-shell="mobile"] .mobile-menu-icon {
+  display: block;
+  width: 18px;
+  height: 14px;
+  position: relative;
+}
+
+body[data-shell="mobile"] .mobile-menu-icon span,
+body[data-shell="mobile"] .mobile-menu-icon::before,
+body[data-shell="mobile"] .mobile-menu-icon::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  border-radius: 1px;
+  background: currentColor;
+}
+
+body[data-shell="mobile"] .mobile-menu-icon span {
+  top: 50%;
+  margin-top: -1px;
+}
+
+body[data-shell="mobile"] .mobile-menu-icon::before {
+  top: 0;
+}
+
+body[data-shell="mobile"] .mobile-menu-icon::after {
+  bottom: 0;
+}
+
+body[data-shell="mobile"].drawer-open .mobile-menu-icon span {
+  opacity: 0;
+}
+
+body[data-shell="mobile"].drawer-open .mobile-menu-icon::before {
+  top: 50%;
+  margin-top: -1px;
+  transform: rotate(45deg);
+}
+
+body[data-shell="mobile"].drawer-open .mobile-menu-icon::after {
+  bottom: 50%;
+  margin-bottom: -1px;
+  transform: rotate(-45deg);
+}
+
+/* —— Drawer —— */
+body[data-shell="mobile"] .mobile-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 50;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+body[data-shell="mobile"] .mobile-drawer-backdrop.hidden,
+body[data-shell="mobile"] .mobile-drawer-backdrop[hidden] {
+  display: none !important;
+}
+
+body[data-shell="mobile"] .sidebar.mobile-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--mobile-drawer-w);
+  max-width: 100%;
+  height: 100dvh;
+  max-height: none;
+  z-index: 60;
+  transform: translateX(-105%);
+  transition: transform 0.22s var(--ease-smooth);
+  padding:
+    calc(0.85rem + env(safe-area-inset-top, 0px))
+    0.85rem
+    calc(0.85rem + env(safe-area-inset-bottom, 0px));
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: none;
+  border-right: 1px solid var(--card-border);
+}
+
+body[data-shell="mobile"].drawer-open .sidebar.mobile-drawer {
+  transform: translateX(0);
+  box-shadow: 12px 0 40px rgba(0, 0, 0, 0.45);
+}
+
+body[data-shell="mobile"] .mobile-drawer-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+body[data-shell="mobile"] .mobile-drawer .brand {
+  align-items: flex-start;
+  padding: 0.15rem 0.35rem 0.75rem;
+  margin: 0;
+}
+
+body[data-shell="mobile"] .mobile-drawer .brand-logo {
+  width: min(100%, 110px);
+}
+
+body[data-shell="mobile"] .mobile-drawer-close {
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+body[data-shell="mobile"] .mobile-drawer .nav {
+  flex-direction: column;
+  flex-wrap: nowrap;
+  max-height: none;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+body[data-shell="mobile"] .mobile-drawer .nav-btn {
+  min-height: 44px;
+  padding: 0.65rem 0.75rem;
+  font-size: 0.95rem;
+}
+
+body[data-shell="mobile"] .mobile-drawer .sidebar-filters {
+  display: flex;
+  flex-direction: column;
+  margin-top: 0.5rem;
+  flex-shrink: 0;
+}
+
+body[data-shell="mobile"] .mobile-drawer .sidebar-filter-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+body[data-shell="mobile"] .mobile-drawer .sidebar-filter-actions .btn {
+  min-height: 40px;
+  flex: 1;
+}
+
+body[data-shell="mobile"] .mobile-drawer-footer {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding-top: 0.75rem;
+  margin-top: 0.35rem;
+  border-top: 1px solid var(--card-border);
+}
+
+body[data-shell="mobile"] .mobile-back-link {
+  color: var(--accent-blue);
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 600;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  padding: 0 0.35rem;
+}
+
+body[data-shell="mobile"] .mobile-back-link.muted {
+  color: var(--text-muted);
+  font-weight: 500;
+  font-size: 0.8rem;
+}
+
+/* —— Search / status under top bar —— */
+body[data-shell="mobile"] .mobile-search-bar {
+  flex-shrink: 0;
+  padding: 0.55rem var(--page-gutter) 0.45rem;
+  border-bottom: 1px solid var(--card-border);
+  background: var(--bg-main);
+}
+
+body[data-shell="mobile"] .mobile-search-bar .topbar-search-row {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.35rem;
+}
+
+body[data-shell="mobile"] .mobile-search-bar .search-wrap-lg {
+  max-width: none;
+}
+
+body[data-shell="mobile"] .mobile-status {
+  margin: 0.25rem 0 0;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  line-height: 1.35;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
+}
+
+/* —— Welcome —— */
+body[data-shell="mobile"] .welcome {
+  padding: var(--space-4) 0;
+  min-height: auto;
+  justify-content: flex-start;
+}
+
+body[data-shell="mobile"] .welcome-title {
+  font-size: 1.45rem;
+}
+
+body[data-shell="mobile"] .welcome-actions {
+  flex-direction: column;
+  width: 100%;
+  max-width: 26rem;
+}
+
+body[data-shell="mobile"] .welcome-actions .btn {
+  width: 100%;
+  min-height: 44px;
+}
+
+body[data-shell="mobile"] .auth-card {
+  width: 100%;
+}
+
+body[data-shell="mobile"] .auth-card .btn-lg {
+  width: 100%;
+  min-height: 48px;
+}
+
+/* —— Content density —— */
+body[data-shell="mobile"] .hero-metrics,
+body[data-shell="mobile"] .kpi-grid,
+body[data-shell="mobile"] .card-grid,
+body[data-shell="mobile"] .dashboard-mid,
+body[data-shell="mobile"] .mini-table-grid,
+body[data-shell="mobile"] .pitcher-detail-kpis,
+body[data-shell="mobile"] .pitcher-strat-grid,
+body[data-shell="mobile"] .pitcher-detail-split,
+body[data-shell="mobile"] .admin-layout,
+body[data-shell="mobile"] .email-layout,
+body[data-shell="mobile"] .email-jobs-split,
+body[data-shell="mobile"] .site-alert-layout,
+body[data-shell="mobile"] .site-alert-form-grid,
+body[data-shell="mobile"] .site-alert-appearance-grid,
+body[data-shell="mobile"] .site-alert-preset-row,
+body[data-shell="mobile"] .site-alert-theme-grid {
+  grid-template-columns: 1fr !important;
+}
+
+body[data-shell="mobile"] .card-span-2 {
+  grid-column: auto !important;
+}
+
+body[data-shell="mobile"] .page-title {
+  font-size: 1.2rem;
+}
+
+body[data-shell="mobile"] .page-header {
+  margin-bottom: 0.85rem;
+}
+
+/* Tables: swipe horizontally instead of crushing columns */
+body[data-shell="mobile"] .table-shell {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  max-width: 100%;
+}
+
+body[data-shell="mobile"] .table-shell table.data-table {
+  min-width: 32rem;
+}
+
+body[data-shell="mobile"] .admin-user-table,
+body[data-shell="mobile"] .email-recipient-table {
+  min-width: 36rem;
+}
+
+body[data-shell="mobile"] .media-capture-toolbar {
+  flex-wrap: wrap;
+}
+
+body[data-shell="mobile"] .admin-filter-bar {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+body[data-shell="mobile"] .admin-filter-search {
+  min-width: 0;
+  width: 100%;
+}
+
+body[data-shell="mobile"] .admin-action-grid,
+body[data-shell="mobile"] .admin-user-meta {
+  grid-template-columns: 1fr !important;
+}
+
+body[data-shell="mobile"] .table-pager--games {
+  grid-template-columns: 1fr;
+  justify-items: center;
+}
+
+body[data-shell="mobile"] .pitcher-select-field {
+  flex: 1 1 100%;
+  max-width: none;
+  margin-left: 0;
+}
+
+body[data-shell="mobile"] .topbar-actions {
+  margin-left: 0;
+  width: 100%;
+}
+
+/* Locked welcome: don't show empty drawer peek */
+body[data-shell="mobile"] .app--locked .sidebar.mobile-drawer {
+  /* still available so owner can see brand / back link after unlock; fine closed */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-shell="mobile"] .sidebar.mobile-drawer {
+    transition: none;
+  }
+}
