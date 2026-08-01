@@ -302,32 +302,23 @@ body[data-shell="mobile"] .mobile-back-link.muted {
   font-size: 0.8rem;
 }
 
-/* —— Search / status under top bar —— */
-body[data-shell="mobile"] .mobile-search-bar {
+/* —— Compact status under top bar (no view search on mobile) —— */
+body[data-shell="mobile"] .mobile-status {
   flex-shrink: 0;
-  padding: 0.55rem var(--page-gutter) 0.45rem;
+  margin: 0;
+  padding: 0.35rem var(--page-gutter);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  line-height: 1.35;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   border-bottom: 1px solid var(--card-border);
   background: var(--bg-main);
 }
 
-body[data-shell="mobile"] .mobile-search-bar .topbar-search-row {
-  flex-direction: column;
-  align-items: stretch;
-  gap: 0.35rem;
-}
-
-body[data-shell="mobile"] .mobile-search-bar .search-wrap-lg {
-  max-width: none;
-}
-
-body[data-shell="mobile"] .mobile-status {
-  margin: 0.25rem 0 0;
-  font-size: 0.72rem;
-  color: var(--text-muted);
-  line-height: 1.35;
-  white-space: normal;
-  overflow: visible;
-  text-overflow: unset;
+body[data-shell="mobile"] .mobile-search-hidden {
+  display: none !important;
 }
 
 /* —— Welcome —— */
