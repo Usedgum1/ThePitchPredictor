@@ -1199,7 +1199,7 @@
               <a href="./app-mobile-pitchers.html" role="menuitem">My Pitchers</a>
               <a href="./account-settings.html" role="menuitem">Account Settings</a>
               <a href="./faqs-knowledge.html" role="menuitem">FAQs/Help</a>
-              <a href="./owners/" class="owner-portal-link" id="owner-portal-link" role="menuitem" hidden>Owner's Settings</a>
+              <a href="./owners/mobile.html" class="owner-portal-link" id="owner-portal-link" role="menuitem" hidden>Owner's Settings</a>
               <a href="./app.html?desktop=1" role="menuitem">Desktop View</a>
             </div>
           </div>
@@ -3016,7 +3016,7 @@
             window.alert("Owner access only.");
             return;
           }
-          window.location.assign("./owners/");
+          window.location.assign("./owners/mobile.html");
         } catch (err) {
           console.error(err);
           window.alert("Could not verify owner access. Try again.");
