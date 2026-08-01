@@ -23,6 +23,45 @@ export function createSupabaseClient() {
 }
 
 /**
+ * @param {unknown} role
+ * @returns {boolean}
+ */
+export function isOwnerRole(role) {
+  return String(role || "").trim().toLowerCase() === "owner";
+}
+
+/**
+ * Resolve the signed-in user's profiles.role (owner gate).
+ * @param {import("@supabase/supabase-js").SupabaseClient} client
+ * @returns {Promise<{ session: object | null, role: string | null, error: Error | null }>}
+ */
+export async function fetchCurrentProfileRole(client) {
+  const {
+    data: { session },
+    error: sessionError,
+  } = await client.auth.getSession();
+  if (sessionError) {
+    return { session: null, role: null, error: sessionError };
+  }
+  if (!session?.user?.id) {
+    return { session: null, role: null, error: null };
+  }
+
+  const { data, error } = await client
+    .from("profiles")
+    .select("role")
+    .eq("user_id", session.user.id)
+    .single();
+
+  if (error) {
+    return { session, role: null, error };
+  }
+
+  const role = data?.role != null ? String(data.role).trim().toLowerCase() : null;
+  return { session, role, error: null };
+}
+
+/**
  * Page through every historical row (website UI caps at 2000; analytics wants the full set).
  * @param {import("@supabase/supabase-js").SupabaseClient} client
  * @param {(loaded: number) => void} [onProgress]
