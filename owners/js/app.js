@@ -297,7 +297,7 @@ async function loadCustomers() {
     try {
       const [users, pageViewResult] = await Promise.all([
         fetchOwnerUsers(client),
-        fetchPageViews(client, 30).catch((error) => ({
+        fetchPageViews(client, 365).catch((error) => ({
           rows: [],
           error: error?.message || "Failed to load page views.",
         })),

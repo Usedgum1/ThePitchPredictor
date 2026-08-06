@@ -1,5 +1,5 @@
 import { fmtDate, fmtInt, fmtNum, fmtPct, fmtRecord, pctTone } from "./format.js";
-import { getChartPeriod, getCustomerFluxPeriod, renderBookWinChart, renderModelHitChart, renderMonthlyWinChart, renderPageViewsChart, renderSignupChart, renderSubFluxChart, setChartPeriod, setCustomerFluxPeriod } from "./charts.js";
+import { getChartPeriod, getCustomerFluxPeriod, getPageViewsPeriod, renderBookWinChart, renderModelHitChart, renderMonthlyWinChart, renderPageViewsChart, renderSignupChart, renderSubFluxChart, setChartPeriod, setCustomerFluxPeriod, setPageViewsPeriod } from "./charts.js";
 import { navTitle } from "./nav.js";
 import { mountEmailJobsPanel } from "./emailJobs.js";
 import { mountSiteAlertPage } from "./siteAlert.js";
@@ -1157,8 +1157,19 @@ function renderCustomers(root, customers, opts = {}) {
     : t
       ? `<div class="card-grid" style="margin-top:1.25rem;">
           <div class="card card-span-2">
-            <h3 class="card-title">Site traffic</h3>
-            <p class="page-sub" style="margin:-0.25rem 0 0.85rem;">Simple page views from thePitchPredictor (last 30 days · client-side tracker)</p>
+            <div class="chart-card-head">
+              <h3 class="card-title">Site traffic</h3>
+              <label class="chart-period-label">
+                <span class="sr-only">Traffic chart period</span>
+                <select id="customer-pageviews-period" class="chart-period-select" aria-label="Traffic chart period">
+                  <option value="daily">Daily</option>
+                  <option value="weekly">Weekly</option>
+                  <option value="monthly">Monthly</option>
+                  <option value="yearly">Yearly</option>
+                </select>
+              </label>
+            </div>
+            <p class="page-sub" style="margin:-0.25rem 0 0.85rem;">Page views from thePitchPredictor · client-side tracker</p>
             <div class="kpi-grid">
               ${kpiCard("Today", fmtInt(t.today), "page views", "customers")}
               ${kpiCard("Last 7d", fmtInt(t.last7), `${fmtInt(t.uniqueSessions7)} sessions`, "customers")}
@@ -1343,7 +1354,20 @@ function renderCustomers(root, customers, opts = {}) {
   if (canvas) renderSignupChart(canvas, a.monthlySignups || []);
 
   const pageViewsCanvas = /** @type {HTMLCanvasElement | null} */ (root.querySelector("#customer-pageviews-chart"));
-  if (pageViewsCanvas && t?.daily) renderPageViewsChart(pageViewsCanvas, t.daily);
+  const pageViewsPeriodSelect = /** @type {HTMLSelectElement | null} */ (root.querySelector("#customer-pageviews-period"));
+  const pageViewsPeriod = getPageViewsPeriod();
+  if (pageViewsPeriodSelect) pageViewsPeriodSelect.value = pageViewsPeriod;
+  const pageViewsRows = t?.trends?.[pageViewsPeriod] || t?.daily || [];
+  if (pageViewsCanvas && pageViewsRows.length) {
+    renderPageViewsChart(pageViewsCanvas, pageViewsRows, pageViewsPeriod);
+  }
+  pageViewsPeriodSelect?.addEventListener("change", () => {
+    const next = /** @type {"daily"|"weekly"|"monthly"|"yearly"} */ (pageViewsPeriodSelect.value);
+    setPageViewsPeriod(next);
+    if (pageViewsCanvas) {
+      renderPageViewsChart(pageViewsCanvas, t?.trends?.[next] || t?.daily || [], next);
+    }
+  });
 
   const fluxPeriod = opts.fluxPeriod || a.fluxPeriod || getCustomerFluxPeriod();
   const fluxSelect = /** @type {HTMLSelectElement | null} */ (root.querySelector("#customer-flux-period"));

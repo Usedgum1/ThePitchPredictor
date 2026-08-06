@@ -255,19 +255,32 @@ export function renderSignupChart(canvas, rows) {
 /** @type {import("chart.js").Chart | null} */
 let pageViewsChart = null;
 
+/** @typedef {"daily"|"weekly"|"monthly"|"yearly"} PageViewPeriod */
+/** @type {PageViewPeriod} */
+let pageViewsPeriod = "daily";
+
+/** @returns {PageViewPeriod} */
+export function getPageViewsPeriod() {
+  return pageViewsPeriod;
+}
+
+/** @param {PageViewPeriod} period */
+export function setPageViewsPeriod(period) {
+  pageViewsPeriod = period;
+}
+
 /**
  * @param {HTMLCanvasElement} canvas
- * @param {{ day: string, views: number, sessions: number }[]} rows
+ * @param {{ key?: string, label?: string, day?: string, views: number, sessions: number }[]} rows
+ * @param {PageViewPeriod} [period]
  */
-export function renderPageViewsChart(canvas, rows) {
+export function renderPageViewsChart(canvas, rows, period = pageViewsPeriod) {
   destroyChart(pageViewsChart);
   if (typeof Chart === "undefined") return null;
+  pageViewsPeriod = period;
   const TEAL = "#2ec4b6";
-  const labels = rows.map((r) => {
-    const parts = String(r.day || "").split("-");
-    if (parts.length !== 3) return r.day;
-    return `${Number(parts[1])}/${Number(parts[2])}`;
-  });
+  const labels = rows.map((r) => r.label || r.day || r.key || "");
+  const dense = rows.length > 40;
   pageViewsChart = new Chart(canvas, {
     type: "line",
     data: {
@@ -277,41 +290,58 @@ export function renderPageViewsChart(canvas, rows) {
           label: "Page views",
           data: rows.map((r) => r.views),
           borderColor: ORANGE,
-          backgroundColor: "rgba(255, 148, 46, 0.18)",
-          fill: true,
-          tension: 0.3,
-          pointRadius: rows.length > 20 ? 0 : 2,
-          borderWidth: 2,
+          backgroundColor: "transparent",
+          tension: 0.25,
+          pointRadius: dense ? 0 : 2,
+          borderWidth: dense ? 1.5 : 2,
         },
         {
           label: "Sessions",
           data: rows.map((r) => r.sessions),
           borderColor: TEAL,
           backgroundColor: "transparent",
-          tension: 0.3,
-          pointRadius: rows.length > 20 ? 0 : 2,
-          borderWidth: 2,
+          tension: 0.25,
+          pointRadius: dense ? 0 : 2,
+          borderWidth: dense ? 1.5 : 2,
         },
       ],
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      interaction: {
+        mode: "index",
+        intersect: false,
+      },
       plugins: {
         legend: {
           labels: { color: TEXT, boxWidth: 10, font: { size: 11 } },
         },
         tooltip: {
+          mode: "index",
+          intersect: false,
           backgroundColor: "#12151f",
           titleColor: TEXT,
           bodyColor: MUTED,
           borderColor: "rgba(255,148,46,0.3)",
           borderWidth: 1,
+          callbacks: {
+            label(ctx) {
+              const value = ctx.parsed?.y;
+              const num = typeof value === "number" ? value.toLocaleString("en-US") : value;
+              return ` ${ctx.dataset.label}: ${num}`;
+            },
+          },
         },
       },
       scales: {
         x: {
-          ticks: { color: MUTED, maxRotation: 0, autoSkip: true, maxTicksLimit: 12 },
+          ticks: {
+            color: MUTED,
+            maxRotation: dense ? 45 : 0,
+            autoSkip: true,
+            maxTicksLimit: dense ? 12 : 24,
+          },
           grid: { color: "rgba(255,255,255,0.04)" },
         },
         y: {
