@@ -604,16 +604,12 @@ async function requireOwnerAccess(opts = {}) {
 async function loadFromSupabase(opts = {}) {
   const access = await requireOwnerAccess({ redirect: false });
   if (!access.ok) {
-    if (!access.session) {
-      setAuthStatus("Sign in with your PitchIQ owner account.");
-      setStatus("Owner sign-in required.");
-    } else {
-      setAuthStatus(
-        `Signed in as ${access.session.user?.email || "user"}, but owner access is required. Sign in with an owner account below.`
-      );
-      setStatus("Owner sign-in required.");
-    }
-    return;
+    const message = !access.session
+      ? "Sign in with your PitchIQ owner account."
+      : `Signed in as ${access.session.user?.email || "user"}, but owner access is required.`;
+    setAuthStatus(message);
+    setStatus("Owner sign-in required.");
+    throw new Error(message);
   }
 
   const client = await ensureClient();
@@ -626,10 +622,9 @@ async function loadFromSupabase(opts = {}) {
     });
 
     if (!payloads.length) {
-      const hint = session
-        ? "Signed in, but no historical rows came back. Confirm the desktop/headless worker is pushing history."
-        : "No historical rows visible. Sign in with your PitchIQ owner account (RLS blocks anonymous reads).";
-      throw new Error(hint);
+      throw new Error(
+        "Signed in, but no historical rows came back. Confirm the desktop/headless worker is pushing history."
+      );
     }
 
     setLoading(true, "Running PitchIQ analysis…", `${payloads.length.toLocaleString()} payloads`);
@@ -643,6 +638,9 @@ async function loadFromSupabase(opts = {}) {
         preserveFilters: Boolean(opts.preserveFilters),
       }
     );
+    if (!state.results) {
+      throw new Error("History loaded, but analysis produced no results.");
+    }
     const customersPromise = loadCustomers().then(() => {
       if (shouldRefreshAfterCustomers()) refresh();
     });
@@ -710,6 +708,7 @@ async function refreshAllData() {
 
 async function signInAndLoad(event) {
   event?.preventDefault?.();
+  event?.stopPropagation?.();
   const email = String(el.authEmail?.value || "").trim();
   const password = String(el.authPassword?.value || "");
   if (!email || !password) {
@@ -721,40 +720,41 @@ async function signInAndLoad(event) {
   setAuthStatus("Signing in…");
   setLoading(true, "Signing in…", email);
   try {
-    // Drop any existing main-site / non-owner session so the form grant is clean.
-    const {
-      data: { session: existing },
-    } = await client.auth.getSession();
-    if (existing) {
-      await client.auth.signOut({ scope: "local" });
-    }
-
-    const { error } = await client.auth.signInWithPassword({ email, password });
+    // Do NOT signOut first — that races auth state and can wipe the new session
+    // (loading overlay flickers, then the form sits with no error).
+    const { data: authData, error } = await client.auth.signInWithPassword({ email, password });
     if (error) throw error;
 
-    const profile = await fetchCurrentProfileRole(client);
-    if (profile.error) {
-      setAuthStatus(profile.error.message || "Could not verify owner role.");
-      await alertDialog(profile.error.message || "Could not verify owner role on profiles.", {
-        title: "Owner check failed",
-      });
-      return;
+    const userId = authData?.session?.user?.id || authData?.user?.id || null;
+    if (!userId) {
+      throw new Error("Sign-in succeeded but no session was returned. Try again.");
     }
-    if (!isOwnerRole(profile.role)) {
+
+    const { data: profileRow, error: profileError } = await client
+      .from("profiles")
+      .select("role")
+      .eq("user_id", userId)
+      .maybeSingle();
+
+    if (profileError) {
+      throw new Error(profileError.message || "Could not verify owner role on profiles.");
+    }
+
+    const role = profileRow?.role != null ? String(profileRow.role).trim().toLowerCase() : null;
+    if (!isOwnerRole(role)) {
       await client.auth.signOut({ scope: "local" });
-      setAuthStatus("Owner access only. This account is not an owner.");
-      await alertDialog("Owner access only. Standard accounts cannot open the Owners Portal.", {
-        title: "Access denied",
-      });
-      return;
+      throw new Error("Owner access only. This account is not an owner.");
     }
 
     setAuthStatus("Signed in as owner. Loading history…");
     await loadFromSupabase();
+    setAuthStatus("Signed in.");
   } catch (error) {
     console.error(error);
-    setAuthStatus(error?.message || "Sign-in failed.");
-    await alertDialog(error?.message || "Sign-in failed.", { title: "Auth failed" });
+    const message = error?.message || "Sign-in failed.";
+    setAuthStatus(message);
+    setLoading(false);
+    await alertDialog(message, { title: "Sign-in failed" });
   } finally {
     setLoading(false);
   }
@@ -775,7 +775,14 @@ async function boot() {
   });
 
   el.btnLoadSupabase?.addEventListener("click", () => {
-    loadFromSupabase().catch(() => {});
+    setLoading(true, "Loading with current session…", "");
+    loadFromSupabase()
+      .catch(async (error) => {
+        const message = error?.message || "Could not load with current session.";
+        setAuthStatus(message);
+        await alertDialog(message, { title: "Load failed" });
+      })
+      .finally(() => setLoading(false));
   });
   el.btnRefreshAll?.addEventListener("click", () => {
     refreshAllData().catch(() => {});
@@ -814,8 +821,9 @@ async function boot() {
     setStatus("Loading PitchIQ historical data from Supabase…");
     try {
       await loadFromSupabase();
-    } catch {
+    } catch (error) {
       setStatus("Sign in with an owner account to continue.");
+      setAuthStatus(error?.message || "Could not load history with the current owner session.");
     }
     return;
   }

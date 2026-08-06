@@ -1098,6 +1098,11 @@ body {
   font-size: 0.86rem;
 }
 
+.auth-status:not(:empty) {
+  color: var(--accent-orange);
+  font-weight: 600;
+}
+
 .welcome-session-btn {
   appearance: none;
   background: transparent;
