@@ -104,6 +104,20 @@
           userId = null;
         }
 
+        // Owner accounts are internal — don't inflate public traffic stats.
+        if (userId) {
+          try {
+            const { data: profile } = await client
+              .from("profiles")
+              .select("role")
+              .eq("user_id", userId)
+              .maybeSingle();
+            if (String(profile?.role || "").trim().toLowerCase() === "owner") return;
+          } catch {
+            // If role lookup fails, still record the view.
+          }
+        }
+
         if (global.__pitchiqSkipPageView) return;
 
         const referrer = String(global.document?.referrer || "").trim().slice(0, 500) || null;

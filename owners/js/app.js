@@ -13,7 +13,7 @@ import {
   setOwnerUserRole,
   stripeCustomerSearchUrl,
 } from "./data/customers.js";
-import { analyzePageViews, fetchPageViews } from "./data/pageViews.js";
+import { analyzePageViews, excludePageViewsByUserIds, fetchPageViews } from "./data/pageViews.js";
 import { runAnalysis } from "./analytics/engine.js";
 import { captureTableElement } from "./data/mediaCreator.js";
 import { renderNav } from "./ui/nav.js";
@@ -306,7 +306,11 @@ async function loadCustomers() {
       const trafficError = trafficErrorRaw && /pitchiq_page_views|schema cache|does not exist/i.test(trafficErrorRaw)
         ? "Page-view table missing — run supabase/migrations/20260806000000_page_views.sql in the Supabase SQL Editor."
         : trafficErrorRaw;
-      const traffic = trafficErrorRaw ? null : analyzePageViews(pageViewResult.rows || []);
+      const ownerIds = (users || [])
+        .filter((user) => String(user?.role || "").trim().toLowerCase() === "owner")
+        .map((user) => user.id);
+      const trafficRows = excludePageViewsByUserIds(pageViewResult.rows || [], ownerIds);
+      const traffic = trafficErrorRaw ? null : analyzePageViews(trafficRows);
 
       // Paint Admin/Customers as soon as the user list is back; Stripe history can lag.
       const earlyAnalytics = analyzeCustomers(users, state.customers?.subscriptions || [], state.customerFluxPeriod);

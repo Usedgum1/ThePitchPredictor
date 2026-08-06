@@ -139,6 +139,22 @@ function buildTrend(rows, period, lookbackDays) {
 
 /**
  * @param {object[]} rows
+ * @param {Iterable<string>} [excludeUserIds]
+ * @returns {object[]}
+ */
+export function excludePageViewsByUserIds(rows, excludeUserIds = []) {
+  const blocked = new Set(
+    [...excludeUserIds].map((id) => String(id || "").trim()).filter(Boolean)
+  );
+  if (!blocked.size) return rows || [];
+  return (rows || []).filter((row) => {
+    const userId = String(row?.user_id || "").trim();
+    return !userId || !blocked.has(userId);
+  });
+}
+
+/**
+ * @param {object[]} rows
  * @returns {PageViewAnalytics}
  */
 export function analyzePageViews(rows) {
