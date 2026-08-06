@@ -1676,12 +1676,12 @@ function adminActionPanel(user, opts) {
           <p class="admin-action-title">Membership</p>
           <div class="admin-action-controls">
             <select id="admin-role-select" class="admin-select" ${busy ? "disabled" : ""}>
+              ${roleValue === "owner" ? `<option value="owner" selected disabled>Owner (DB only)</option>` : ""}
               <option value="" ${!roleValue ? "selected" : ""}>None</option>
               <option value="basic" ${roleValue === "basic" ? "selected" : ""}>Basic</option>
               <option value="pro" ${roleValue === "pro" ? "selected" : ""}>Pro</option>
               <option value="life" ${roleValue === "life" ? "selected" : ""}>Life</option>
               <option value="admin" ${roleValue === "admin" ? "selected" : ""}>Admin</option>
-              <option value="owner" ${roleValue === "owner" ? "selected" : ""}>Owner</option>
             </select>
             <button type="button" class="btn btn-primary btn-sm" id="admin-btn-set-role" ${busy ? "disabled" : ""}>Save</button>
           </div>
