@@ -13,7 +13,7 @@ import {
   setOwnerUserRole,
   stripeCustomerSearchUrl,
 } from "./data/customers.js";
-import { analyzePageViews, excludePageViewsByUserIds, fetchPageViews } from "./data/pageViews.js";
+import { analyzePageViews, excludePageViewsByUserIds, filterLandingPageViews, fetchPageViews } from "./data/pageViews.js";
 import { runAnalysis } from "./analytics/engine.js";
 import { captureTableElement } from "./data/mediaCreator.js";
 import { renderNav } from "./ui/nav.js";
@@ -310,7 +310,8 @@ async function loadCustomers() {
         .filter((user) => String(user?.role || "").trim().toLowerCase() === "owner")
         .map((user) => user.id);
       const trafficRows = excludePageViewsByUserIds(pageViewResult.rows || [], ownerIds);
-      const traffic = trafficErrorRaw ? null : analyzePageViews(trafficRows);
+      const landingRows = filterLandingPageViews(trafficRows);
+      const traffic = trafficErrorRaw ? null : analyzePageViews(landingRows, trafficRows);
 
       // Paint Admin/Customers as soon as the user list is back; Stripe history can lag.
       const earlyAnalytics = analyzeCustomers(users, state.customers?.subscriptions || [], state.customerFluxPeriod);

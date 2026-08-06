@@ -1169,17 +1169,17 @@ function renderCustomers(root, customers, opts = {}) {
                 </select>
               </label>
             </div>
-            <p class="page-sub" style="margin:-0.25rem 0 0.85rem;">Page views from thePitchPredictor · client-side tracker</p>
+            <p class="page-sub" style="margin:-0.25rem 0 0.85rem;">Landing visits to index (`/` / `index.html`) · owners excluded</p>
             <div class="kpi-grid">
-              ${kpiCard("Today", fmtInt(t.today), "page views", "customers")}
+              ${kpiCard("Today", fmtInt(t.today), "index visits", "customers")}
               ${kpiCard("Last 7d", fmtInt(t.last7), `${fmtInt(t.uniqueSessions7)} sessions`, "customers")}
               ${kpiCard("Last 30d", fmtInt(t.last30), `${fmtInt(t.uniqueSessions30)} sessions`, "customers")}
-              ${kpiCard("Signed-in 30d", fmtInt(t.signedInViews30), "views with a logged-in user", "customers")}
+              ${kpiCard("Signed-in 30d", fmtInt(t.signedInViews30), "index visits while logged in", "customers")}
             </div>
             <div class="chart-panel" style="margin-top:1rem;"><canvas id="customer-pageviews-chart"></canvas></div>
           </div>
           <div class="card">
-            <h3 class="card-title">Top pages · 30d</h3>
+            <h3 class="card-title">All pages · 30d</h3>
             ${tableHtml(
               ["Path", "Views", "Share"],
               (t.topPaths || []).map((r) => [r.path, r.views, fmtPct(r.share)]),

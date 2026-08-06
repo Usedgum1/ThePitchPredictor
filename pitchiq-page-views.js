@@ -87,7 +87,12 @@
         if (!client?.from) return;
         if (global.__pitchiqSkipPageView) return;
 
-        const path = String(global.location?.pathname || "/").slice(0, 500);
+        const pathRaw = String(global.location?.pathname || "/").slice(0, 500);
+        const pathLower = pathRaw.toLowerCase();
+        const path =
+          pathLower === "/index.html" || pathLower === "index.html" || pathRaw === ""
+            ? "/"
+            : pathRaw;
         if (shouldSkipPath(path)) return;
         if (recentlyTracked(path)) return;
 

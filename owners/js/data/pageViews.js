@@ -138,6 +138,23 @@ function buildTrend(rows, period, lookbackDays) {
 }
 
 /**
+ * Landing page hits — GitHub Pages may log `/` or `/index.html`.
+ * @param {string | null | undefined} path
+ */
+export function isLandingPath(path) {
+  const normalized = String(path || "").trim().toLowerCase().split("?")[0].split("#")[0];
+  return normalized === "/" || normalized === "/index.html" || normalized === "index.html" || normalized === "";
+}
+
+/**
+ * @param {object[]} rows
+ * @returns {object[]}
+ */
+export function filterLandingPageViews(rows) {
+  return (rows || []).filter((row) => isLandingPath(row?.path));
+}
+
+/**
  * @param {object[]} rows
  * @param {Iterable<string>} [excludeUserIds]
  * @returns {object[]}
@@ -154,10 +171,13 @@ export function excludePageViewsByUserIds(rows, excludeUserIds = []) {
 }
 
 /**
- * @param {object[]} rows
+ * Analyze landing-page traffic (index). Pass already-filtered landing rows for KPIs/trends.
+ * `allRows` optional — used only for the Top pages table.
+ * @param {object[]} landingRows
+ * @param {object[]} [allRows]
  * @returns {PageViewAnalytics}
  */
-export function analyzePageViews(rows) {
+export function analyzePageViews(landingRows, allRows = landingRows) {
   const now = Date.now();
   const startToday = new Date();
   startToday.setHours(0, 0, 0, 0);
@@ -175,11 +195,10 @@ export function analyzePageViews(rows) {
   /** @type {Map<string, number>} */
   const byPath = new Map();
 
-  for (const row of rows) {
+  for (const row of landingRows || []) {
     const at = row?.occurred_at ? new Date(row.occurred_at).getTime() : NaN;
     if (!Number.isFinite(at)) continue;
     const age = now - at;
-    const path = String(row.path || "/").trim() || "/";
     const session = String(row.session_id || "").trim();
 
     if (at >= startToday.getTime()) today += 1;
@@ -191,25 +210,33 @@ export function analyzePageViews(rows) {
       last30 += 1;
       if (session) sessions30.add(session);
       if (row.user_id) signedInViews30 += 1;
-      byPath.set(path, (byPath.get(path) || 0) + 1);
     }
   }
 
-  const daily = buildTrend(rows, "daily", 29);
+  for (const row of allRows || []) {
+    const at = row?.occurred_at ? new Date(row.occurred_at).getTime() : NaN;
+    if (!Number.isFinite(at)) continue;
+    if (now - at > ms30) continue;
+    const path = isLandingPath(row?.path) ? "/" : String(row.path || "/").trim() || "/";
+    byPath.set(path, (byPath.get(path) || 0) + 1);
+  }
+
+  const daily = buildTrend(landingRows, "daily", 29);
   const trends = {
-    daily: buildTrend(rows, "daily", 89),
-    weekly: buildTrend(rows, "weekly", 179),
-    monthly: buildTrend(rows, "monthly", 364),
-    yearly: buildTrend(rows, "yearly", 364 * 3),
+    daily: buildTrend(landingRows, "daily", 89),
+    weekly: buildTrend(landingRows, "weekly", 179),
+    monthly: buildTrend(landingRows, "monthly", 364),
+    yearly: buildTrend(landingRows, "yearly", 364 * 3),
   };
 
+  const pathTotal = [...byPath.values()].reduce((sum, n) => sum + n, 0);
   const topPaths = [...byPath.entries()]
     .sort((a, b) => b[1] - a[1])
     .slice(0, 12)
     .map(([path, views]) => ({
       path,
       views,
-      share: last30 ? views / last30 : 0,
+      share: pathTotal ? views / pathTotal : 0,
     }));
 
   return {

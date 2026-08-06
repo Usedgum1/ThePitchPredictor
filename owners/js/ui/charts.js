@@ -287,7 +287,7 @@ export function renderPageViewsChart(canvas, rows, period = pageViewsPeriod) {
       labels,
       datasets: [
         {
-          label: "Page views",
+          label: "Index visits",
           data: rows.map((r) => r.views),
           borderColor: ORANGE,
           backgroundColor: "transparent",

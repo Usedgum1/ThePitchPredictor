@@ -958,5 +958,39 @@
       }
     });
   </script>
+  <script
+    src="./vendor/supabase.js"
+    onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js'"
+  ></script>
+  <script src="./pitchiq-page-views.js"></script>
+  <script>
+    (async () => {
+      try {
+        if (!window.supabase?.createClient) {
+          await new Promise((resolve, reject) => {
+            const script = document.createElement("script");
+            script.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js";
+            script.onload = resolve;
+            script.onerror = reject;
+            document.head.appendChild(script);
+          });
+        }
+        if (!window.supabase?.createClient) return;
+        const SUPABASE_URL = "https://odvopvoqssamjquinhft.supabase.co";
+        const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_7g1yX__kNzT-6tj8Tr4SIg_T4BX9BlV";
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+          auth: {
+            autoRefreshToken: false,
+            detectSessionInUrl: false,
+            persistSession: true,
+            storage: window.localStorage,
+          },
+        });
+        void window.PitchIQPageViews?.track?.(supabaseClient);
+      } catch {
+        // Landing-page tracking must never block the page.
+      }
+    })();
+  </script>
 </body>
 </html>
