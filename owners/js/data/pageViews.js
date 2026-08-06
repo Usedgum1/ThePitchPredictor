@@ -147,11 +147,32 @@ export function isLandingPath(path) {
 }
 
 /**
+ * Drop local file:// / OneDrive absolute paths that leaked into production stats.
+ * @param {string | null | undefined} path
+ */
+export function isLocalDevPath(path) {
+  const normalized = String(path || "").trim().toLowerCase().split("?")[0].split("#")[0];
+  if (!normalized) return false;
+  if (/^\/[a-z]:\//i.test(normalized)) return true;
+  if (normalized.includes("/users/") && normalized.includes("/onedrive")) return true;
+  if (normalized.includes("pitchiq webpage") && normalized.includes(".html")) return true;
+  return false;
+}
+
+/**
  * @param {object[]} rows
  * @returns {object[]}
  */
 export function filterLandingPageViews(rows) {
-  return (rows || []).filter((row) => isLandingPath(row?.path));
+  return (rows || []).filter((row) => isLandingPath(row?.path) && !isLocalDevPath(row?.path));
+}
+
+/**
+ * @param {object[]} rows
+ * @returns {object[]}
+ */
+export function excludeLocalDevPageViews(rows) {
+  return (rows || []).filter((row) => !isLocalDevPath(row?.path));
 }
 
 /**

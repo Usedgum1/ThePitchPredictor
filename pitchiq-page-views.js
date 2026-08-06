@@ -28,8 +28,22 @@
       normalized.startsWith("/owners") ||
       normalized.includes("/owners/") ||
       normalized.includes("demo") ||
-      normalized.includes("card-workshop")
+      normalized.includes("card-workshop") ||
+      // file:// on Windows → pathname like /C:/Users/...
+      /^\/[a-z]:\//i.test(normalized) ||
+      (normalized.includes("/users/") && normalized.includes("/onedrive"))
     );
+  }
+
+  function isLocalDevHost() {
+    try {
+      const protocol = String(global.location?.protocol || "").toLowerCase();
+      if (protocol === "file:") return true;
+      const host = String(global.location?.hostname || "").toLowerCase();
+      return host === "localhost" || host === "127.0.0.1" || host === "::1";
+    } catch {
+      return false;
+    }
   }
 
   function recentlyTracked(path) {
@@ -86,6 +100,8 @@
       try {
         if (!client?.from) return;
         if (global.__pitchiqSkipPageView) return;
+        // Never record local file:// or localhost traffic into production stats.
+        if (isLocalDevHost()) return;
 
         const pathRaw = String(global.location?.pathname || "/").slice(0, 500);
         const pathLower = pathRaw.toLowerCase();

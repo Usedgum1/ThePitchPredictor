@@ -12,7 +12,7 @@ import {
   setOwnerUserRole,
   stripeCustomerSearchUrl,
 } from "./data/customers.js";
-import { analyzePageViews, excludePageViewsByUserIds, filterLandingPageViews, fetchPageViews } from "./data/pageViews.js";
+import { analyzePageViews, excludeLocalDevPageViews, excludePageViewsByUserIds, filterLandingPageViews, fetchPageViews } from "./data/pageViews.js";
 import { runAnalysis } from "./analytics/engine.js";
 import { captureTableElement } from "./data/mediaCreator.js";
 import { renderNav } from "./ui/nav.js";
@@ -304,7 +304,9 @@ async function loadCustomers() {
       const ownerIds = (users || [])
         .filter((user) => String(user?.role || "").trim().toLowerCase() === "owner")
         .map((user) => user.id);
-      const trafficRows = excludePageViewsByUserIds(pageViewResult.rows || [], ownerIds);
+      const trafficRows = excludeLocalDevPageViews(
+        excludePageViewsByUserIds(pageViewResult.rows || [], ownerIds)
+      );
       const landingRows = filterLandingPageViews(trafficRows);
       const traffic = trafficErrorRaw ? null : analyzePageViews(landingRows, trafficRows);
 
