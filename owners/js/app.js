@@ -18,6 +18,7 @@ import { captureTableElement } from "./data/mediaCreator.js";
 import { renderNav } from "./ui/nav.js";
 import { renderView } from "./ui/render.js";
 import { alertDialog, confirmDialog } from "./ui/dialog.js";
+import { initMobileShell, isMobileShell } from "./ui/mobileShell.js";
 
 /** @type {import("./data/filters.js").FilterState} */
 let filters = createDefaultFilters();
@@ -42,6 +43,9 @@ const state = {
   adminEmailStatus: "",
   activeView: "dashboard",
 };
+
+/** @type {ReturnType<typeof initMobileShell>} */
+let mobileShell = null;
 
 const el = {
   bootBanner: document.getElementById("boot-banner"),
@@ -201,6 +205,8 @@ function shouldRefreshAfterCustomers() {
 function selectView(id) {
   const allowed = new Set(["dashboard", "draftkings", "fanduel", "models", "pitchers", "games", "umps", "team", "customers", "admin", "email", "site-alert", "media"]);
   state.activeView = allowed.has(id) ? id : "dashboard";
+  mobileShell?.setOpen(false);
+  mobileShell?.syncViewTitle(state.activeView);
   if (
     (state.activeView === "customers" || state.activeView === "admin" || state.activeView === "email") &&
     needsCustomerLoad(state.activeView)
@@ -217,6 +223,7 @@ function selectView(id) {
 function refresh() {
   const allowed = new Set(["dashboard", "draftkings", "fanduel", "models", "pitchers", "games", "umps", "team", "customers", "admin", "email", "site-alert", "media"]);
   if (!allowed.has(state.activeView)) state.activeView = "dashboard";
+  mobileShell?.syncViewTitle(state.activeView);
   if (!el.nav || !el.viewRoot || !state.results) return;
   renderNav(el.nav, state.activeView, selectView);
   renderView(el.viewRoot, state.activeView, state.results, state.customers, {
@@ -454,7 +461,13 @@ async function runAdminAction(action, userId, extra = {}) {
     if (!ok) return;
   }
   if (action === "set_role") {
-    const roleLabel = extra.role || "none";
+    const nextRole = String(extra.role || "").trim().toLowerCase();
+    if (nextRole === "owner") {
+      state.adminStatus = "Owner cannot be assigned from the portal.";
+      refresh();
+      return;
+    }
+    const roleLabel = nextRole || "none";
     const ok = await confirmDialog(`Set ${label} account type to “${roleLabel}”? (profiles.role only — not Stripe)`, {
       title: "Alter membership",
       okLabel: "Save role",
@@ -516,7 +529,10 @@ async function ensureClient() {
   return supabaseClient;
 }
 
-const CUSTOMER_APP_URL = new URL("../app.html", window.location.href).href;
+const CUSTOMER_APP_URL = new URL(
+  isMobileShell() ? "../app-mobile.html" : "../app.html",
+  window.location.href
+).href;
 
 /**
  * Hard gate: only profiles.role === "owner" may use this portal.
@@ -671,11 +687,13 @@ async function signInAndLoad(event) {
 
 async function boot() {
   if (!checkEnvironment()) return;
+  mobileShell = initMobileShell();
   await ensureClient();
 
   renderNav(el.nav, state.activeView, (id) => {
     if (!state.results) {
       setStatus("Sign in to Supabase (or upload an export) to unlock the dashboard.");
+      mobileShell?.setOpen(false);
       return;
     }
     selectView(id);
