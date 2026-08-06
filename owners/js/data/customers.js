@@ -89,7 +89,7 @@ export async function fetchOwnerUsers(client) {
  * Owner edge-function mutations (service-role bypass behind owner JWT).
  * @param {import("@supabase/supabase-js").SupabaseClient} client
  * @param {string} userId
- * @param {string | null} role  basic|pro|life|admin|owner|null (empty clears)
+ * @param {string | null} role  basic|pro|life|admin|null (empty clears; owner is not assignable from the portal)
  */
 export async function setOwnerUserRole(client, userId, role) {
   return callOwnerUserApi(client, { action: "set_role", userId, role: role ?? "" });
