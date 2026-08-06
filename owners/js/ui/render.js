@@ -1,5 +1,5 @@
 import { fmtDate, fmtInt, fmtNum, fmtPct, fmtRecord, pctTone } from "./format.js";
-import { getChartPeriod, getCustomerFluxPeriod, renderBookWinChart, renderModelHitChart, renderMonthlyWinChart, renderSignupChart, renderSubFluxChart, setChartPeriod, setCustomerFluxPeriod } from "./charts.js";
+import { getChartPeriod, getCustomerFluxPeriod, renderBookWinChart, renderModelHitChart, renderMonthlyWinChart, renderPageViewsChart, renderSignupChart, renderSubFluxChart, setChartPeriod, setCustomerFluxPeriod } from "./charts.js";
 import { navTitle } from "./nav.js";
 import { mountEmailJobsPanel } from "./emailJobs.js";
 import { mountSiteAlertPage } from "./siteAlert.js";
@@ -1112,7 +1112,7 @@ function fmtMoney(n) {
 
 /**
  * @param {HTMLElement} root
- * @param {{ error?: string, analytics?: object } | null} customers
+ * @param {{ error?: string, analytics?: object, traffic?: object, trafficError?: string | null } | null} customers
  * @param {{ fluxPeriod?: "daily"|"weekly"|"monthly", onFluxPeriodChange?: (p: "daily"|"weekly"|"monthly") => void }} [opts]
  */
 function renderCustomers(root, customers, opts = {}) {
@@ -1147,6 +1147,40 @@ function renderCustomers(root, customers, opts = {}) {
     return;
   }
 
+  const t = customers.traffic;
+  const trafficError = customers.trafficError || null;
+  const trafficBlock = trafficError
+    ? `<div class="card" style="margin-top:1.25rem;">
+        <h3 class="card-title">Site traffic</h3>
+        <p class="page-sub" style="margin:0;">${escapeHtml(trafficError)}</p>
+      </div>`
+    : t
+      ? `<div class="card-grid" style="margin-top:1.25rem;">
+          <div class="card card-span-2">
+            <h3 class="card-title">Site traffic</h3>
+            <p class="page-sub" style="margin:-0.25rem 0 0.85rem;">Simple page views from thePitchPredictor (last 30 days · client-side tracker)</p>
+            <div class="kpi-grid">
+              ${kpiCard("Today", fmtInt(t.today), "page views", "customers")}
+              ${kpiCard("Last 7d", fmtInt(t.last7), `${fmtInt(t.uniqueSessions7)} sessions`, "customers")}
+              ${kpiCard("Last 30d", fmtInt(t.last30), `${fmtInt(t.uniqueSessions30)} sessions`, "customers")}
+              ${kpiCard("Signed-in 30d", fmtInt(t.signedInViews30), "views with a logged-in user", "customers")}
+            </div>
+            <div class="chart-panel" style="margin-top:1rem;"><canvas id="customer-pageviews-chart"></canvas></div>
+          </div>
+          <div class="card">
+            <h3 class="card-title">Top pages · 30d</h3>
+            ${tableHtml(
+              ["Path", "Views", "Share"],
+              (t.topPaths || []).map((r) => [r.path, r.views, fmtPct(r.share)]),
+              { formats: { 1: "int" }, theme: "customers" }
+            )}
+          </div>
+        </div>`
+      : `<div class="card" style="margin-top:1.25rem;">
+          <h3 class="card-title">Site traffic</h3>
+          <p class="page-sub" style="margin:0;">Loading page views…</p>
+        </div>`;
+
   root.innerHTML = `
     <div class="book-theme-customers">
     <div class="page-header book-page-header book-customers">
@@ -1161,6 +1195,8 @@ function renderCustomers(root, customers, opts = {}) {
       ${kpiCard("Active 30d", fmtInt(a.signedIn30), `${fmtInt(a.signedIn7)} in last 7d`, "customers")}
       ${kpiCard("Period ending ≤14d", fmtInt(a.periodEndingSoon), "active / past_due / trial", "customers")}
     </div>
+
+    ${trafficBlock}
 
     <div class="card-grid" style="margin-top:1.25rem;">
       <div class="card">
@@ -1305,6 +1341,9 @@ function renderCustomers(root, customers, opts = {}) {
 
   const canvas = /** @type {HTMLCanvasElement | null} */ (root.querySelector("#customer-signup-chart"));
   if (canvas) renderSignupChart(canvas, a.monthlySignups || []);
+
+  const pageViewsCanvas = /** @type {HTMLCanvasElement | null} */ (root.querySelector("#customer-pageviews-chart"));
+  if (pageViewsCanvas && t?.daily) renderPageViewsChart(pageViewsCanvas, t.daily);
 
   const fluxPeriod = opts.fluxPeriod || a.fluxPeriod || getCustomerFluxPeriod();
   const fluxSelect = /** @type {HTMLSelectElement | null} */ (root.querySelector("#customer-flux-period"));

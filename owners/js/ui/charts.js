@@ -253,6 +253,79 @@ export function renderSignupChart(canvas, rows) {
 }
 
 /** @type {import("chart.js").Chart | null} */
+let pageViewsChart = null;
+
+/**
+ * @param {HTMLCanvasElement} canvas
+ * @param {{ day: string, views: number, sessions: number }[]} rows
+ */
+export function renderPageViewsChart(canvas, rows) {
+  destroyChart(pageViewsChart);
+  if (typeof Chart === "undefined") return null;
+  const TEAL = "#2ec4b6";
+  const labels = rows.map((r) => {
+    const parts = String(r.day || "").split("-");
+    if (parts.length !== 3) return r.day;
+    return `${Number(parts[1])}/${Number(parts[2])}`;
+  });
+  pageViewsChart = new Chart(canvas, {
+    type: "line",
+    data: {
+      labels,
+      datasets: [
+        {
+          label: "Page views",
+          data: rows.map((r) => r.views),
+          borderColor: ORANGE,
+          backgroundColor: "rgba(255, 148, 46, 0.18)",
+          fill: true,
+          tension: 0.3,
+          pointRadius: rows.length > 20 ? 0 : 2,
+          borderWidth: 2,
+        },
+        {
+          label: "Sessions",
+          data: rows.map((r) => r.sessions),
+          borderColor: TEAL,
+          backgroundColor: "transparent",
+          tension: 0.3,
+          pointRadius: rows.length > 20 ? 0 : 2,
+          borderWidth: 2,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          labels: { color: TEXT, boxWidth: 10, font: { size: 11 } },
+        },
+        tooltip: {
+          backgroundColor: "#12151f",
+          titleColor: TEXT,
+          bodyColor: MUTED,
+          borderColor: "rgba(255,148,46,0.3)",
+          borderWidth: 1,
+        },
+      },
+      scales: {
+        x: {
+          ticks: { color: MUTED, maxRotation: 0, autoSkip: true, maxTicksLimit: 12 },
+          grid: { color: "rgba(255,255,255,0.04)" },
+        },
+        y: {
+          ticks: { color: MUTED, precision: 0 },
+          grid: { color: "rgba(255,255,255,0.04)" },
+          beginAtZero: true,
+        },
+      },
+    },
+  });
+  return pageViewsChart;
+}
+
+/** @type {import("chart.js").Chart | null} */
 let subscribedChart = null;
 
 /**
