@@ -1169,7 +1169,7 @@ function renderCustomers(root, customers, opts = {}) {
                 </select>
               </label>
             </div>
-            <p class="page-sub" style="margin:-0.25rem 0 0.85rem;">Landing visits to index (`/` / `index.html`) · owners excluded</p>
+            <p class="page-sub" style="margin:-0.25rem 0 0.85rem;">Landing visits to index (/ or index.html) · owners excluded</p>
             <div class="kpi-grid">
               ${kpiCard("Today", fmtInt(t.today), "index visits", "customers")}
               ${kpiCard("Last 7d", fmtInt(t.last7), `${fmtInt(t.uniqueSessions7)} sessions`, "customers")}
