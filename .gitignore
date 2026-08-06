@@ -1,0 +1,11 @@
+# Local / tooling
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/
+
+# Local Supabase UMD copy (site uses CDN; keep vendor off remote unless needed)
+vendor/
