@@ -13,6 +13,7 @@ import {
   setOwnerUserRole,
   stripeCustomerSearchUrl,
 } from "./data/customers.js";
+import { analyzePageViews, fetchPageViews } from "./data/pageViews.js";
 import { runAnalysis } from "./analytics/engine.js";
 import { captureTableElement } from "./data/mediaCreator.js";
 import { renderNav } from "./ui/nav.js";
@@ -32,7 +33,7 @@ const state = {
   games: /** @type {import("./data/games.js").GameRow[]} */ ([]),
   filteredGames: /** @type {import("./data/games.js").GameRow[]} */ ([]),
   results: /** @type {object | null} */ (null),
-  customers: /** @type {{ error?: string, analytics?: object, subscriptions?: object[], users?: object[] } | null} */ (null),
+  customers: /** @type {{ error?: string, analytics?: object, subscriptions?: object[], users?: object[], traffic?: object, trafficError?: string | null } | null} */ (null),
   customersLoading: false,
   /** @type {Promise<void> | null} */
   customersLoadPromise: null,
@@ -294,13 +295,27 @@ async function loadCustomers() {
     state.customersLoading = true;
     if (shouldRefreshAfterCustomers()) refresh();
     try {
-      const users = await fetchOwnerUsers(client);
+      const [users, pageViewResult] = await Promise.all([
+        fetchOwnerUsers(client),
+        fetchPageViews(client, 30).catch((error) => ({
+          rows: [],
+          error: error?.message || "Failed to load page views.",
+        })),
+      ]);
+      const trafficErrorRaw = pageViewResult.error || null;
+      const trafficError = trafficErrorRaw && /pitchiq_page_views|schema cache|does not exist/i.test(trafficErrorRaw)
+        ? "Page-view table missing — run supabase/migrations/20260806000000_page_views.sql in the Supabase SQL Editor."
+        : trafficErrorRaw;
+      const traffic = trafficErrorRaw ? null : analyzePageViews(pageViewResult.rows || []);
+
       // Paint Admin/Customers as soon as the user list is back; Stripe history can lag.
       const earlyAnalytics = analyzeCustomers(users, state.customers?.subscriptions || [], state.customerFluxPeriod);
       state.customers = {
         analytics: earlyAnalytics,
         subscriptions: state.customers?.subscriptions || [],
         users,
+        traffic,
+        trafficError,
       };
       if (shouldRefreshAfterCustomers()) refresh();
 
@@ -314,7 +329,13 @@ async function loadCustomers() {
       }
       const analytics = analyzeCustomers(users, subscriptions, state.customerFluxPeriod);
       if (historyError) analytics.fluxError = historyError;
-      state.customers = { analytics, subscriptions, users };
+      state.customers = {
+        analytics,
+        subscriptions,
+        users,
+        traffic,
+        trafficError,
+      };
     } catch (error) {
       console.error(error);
       state.customers = {
