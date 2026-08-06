@@ -17,6 +17,7 @@
       window.matchMedia("(max-width: 760px)").matches &&
       !new URLSearchParams(window.location.search).has("desktop")
     ) {
+      window.__pitchiqSkipPageView = true;
       window.location.replace("./app-mobile.html");
     }
   </script>
