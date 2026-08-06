@@ -107,6 +107,8 @@ body {
 /* No black trim on gold / orange buttons and accent text — it muddies the color */
 .btn,
 .btn *,
+.btn-refresh-all,
+.btn-refresh-all *,
 .brand-title,
 .badge-local,
 .section-eyebrow,
@@ -129,7 +131,10 @@ body {
 .spotlight-eyebrow,
 .hero-score-val,
 .holdings-table .hold-name,
-.score-badge {
+.score-badge,
+.welcome-brand-name,
+.welcome-cta,
+.welcome-cta * {
   -webkit-text-stroke: 0;
   text-shadow: none;
 }
@@ -574,6 +579,58 @@ body {
   text-overflow: ellipsis;
 }
 
+.btn-refresh-all {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 148, 46, 0.95);
+  background: linear-gradient(160deg, var(--accent-hover) 0%, var(--accent-orange) 55%, var(--accent-deep) 100%);
+  color: var(--neon-blue);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 0 14px rgba(255, 148, 46, 0.22);
+  transition:
+    filter 0.2s var(--ease-smooth),
+    box-shadow 0.22s var(--ease-smooth),
+    transform 0.18s var(--ease-smooth);
+}
+
+.btn-refresh-all svg {
+  display: block;
+}
+
+.btn-refresh-all:hover:not(:disabled) {
+  filter: brightness(1.06);
+  box-shadow: 0 0 18px rgba(255, 148, 46, 0.34);
+}
+
+.btn-refresh-all:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.btn-refresh-all:focus-visible {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 2px;
+}
+
+.btn-refresh-all:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.btn-refresh-all.is-refreshing svg {
+  animation: pitchiq-refresh-spin 0.85s linear infinite;
+}
+
+@keyframes pitchiq-refresh-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .btn {
   display: inline-flex;
   align-items: center;
@@ -877,81 +934,193 @@ body {
   border-radius: 4px;
 }
 
-/* Welcome (upload only) */
+/* Welcome / sign-in splash */
 .welcome {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1.5rem;
+  gap: 0;
   min-height: 100%;
   width: 100%;
   padding: var(--space-5) var(--page-gutter);
   text-align: center;
+  position: relative;
+  isolation: isolate;
 }
 
-.welcome-copy {
-  max-width: 34rem;
+.welcome::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 55% 42% at 50% 18%, rgba(255, 148, 46, 0.16), transparent 70%),
+    radial-gradient(ellipse 48% 38% at 78% 72%, rgba(47, 155, 255, 0.12), transparent 72%),
+    radial-gradient(ellipse 40% 34% at 18% 78%, rgba(47, 155, 255, 0.08), transparent 70%);
 }
 
-.welcome-eyebrow {
-  margin: 0 0 0.4rem;
-  color: var(--accent-blue);
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
+.welcome-stage {
+  width: min(100%, 26.5rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.35rem;
+  animation: welcome-stage-in 0.55s var(--ease-smooth) both;
+}
+
+.welcome-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+}
+
+.welcome-logo {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  margin-bottom: 0.55rem;
+  filter: drop-shadow(0 8px 24px rgba(255, 148, 46, 0.28));
+  animation: welcome-logo-in 0.7s var(--ease-smooth) both;
+}
+
+.welcome-brand-name {
+  margin: 0;
+  color: var(--accent-orange);
+  font-size: 0.92rem;
+  font-weight: 800;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
 }
 
 .welcome-title {
-  margin: 0 0 0.65rem;
-  font-size: clamp(1.6rem, 3vw, 2.2rem);
-  font-weight: 700;
+  margin: 0.2rem 0 0.45rem;
+  font-size: clamp(1.85rem, 3.4vw, 2.45rem);
+  font-weight: 750;
+  letter-spacing: -0.03em;
   color: var(--text);
+  line-height: 1.1;
+}
+
+.welcome-body {
+  margin: 0;
+  max-width: 22rem;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.45;
 }
 
 .welcome-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  justify-content: center;
-  align-items: center;
-}
-
-.welcome-actions .btn-lg {
-  min-width: 12rem;
+  display: none;
 }
 
 .auth-card {
-  width: min(100%, 26rem);
+  width: 100%;
   display: grid;
-  gap: 0.85rem;
-  padding: 1.15rem 1.2rem;
-  border-radius: var(--radius);
-  border: 1px solid var(--card-border);
-  background: var(--card);
-  box-shadow: var(--shadow-card);
+  gap: 0.9rem;
+  padding: 1.25rem 1.25rem 1.15rem;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 148, 46, 0.28);
+  background:
+    linear-gradient(180deg, rgba(18, 21, 31, 0.96) 0%, rgba(12, 14, 20, 0.98) 100%);
+  box-shadow:
+    0 18px 48px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(47, 155, 255, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
   text-align: left;
+}
+
+.auth-card .field label {
+  color: var(--accent-blue);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
 }
 
 .auth-card .field input {
   width: 100%;
   max-width: none;
-  padding: 0.6rem 0.75rem;
-  border-radius: 8px;
+  padding: 0.7rem 0.8rem;
+  border-radius: 10px;
   border: 1px solid var(--card-border);
-  background: var(--bg-elevated);
+  background: rgba(5, 5, 5, 0.55);
   color: var(--text);
+  transition:
+    border-color 0.2s var(--ease-smooth),
+    box-shadow 0.2s var(--ease-smooth);
+}
+
+.auth-card .field input:focus {
+  outline: none;
+  border-color: rgba(47, 155, 255, 0.55);
+  box-shadow: 0 0 0 3px rgba(47, 155, 255, 0.16);
 }
 
 .auth-card .welcome-cta {
   width: 100%;
+  margin-top: 0.15rem;
+  background: #ffffff;
+  color: #050505;
+  border: 2px solid #050505;
+  box-shadow:
+    1px 0 0 #000,
+    -1px 0 0 #000,
+    0 1px 0 #000,
+    0 -1px 0 #000,
+    1px 1px 0 #000,
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000;
+  -webkit-text-stroke: 0;
+  text-shadow: none;
+}
+
+.auth-card .welcome-cta:hover:not(:disabled) {
+  filter: none;
+  background: #f4f0e8;
+  color: #050505;
+  border-color: #050505;
+  box-shadow:
+    1px 0 0 #000,
+    -1px 0 0 #000,
+    0 1px 0 #000,
+    0 -1px 0 #000,
+    1px 1px 0 #000,
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000;
 }
 
 .auth-status {
   margin: 0;
   min-height: 1.2em;
   font-size: 0.86rem;
+}
+
+.welcome-session-btn {
+  appearance: none;
+  background: transparent;
+  border: none;
+  color: var(--accent-blue);
+  font: inherit;
+  font-size: 0.86rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.35rem 0.5rem;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: color 0.2s var(--ease-smooth), background 0.2s var(--ease-smooth);
+}
+
+.welcome-session-btn:hover {
+  color: #9fd0ff;
+  background: rgba(47, 155, 255, 0.08);
+}
+
+.welcome-session-btn:focus-visible {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 2px;
 }
 
 .welcome-cta {
@@ -964,10 +1133,9 @@ body {
   min-width: 14rem;
   padding: 0.95rem 1.75rem;
   font-size: 0.95rem;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.02em;
   border-radius: var(--radius-sm);
-  animation: welcome-cta-in 0.55s var(--ease-smooth) both;
 }
 
 .welcome-cta::before {
@@ -982,25 +1150,57 @@ body {
   flex-shrink: 0;
 }
 
-@keyframes welcome-cta-in {
+@keyframes welcome-stage-in {
   from {
     opacity: 0;
-    transform: translateY(10px) scale(0.98);
+    transform: translateY(14px);
   }
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateY(0);
+  }
+}
+
+@keyframes welcome-logo-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .welcome-cta {
+  .welcome-stage,
+  .welcome-logo {
     animation: none;
   }
 }
 
-/* Hide nav / filters until data is loaded */
+/* Locked splash: hide empty chrome */
 .app--locked .sidebar {
+  display: none;
+}
+
+.app--locked .topbar {
+  border-bottom-color: transparent;
+  background: transparent;
+  backdrop-filter: none;
+}
+
+.app--locked .search-wrap-lg {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.app--locked .btn-refresh-all {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.app--locked .topbar-status:empty {
   display: none;
 }
 

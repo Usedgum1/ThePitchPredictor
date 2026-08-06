@@ -1,5 +1,4 @@
-import { parseExcelBuffer, readFileAsArrayBuffer } from "./data/excel.js";
-import { normalizeGames, normalizeGamesFromPayloads } from "./data/games.js";
+import { normalizeGamesFromPayloads } from "./data/games.js";
 import { createDefaultFilters, filterGames, formatDataFilterLabel } from "./data/filters.js";
 import { createSupabaseClient, fetchCurrentProfileRole, fetchHistoricalPayloads, isOwnerRole } from "./data/supabase.js";
 import {
@@ -43,6 +42,7 @@ const state = {
   adminStatus: "",
   adminEmailStatus: "",
   activeView: "dashboard",
+  refreshing: false,
 };
 
 /** @type {ReturnType<typeof initMobileShell>} */
@@ -55,13 +55,11 @@ const el = {
   viewRoot: document.getElementById("view-root"),
   welcome: document.getElementById("welcome-panel"),
   tableSearch: document.getElementById("table-search"),
-  btnUploadWelcome: document.getElementById("btn-upload-welcome"),
   btnLoadSupabase: document.getElementById("btn-load-supabase"),
   authForm: document.getElementById("auth-form"),
   authEmail: document.getElementById("auth-email"),
   authPassword: document.getElementById("auth-password"),
   authStatus: document.getElementById("auth-status"),
-  fileInputWelcome: document.getElementById("file-input-welcome"),
   loading: document.getElementById("loading-overlay"),
   loadingMsg: document.getElementById("loading-message"),
   loadingDetail: document.getElementById("loading-detail"),
@@ -70,6 +68,7 @@ const el = {
   filterApply: document.getElementById("sidebar-filter-apply"),
   filterClear: document.getElementById("sidebar-filter-clear"),
   filterSample: document.getElementById("sidebar-filter-sample"),
+  btnRefreshAll: document.getElementById("btn-refresh-all"),
 };
 
 function showBootBanner(message) {
@@ -85,13 +84,9 @@ function setAuthStatus(text) {
 function checkEnvironment() {
   if (location.protocol === "file:") {
     showBootBanner(
-      "Open through a local web server. In <code>PitchIQ Report/HTML Version</code> run " +
-        "<code>python -m http.server 8080</code> then visit <code>http://localhost:8080</code>."
+      "Open through a local web server. In <code>owners</code> run " +
+        "<code>start-dashboard.bat</code> or <code>python -m http.server 8090</code>."
     );
-    return false;
-  }
-  if (typeof XLSX === "undefined") {
-    showBootBanner("Excel library failed to load (cdn.sheetjs.com). Check network/firewall, then refresh.");
     return false;
   }
   if (!window.supabase?.createClient) {
@@ -540,13 +535,18 @@ async function runAdminAction(action, userId, extra = {}) {
  * @param {import("./data/games.js").GameRow[]} games
  * @param {string} sourceLabel
  * @param {string | null} [sheetName]
+ * @param {{ preserveView?: boolean, preserveFilters?: boolean }} [opts]
  */
-function applyGames(games, sourceLabel, sheetName = null) {
+function applyGames(games, sourceLabel, sheetName = null, opts = {}) {
   state.games = games;
   state.sourceLabel = sourceLabel;
   state.sheetName = sheetName;
-  filters = createDefaultFilters();
-  state.activeView = "dashboard";
+  if (!opts.preserveFilters) {
+    filters = createDefaultFilters();
+  }
+  if (!opts.preserveView) {
+    state.activeView = "dashboard";
+  }
   recompute();
 }
 
@@ -566,7 +566,9 @@ const CUSTOMER_APP_URL = new URL(
  * @returns {Promise<{ ok: boolean, session: object | null, role: string | null }>}
  */
 async function requireOwnerAccess(opts = {}) {
-  const redirect = opts.redirect !== false;
+  // Never bounce away from the sign-in form by default — a customer session on the
+  // main site used to auto-redirect and block owner login entirely.
+  const redirect = opts.redirect === true;
   const client = await ensureClient();
   const { session, role, error } = await fetchCurrentProfileRole(client);
 
@@ -596,11 +598,19 @@ async function requireOwnerAccess(opts = {}) {
   return { ok: true, session, role };
 }
 
-async function loadFromSupabase() {
-  const access = await requireOwnerAccess({ redirect: true });
+/**
+ * @param {{ preserveView?: boolean, preserveFilters?: boolean, awaitCustomers?: boolean }} [opts]
+ */
+async function loadFromSupabase(opts = {}) {
+  const access = await requireOwnerAccess({ redirect: false });
   if (!access.ok) {
     if (!access.session) {
       setAuthStatus("Sign in with your PitchIQ owner account.");
+      setStatus("Owner sign-in required.");
+    } else {
+      setAuthStatus(
+        `Signed in as ${access.session.user?.email || "user"}, but owner access is required. Sign in with an owner account below.`
+      );
       setStatus("Owner sign-in required.");
     }
     return;
@@ -617,21 +627,33 @@ async function loadFromSupabase() {
 
     if (!payloads.length) {
       const hint = session
-        ? "Signed in, but no historical rows came back. Confirm the desktop/headless worker is pushing history, or upload an Excel export."
-        : "No historical rows visible. Sign in with your PitchIQ account below (RLS blocks anonymous reads), or upload an Excel export.";
+        ? "Signed in, but no historical rows came back. Confirm the desktop/headless worker is pushing history."
+        : "No historical rows visible. Sign in with your PitchIQ owner account (RLS blocks anonymous reads).";
       throw new Error(hint);
     }
 
     setLoading(true, "Running PitchIQ analysis…", `${payloads.length.toLocaleString()} payloads`);
     const games = normalizeGamesFromPayloads(payloads);
-    applyGames(games, session?.user?.email ? `Supabase (${session.user.email})` : "Supabase", "pitchiq_historical_rows");
-    loadCustomers().then(() => {
+    applyGames(
+      games,
+      session?.user?.email ? `Supabase (${session.user.email})` : "Supabase",
+      "pitchiq_historical_rows",
+      {
+        preserveView: Boolean(opts.preserveView),
+        preserveFilters: Boolean(opts.preserveFilters),
+      }
+    );
+    const customersPromise = loadCustomers().then(() => {
       if (shouldRefreshAfterCustomers()) refresh();
     });
+    if (opts.awaitCustomers) {
+      setLoading(true, "Refreshing customers & traffic…", "owners portal");
+      await customersPromise;
+    }
   } catch (error) {
     console.error(error);
     const message = error?.message || "Failed to load Supabase historical rows.";
-    setStatus("Supabase load failed — sign in or upload an Excel export.");
+    setStatus("Supabase load failed — sign in with an owner account.");
     setAuthStatus(message);
     throw error;
   } finally {
@@ -640,38 +662,50 @@ async function loadFromSupabase() {
 }
 
 /**
- * @param {File} file
+ * Reload historical + customer data using the current owner session (no re-login).
  */
-async function handleFile(file) {
-  const access = await requireOwnerAccess({ redirect: true });
-  if (!access.ok) {
-    await alertDialog("Owner access only.", { title: "Access denied" });
+async function refreshAllData() {
+  if (state.refreshing) return;
+
+  const client = await ensureClient();
+  const {
+    data: { session },
+  } = await client.auth.getSession();
+  if (!session) {
+    setStatus("Sign in to refresh data.");
+    await alertDialog("Sign in with your owner account before refreshing.", { title: "Sign in required" });
     return;
   }
 
-  setLoading(true, "Reading export…", file.name);
+  state.refreshing = true;
+  el.btnRefreshAll?.classList.add("is-refreshing");
+  el.btnRefreshAll?.setAttribute("aria-busy", "true");
+  if (el.btnRefreshAll) el.btnRefreshAll.disabled = true;
+
+  // Drop cached customer payload so the next load is forced fresh.
+  state.customers = null;
+  state.customersLoadPromise = null;
+
   try {
-    const buffer = await readFileAsArrayBuffer(file, () => {});
-    setLoading(true, "Parsing Game History…", file.name);
-    const parsed = await parseExcelBuffer(buffer);
-    setLoading(true, "Running PitchIQ analysis…", `${parsed.rows.length.toLocaleString()} rows`);
-    const games = normalizeGames(parsed.headers, parsed.rows);
-    applyGames(games, file.name, parsed.sheetName);
+    await loadFromSupabase({
+      preserveView: true,
+      preserveFilters: true,
+      awaitCustomers: true,
+    });
+    setStatus(
+      `${state.sourceLabel || "PitchIQ"} · ${state.results?.summary?.games?.toLocaleString?.() || "0"} games` +
+        (state.sheetName ? ` · ${state.sheetName}` : "") +
+        " · refreshed"
+    );
   } catch (error) {
     console.error(error);
-    await alertDialog(error?.message || "Failed to analyze export.", { title: "Upload failed" });
+    await alertDialog(error?.message || "Refresh failed.", { title: "Refresh failed" });
   } finally {
-    setLoading(false);
+    state.refreshing = false;
+    el.btnRefreshAll?.classList.remove("is-refreshing");
+    el.btnRefreshAll?.removeAttribute("aria-busy");
+    if (el.btnRefreshAll) el.btnRefreshAll.disabled = false;
   }
-}
-
-function wireUpload(button, input) {
-  button?.addEventListener("click", () => input?.click());
-  input?.addEventListener("change", async () => {
-    const file = input.files?.[0];
-    input.value = "";
-    if (file) await handleFile(file);
-  });
 }
 
 async function signInAndLoad(event) {
@@ -687,12 +721,27 @@ async function signInAndLoad(event) {
   setAuthStatus("Signing in…");
   setLoading(true, "Signing in…", email);
   try {
+    // Drop any existing main-site / non-owner session so the form grant is clean.
+    const {
+      data: { session: existing },
+    } = await client.auth.getSession();
+    if (existing) {
+      await client.auth.signOut({ scope: "local" });
+    }
+
     const { error } = await client.auth.signInWithPassword({ email, password });
     if (error) throw error;
 
-    const access = await requireOwnerAccess({ redirect: false });
-    if (!access.ok) {
-      await client.auth.signOut();
+    const profile = await fetchCurrentProfileRole(client);
+    if (profile.error) {
+      setAuthStatus(profile.error.message || "Could not verify owner role.");
+      await alertDialog(profile.error.message || "Could not verify owner role on profiles.", {
+        title: "Owner check failed",
+      });
+      return;
+    }
+    if (!isOwnerRole(profile.role)) {
+      await client.auth.signOut({ scope: "local" });
       setAuthStatus("Owner access only. This account is not an owner.");
       await alertDialog("Owner access only. Standard accounts cannot open the Owners Portal.", {
         title: "Access denied",
@@ -718,16 +767,18 @@ async function boot() {
 
   renderNav(el.nav, state.activeView, (id) => {
     if (!state.results) {
-      setStatus("Sign in to Supabase (or upload an export) to unlock the dashboard.");
+      setStatus("Sign in to unlock the dashboard.");
       mobileShell?.setOpen(false);
       return;
     }
     selectView(id);
   });
 
-  wireUpload(el.btnUploadWelcome, el.fileInputWelcome);
   el.btnLoadSupabase?.addEventListener("click", () => {
     loadFromSupabase().catch(() => {});
+  });
+  el.btnRefreshAll?.addEventListener("click", () => {
+    refreshAllData().catch(() => {});
   });
   el.authForm?.addEventListener("submit", (event) => {
     signInAndLoad(event).catch(() => {});
@@ -749,9 +800,14 @@ async function boot() {
   } = await client.auth.getSession();
 
   if (session) {
-    const access = await requireOwnerAccess({ redirect: true });
+    const access = await requireOwnerAccess({ redirect: false });
     if (!access.ok) {
-      setStatus("Owner access only.");
+      setStatus("Owner sign-in required.");
+      setAuthStatus(
+        access.session
+          ? `Signed in as ${access.session.user?.email || "user"}, but this account is not an owner. Sign in with an owner account below.`
+          : "Owner sign-in required — anonymous / non-owner access is blocked."
+      );
       return;
     }
     setAuthStatus(`Owner session for ${session.user.email || "user"}. Loading…`);
@@ -759,12 +815,12 @@ async function boot() {
     try {
       await loadFromSupabase();
     } catch {
-      setStatus("Sign in or upload an Excel export to continue.");
+      setStatus("Sign in with an owner account to continue.");
     }
     return;
   }
 
-  setStatus("Sign in with an owner account to load Supabase history, or upload an Excel export.");
+  setStatus("Sign in with an owner account to load Supabase history.");
   setAuthStatus("Owner sign-in required — anonymous / non-owner access is blocked.");
 }
 

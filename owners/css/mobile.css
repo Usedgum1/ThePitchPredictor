@@ -100,6 +100,19 @@ body[data-shell="mobile"] .mobile-view-title {
   line-height: 1.2;
 }
 
+body[data-shell="mobile"] .mobile-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-shrink: 0;
+}
+
+body[data-shell="mobile"] .mobile-topbar-actions .btn-refresh-all {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+}
+
 body[data-shell="mobile"] .mobile-menu-btn {
   flex-shrink: 0;
   width: 44px;
@@ -323,23 +336,26 @@ body[data-shell="mobile"] .mobile-search-hidden {
 
 /* —— Welcome —— */
 body[data-shell="mobile"] .welcome {
-  padding: var(--space-4) 0;
+  padding: var(--space-4) 0.15rem;
   min-height: auto;
   justify-content: flex-start;
 }
 
+body[data-shell="mobile"] .welcome-stage {
+  width: 100%;
+  gap: 1.15rem;
+}
+
+body[data-shell="mobile"] .welcome-logo {
+  width: 64px;
+  height: 64px;
+}
+
 body[data-shell="mobile"] .welcome-title {
-  font-size: 1.45rem;
+  font-size: 1.55rem;
 }
 
-body[data-shell="mobile"] .welcome-actions {
-  flex-direction: column;
-  width: 100%;
-  max-width: 26rem;
-}
-
-body[data-shell="mobile"] .welcome-actions .btn {
-  width: 100%;
+body[data-shell="mobile"] .welcome-session-btn {
   min-height: 44px;
 }
 

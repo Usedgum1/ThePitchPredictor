@@ -51,7 +51,7 @@ export async function fetchCurrentProfileRole(client) {
     .from("profiles")
     .select("role")
     .eq("user_id", session.user.id)
-    .single();
+    .maybeSingle();
 
   if (error) {
     return { session, role: null, error };
