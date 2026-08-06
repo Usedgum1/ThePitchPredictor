@@ -904,6 +904,7 @@
     src="./vendor/supabase.js"
     onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js'"
   ></script>
+  <script src="./pitchiq-page-views.js"></script>
   <script>
     const SUPABASE_URL = "https://odvopvoqssamjquinhft.supabase.co";
     const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_7g1yX__kNzT-6tj8Tr4SIg_T4BX9BlV";
@@ -915,6 +916,7 @@
         storage: window.localStorage,
       },
     });
+    void window.PitchIQPageViews?.track?.(supabaseClient);
 
     const loginLink = document.getElementById("login-link");
     const logoutButton = document.getElementById("logout-button");

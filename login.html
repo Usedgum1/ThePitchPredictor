@@ -795,6 +795,7 @@
   <script src="./pitchiq-feature-locks.js"></script>
   <script src="./pitchiq-terms.js"></script>
   <script src="./pitchiq-billing.js"></script>
+  <script src="./pitchiq-page-views.js"></script>
   <script>
     (function () {
       const CDN = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js";
@@ -895,6 +896,7 @@
         storage: window.localStorage,
       },
     });
+    void window.PitchIQPageViews?.track?.(supabaseClient);
 
     async function getUserProfile(userId) {
       const { data, error } = await supabaseClient

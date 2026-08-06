@@ -1331,6 +1331,7 @@
     })();
   </script>
   <script src="./pitchiq-billing.js"></script>
+  <script src="./pitchiq-page-views.js"></script>
   <script src="./Card%20Styles/DropRateController.js"></script>
   <script>
     (async () => {
@@ -1351,6 +1352,7 @@
           storage: window.localStorage,
         },
       });
+    void window.PitchIQPageViews?.track?.(supabaseClient);
 
       const ALLOWED_ACCOUNT_ROLES = ["basic", "pro", "life", "admin", "owner"];
       const DATA_REFRESH_INTERVAL_MS = 60000;

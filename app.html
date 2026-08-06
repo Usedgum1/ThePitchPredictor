@@ -4902,6 +4902,7 @@
   </script>
   <script src="./vendor/jszip.min.js"></script>
   <script src="./pitchiq-billing.js"></script>
+  <script src="./pitchiq-page-views.js"></script>
   <script>
     (async () => {
     await window.pitchiqLoadSupabase();
@@ -4916,6 +4917,7 @@
         storage: window.localStorage,
       },
     });
+    void window.PitchIQPageViews?.track?.(supabaseClient);
     const cardStyleController = window.PitchIQCardStyles;
 
     function ensureCardStyleId(game) {

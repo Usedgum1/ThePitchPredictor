@@ -252,6 +252,7 @@
   <script src="./pitchiq-feature-locks.js"></script>
   <script src="./pitchiq-terms.js"></script>
   <script src="./pitchiq-billing.js"></script>
+  <script src="./pitchiq-page-views.js"></script>
   <script>
     (async () => {
       const SUPABASE_URL = "https://odvopvoqssamjquinhft.supabase.co";
@@ -275,6 +276,7 @@
           storage: window.localStorage,
         },
       });
+    void window.PitchIQPageViews?.track?.(supabaseClient);
 
       async function resolveSession() {
         const { data: initialData } = await supabaseClient.auth.getSession();
