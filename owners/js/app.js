@@ -706,13 +706,19 @@ async function refreshAllData() {
   }
 }
 
+/** Prevent double-submit from inline + module listeners. */
+let signInInFlight = false;
+
 async function signInAndLoad(event) {
   event?.preventDefault?.();
   event?.stopPropagation?.();
+  if (signInInFlight) return;
+  signInInFlight = true;
   const email = String(el.authEmail?.value || "").trim();
   const password = String(el.authPassword?.value || "");
   if (!email || !password) {
     setAuthStatus("Enter email and password.");
+    signInInFlight = false;
     return;
   }
 
@@ -757,23 +763,20 @@ async function signInAndLoad(event) {
     await alertDialog(message, { title: "Sign-in failed" });
   } finally {
     setLoading(false);
+    signInInFlight = false;
   }
 }
 
 async function boot() {
-  if (!checkEnvironment()) return;
-  mobileShell = initMobileShell();
-  await ensureClient();
-
-  renderNav(el.nav, state.activeView, (id) => {
-    if (!state.results) {
-      setStatus("Sign in to unlock the dashboard.");
-      mobileShell?.setOpen(false);
-      return;
-    }
-    selectView(id);
+  // Wire auth immediately so submit never depends on later awaits / heavy work.
+  el.authForm?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    signInAndLoad(event).catch((error) => {
+      console.error(error);
+      setAuthStatus(error?.message || "Sign-in failed.");
+    });
   });
-
   el.btnLoadSupabase?.addEventListener("click", () => {
     setLoading(true, "Loading with current session…", "");
     loadFromSupabase()
@@ -787,9 +790,6 @@ async function boot() {
   el.btnRefreshAll?.addEventListener("click", () => {
     refreshAllData().catch(() => {});
   });
-  el.authForm?.addEventListener("submit", (event) => {
-    signInAndLoad(event).catch(() => {});
-  });
   el.tableSearch?.addEventListener("input", applyTableSearch);
   el.filterApply?.addEventListener("click", applySidebarFilters);
   el.filterClear?.addEventListener("click", clearSidebarFilters);
@@ -799,7 +799,27 @@ async function boot() {
   el.filterEnd?.addEventListener("keydown", (event) => {
     if (event.key === "Enter") applySidebarFilters();
   });
+
+  if (!checkEnvironment()) return;
+  mobileShell = initMobileShell();
+  await ensureClient();
+
+  renderNav(el.nav, state.activeView, (id) => {
+    if (!state.results) {
+      setStatus("Sign in to unlock the dashboard.");
+      mobileShell?.setOpen(false);
+      return;
+    }
+    selectView(id);
+  });
   syncSidebarFilters();
+
+  // If the user submitted while the module was still booting, run sign-in now.
+  if (window.__pitchiqSignInRequested) {
+    window.__pitchiqSignInRequested = false;
+    signInAndLoad().catch(() => {});
+    return;
+  }
 
   const client = await ensureClient();
   const {
@@ -832,4 +852,8 @@ async function boot() {
   setAuthStatus("Owner sign-in required — anonymous / non-owner access is blocked.");
 }
 
-boot();
+boot().catch((error) => {
+  console.error(error);
+  showBootBanner(error?.message || "Owners portal failed to start. Check the console.");
+  setAuthStatus(error?.message || "Owners portal failed to start.");
+});

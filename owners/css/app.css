@@ -98,7 +98,7 @@ body {
 }
 
 /* Match PitchIQ website black text trim */
-.app *:not(input):not(textarea):not(select):not(option):not(.brand-logo) {
+.app *:not(input):not(textarea):not(select):not(option):not(.brand-logo):not(.btn):not(.welcome-cta):not(.btn-refresh-all):not(.welcome-brand-name):not(.welcome-session-btn) {
   -webkit-text-stroke: var(--text-trim-stroke);
   paint-order: stroke fill;
   text-shadow: var(--text-trim-shadow);
@@ -1060,36 +1060,23 @@ body {
 .auth-card .welcome-cta {
   width: 100%;
   margin-top: 0.15rem;
-  background: #ffffff;
-  color: #050505;
-  border: 2px solid #050505;
-  box-shadow:
-    1px 0 0 #000,
-    -1px 0 0 #000,
-    0 1px 0 #000,
-    0 -1px 0 #000,
-    1px 1px 0 #000,
-    -1px -1px 0 #000,
-    1px -1px 0 #000,
-    -1px 1px 0 #000;
-  -webkit-text-stroke: 0;
-  text-shadow: none;
+  background: #ffffff !important;
+  color: #050505 !important;
+  border: 2px solid #050505 !important;
+  box-shadow: none;
+  -webkit-text-stroke: 0 !important;
+  text-shadow: none !important;
+  paint-order: normal;
+  font-weight: 700;
+  letter-spacing: 0.01em;
 }
 
 .auth-card .welcome-cta:hover:not(:disabled) {
   filter: none;
-  background: #f4f0e8;
-  color: #050505;
-  border-color: #050505;
-  box-shadow:
-    1px 0 0 #000,
-    -1px 0 0 #000,
-    0 1px 0 #000,
-    0 -1px 0 #000,
-    1px 1px 0 #000,
-    -1px -1px 0 #000,
-    1px -1px 0 #000,
-    -1px 1px 0 #000;
+  background: #f4f0e8 !important;
+  color: #050505 !important;
+  border-color: #050505 !important;
+  box-shadow: none;
 }
 
 .auth-status {

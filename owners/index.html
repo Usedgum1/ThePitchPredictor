@@ -82,7 +82,13 @@
                 <h1 class="welcome-title">Owners Portal</h1>
                 <p class="welcome-body">Sign in with an owner account to load settled history and open the dashboard.</p>
               </div>
-              <form class="auth-card" id="auth-form">
+              <form
+                class="auth-card"
+                id="auth-form"
+                method="post"
+                action="#"
+                onsubmit="event.preventDefault(); return false;"
+              >
                 <div class="field">
                   <label for="auth-email">Email</label>
                   <input id="auth-email" type="email" autocomplete="username" required />
@@ -117,6 +123,18 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <!-- Block native form navigation before the ES module graph finishes loading. -->
+  <script>
+    (function () {
+      var form = document.getElementById("auth-form");
+      if (!form) return;
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        window.__pitchiqSignInRequested = true;
+      });
+    })();
+  </script>
   <!-- html-to-image is loaded on demand via ESM import in js/data/mediaCreator.js -->
   <script type="module" src="js/app.js"></script>
 </body>
