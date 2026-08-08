@@ -1111,8 +1111,37 @@ function fmtMoney(n) {
 }
 
 /**
+ * @param {object} t
+ * @param {{ title: string, sub: string, periodId: string, chartId: string, visitLabel: string }} cfg
+ */
+function trafficPanelHtml(t, cfg) {
+  return `<div class="card card-span-2">
+            <div class="chart-card-head">
+              <h3 class="card-title">${escapeHtml(cfg.title)}</h3>
+              <label class="chart-period-label">
+                <span class="sr-only">${escapeHtml(cfg.title)} chart period</span>
+                <select id="${escapeHtml(cfg.periodId)}" class="chart-period-select" aria-label="${escapeHtml(cfg.title)} chart period">
+                  <option value="daily">Daily</option>
+                  <option value="weekly">Weekly</option>
+                  <option value="monthly">Monthly</option>
+                  <option value="yearly">Yearly</option>
+                </select>
+              </label>
+            </div>
+            <p class="page-sub" style="margin:-0.25rem 0 0.85rem;">${escapeHtml(cfg.sub)}</p>
+            <div class="kpi-grid">
+              ${kpiCard("Today", fmtInt(t.today), cfg.visitLabel, "customers")}
+              ${kpiCard("Last 7d", fmtInt(t.last7), `${fmtInt(t.uniqueSessions7)} sessions`, "customers")}
+              ${kpiCard("Last 30d", fmtInt(t.last30), `${fmtInt(t.uniqueSessions30)} sessions`, "customers")}
+              ${kpiCard("Signed-in 30d", fmtInt(t.signedInViews30), `${cfg.visitLabel} while logged in`, "customers")}
+            </div>
+            <div class="chart-panel" style="margin-top:1rem;"><canvas id="${escapeHtml(cfg.chartId)}"></canvas></div>
+          </div>`;
+}
+
+/**
  * @param {HTMLElement} root
- * @param {{ error?: string, analytics?: object, traffic?: object, trafficError?: string | null } | null} customers
+ * @param {{ error?: string, analytics?: object, traffic?: object, trafficMobile?: object, trafficError?: string | null } | null} customers
  * @param {{ fluxPeriod?: "daily"|"weekly"|"monthly", onFluxPeriodChange?: (p: "daily"|"weekly"|"monthly") => void }} [opts]
  */
 function renderCustomers(root, customers, opts = {}) {
@@ -1148,6 +1177,7 @@ function renderCustomers(root, customers, opts = {}) {
   }
 
   const t = customers.traffic;
+  const tm = customers.trafficMobile;
   const trafficError = customers.trafficError || null;
   const trafficBlock = trafficError
     ? `<div class="card" style="margin-top:1.25rem;">
@@ -1156,28 +1186,24 @@ function renderCustomers(root, customers, opts = {}) {
       </div>`
     : t
       ? `<div class="card-grid" style="margin-top:1.25rem;">
-          <div class="card card-span-2">
-            <div class="chart-card-head">
-              <h3 class="card-title">Site traffic</h3>
-              <label class="chart-period-label">
-                <span class="sr-only">Traffic chart period</span>
-                <select id="customer-pageviews-period" class="chart-period-select" aria-label="Traffic chart period">
-                  <option value="daily">Daily</option>
-                  <option value="weekly">Weekly</option>
-                  <option value="monthly">Monthly</option>
-                  <option value="yearly">Yearly</option>
-                </select>
-              </label>
-            </div>
-            <p class="page-sub" style="margin:-0.25rem 0 0.85rem;">Landing visits to index (/ or index.html) · owners excluded</p>
-            <div class="kpi-grid">
-              ${kpiCard("Today", fmtInt(t.today), "index visits", "customers")}
-              ${kpiCard("Last 7d", fmtInt(t.last7), `${fmtInt(t.uniqueSessions7)} sessions`, "customers")}
-              ${kpiCard("Last 30d", fmtInt(t.last30), `${fmtInt(t.uniqueSessions30)} sessions`, "customers")}
-              ${kpiCard("Signed-in 30d", fmtInt(t.signedInViews30), "index visits while logged in", "customers")}
-            </div>
-            <div class="chart-panel" style="margin-top:1rem;"><canvas id="customer-pageviews-chart"></canvas></div>
-          </div>
+          ${trafficPanelHtml(t, {
+            title: "Desktop traffic",
+            sub: "Index landings on viewport > 760px · owners excluded",
+            periodId: "customer-pageviews-period",
+            chartId: "customer-pageviews-chart",
+            visitLabel: "index visits",
+          })}
+          ${
+            tm
+              ? trafficPanelHtml(tm, {
+                  title: "Mobile traffic",
+                  sub: "Index landings on viewport ≤ 760px · owners excluded",
+                  periodId: "customer-pageviews-mobile-period",
+                  chartId: "customer-pageviews-mobile-chart",
+                  visitLabel: "index visits",
+                })
+              : ""
+          }
           <div class="card">
             <h3 class="card-title">All pages · 30d</h3>
             ${tableHtml(
@@ -1353,21 +1379,32 @@ function renderCustomers(root, customers, opts = {}) {
   const canvas = /** @type {HTMLCanvasElement | null} */ (root.querySelector("#customer-signup-chart"));
   if (canvas) renderSignupChart(canvas, a.monthlySignups || []);
 
-  const pageViewsCanvas = /** @type {HTMLCanvasElement | null} */ (root.querySelector("#customer-pageviews-chart"));
-  const pageViewsPeriodSelect = /** @type {HTMLSelectElement | null} */ (root.querySelector("#customer-pageviews-period"));
-  const pageViewsPeriod = getPageViewsPeriod();
-  if (pageViewsPeriodSelect) pageViewsPeriodSelect.value = pageViewsPeriod;
-  const pageViewsRows = t?.trends?.[pageViewsPeriod] || t?.daily || [];
-  if (pageViewsCanvas && pageViewsRows.length) {
-    renderPageViewsChart(pageViewsCanvas, pageViewsRows, pageViewsPeriod);
-  }
-  pageViewsPeriodSelect?.addEventListener("change", () => {
-    const next = /** @type {"daily"|"weekly"|"monthly"|"yearly"} */ (pageViewsPeriodSelect.value);
-    setPageViewsPeriod(next);
-    if (pageViewsCanvas) {
-      renderPageViewsChart(pageViewsCanvas, t?.trends?.[next] || t?.daily || [], next);
+  /**
+   * @param {"desktop"|"mobile"} scope
+   * @param {object | null | undefined} traffic
+   * @param {string} canvasId
+   * @param {string} selectId
+   */
+  function wireTrafficChart(scope, traffic, canvasId, selectId) {
+    const canvas = /** @type {HTMLCanvasElement | null} */ (root.querySelector(`#${canvasId}`));
+    const select = /** @type {HTMLSelectElement | null} */ (root.querySelector(`#${selectId}`));
+    const period = getPageViewsPeriod(scope);
+    if (select) select.value = period;
+    const rows = traffic?.trends?.[period] || traffic?.daily || [];
+    if (canvas && rows.length) {
+      renderPageViewsChart(canvas, rows, period, scope);
     }
-  });
+    select?.addEventListener("change", () => {
+      const next = /** @type {"daily"|"weekly"|"monthly"|"yearly"} */ (select.value);
+      setPageViewsPeriod(next, scope);
+      if (canvas) {
+        renderPageViewsChart(canvas, traffic?.trends?.[next] || traffic?.daily || [], next, scope);
+      }
+    });
+  }
+
+  wireTrafficChart("desktop", t, "customer-pageviews-chart", "customer-pageviews-period");
+  wireTrafficChart("mobile", tm, "customer-pageviews-mobile-chart", "customer-pageviews-mobile-period");
 
   const fluxPeriod = opts.fluxPeriod || a.fluxPeriod || getCustomerFluxPeriod();
   const fluxSelect = /** @type {HTMLSelectElement | null} */ (root.querySelector("#customer-flux-period"));

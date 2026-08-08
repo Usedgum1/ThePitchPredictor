@@ -12,7 +12,14 @@ import {
   setOwnerUserRole,
   stripeCustomerSearchUrl,
 } from "./data/customers.js";
-import { analyzePageViews, excludeLocalDevPageViews, excludePageViewsByUserIds, filterLandingPageViews, fetchPageViews } from "./data/pageViews.js";
+import {
+  analyzePageViews,
+  excludeLocalDevPageViews,
+  excludePageViewsByUserIds,
+  filterDesktopLandingPageViews,
+  filterMobileLandingPageViews,
+  fetchPageViews,
+} from "./data/pageViews.js";
 import { runAnalysis } from "./analytics/engine.js";
 import { captureTableElement } from "./data/mediaCreator.js";
 import { renderNav } from "./ui/nav.js";
@@ -32,7 +39,7 @@ const state = {
   games: /** @type {import("./data/games.js").GameRow[]} */ ([]),
   filteredGames: /** @type {import("./data/games.js").GameRow[]} */ ([]),
   results: /** @type {object | null} */ (null),
-  customers: /** @type {{ error?: string, analytics?: object, subscriptions?: object[], users?: object[], traffic?: object, trafficError?: string | null } | null} */ (null),
+  customers: /** @type {{ error?: string, analytics?: object, subscriptions?: object[], users?: object[], traffic?: object, trafficMobile?: object, trafficError?: string | null } | null} */ (null),
   customersLoading: false,
   /** @type {Promise<void> | null} */
   customersLoadPromise: null,
@@ -298,8 +305,10 @@ async function loadCustomers() {
         })),
       ]);
       const trafficErrorRaw = pageViewResult.error || null;
-      const trafficError = trafficErrorRaw && /pitchiq_page_views|schema cache|does not exist/i.test(trafficErrorRaw)
-        ? "Page-view table missing — run supabase/migrations/20260806000000_page_views.sql in the Supabase SQL Editor."
+      const trafficError = trafficErrorRaw && /pitchiq_page_views|schema cache|does not exist|column.*device/i.test(trafficErrorRaw)
+        ? /device/i.test(trafficErrorRaw)
+          ? "Page-view device column missing — run supabase/migrations/20260808000000_page_views_device.sql in the Supabase SQL Editor."
+          : "Page-view table missing — run supabase/migrations/20260806000000_page_views.sql in the Supabase SQL Editor."
         : trafficErrorRaw;
       const ownerIds = (users || [])
         .filter((user) => String(user?.role || "").trim().toLowerCase() === "owner")
@@ -307,8 +316,10 @@ async function loadCustomers() {
       const trafficRows = excludeLocalDevPageViews(
         excludePageViewsByUserIds(pageViewResult.rows || [], ownerIds)
       );
-      const landingRows = filterLandingPageViews(trafficRows);
-      const traffic = trafficErrorRaw ? null : analyzePageViews(landingRows, trafficRows);
+      const desktopLandingRows = filterDesktopLandingPageViews(trafficRows);
+      const mobileLandingRows = filterMobileLandingPageViews(trafficRows);
+      const traffic = trafficErrorRaw ? null : analyzePageViews(desktopLandingRows, trafficRows);
+      const trafficMobile = trafficErrorRaw ? null : analyzePageViews(mobileLandingRows, trafficRows);
 
       // Paint Admin/Customers as soon as the user list is back; Stripe history can lag.
       const earlyAnalytics = analyzeCustomers(users, state.customers?.subscriptions || [], state.customerFluxPeriod);
@@ -317,6 +328,7 @@ async function loadCustomers() {
         subscriptions: state.customers?.subscriptions || [],
         users,
         traffic,
+        trafficMobile,
         trafficError,
       };
       if (shouldRefreshAfterCustomers()) refresh();
@@ -336,6 +348,7 @@ async function loadCustomers() {
         subscriptions,
         users,
         traffic,
+        trafficMobile,
         trafficError,
       };
     } catch (error) {

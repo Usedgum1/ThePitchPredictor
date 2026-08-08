@@ -46,6 +46,18 @@
     }
   }
 
+  /** Match site mobile breakpoint (app.html / owners redirect at 760px). */
+  function detectDevice() {
+    try {
+      if (global.matchMedia && global.matchMedia("(max-width: 760px)").matches) {
+        return "mobile";
+      }
+    } catch {
+      // fall through
+    }
+    return "desktop";
+  }
+
   function recentlyTracked(path) {
     try {
       const key = `${DEDUPE_PREFIX}${path}`;
@@ -147,6 +159,7 @@
           session_id: sessionId(),
           user_id: userId,
           referrer,
+          device: detectDevice(),
         });
         if (!error) markTracked(path);
       } catch {

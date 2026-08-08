@@ -252,36 +252,47 @@ export function renderSignupChart(canvas, rows) {
   return signupChart;
 }
 
-/** @type {import("chart.js").Chart | null} */
-let pageViewsChart = null;
-
 /** @typedef {"daily"|"weekly"|"monthly"|"yearly"} PageViewPeriod */
-/** @type {PageViewPeriod} */
-let pageViewsPeriod = "daily";
+/** @typedef {"desktop"|"mobile"} PageViewsChartScope */
 
-/** @returns {PageViewPeriod} */
-export function getPageViewsPeriod() {
-  return pageViewsPeriod;
+/** @type {Record<PageViewsChartScope, import("chart.js").Chart | null>} */
+const pageViewsCharts = { desktop: null, mobile: null };
+
+/** @type {Record<PageViewsChartScope, PageViewPeriod>} */
+const pageViewsPeriods = { desktop: "daily", mobile: "daily" };
+
+/**
+ * @param {PageViewsChartScope} [scope]
+ * @returns {PageViewPeriod}
+ */
+export function getPageViewsPeriod(scope = "desktop") {
+  return pageViewsPeriods[scope] || "daily";
 }
 
-/** @param {PageViewPeriod} period */
-export function setPageViewsPeriod(period) {
-  pageViewsPeriod = period;
+/**
+ * @param {PageViewPeriod} period
+ * @param {PageViewsChartScope} [scope]
+ */
+export function setPageViewsPeriod(period, scope = "desktop") {
+  pageViewsPeriods[scope] = period;
 }
 
 /**
  * @param {HTMLCanvasElement} canvas
  * @param {{ key?: string, label?: string, day?: string, views: number, sessions: number }[]} rows
  * @param {PageViewPeriod} [period]
+ * @param {PageViewsChartScope} [scope]
  */
-export function renderPageViewsChart(canvas, rows, period = pageViewsPeriod) {
-  destroyChart(pageViewsChart);
+export function renderPageViewsChart(canvas, rows, period, scope = "desktop") {
+  const chartScope = scope === "mobile" ? "mobile" : "desktop";
+  const resolvedPeriod = period || pageViewsPeriods[chartScope] || "daily";
+  destroyChart(pageViewsCharts[chartScope]);
   if (typeof Chart === "undefined") return null;
-  pageViewsPeriod = period;
+  pageViewsPeriods[chartScope] = resolvedPeriod;
   const TEAL = "#2ec4b6";
   const labels = rows.map((r) => r.label || r.day || r.key || "");
   const dense = rows.length > 40;
-  pageViewsChart = new Chart(canvas, {
+  pageViewsCharts[chartScope] = new Chart(canvas, {
     type: "line",
     data: {
       labels,
@@ -352,7 +363,7 @@ export function renderPageViewsChart(canvas, rows, period = pageViewsPeriod) {
       },
     },
   });
-  return pageViewsChart;
+  return pageViewsCharts[chartScope];
 }
 
 /** @type {import("chart.js").Chart | null} */

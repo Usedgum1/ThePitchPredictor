@@ -31,7 +31,7 @@ export async function fetchPageViews(client, days = 365) {
 
   const { data, error } = await client
     .from("pitchiq_page_views")
-    .select("occurred_at, path, session_id, user_id")
+    .select("occurred_at, path, session_id, user_id, device")
     .gte("occurred_at", since.toISOString())
     .order("occurred_at", { ascending: false })
     .limit(50000);
@@ -160,11 +160,39 @@ export function isLocalDevPath(path) {
 }
 
 /**
+ * @param {unknown} device
+ * @returns {"desktop"|"mobile"|null}
+ */
+export function normalizeDevice(device) {
+  const value = String(device || "").trim().toLowerCase();
+  if (value === "desktop" || value === "mobile") return value;
+  return null;
+}
+
+/**
  * @param {object[]} rows
  * @returns {object[]}
  */
 export function filterLandingPageViews(rows) {
   return (rows || []).filter((row) => isLandingPath(row?.path) && !isLocalDevPath(row?.path));
+}
+
+/**
+ * Index landings tagged desktop (legacy null device excluded from split charts).
+ * @param {object[]} rows
+ * @returns {object[]}
+ */
+export function filterDesktopLandingPageViews(rows) {
+  return filterLandingPageViews(rows).filter((row) => normalizeDevice(row?.device) === "desktop");
+}
+
+/**
+ * Index landings tagged mobile.
+ * @param {object[]} rows
+ * @returns {object[]}
+ */
+export function filterMobileLandingPageViews(rows) {
+  return filterLandingPageViews(rows).filter((row) => normalizeDevice(row?.device) === "mobile");
 }
 
 /**
